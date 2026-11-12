@@ -6,7 +6,7 @@ Sources:
   3. Samsung TV Plus (Official Public API - IN & US)
   4. Pluto TV (Official Public API - Movies/Music/Sports)
   5. BDIX & Free-TV Public Repos
-  6. GitHub (IPTV-org BD/IN/Categories + Rate-limit Safe Keyword Search)
+  6. GitHub (IPTV-org BD/IN/Categories + IP/BDIX Keyword Search)
 -> Dead link check -> Duplicate remove -> Clean sorted playlist.m3u
 """
 import json, os, re, ssl, sys, time, uuid
@@ -25,11 +25,13 @@ MIN_KEEP_RATIO = 0.5         # alive sonkhya ager playlist er 50% er niche hole 
 # GitHub Secrets theke token nibe (code e khali rakhun)
 GITHUB_TOKEN = "" or os.getenv("GITHUB_TOKEN")
 
-# GitHub e simple keyword diye search korbe (422 & 429 error safe)
+# GitHub e simple keyword + IP link search korbe (422 & 429 error safe)
 USE_GITHUB_SEARCH = True
 GITHUB_SEARCH_QUERIES = [
     "EXTINF bangla extension:m3u",
     "EXTINF bdix extension:m3u8",
+    'EXTINF "http://103." extension:m3u',
+    'EXTINF ":8080/" bangla extension:m3u',
 ]
 
 IPTV_BASE = "https://iptv-org.github.io/iptv"
@@ -414,7 +416,7 @@ def scrape_github():
             res.append({**c, "group": "Sports" if "sport" in c.get("group", "").lower() else group})
         log(f"[GitHub] {group}: {n_keep}/{n_all} channel rakha holo")
 
-    # 3) GitHub keyword code search (422 & 429 safe)
+    # 3) GitHub keyword & IP code search (422 & 429 safe)
     if USE_GITHUB_SEARCH and GITHUB_TOKEN:
         h = {
             "User-Agent": UA,
@@ -576,16 +578,24 @@ def bd_group(name):
 KOLKATA_RE = re.compile(r"\b(jalsha movies|zee bangla cinema|colors bangla cinema|bangla cinema|"
                         r"bangla movies?|bengali movies?|bengali cinema)\b")
 
+IP_URL_RE = re.compile(r"^https?://\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}")
+POPULAR_BD_IN_RE = re.compile(
+    r"\b(btv|somoy|jamuna|ekattor|channel 24|dbc|independent|atn|news 24|channel i|ntv|rtv|"
+    r"banglavision|maasranga|deepto|boishakhi|desh tv|nagorik|gtv|gazi|asian tv|sa tv|mohona|"
+    r"my tv|bijoy|ananda|nexus|t sports|duronto|gaan bangla|star jalsha|zee bangla|colors bangla|"
+    r"sony aath|jalsha movies|sun bangla|akas aath|sangeet bangla)\b"
+)
+
 
 def keyword_group(c):
-    name, group = c["name"], c.get("group", "")
+    name, group, url = c["name"], c.get("group", ""), c.get("url", "")
     t = f"{name} {group}".lower()
     if KOLKATA_RE.search(t):
         return "Kolkata Movies"
     music = re.search(r"\b(music|song|songs|gaan|mtv|vevo|hits)\b", t)
     movie = re.search(r"\b(movie|movies|cinema|film|films|flix|hbo|bollywood|hollywood|action|thriller|romance)\b", t)
-    sport = re.search(r"\b(sport|sports|cricket|football|soccer|ten sports|star sports|t sports)\b", t)
-    bn = re.search(r"\b(bangla|bengali|bangladesh)\b", t)
+    sport = re.search(r"\b(sport|sports|cricket|football|soccer|ten sports|star sports|t sports|willow|ptv sports)\b", t)
+    bn = re.search(r"\b(bangla|bengali|bangladesh|\bbd\b)\b", t) or POPULAR_BD_IN_RE.search(t)
     hi = re.search(r"\b(hindi|bollywood|bhojpuri)\b", t) or c.get("region") == "IN"
     en = re.search(r"\b(english|hollywood|hbo)\b", t) or c.get("region") == "US" or c["source"] == "PlutoTV"
 
@@ -607,6 +617,8 @@ def keyword_group(c):
         return "Bangladesh"
     if hi and c.get("region") != "IN":
         return "India"
+    if IP_URL_RE.match(url) and re.search(r"\b(bd|bangla|india|kolkata|live)\b", t):
+        return "Bangladesh"
     return None
 
 
