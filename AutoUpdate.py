@@ -1,6 +1,6 @@
 """
 Standalone IPTV updater (kono GUI / iptv_core lagbe na).
-Source: AynaOTT + JagoBD + GitHub (BD, IN, PK, Movies/Music) -> dead check -> shudhu alive rakhbe.
+Source: AynaOTT + JagoBD + GitHub (BD, IN [hin/ben], Movies/Music/Sports + Keyword Search) -> dead check -> shudhu alive rakhbe.
 PRIORITY list er channel gula playlist er sobar upore thakbe (oi order e).
 """
 import difflib, json, os, re, ssl, sys, time
@@ -19,16 +19,26 @@ PRIORITY_KEEP_DEAD = True    # True: top channel er link GitHub e verify hoy ni 
 KEEP_REASONS = ("timeout", "HTTP 401", "HTTP 403", "HTTP 451", "html page (block/login)")
 REPORT = Path("priority_report.txt")
 MIN_KEEP_RATIO = 0.5         # alive sonkhya ager playlist er 50% er niche hole overwrite korbe na
-GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
+
+# Ekhane tomar GitHub Personal Access Token boshabe (jemon: "ghp_xxxxxxxxxxxx")
+GITHUB_TOKEN = "" or os.getenv("GITHUB_TOKEN")
+
+# GitHub e ei keyword gula diye .m3u / .m3u8 file search korbe
+USE_GITHUB_SEARCH = True
+GITHUB_SEARCH_QUERIES = [
+    "EXTINF bangla m3u",
+    "EXTINF bdix m3u8",
+    "EXTINF kolkata bangla m3u",
+    "EXTINF hindi movies m3u8",
+]
 
 IPTV_BASE = "https://iptv-org.github.io/iptv"
 
-# Desh wise (shob channel nibe). (group name, m3u link)
+# Desh wise: Bangladesh (shob) & India (shudhu Hindi o Bangla)
 INDIA_LANGS = ("hin", "ben")
 COUNTRY_SOURCES = [
     ("Bangladesh", f"{IPTV_BASE}/countries/bd.m3u", None),
     ("India",      f"{IPTV_BASE}/countries/in.m3u", INDIA_LANGS),
-    ("Pakistan",   f"{IPTV_BASE}/countries/pk.m3u", None),
 ]
 
 # True dile: upore dewa group chhara onno group er channel (top 39 / manual chhara) playlist e rakhbe na
@@ -45,18 +55,11 @@ COMBOS = [
     ("Sports",         "sports", ("hin", "eng", "ben")),
 ]
 
-# Nijer extra m3u
-EXTRA_PLAYLISTS = [
-    "https://raw.githubusercontent.com/zahidrock/zahid/refs/heads/main/tv.m3u8",
-]
-
-USE_GITHUB_SEARCH = True
-
 # Playlist e group er order
 GROUP_ORDER = [
     "Kolkata Movies", "Hindi Movies", "English Movies", "Hindi Music", "English Music",
     "Bangla Music", "Sports",
-    "Bangladesh", "Bangla (India)", "India", "Pakistan"
+    "Bangladesh", "Bangla (India)", "India"
 ]
 
 # Tumi nijer jana link ekhane dao: (naam, link, verify)
@@ -187,7 +190,7 @@ def scrape_github():
                 n += 1
         log(f"[GitHub] {group}: {n} channel")
 
-    # 2) Country sources
+    # 2) Country sources (Bangladesh & India [hin/ben])
     for group, url, langs in COUNTRY_SOURCES:
         allowed = None
         if langs:
@@ -201,30 +204,27 @@ def scrape_github():
             res.append({**c, "group": "Sports" if "sport" in c.get("group", "").lower() else group})
         log(f"[GitHub] {group}: {n_keep}/{n_all} channel rakha holo")
 
-    # 3) Extra playlists
-    for url in EXTRA_PLAYLISTS:
-        res.extend({**c, "extra": True} for c in get(url))
-
-    # 4) GitHub code search
+    # 3) GitHub keyword code search
     if USE_GITHUB_SEARCH and GITHUB_TOKEN:
         h = {
             "User-Agent": "Mozilla/5.0",
             "Accept": "application/vnd.github+json",
-            "Authorization": f"Bearer {GITHUB_TOKEN}"
+            "Authorization": f"Bearer {GITHUB_TOKEN.strip()}"
         }
         raws = []
-        for page in (1, 2, 3):
-            try:
-                api = ("https://api.github.com/search/code?q=" +
-                       urllib.parse.quote("EXTINF extension:m3u") + f"&per_page=50&page={page}")
-                data = json.loads(http_get(api, headers=h, timeout=20))
-                for it in data.get("items", []):
-                    raws.append(it["html_url"].replace("https://github.com/",
-                                "https://raw.githubusercontent.com/").replace("/blob/", "/"))
-                time.sleep(7)
-            except Exception as e:
-                log(f"[GitHub search] page {page}: {e}")
-                break
+        for kw in GITHUB_SEARCH_QUERIES:
+            for page in (1, 2):
+                try:
+                    api = ("https://api.github.com/search/code?q=" +
+                           urllib.parse.quote(kw) + f"&per_page=30&page={page}")
+                    data = json.loads(http_get(api, headers=h, timeout=20))
+                    for it in data.get("items", []):
+                        raws.append(it["html_url"].replace("https://github.com/",
+                                    "https://raw.githubusercontent.com/").replace("/blob/", "/"))
+                    time.sleep(6)  # GitHub search API rate-limit safety
+                except Exception as e:
+                    log(f"[GitHub search] '{kw}' page {page}: {e}")
+                    break
         found = 0
         for raw in dict.fromkeys(raws):
             try:
@@ -236,9 +236,9 @@ def scrape_github():
                         found += 1
             except Exception:
                 pass
-        log(f"[GitHub search] {len(raws)} file theke {found} channel")
+        log(f"[GitHub search] {len(dict.fromkeys(raws))} file theke {found} channel paoa gese")
     elif USE_GITHUB_SEARCH:
-        log("[GitHub search] GITHUB_TOKEN nei, search skip kora holo")
+        log("[GitHub search] GITHUB_TOKEN boshano hoy ni, keyword search skip kora holo")
     return res
 
 
@@ -573,22 +573,6 @@ OTHER_LANG_RE = re.compile(
 HINDI_REMAP = {"Bangladesh": "India", "Kolkata Movies": "Hindi Movies", "Bangla Music": "Hindi Music"}
 
 
-def regroup(c):
-    kw = keyword_group(c["name"], c.get("group", ""))
-    if kw:
-        return kw
-    g = c.get("group", "").lower()
-    if re.search(r"bangla|bangladesh|\bbd\b|bengali", g):
-        return "Bangladesh"
-    if re.search(r"hindi|india", g):
-        return "India"
-    if "pakistan" in g or "urdu" in g:
-        return "Pakistan"
-    if "sport" in g:
-        return "Sports"
-    return c.get("group") or "Others"
-
-
 def bd_group(name):
     return "Bangla Music" if re.search(r"\b(music|gaan|song|sangeet)\b", name.lower()) else "Bangladesh"
 
@@ -621,6 +605,10 @@ def keyword_group(name, group=""):
             return "English Movies"
     if sport:
         return "Sports"
+    if bn:
+        return "Bangladesh"
+    if hi:
+        return "India"
     return None
 
 
@@ -724,8 +712,6 @@ def main():
                 c["group"] = kw
             elif not is_top:
                 continue
-        elif c.get("extra"):
-            c["group"] = regroup(c)
         if KOLKATA_RE.search(lname):
             c["group"] = "Kolkata Movies"
         if any(b in c["url"] for b in BLOCK_URLS) and not c.get("manual"):
