@@ -1,6 +1,6 @@
 """
 Standalone IPTV updater (kono GUI / iptv_core lagbe na).
-Source: AynaOTT + JagoBD + GitHub (BD, IN [hin/ben], Movies/Music/Sports + Keyword Search) -> dead check -> shudhu alive rakhbe.
+Source: AynaOTT + JagoBD + GitHub (BD, IN [hin/ben], Movies/Music/Sports + Optimized Keyword Search) -> dead check -> shudhu alive rakhbe.
 """
 import json, os, re, ssl, sys, time
 from collections import Counter
@@ -18,13 +18,11 @@ MIN_KEEP_RATIO = 0.5         # alive sonkhya ager playlist er 50% er niche hole 
 # Ekhane tomar GitHub Personal Access Token boshabe (jemon: "ghp_xxxxxxxxxxxx")
 GITHUB_TOKEN = "" or os.getenv("GITHUB_TOKEN")
 
-# GitHub e ei keyword gula diye .m3u / .m3u8 file search korbe
+# GitHub e OR operator diye kom request-e beshi file search korbe (429 error ashbe na)
 USE_GITHUB_SEARCH = True
 GITHUB_SEARCH_QUERIES = [
-    "EXTINF bangla m3u",
-    "EXTINF bdix m3u8",
-    "EXTINF kolkata bangla m3u",
-    "EXTINF hindi movies m3u8",
+    'EXTINF (bangla OR bdix OR kolkata OR "hindi movies") extension:m3u',
+    'EXTINF (bangla OR bdix OR kolkata OR "hindi movies") extension:m3u8',
 ]
 
 IPTV_BASE = "https://iptv-org.github.io/iptv"
@@ -84,6 +82,23 @@ def http_get(url, headers=None, timeout=15):
     req = urllib.request.Request(url, headers=headers or HEADERS)
     with urllib.request.urlopen(req, timeout=timeout, context=SSL_CTX) as r:
         return r.read().decode("utf-8", errors="ignore")
+
+
+def github_search_get(api_url, headers, max_retries=2):
+    """429 Too Many Requests ashle wait kore abar try korbe"""
+    for attempt in range(max_retries + 1):
+        try:
+            req = urllib.request.Request(api_url, headers=headers)
+            with urllib.request.urlopen(req, timeout=20, context=SSL_CTX) as r:
+                return json.loads(r.read().decode("utf-8", errors="ignore"))
+        except urllib.error.HTTPError as e:
+            if e.code == 429 and attempt < max_retries:
+                wait_sec = int(e.headers.get("Retry-After", 60)) + 2
+                log(f"[GitHub search] Rate limit (429), {wait_sec}s wait kore abar try korchi...")
+                time.sleep(wait_sec)
+            else:
+                raise
+    return {}
 
 
 # ------------------------------------------------------------------ m3u parse
@@ -153,29 +168,32 @@ def scrape_github():
             res.append({**c, "group": "Sports" if "sport" in c.get("group", "").lower() else group})
         log(f"[GitHub] {group}: {n_keep}/{n_all} channel rakha holo")
 
-    # 3) GitHub keyword code search
+    # 3) GitHub keyword code search (Rate-limit safe)
     if USE_GITHUB_SEARCH and GITHUB_TOKEN:
         h = {
-            "User-Agent": "Mozilla/5.0",
+            "User-Agent": UA,
             "Accept": "application/vnd.github+json",
             "Authorization": f"Bearer {GITHUB_TOKEN.strip()}"
         }
         raws = []
-        for kw in GITHUB_SEARCH_QUERIES:
-            for page in (1, 2):
-                try:
-                    api = ("https://api.github.com/search/code?q=" +
-                           urllib.parse.quote(kw) + f"&per_page=30&page={page}")
-                    data = json.loads(http_get(api, headers=h, timeout=20))
-                    for it in data.get("items", []):
-                        raws.append(it["html_url"].replace("https://github.com/",
-                                    "https://raw.githubusercontent.com/").replace("/blob/", "/"))
-                    time.sleep(6)  # GitHub search API rate-limit safety
-                except Exception as e:
-                    log(f"[GitHub search] '{kw}' page {page}: {e}")
-                    break
+        for idx, kw in enumerate(GITHUB_SEARCH_QUERIES):
+            if idx > 0:
+                time.sleep(12)  # Search API rate limit (max 10 req/min) safety
+            try:
+                api = ("https://api.github.com/search/code?q=" +
+                       urllib.parse.quote(kw) + "&per_page=100&page=1")
+                data = github_search_get(api, headers=h)
+                items = data.get("items", [])
+                log(f"[GitHub search] query {idx+1}: {len(items)} ta file paoa gese")
+                for it in items:
+                    raws.append(it["html_url"].replace("https://github.com/",
+                                "https://raw.githubusercontent.com/").replace("/blob/", "/"))
+            except Exception as e:
+                log(f"[GitHub search] query {idx+1} fail: {e}")
+
+        unique_raws = list(dict.fromkeys(raws))
         found = 0
-        for raw in dict.fromkeys(raws):
+        for raw in unique_raws:
             try:
                 txt = http_get(raw, timeout=15)
                 if "#EXTINF" in txt:
@@ -185,7 +203,7 @@ def scrape_github():
                         found += 1
             except Exception:
                 pass
-        log(f"[GitHub search] {len(dict.fromkeys(raws))} file theke {found} channel paoa gese")
+        log(f"[GitHub search] mot {len(unique_raws)} file theke {found} channel paoa gese")
     elif USE_GITHUB_SEARCH:
         log("[GitHub search] GITHUB_TOKEN boshano hoy ni, keyword search skip kora holo")
     return res
