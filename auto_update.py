@@ -1,8 +1,15 @@
 """
 Standalone IPTV updater (kono GUI / iptv_core lagbe na).
-Source: AynaOTT + JagoBD + GitHub (BD, IN [hin/ben], Movies/Music/Sports + Keyword Search) -> dead check -> shudhu alive rakhbe.
+Sources:
+  1. AynaOTT (BD & Bangla API)
+  2. JagoBD (Web Scraper)
+  3. Samsung TV Plus (Official Public API - IN & US)
+  4. Pluto TV (Official Public API - Movies/Music/Sports)
+  5. BDIX & Free-TV Public Repos
+  6. GitHub (IPTV-org BD/IN/Categories + Rate-limit Safe Keyword Search)
+-> Dead link check -> Duplicate remove -> Clean sorted playlist.m3u
 """
-import json, os, re, ssl, sys, time
+import json, os, re, ssl, sys, time, uuid
 from collections import Counter
 import urllib.error, urllib.parse, urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -15,10 +22,10 @@ CHECK_TIMEOUT = 8            # sekond
 MAX_LINKS_PER_CHANNEL = 1    # proti channel e max koto alive link (1 = duplicate nei)
 MIN_KEEP_RATIO = 0.5         # alive sonkhya ager playlist er 50% er niche hole overwrite korbe na
 
-# Ekhane tomar GitHub Personal Access Token boshabe (jemon: "ghp_xxxxxxxxxxxx")
+# GitHub Secrets theke token nibe (code e khali rakhun)
 GITHUB_TOKEN = "" or os.getenv("GITHUB_TOKEN")
 
-# GitHub e simple keyword diye search korbe (422 error ashbe na)
+# GitHub e simple keyword diye search korbe (422 & 429 error safe)
 USE_GITHUB_SEARCH = True
 GITHUB_SEARCH_QUERIES = [
     "EXTINF bangla extension:m3u",
@@ -130,85 +137,6 @@ def parse_m3u(text, source):
 
 
 # ------------------------------------------------------------------ scrapers
-def scrape_github():
-    cache = {}
-
-    def get(url):
-        if url not in cache:
-            try:
-                cache[url] = parse_m3u(http_get(url, timeout=40), "GitHub")
-            except Exception as e:
-                log(f"[GitHub] fail {url}: {e}")
-                cache[url] = []
-            log(f"[GitHub] {url.replace(IPTV_BASE + '/', '')}: {len(cache[url])} channel")
-        return cache[url]
-
-    res = []
-    # 1) Category x Language
-    for group, cat, lang in COMBOS:
-        langs = (lang,) if isinstance(lang, str) else lang
-        lang_urls = {c["url"].split("|")[0] for lg in langs for c in get(f"{IPTV_BASE}/languages/{lg}.m3u")}
-        n = 0
-        for c in get(f"{IPTV_BASE}/categories/{cat}.m3u"):
-            if c["url"].split("|")[0] in lang_urls:
-                res.append({**c, "group": group})
-                n += 1
-        log(f"[GitHub] {group}: {n} channel")
-
-    # 2) Country sources (Bangladesh & India [hin/ben])
-    for group, url, langs in COUNTRY_SOURCES:
-        allowed = None
-        if langs:
-            allowed = {c["url"].split("|")[0] for lg in langs for c in get(f"{IPTV_BASE}/languages/{lg}.m3u")}
-        n_all = n_keep = 0
-        for c in get(url):
-            n_all += 1
-            if allowed is not None and c["url"].split("|")[0] not in allowed:
-                continue
-            n_keep += 1
-            res.append({**c, "group": "Sports" if "sport" in c.get("group", "").lower() else group})
-        log(f"[GitHub] {group}: {n_keep}/{n_all} channel rakha holo")
-
-    # 3) GitHub keyword code search (422 & 429 safe)
-    if USE_GITHUB_SEARCH and GITHUB_TOKEN:
-        h = {
-            "User-Agent": UA,
-            "Accept": "application/vnd.github+json",
-            "Authorization": f"Bearer {GITHUB_TOKEN.strip()}"
-        }
-        raws = []
-        for idx, kw in enumerate(GITHUB_SEARCH_QUERIES):
-            time.sleep(15 if idx > 0 else 5)  # Rate-limit safety delay
-            try:
-                api = ("https://api.github.com/search/code?q=" +
-                       urllib.parse.quote(kw) + "&per_page=100&page=1")
-                data = github_search_get(api, headers=h)
-                items = data.get("items", [])
-                log(f"[GitHub search] query {idx+1} ('{kw}'): {len(items)} ta file paoa gese")
-                for it in items:
-                    raws.append(it["html_url"].replace("https://github.com/",
-                                "https://raw.githubusercontent.com/").replace("/blob/", "/"))
-            except Exception as e:
-                log(f"[GitHub search] query {idx+1} fail: {e}")
-
-        unique_raws = list(dict.fromkeys(raws))
-        found = 0
-        for raw in unique_raws:
-            try:
-                txt = http_get(raw, timeout=15)
-                if "#EXTINF" in txt:
-                    for c in parse_m3u(txt, "GitHub"):
-                        c["search"] = True
-                        res.append(c)
-                        found += 1
-            except Exception:
-                pass
-        log(f"[GitHub search] mot {len(unique_raws)} file theke {found} channel paoa gese")
-    elif USE_GITHUB_SEARCH:
-        log("[GitHub search] GITHUB_TOKEN boshano hoy ni, keyword search skip kora holo")
-    return res
-
-
 def scrape_aynaott():
     base = "https://web.aynaott.com"
     h = {
@@ -373,6 +301,159 @@ def scrape_jagobd():
     return res
 
 
+def scrape_samsung_tv():
+    """Samsung TV Plus Public API (India & US)"""
+    res = []
+    endpoints = [
+        ("IN", "https://i.mjh.nz/SamsungTVPlus/in.m3u8"),
+        ("US", "https://i.mjh.nz/SamsungTVPlus/us.m3u8"),
+    ]
+    for region, url in endpoints:
+        try:
+            txt = http_get(url, timeout=20)
+            chs = parse_m3u(txt, "SamsungTV")
+            for c in chs:
+                c["region"] = region
+                c["auto_group"] = True
+            res.extend(chs)
+            log(f"[SamsungTV] {region}: {len(chs)} channel")
+        except Exception as e:
+            log(f"[SamsungTV] {region} error: {e}")
+    return res
+
+
+def scrape_pluto_tv():
+    """Pluto TV Official Public API (Movies, Music, Sports)"""
+    res = []
+    try:
+        sid = str(uuid.uuid4())
+        did = str(uuid.uuid4())
+        api = (f"https://api.pluto.tv/v2/channels?start=2026-01-01T00:00:00Z&stop=2026-01-01T01:00:00Z"
+               f"&deviceId={did}&sid={sid}&deviceType=web&deviceMake=Chrome&deviceModel=web&appName=web&appVersion=5.0")
+        data = json.loads(http_get(api, timeout=20))
+        for ch in data:
+            if not ch.get("isStitched"):
+                continue
+            urls = ch.get("stitched", {}).get("urls", [])
+            stream_url = urls[0].get("url", "") if urls else ""
+            if not stream_url:
+                continue
+            cat = ch.get("category", "")
+            logo = ch.get("colorLogoPNG", {}).get("path", "") or ch.get("logo", {}).get("path", "")
+            res.append({
+                "name": ch.get("name", "Unknown").strip(),
+                "url": stream_url,
+                "logo": logo,
+                "tvg_id": f"pluto-{ch.get('slug', '')}",
+                "group": cat,
+                "source": "PlutoTV",
+                "auto_group": True
+            })
+        log(f"[PlutoTV] stream URL: {len(res)}")
+    except Exception as e:
+        log(f"[PlutoTV] error: {e}")
+    return res
+
+
+def scrape_extra_repos():
+    """Popular Public BDIX & Free-TV Repos"""
+    res = []
+    repos = [
+        ("BDIX-Mrgify", "https://raw.githubusercontent.com/abusaeeidx/Mrgify-BDIX-IPTV/main/playlist.m3u"),
+        ("Free-TV-IN",  "https://raw.githubusercontent.com/Free-TV/IPTV/master/playlists/playlist_india.m3u8"),
+    ]
+    for label, url in repos:
+        try:
+            txt = http_get(url, timeout=20)
+            chs = parse_m3u(txt, "GitHub")
+            for c in chs:
+                c["auto_group"] = True
+            res.extend(chs)
+            log(f"[{label}] {len(chs)} channel")
+        except Exception as e:
+            log(f"[{label}] error: {e}")
+    return res
+
+
+def scrape_github():
+    cache = {}
+
+    def get(url):
+        if url not in cache:
+            try:
+                cache[url] = parse_m3u(http_get(url, timeout=40), "GitHub")
+            except Exception as e:
+                log(f"[GitHub] fail {url}: {e}")
+                cache[url] = []
+            log(f"[GitHub] {url.replace(IPTV_BASE + '/', '')}: {len(cache[url])} channel")
+        return cache[url]
+
+    res = []
+    # 1) Category x Language
+    for group, cat, lang in COMBOS:
+        langs = (lang,) if isinstance(lang, str) else lang
+        lang_urls = {c["url"].split("|")[0] for lg in langs for c in get(f"{IPTV_BASE}/languages/{lg}.m3u")}
+        n = 0
+        for c in get(f"{IPTV_BASE}/categories/{cat}.m3u"):
+            if c["url"].split("|")[0] in lang_urls:
+                res.append({**c, "group": group})
+                n += 1
+        log(f"[GitHub] {group}: {n} channel")
+
+    # 2) Country sources (Bangladesh & India [hin/ben])
+    for group, url, langs in COUNTRY_SOURCES:
+        allowed = None
+        if langs:
+            allowed = {c["url"].split("|")[0] for lg in langs for c in get(f"{IPTV_BASE}/languages/{lg}.m3u")}
+        n_all = n_keep = 0
+        for c in get(url):
+            n_all += 1
+            if allowed is not None and c["url"].split("|")[0] not in allowed:
+                continue
+            n_keep += 1
+            res.append({**c, "group": "Sports" if "sport" in c.get("group", "").lower() else group})
+        log(f"[GitHub] {group}: {n_keep}/{n_all} channel rakha holo")
+
+    # 3) GitHub keyword code search (422 & 429 safe)
+    if USE_GITHUB_SEARCH and GITHUB_TOKEN:
+        h = {
+            "User-Agent": UA,
+            "Accept": "application/vnd.github+json",
+            "Authorization": f"Bearer {GITHUB_TOKEN.strip()}"
+        }
+        raws = []
+        for idx, kw in enumerate(GITHUB_SEARCH_QUERIES):
+            time.sleep(15 if idx > 0 else 5)
+            try:
+                api = ("https://api.github.com/search/code?q=" +
+                       urllib.parse.quote(kw) + "&per_page=100&page=1")
+                data = github_search_get(api, headers=h)
+                items = data.get("items", [])
+                log(f"[GitHub search] query {idx+1} ('{kw}'): {len(items)} ta file paoa gese")
+                for it in items:
+                    raws.append(it["html_url"].replace("https://github.com/",
+                                "https://raw.githubusercontent.com/").replace("/blob/", "/"))
+            except Exception as e:
+                log(f"[GitHub search] query {idx+1} fail: {e}")
+
+        unique_raws = list(dict.fromkeys(raws))
+        found = 0
+        for raw in unique_raws:
+            try:
+                txt = http_get(raw, timeout=15)
+                if "#EXTINF" in txt:
+                    for c in parse_m3u(txt, "GitHub"):
+                        c["auto_group"] = True
+                        res.append(c)
+                        found += 1
+            except Exception:
+                pass
+        log(f"[GitHub search] mot {len(unique_raws)} file theke {found} channel paoa gese")
+    elif USE_GITHUB_SEARCH:
+        log("[GitHub search] GITHUB_TOKEN boshano hoy ni, keyword search skip kora holo")
+    return res
+
+
 # ------------------------------------------------------------------ stream check
 def check_stream(raw_url, timeout=CHECK_TIMEOUT, attempts=2):
     """(alive, latency_sec, reason)"""
@@ -453,7 +534,7 @@ def check_all(channels):
 
 # ------------------------------------------------------------------ grouping & dedupe
 NOISE = {"hd", "fhd", "sd", "uhd", "4k", "live", "official", "hevc", "h265", "h264"}
-SOURCE_RANK = {"AynaOTT": 0, "JagoBD": 1, "GitHub": 2}
+SOURCE_RANK = {"AynaOTT": 0, "JagoBD": 1, "SamsungTV": 2, "PlutoTV": 3, "GitHub": 4}
 
 
 def norm(name):
@@ -496,16 +577,18 @@ KOLKATA_RE = re.compile(r"\b(jalsha movies|zee bangla cinema|colors bangla cinem
                         r"bangla movies?|bengali movies?|bengali cinema)\b")
 
 
-def keyword_group(name, group=""):
+def keyword_group(c):
+    name, group = c["name"], c.get("group", "")
     t = f"{name} {group}".lower()
     if KOLKATA_RE.search(t):
         return "Kolkata Movies"
-    music = re.search(r"\b(music|song|songs|gaan|mtv)\b", t)
-    movie = re.search(r"\b(movie|movies|cinema|film|films|flix|hbo|bollywood|hollywood)\b", t)
-    sport = re.search(r"\b(sport|sports|cricket|football)\b", t)
-    bn = re.search(r"\b(bangla|bengali)\b", t)
-    hi = re.search(r"\b(hindi|bollywood)\b", t)
-    en = re.search(r"\b(english|hollywood|hbo)\b", t)
+    music = re.search(r"\b(music|song|songs|gaan|mtv|vevo|hits)\b", t)
+    movie = re.search(r"\b(movie|movies|cinema|film|films|flix|hbo|bollywood|hollywood|action|thriller|romance)\b", t)
+    sport = re.search(r"\b(sport|sports|cricket|football|soccer|ten sports|star sports|t sports)\b", t)
+    bn = re.search(r"\b(bangla|bengali|bangladesh)\b", t)
+    hi = re.search(r"\b(hindi|bollywood|bhojpuri)\b", t) or c.get("region") == "IN"
+    en = re.search(r"\b(english|hollywood|hbo)\b", t) or c.get("region") == "US" or c["source"] == "PlutoTV"
+
     if music:
         if bn:
             return "Bangla Music"
@@ -522,7 +605,7 @@ def keyword_group(name, group=""):
         return "Sports"
     if bn:
         return "Bangladesh"
-    if hi:
+    if hi and c.get("region") != "IN":
         return "India"
     return None
 
@@ -558,7 +641,15 @@ def write_playlist(channels):
 
 def main():
     pool = []
-    for name, fn in (("AynaOTT", scrape_aynaott), ("JagoBD", scrape_jagobd), ("GitHub", scrape_github)):
+    scrapers = (
+        ("AynaOTT", scrape_aynaott),
+        ("JagoBD", scrape_jagobd),
+        ("SamsungTV", scrape_samsung_tv),
+        ("PlutoTV", scrape_pluto_tv),
+        ("ExtraRepos", scrape_extra_repos),
+        ("GitHub", scrape_github),
+    )
+    for name, fn in scrapers:
         try:
             pool.extend(fn())
         except Exception as e:
@@ -572,8 +663,8 @@ def main():
         name, lname = c["name"], c["name"].lower()
         if c["source"] in ("AynaOTT", "JagoBD"):
             c["group"] = bd_group(name)
-        elif c.get("search"):
-            kw = keyword_group(name, c.get("group", ""))
+        elif c.get("auto_group"):
+            kw = keyword_group(c)
             if kw:
                 c["group"] = kw
             else:
