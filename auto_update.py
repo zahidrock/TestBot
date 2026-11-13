@@ -1,13 +1,13 @@
 """
-Standalone Deep IPTV Updater (Background Automation Ready).
+Fast & Clean IPTV Updater (Video Only - No Radio, Single-Pass Fast Check).
 Sources:
   1. AynaOTT (BD & Bangla API)
   2. JagoBD (Web Scraper)
   3. Samsung TV Plus (Official Public API - IN & US)
   4. Pluto TV (Official Public API - Movies/Music/Sports)
   5. Extra Public Repos (BDIX, Free-TV India, IPTV-org Sports/Movies)
-  6. Deep GitHub Code Search (6 Queries x 3 Pages = up to 1,800 files, 422 & 429 Safe)
--> Two-Pass Dead Link Check (Browser + VLC/ExoPlayer UA) -> Duplicate Remove -> Sorted playlist.m3u
+  6. GitHub Code Search (Star/Sony/Zee/Bangla/IP - Rate-Limit Safe)
+-> Radio/Audio Filter -> Fast Single-Pass Dead Link Check -> Duplicate Remove -> playlist.m3u
 """
 import json, os, re, ssl, sys, time, uuid
 from collections import Counter
@@ -17,18 +17,18 @@ from pathlib import Path
 
 # ------------------------------------------------------------------ settings
 OUTPUT = Path("playlist.m3u")
-WORKERS = 60                 # ek sathe koto link check hobe
-CHECK_TIMEOUT = 10           # prothom check er timeout (sekond)
-MAX_LINKS_PER_CHANNEL = 1    # proti channel e max koto alive link (1 = duplicate nei)
+WORKERS = 80                 # ek sathe 80 ta link check hobe (onek fast)
+CHECK_TIMEOUT = 6            # sekond (slow/dead link druto bad dibe)
+MAX_LINKS_PER_CHANNEL = 1    # proti channel e max koto alive link
 MIN_KEEP_RATIO = 0.5         # alive sonkhya ager playlist er 50% er niche hole overwrite korbe na
 
 # GitHub Secrets theke token nibe (code e khali rakhun)
 GITHUB_TOKEN = "" or os.getenv("GITHUB_TOKEN")
 
-# Deep GitHub Search Settings (422 & 429 safe)
+# GitHub Search Settings (Fast & 422/429 Safe)
 USE_GITHUB_SEARCH = True
-SEARCH_PAGES = (1, 2, 3)     # proti query te 3 page = 300 file porjonto anbe
-SEARCH_DELAY = 15            # proti API request er majhe 15s biroti (429 ashbe na)
+SEARCH_PAGES = (1,)          # proti query te top 100 file nibe (time bachabe)
+SEARCH_DELAY = 15            # proti API request er majhe 15s biroti
 GITHUB_SEARCH_QUERIES = [
     "EXTINF bangla extension:m3u",
     "EXTINF bdix extension:m3u8",
@@ -50,7 +50,7 @@ COUNTRY_SOURCES = [
 # True dile: niche dewa GROUP_ORDER er baire onno group er channel playlist e rakhbe na
 STRICT_GROUPS = True
 
-# Category + Bhasha: duita lister common channel (group name, category, language code)
+# Category + Bhasha
 COMBOS = [
     ("Kolkata Movies", "movies", "ben"),
     ("Hindi Movies",   "movies", "hin"),
@@ -68,15 +68,21 @@ GROUP_ORDER = [
     "Sports", "India"
 ]
 
-# Ei link gula kokhono nibe na
 BLOCK_URLS = [
     "amg13643-amg13643c1-amgplt0016",
 ]
 
 NOT_BANGLA_HOSTS = ["amagi.tv"]
 
-# Adult content filter
+# Adult & Radio/Audio content filter
 BLOCK_WORDS = ["xxx", "adult", "porn", "18+", "erotic", "sex"]
+RADIO_RE = re.compile(
+    r"\b(radio|fm|am\s*radio|podcast|audio\s*only|mirchi|foorti|shadhin|bhoot\s*fm|"
+    r"dhaka\s*fm|abc\s*radio|peoples\s*radio|today\s*fm|jago\s*fm|air\s*vividh|akashvani|"
+    r"red\s*fm|big\s*fm|radio\s*city|radio\s*one|fever\s*fm|my\s*fm|ishq\s*fm)\b",
+    re.I
+)
+AUDIO_EXT_RE = re.compile(r"\.(mp3|aac|ogg|oga|wav|flac|m4a|wma|opus|pls|asx)(\?|$)", re.I)
 
 # ------------------------------------------------------------------ http
 SSL_CTX = ssl.create_default_context()
@@ -84,7 +90,6 @@ SSL_CTX.check_hostname = False
 SSL_CTX.verify_mode = ssl.CERT_NONE
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
       "Chrome/129.0.0.0 Safari/537.36")
-ALT_UAS = (UA, "VLC/3.0.18 LibVLC/3.0.18", "ExoPlayerLib/2.18.7")
 HEADERS = {"User-Agent": UA, "Accept": "*/*", "Accept-Language": "en-US,en;q=0.9"}
 
 
@@ -98,22 +103,19 @@ def http_get(url, headers=None, timeout=15):
         return r.read().decode("utf-8", errors="ignore")
 
 
-def github_search_get(api_url, headers, max_retries=3):
+def github_search_get(api_url, headers, max_retries=2):
     """429 Too Many Requests ashle antoto 70s wait kore abar try korbe"""
     for attempt in range(max_retries + 1):
         try:
             req = urllib.request.Request(api_url, headers=headers)
-            with urllib.request.urlopen(req, timeout=25, context=SSL_CTX) as r:
+            with urllib.request.urlopen(req, timeout=20, context=SSL_CTX) as r:
                 return json.loads(r.read().decode("utf-8", errors="ignore"))
         except urllib.error.HTTPError as e:
-            if e.code == 429 and attempt < max_retries:
+            if e.code in (429, 403) and attempt < max_retries:
                 raw_wait = int(e.headers.get("Retry-After", 70))
                 wait_sec = max(raw_wait, 70)
-                log(f"[GitHub search] Rate limit (429), {wait_sec}s wait kore abar try korchi...")
+                log(f"[GitHub search] Rate limit ({e.code}), {wait_sec}s wait kore abar try korchi...")
                 time.sleep(wait_sec)
-            elif e.code == 403 and attempt < max_retries:
-                log("[GitHub search] Secondary limit (403), 70s wait kore abar try korchi...")
-                time.sleep(70)
             else:
                 raise
     return {}
@@ -136,7 +138,8 @@ def parse_m3u(text, source):
                 "tvg_id": attr("tvg-id"),
                 "logo": attr("tvg-logo"),
                 "group": attr("group-title") or "Others",
-                "source": source
+                "source": source,
+                "radio_tag": bool(re.search(r'radio="true"', line, re.I))
             }
         elif meta and not line.startswith("#"):
             if re.match(r"^https?://", line):
@@ -182,7 +185,7 @@ def scrape_aynaott():
         if logo and not logo.startswith("http"):
             logo = base + logo
         try:
-            d = json.loads(http_get(f"{base}/api/v5/browse/live-tvs/{slug}", headers=h, timeout=12))
+            d = json.loads(http_get(f"{base}/api/v5/browse/live-tvs/{slug}", headers=h, timeout=10))
             rec = d.get("record", d)
             so = rec.get("stream", {})
             url = so.get("url", "") if isinstance(so, dict) else ""
@@ -201,7 +204,7 @@ def scrape_aynaott():
         return None
 
     res = []
-    with ThreadPoolExecutor(max_workers=20) as ex:
+    with ThreadPoolExecutor(max_workers=25) as ex:
         for f in as_completed([ex.submit(one, i) for i in catalog]):
             r = f.result()
             if r:
@@ -265,7 +268,7 @@ def scrape_jagobd():
 
     def resolve(c):
         try:
-            page = http_get(c["url"], timeout=12)
+            page = http_get(c["url"], timeout=10)
             embed = None
             for ifr in re.findall(r'<iframe[^>]+src=[\'"]([^\'"]+)[\'"]', page, re.I):
                 if "embed.php" in ifr or "jagobd.com" in ifr:
@@ -278,7 +281,7 @@ def scrape_jagobd():
             else:
                 if embed.startswith("//"):
                     embed = "https:" + embed
-                eh = http_get(embed, headers={"User-Agent": UA, "Referer": c["url"]}, timeout=12)
+                eh = http_get(embed, headers={"User-Agent": UA, "Referer": c["url"]}, timeout=10)
                 for _fn, arr in re.findall(
                         r'function\s+(\w+)\(\)\s*\{\s*return\(\[([^\]]+)\]\.join\([\'"][\'"]\)', eh):
                     val = "".join(x.strip().strip("'\"") for x in arr.split(",")).replace(r"\/", "/")
@@ -302,7 +305,7 @@ def scrape_jagobd():
         return None
 
     res = []
-    with ThreadPoolExecutor(max_workers=15) as ex:
+    with ThreadPoolExecutor(max_workers=20) as ex:
         for f in as_completed([ex.submit(resolve, c) for c in cands]):
             r = f.result()
             if r:
@@ -320,7 +323,7 @@ def scrape_samsung_tv():
     ]
     for region, url in endpoints:
         try:
-            txt = http_get(url, timeout=20)
+            txt = http_get(url, timeout=15)
             chs = parse_m3u(txt, "SamsungTV")
             for c in chs:
                 c["region"] = region
@@ -340,7 +343,7 @@ def scrape_pluto_tv():
         did = str(uuid.uuid4())
         api = (f"https://api.pluto.tv/v2/channels?start=2026-01-01T00:00:00Z&stop=2026-01-01T01:00:00Z"
                f"&deviceId={did}&sid={sid}&deviceType=web&deviceMake=Chrome&deviceModel=web&appName=web&appVersion=5.0")
-        data = json.loads(http_get(api, timeout=20))
+        data = json.loads(http_get(api, timeout=15))
         for ch in data:
             if not ch.get("isStitched"):
                 continue
@@ -376,7 +379,7 @@ def scrape_extra_repos():
     ]
     for label, url in repos:
         try:
-            txt = http_get(url, timeout=25)
+            txt = http_get(url, timeout=20)
             chs = parse_m3u(txt, "GitHub")
             for c in chs:
                 c["auto_group"] = True
@@ -393,7 +396,7 @@ def scrape_github():
     def get(url):
         if url not in cache:
             try:
-                cache[url] = parse_m3u(http_get(url, timeout=40), "GitHub")
+                cache[url] = parse_m3u(http_get(url, timeout=30), "GitHub")
             except Exception as e:
                 log(f"[GitHub] fail {url}: {e}")
                 cache[url] = []
@@ -426,7 +429,7 @@ def scrape_github():
             res.append({**c, "group": "Sports" if "sport" in c.get("group", "").lower() else group})
         log(f"[GitHub] {group}: {n_keep}/{n_all} channel rakha holo")
 
-    # 3) Deep GitHub Multi-Page Search (422 & 429 safe)
+    # 3) Fast GitHub Search (422 & 429 safe)
     if USE_GITHUB_SEARCH and GITHUB_TOKEN:
         h = {
             "User-Agent": UA,
@@ -459,7 +462,7 @@ def scrape_github():
 
         def fetch_raw_file(raw_url):
             try:
-                txt = http_get(raw_url, timeout=15)
+                txt = http_get(raw_url, timeout=10)
                 if "#EXTINF" in txt:
                     parsed = parse_m3u(txt, "GitHub")
                     for c in parsed:
@@ -470,7 +473,7 @@ def scrape_github():
             return []
 
         found = 0
-        with ThreadPoolExecutor(max_workers=25) as ex:
+        with ThreadPoolExecutor(max_workers=35) as ex:
             for f in as_completed([ex.submit(fetch_raw_file, r) for r in unique_raws]):
                 chs = f.result()
                 res.extend(chs)
@@ -481,12 +484,12 @@ def scrape_github():
     return res
 
 
-# ------------------------------------------------------------------ stream check
-def check_stream(raw_url, timeout=CHECK_TIMEOUT, attempts=2, uas=(UA,)):
-    """(alive, latency_sec, reason)"""
+# ------------------------------------------------------------------ stream check (Video Only - Single Pass)
+def check_stream(raw_url, timeout=CHECK_TIMEOUT):
+    """(alive, latency_sec, reason) - Shudhu video stream allow korbe, radio/audio bad dibe"""
     if not raw_url:
         return False, 0, "empty url"
-    base, url, custom_ua = dict(HEADERS), raw_url, False
+    base, url = dict(HEADERS), raw_url
     if "|" in raw_url:
         url, extra = raw_url.split("|", 1)
         url = url.strip()
@@ -494,56 +497,53 @@ def check_stream(raw_url, timeout=CHECK_TIMEOUT, attempts=2, uas=(UA,)):
             if "=" in part:
                 k, v = part.split("=", 1)
                 base[k.strip()] = v.strip()
-                custom_ua = custom_ua or k.strip().lower() == "user-agent"
+
+    if AUDIO_EXT_RE.search(url):
+        return False, 0, "radio/audio file"
+
     if "jagobd.com" in url and "Referer" not in base:
         base["Referer"] = "https://www.jagobd.com/"
     elif "aynaott.com" in url and "Referer" not in base:
         base["Referer"] = "https://web.aynaott.com/"
 
-    reason = "unknown"
-    for ua in ((None,) if custom_ua else uas):
-        headers = dict(base)
-        if ua:
-            headers["User-Agent"] = ua
-        for _ in range(attempts):
-            t0 = time.time()
-            try:
-                req = urllib.request.Request(url, headers=headers)
-                with urllib.request.urlopen(req, timeout=timeout, context=SSL_CTX) as r:
-                    ctype = r.headers.get("Content-Type", "").lower()
-                    raw = r.read(2048)
-                    low = raw.decode("utf-8", errors="ignore").strip().lower()
-                    lat = time.time() - t0
-                    if r.status not in (200, 206):
-                        reason = f"HTTP {r.status}"
-                    elif ("<html" in low or "<body" in low) and "#extm3u" not in low:
-                        reason = "html page (block/login)"
-                    elif any(t in low for t in ("#extm3u", "#ext-x-stream-inf", "#extinf",
-                                                "#ext-x-targetduration", "#ext-x-media-sequence")):
-                        return True, lat, "ok"
-                    elif any(v in ctype for v in ("video/", "audio/", "mpegurl", "octet-stream")):
-                        return True, lat, "ok"
-                    elif raw and raw[0] == 0x47:
-                        return True, lat, "ok"
-                    elif (".m3u8" in url or ".ts" in url) and low and not low.startswith("<"):
-                        return True, lat, "ok"
-                    else:
-                        reason = "not a stream"
-                    break
-            except urllib.error.HTTPError as e:
-                reason = f"HTTP {e.code}"
-                if e.code in (404, 410):
-                    return False, 0, reason
-                break
-            except urllib.error.URLError as e:
-                msg = str(e.reason)
-                reason = "timeout" if "timed out" in msg.lower() else f"connect: {msg[:40]}"
-            except TimeoutError:
-                reason = "timeout"
-            except Exception as e:
-                reason = f"error: {type(e).__name__}"
-            time.sleep(0.5)
-    return False, 0, reason
+    t0 = time.time()
+    try:
+        req = urllib.request.Request(url, headers=base)
+        with urllib.request.urlopen(req, timeout=timeout, context=SSL_CTX) as r:
+            ctype = r.headers.get("Content-Type", "").lower()
+            icy_name = r.headers.get("icy-name") or r.headers.get("icy-genre")
+            if icy_name or ctype.startswith("audio/"):
+                return False, 0, "radio/audio stream"
+
+            raw = r.read(2048)
+            low = raw.decode("utf-8", errors="ignore").strip().lower()
+            lat = time.time() - t0
+
+            if r.status not in (200, 206):
+                return False, 0, f"HTTP {r.status}"
+            if ("<html" in low or "<body" in low) and "#extm3u" not in low:
+                return False, 0, "html page (block/login)"
+            if "#extm3u" in low and AUDIO_EXT_RE.search(low) and ".ts" not in low and "#ext-x-stream-inf" not in low:
+                return False, 0, "audio-only m3u8"
+            if any(t in low for t in ("#extm3u", "#ext-x-stream-inf", "#extinf",
+                                        "#ext-x-targetduration", "#ext-x-media-sequence")):
+                return True, lat, "ok"
+            if any(v in ctype for v in ("video/", "mpegurl", "octet-stream")):
+                return True, lat, "ok"
+            if raw and raw[0] == 0x47:
+                return True, lat, "ok"
+            if (".m3u8" in url or ".ts" in url) and low and not low.startswith("<"):
+                return True, lat, "ok"
+            return False, 0, "not a video stream"
+    except urllib.error.HTTPError as e:
+        return False, 0, f"HTTP {e.code}"
+    except urllib.error.URLError as e:
+        msg = str(e.reason)
+        return False, 0, "timeout" if "timed out" in msg.lower() else f"connect: {msg[:35]}"
+    except TimeoutError:
+        return False, 0, "timeout"
+    except Exception as e:
+        return False, 0, f"error: {type(e).__name__}"
 
 
 def check_all(channels):
@@ -560,27 +560,6 @@ def check_all(channels):
             done += 1
             if done % 500 == 0 or done == total:
                 log(f"checked {done}/{total} | alive {sum(1 for x in channels if x.get('alive'))}")
-
-    # Second pass: retry timeout / 403 / 401 links with VLC & ExoPlayer User-Agents
-    retry_cands = [
-        c for c in channels
-        if not c.get("alive") and c.get("reason") in ("timeout", "HTTP 403", "HTTP 401")
-    ]
-    if retry_cands:
-        log(f"Second pass: {len(retry_cands)} ta slow/blocked link VLC/ExoPlayer UA diye recheck hocche...")
-        revived = 0
-        with ThreadPoolExecutor(max_workers=30) as ex:
-            fut = {ex.submit(check_stream, c["url"], 18, 1, ALT_UAS[1:]): c for c in retry_cands}
-            for f in as_completed(fut):
-                c = fut[f]
-                try:
-                    ok, lat, reason = f.result()
-                except Exception:
-                    ok, lat, reason = False, 0, c.get("reason", "error")
-                if ok:
-                    c["alive"], c["latency"], c["reason"] = True, lat, "ok (recheck)"
-                    revived += 1
-        log(f"Second pass e aro {revived} ta channel alive paoa gese!")
 
     dead = Counter(c["reason"] for c in channels if not c.get("alive") and c.get("reason"))
     log("Dead er karon: " + ", ".join(f"{k}: {v}" for k, v in dead.most_common(8)))
@@ -600,9 +579,15 @@ def norm(name):
     return "".join(t for t in n.split() if t not in NOISE)
 
 
-def is_blocked(c):
+def is_blocked_or_radio(c):
+    if c.get("radio_tag"):
+        return True
     t = f'{c["name"]} {c.get("group", "")}'.lower()
-    return any(re.search(rf"\b{re.escape(w)}\b", t) for w in BLOCK_WORDS)
+    if any(re.search(rf"\b{re.escape(w)}\b", t) for w in BLOCK_WORDS):
+        return True
+    if RADIO_RE.search(t) or AUDIO_EXT_RE.search(c.get("url", "")):
+        return True
+    return False
 
 
 BANGLA_RE = re.compile(r"bangla|bengali|bengal|bangladesh|\bbd\b|jalsha|\baath\b|ananda|kolkata|calcutta|ghanta|ebela|sangeet bangla")
@@ -615,7 +600,6 @@ HINDI_RE = re.compile(
     r"mtv india|9xm|9x jalwa|zing|utv|filamchi|goldmines|manoranjan|cineplex|news nation|india news|good news today|"
     r"bharat 24|\btez\b|zoom tv|mastiii|movie plus|enter10|bflix")
 
-# Regional South/Other languages
 OTHER_LANG_RE = re.compile(
     r"tamil|telugu|malayalam|kannada|marathi|punjabi|gujarati|odia|oriya|assamese|konkani|"
     r"star vijay|star maa|star pravah|star suvarna|star kirano|zee tamil|zee telugu|zee keralam|zee kannada|"
@@ -635,7 +619,6 @@ def bd_group(name):
 KOLKATA_RE = re.compile(r"\b(jalsha movies|zee bangla cinema|colors bangla cinema|bangla cinema|"
                         r"bangla movies?|bengali movies?|bengali cinema)\b")
 
-# Star, Sony & Zee Movie Channels
 HINDI_MOVIE_CH_RE = re.compile(
     r"\b(star gold|sony max|sony wah|zee cinema|zee classic|zee action|zee bollywood|zee anmol cinema|"
     r"colors cineplex|and pictures|&pictures|utv movies|utv action|b4u movies|b4u kadak|"
@@ -646,7 +629,6 @@ ENGLISH_MOVIE_CH_RE = re.compile(
     r"paramount|amc|cinemax|showtime|tcm|hallmark|syfy|mgm|universal movies)\b"
 )
 
-# All Star, Sony & Zee Network Channels
 NETWORK_GROUP_RE = re.compile(
     r"\b(star plus|star bharat|star utsav|star jalsha|star sports|"
     r"sony entertainment|sony tv|set hd|set india|sony sab|sab tv|sony pal|sony aath|sony yay|sony bbc|sony ten|sony sports|"
@@ -663,7 +645,6 @@ POPULAR_BD_IN_RE = re.compile(
 
 
 def classify_network_channel(lname):
-    """Star, Sony o Zee group er channel ke sothik group-e felbe"""
     if KOLKATA_RE.search(lname):
         return "Kolkata Movies"
     if any(w in lname for w in ("star jalsha", "zee bangla", "sony aath")):
@@ -772,7 +753,7 @@ def main():
     seen, items = set(), []
     for c in pool:
         raw = c["url"].split("|")[0].strip()
-        if not raw or raw in seen or is_blocked(c):
+        if not raw or raw in seen or is_blocked_or_radio(c):
             continue
         name, lname = c["name"], c["name"].lower()
         if OTHER_LANG_RE.search(lname):
@@ -807,7 +788,7 @@ def main():
             continue
         seen.add(raw)
         items.append(c)
-    log(f"Total unique channel: {len(items)}")
+    log(f"Total unique video channel: {len(items)}")
 
     check_all(items)
     alive = [c for c in items if c.get("alive")]
@@ -831,7 +812,7 @@ def main():
     log("Group wise channel: " + ", ".join(f"{g}: {n}" for g, n in cnt.most_common()))
     write_playlist(alive)
     elapsed = int(time.time() - start_time)
-    log(f"{OUTPUT} e {len(alive)} ta alive channel save hoise (Total time: {elapsed // 60}m {elapsed % 60}s)")
+    log(f"{OUTPUT} e {len(alive)} ta alive video channel save hoise (Total time: {elapsed // 60}m {elapsed % 60}s)")
     return 0
 
 
