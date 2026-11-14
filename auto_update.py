@@ -1,13 +1,15 @@
 """
-M3UIPTV App Optimized IPTV Updater (100% TV Playable, No DRM, No Dead Segments, Video Only).
+Full-Featured Proxy IPTV Updater (Cloudflare Worker Relay + All Pay Channels + M3UIPTV Ready).
 Sources:
   1. AynaOTT (BD & Bangla API)
   2. JagoBD (Web Scraper)
   3. Samsung TV Plus (Official Public API - IN & US)
   4. Pluto TV (Official Public API - Movies/Music/Sports)
   5. Extra Public Repos (BDIX, Free-TV India, IPTV-org Categories)
-  6. Safe GitHub Search (2 Pages x 5 Queries - Rate-Limit Safe)
--> DRM & IP-Token Filter -> Deep M3U8 Segment Check -> #EXTVLCOPT Headers -> playlist.m3u
+  6. Adaptive Streams Repos (Git Trees API - individual .m3u8 files)
+  7. YuppTV CDN Preview Streams (Direct pattern check)
+  8. Safe GitHub Search (2 Pages x 5 Queries - Rate-Limit Safe)
+-> Multi-UA Check (Chrome/ExoPlayer/FFmpeg) -> Cloudflare Worker Proxy Rewrite -> playlist.m3u
 """
 import json, os, re, ssl, sys, time, uuid
 from collections import Counter
@@ -21,6 +23,9 @@ WORKERS = 100                # ek sathe 100 ta link check hobe
 CHECK_TIMEOUT = 10           # sekond
 MAX_LINKS_PER_CHANNEL = None # kono working link bad dibe na, shob alive link thakbe
 MIN_KEEP_RATIO = 0.5         # alive sonkhya ager playlist er 50% er niche hole overwrite korbe na
+
+# Apnar Cloudflare Worker Proxy URL
+PROXY_URL = "https://iptv.jpbdworld.workers.dev/?url="
 
 # GitHub Secrets theke token nibe (code e khali rakhun)
 GITHUB_TOKEN = "" or os.getenv("GITHUB_TOKEN")
@@ -80,15 +85,17 @@ RADIO_RE = re.compile(
 )
 AUDIO_EXT_RE = re.compile(r"\.(mp3|aac|ogg|oga|wav|flac|m4a|wma|opus|pls|asx)(\?|$)", re.I)
 
-# IP-locked / Short-lived token pattern (US GitHub server IP te cholleo BD TV te chole na)
-IP_TOKEN_RE = re.compile(r"(__hdnea__|hdnts=|wmsAuthSign=|nimblesessionid=)", re.I)
-
 # ------------------------------------------------------------------ http
 SSL_CTX = ssl.create_default_context()
 SSL_CTX.check_hostname = False
 SSL_CTX.verify_mode = ssl.CERT_NONE
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
       "Chrome/129.0.0.0 Safari/537.36")
+PAY_UAS = (
+    UA,
+    "Dalvik/2.1.0 (Linux; Android 11) ExoPlayerLib/2.18.7",
+    "Lavf/58.76.100",
+)
 HEADERS = {"User-Agent": UA, "Accept": "*/*", "Accept-Language": "en-US,en;q=0.9"}
 
 
@@ -150,7 +157,6 @@ def parse_m3u(text, source):
                 vlc_ref = opt.split("=", 1)[1].strip()
         elif meta and not line.startswith("#"):
             if re.match(r"^https?://", line):
-                # Preserve existing #EXTVLCOPT headers into pipe format for unified handling
                 if "|" not in line and (vlc_ua or vlc_ref):
                     parts = []
                     if vlc_ua:
@@ -409,6 +415,85 @@ def scrape_extra_repos():
     return res
 
 
+def scrape_adaptive_repos():
+    """Individual .m3u8 file based repos (YuppTV, JioTV, TataPlay adaptive streams)"""
+    res = []
+    adaptive_repos = [
+        ("amazeyourself", "adaptive-streams", "main"),
+    ]
+    h = {"User-Agent": UA, "Accept": "application/vnd.github+json"}
+    if GITHUB_TOKEN:
+        h["Authorization"] = f"Bearer {GITHUB_TOKEN.strip()}"
+
+    for owner, repo, branch in adaptive_repos:
+        try:
+            tree_url = f"https://api.github.com/repos/{owner}/{repo}/git/trees/{branch}?recursive=1"
+            data = json.loads(http_get(tree_url, headers=h, timeout=20))
+            count = 0
+            for item in data.get("tree", []):
+                path = item.get("path", "")
+                if item.get("type") == "blob" and path.endswith(".m3u8"):
+                    fname = path.rsplit("/", 1)[-1].replace(".m3u8", "")
+                    ch_name = re.sub(r"([a-z])([A-Z])", r"\1 \2", fname).replace("_", " ").replace("-", " ").strip()
+                    raw_url = f"https://raw.githubusercontent.com/{owner}/{repo}/{branch}/{urllib.parse.quote(path)}"
+                    res.append({
+                        "name": ch_name,
+                        "url": raw_url,
+                        "logo": "",
+                        "tvg_id": f"{repo}-{fname.lower()}",
+                        "group": "Others",
+                        "source": "GitHub",
+                        "auto_group": True
+                    })
+                    count += 1
+            log(f"[{owner}/{repo}] {count} ta adaptive stream file paoa gese")
+        except Exception as e:
+            log(f"[{owner}/{repo}] error: {e}")
+    return res
+
+
+def scrape_yupp_preview():
+    """YuppTV CDN pattern based open/preview streams"""
+    res = []
+    base = "https://yupptvcatchupire.yuppcdn.net/preview"
+    slugs = [
+        ("Colors Bangla HD", "colorsbanglahd"),
+        ("Star Jalsha HD", "starjalshahd"),
+        ("Zee Bangla HD", "zeebanglahd"),
+        ("Sony Aath", "sonyaath"),
+        ("Jalsha Movies HD", "jalshamovieshd"),
+        ("Zee Bangla Cinema", "zeebanglacinema"),
+        ("Star Plus HD", "starplushd"),
+        ("Star Gold HD", "stargoldhd"),
+        ("Star Movies HD", "starmovieshd"),
+        ("Sony TV HD", "sonytvhd"),
+        ("Sony SAB HD", "sonysabhd"),
+        ("Sony Max HD", "sonymaxhd"),
+        ("Sony Pix HD", "sonypixhd"),
+        ("Zee TV HD", "zeetvhd"),
+        ("Zee Cinema HD", "zeecinemahd"),
+        ("Colors HD", "colorshd"),
+        ("Colors Cineplex", "colorscineplex"),
+        ("&TV HD", "andtv"),
+        ("&pictures HD", "andpictureshd"),
+        ("Star Sports 1 HD", "starsports1hd"),
+        ("Sony Ten 1 HD", "sonyten1hd"),
+        ("Discovery HD", "discoveryhd"),
+    ]
+    for name, slug in slugs:
+        res.append({
+            "name": name,
+            "url": f"{base}/{slug}/800.m3u8",
+            "logo": "",
+            "tvg_id": f"yupp-{slug}",
+            "group": "Others",
+            "source": "GitHub",
+            "auto_group": True
+        })
+    log(f"[YuppCDN] {len(res)} ta candidate link test er jonno add holo")
+    return res
+
+
 def scrape_github():
     cache = {}
 
@@ -503,12 +588,12 @@ def scrape_github():
     return res
 
 
-# ------------------------------------------------------------------ stream check (100% M3UIPTV Playable Check)
+# ------------------------------------------------------------------ stream check (Multi-UA + Proxy Ready)
 def check_stream(raw_url, timeout=CHECK_TIMEOUT):
-    """(alive, latency_sec, reason) - DRM, IP-token o fake m3u8 bad diye shudhu TV playable link rakhbe"""
+    """(alive, latency_sec, reason, matched_ua) - Chrome/ExoPlayer/FFmpeg UA diye pay channel check korbe"""
     if not raw_url:
-        return False, 0, "empty url"
-    base, url = dict(HEADERS), raw_url
+        return False, 0, "empty url", UA
+    base, url, custom_ua = dict(HEADERS), raw_url, False
     if "|" in raw_url:
         url, extra = raw_url.split("|", 1)
         url = url.strip()
@@ -516,66 +601,80 @@ def check_stream(raw_url, timeout=CHECK_TIMEOUT):
             if "=" in part:
                 k, v = part.split("=", 1)
                 base[k.strip()] = v.strip()
+                if k.strip().lower() == "user-agent":
+                    custom_ua = True
 
     if AUDIO_EXT_RE.search(url):
-        return False, 0, "radio/audio file"
-    if IP_TOKEN_RE.search(url):
-        return False, 0, "IP-locked token"
+        return False, 0, "radio/audio file", UA
 
     if "jagobd.com" in url and "Referer" not in base:
         base["Referer"] = "https://www.jagobd.com/"
     elif "aynaott.com" in url and "Referer" not in base:
         base["Referer"] = "https://web.aynaott.com/"
 
-    t0 = time.time()
-    try:
-        req = urllib.request.Request(url, headers=base)
-        with urllib.request.urlopen(req, timeout=timeout, context=SSL_CTX) as r:
-            ctype = r.headers.get("Content-Type", "").lower()
-            icy_name = r.headers.get("icy-name") or r.headers.get("icy-genre")
-            if icy_name or ctype.startswith("audio/"):
-                return False, 0, "radio/audio stream"
+    uas = (base.get("User-Agent", UA),) if custom_ua else PAY_UAS
+    reason = "unknown"
+    for idx, ua in enumerate(uas):
+        headers = dict(base)
+        headers["User-Agent"] = ua
+        t0 = time.time()
+        try:
+            req = urllib.request.Request(url, headers=headers)
+            with urllib.request.urlopen(req, timeout=timeout, context=SSL_CTX) as r:
+                ctype = r.headers.get("Content-Type", "").lower()
+                icy_name = r.headers.get("icy-name") or r.headers.get("icy-genre")
+                if icy_name or ctype.startswith("audio/"):
+                    return False, 0, "radio/audio stream", ua
 
-            raw = r.read(4096)
-            low = raw.decode("utf-8", errors="ignore").strip().lower()
-            lat = time.time() - t0
+                raw = r.read(4096)
+                low = raw.decode("utf-8", errors="ignore").strip().lower()
+                lat = time.time() - t0
 
-            if r.status not in (200, 206):
-                return False, 0, f"HTTP {r.status}"
-            if ("<html" in low or "<body" in low) and "#extm3u" not in low:
-                return False, 0, "html page (block/login)"
+                if r.status not in (200, 206):
+                    reason = f"HTTP {r.status}"
+                    continue
+                if ("<html" in low or "<body" in low) and "#extm3u" not in low:
+                    reason = "html page (block/login)"
+                    continue
 
-            # Reject DRM encrypted streams (Widevine / Sample-AES / FairPlay)
-            if any(drm in low for drm in ("sample-aes", "widevine", "playready", "skd://",
-                                          "edef8ba9-79d6-4ace-a3c8-27dcd51d21ed")):
-                return False, 0, "DRM encrypted"
+                # Reject DRM encrypted streams
+                if any(drm in low for drm in ("sample-aes", "widevine", "playready", "skd://",
+                                              "edef8ba9-79d6-4ace-a3c8-27dcd51d21ed")):
+                    return False, 0, "DRM encrypted", ua
 
-            # Reject audio-only m3u8
-            if "#extm3u" in low and AUDIO_EXT_RE.search(low) and ".ts" not in low and "#ext-x-stream-inf" not in low:
-                return False, 0, "audio-only m3u8"
+                # Reject audio-only m3u8
+                if "#extm3u" in low and AUDIO_EXT_RE.search(low) and ".ts" not in low and "#ext-x-stream-inf" not in low:
+                    return False, 0, "audio-only m3u8", ua
 
-            # Verify valid playable HLS manifest (must contain stream variants or media segments)
-            if "#extm3u" in low:
-                if any(tag in low for tag in ("#ext-x-stream-inf", "#extinf", "#ext-x-targetduration")):
-                    return True, lat, "ok"
-                return False, 0, "empty/invalid m3u8"
+                # Verify valid playable HLS manifest
+                if "#extm3u" in low:
+                    if any(tag in low for tag in ("#ext-x-stream-inf", "#extinf", "#ext-x-targetduration")):
+                        return True, lat, "ok", ua
+                    reason = "empty/invalid m3u8"
+                    continue
 
-            if any(v in ctype for v in ("video/", "mpegurl", "octet-stream")):
-                return True, lat, "ok"
-            if raw and raw[0] == 0x47:
-                return True, lat, "ok"
-            if ".ts" in url.lower() and len(raw) > 512 and not low.startswith("<"):
-                return True, lat, "ok"
-            return False, 0, "not a playable video stream"
-    except urllib.error.HTTPError as e:
-        return False, 0, f"HTTP {e.code}"
-    except urllib.error.URLError as e:
-        msg = str(e.reason)
-        return False, 0, "timeout" if "timed out" in msg.lower() else f"connect: {msg[:35]}"
-    except TimeoutError:
-        return False, 0, "timeout"
-    except Exception as e:
-        return False, 0, f"error: {type(e).__name__}"
+                if any(v in ctype for v in ("video/", "mpegurl", "octet-stream")):
+                    return True, lat, "ok", ua
+                if raw and raw[0] == 0x47:
+                    return True, lat, "ok", ua
+                if ".ts" in url.lower() and len(raw) > 512 and not low.startswith("<"):
+                    return True, lat, "ok", ua
+                reason = "not a playable video stream"
+        except urllib.error.HTTPError as e:
+            reason = f"HTTP {e.code}"
+            if e.code in (404, 410):
+                return False, 0, reason, ua
+        except urllib.error.URLError as e:
+            msg = str(e.reason)
+            reason = "timeout" if "timed out" in msg.lower() else f"connect: {msg[:35]}"
+            if idx == 0 and reason != "timeout":
+                break
+        except TimeoutError:
+            reason = "timeout"
+        except Exception as e:
+            reason = f"error: {type(e).__name__}"
+            break
+    return False, 0, reason, UA
 
 
 def check_all(channels):
@@ -585,10 +684,10 @@ def check_all(channels):
         for f in as_completed(fut):
             c = fut[f]
             try:
-                ok, lat, reason = f.result()
+                ok, lat, reason, matched_ua = f.result()
             except Exception as e:
-                ok, lat, reason = False, 0, f"error: {type(e).__name__}"
-            c["alive"], c["latency"], c["reason"] = ok, lat, reason
+                ok, lat, reason, matched_ua = False, 0, f"error: {type(e).__name__}", UA
+            c["alive"], c["latency"], c["reason"], c["matched_ua"] = ok, lat, reason, matched_ua
             done += 1
             if done % 500 == 0 or done == total:
                 log(f"checked {done}/{total} | alive {sum(1 for x in channels if x.get('alive'))}")
@@ -761,40 +860,54 @@ def dedupe_by_name(chs, limit):
     return [c for c in chs if id(c) in kept]
 
 
-# ------------------------------------------------------------------ output (M3UIPTV Player Compatible Headers)
+# ------------------------------------------------------------------ proxy & output
+def apply_proxy(c):
+    raw_url = c["url"]
+    clean_url = raw_url.strip()
+    ref = ""
+    ua = c.get("matched_ua") or UA
+
+    if "|" in raw_url:
+        clean_url, extra = raw_url.split("|", 1)
+        clean_url = clean_url.strip()
+        for part in extra.split("&"):
+            if "=" in part:
+                k, v = part.split("=", 1)
+                if k.strip().lower() == "referer":
+                    ref = v.strip()
+                elif k.strip().lower() == "user-agent":
+                    ua = v.strip()
+
+    if "jagobd.com" in clean_url and not ref:
+        ref = "https://www.jagobd.com/"
+    elif "aynaott.com" in clean_url and not ref:
+        ref = "https://web.aynaott.com/"
+
+    if not PROXY_URL:
+        return clean_url, ref, ua
+
+    proxied = f"{PROXY_URL}{urllib.parse.quote(clean_url, safe='')}"
+    if ref:
+        proxied += f"&referer={urllib.parse.quote(ref, safe='')}"
+    if ua:
+        proxied += f"&ua={urllib.parse.quote(ua, safe='')}"
+    return proxied, "", ""
+
+
 def write_playlist(channels):
     def q(s):
         return str(s).replace('"', "'").replace("\n", " ")
     lines = ["#EXTM3U"]
     for c in channels:
-        raw_url = c["url"]
-        ref = ""
-        ua = UA
-
-        if "|" in raw_url:
-            clean_url, extra = raw_url.split("|", 1)
-            clean_url = clean_url.strip()
-            for part in extra.split("&"):
-                if "=" in part:
-                    k, v = part.split("=", 1)
-                    if k.strip().lower() == "referer":
-                        ref = v.strip()
-                    elif k.strip().lower() == "user-agent":
-                        ua = v.strip()
-        else:
-            clean_url = raw_url.strip()
-
-        if "jagobd.com" in clean_url and not ref:
-            ref = "https://www.jagobd.com/"
-        elif "aynaott.com" in clean_url and not ref:
-            ref = "https://web.aynaott.com/"
-
+        final_url, ref, ua = apply_proxy(c)
         lines.append(f'#EXTINF:-1 tvg-id="{q(c.get("tvg_id", ""))}" tvg-name="{q(c["name"])}" '
                      f'tvg-logo="{q(c.get("logo", ""))}" group-title="{q(c["group"])}",{c["name"]}')
-        lines.append(f"#EXTVLCOPT:http-user-agent={ua}")
-        if ref:
-            lines.append(f"#EXTVLCOPT:http-referrer={ref}")
-        lines.append(clean_url)
+        if not PROXY_URL:
+            if ua:
+                lines.append(f"#EXTVLCOPT:http-user-agent={ua}")
+            if ref:
+                lines.append(f"#EXTVLCOPT:http-referrer={ref}")
+        lines.append(final_url)
     OUTPUT.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
@@ -807,6 +920,8 @@ def main():
         ("SamsungTV", scrape_samsung_tv),
         ("PlutoTV", scrape_pluto_tv),
         ("ExtraRepos", scrape_extra_repos),
+        ("AdaptiveRepos", scrape_adaptive_repos),
+        ("YuppCDN", scrape_yupp_preview),
         ("GitHub", scrape_github),
     )
     for name, fn in scrapers:
