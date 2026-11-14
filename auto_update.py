@@ -19,7 +19,7 @@ from pathlib import Path
 OUTPUT = Path("playlist.m3u")
 WORKERS = 80                 # ek sathe 80 ta link check hobe (onek fast)
 CHECK_TIMEOUT = 6            # sekond (slow/dead link druto bad dibe)
-MAX_LINKS_PER_CHANNEL = 1    # proti channel e max koto alive link
+MAX_LINKS_PER_CHANNEL = None  # kono working link bad dibe na, shob alive link thakbe
 MIN_KEEP_RATIO = 0.5         # alive sonkhya ager playlist er 50% er niche hole overwrite korbe na
 
 # GitHub Secrets theke token nibe (code e khali rakhun)
@@ -806,6 +806,7 @@ def main():
 
     alive.sort(key=lambda c: (GROUP_ORDER.index(c["group"]) if c["group"] in GROUP_ORDER else 99,
                               SOURCE_RANK.get(c["source"], 9),
+                              c.get("latency", 99)))
                               c["name"].lower()))
 
     cnt = Counter(c["group"] for c in alive)
