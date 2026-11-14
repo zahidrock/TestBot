@@ -1,13 +1,13 @@
 """
-Fast & Clean IPTV Updater (Video Only - No Radio, Single-Pass Fast Check).
+Fast & Clean IPTV Updater (Video Only - No Radio, TV-Compatible Standard UA).
 Sources:
   1. AynaOTT (BD & Bangla API)
   2. JagoBD (Web Scraper)
   3. Samsung TV Plus (Official Public API - IN & US)
   4. Pluto TV (Official Public API - Movies/Music/Sports)
-  5. Extra Public Repos (BDIX, Free-TV India, IPTV-org Sports/Movies)
+  5. Extra Public Repos (BDIX, Free-TV India, IPTV-org Categories)
   6. GitHub Code Search (Star/Sony/Zee/Bangla/IP - Rate-Limit Safe)
--> Radio/Audio Filter -> Fast Single-Pass Dead Link Check -> Duplicate Remove -> playlist.m3u
+-> Radio/Audio Filter -> Fast Single-Pass Dead Link Check -> All Working Links Kept -> playlist.m3u
 """
 import json, os, re, ssl, sys, time, uuid
 from collections import Counter
@@ -17,9 +17,9 @@ from pathlib import Path
 
 # ------------------------------------------------------------------ settings
 OUTPUT = Path("playlist.m3u")
-WORKERS = 100                 # ek sathe 80 ta link check hobe (onek fast)
-CHECK_TIMEOUT = 10            # sekond (slow/dead link druto bad dibe)
-MAX_LINKS_PER_CHANNEL = None  # kono working link bad dibe na, shob alive link thakbe
+WORKERS = 100                # ek sathe 100 ta link check hobe (onek fast)
+CHECK_TIMEOUT = 10           # sekond (slow/dead link druto bad dibe)
+MAX_LINKS_PER_CHANNEL = None # kono working link bad dibe na, shob alive link thakbe
 MIN_KEEP_RATIO = 0.5         # alive sonkhya ager playlist er 50% er niche hole overwrite korbe na
 
 # GitHub Secrets theke token nibe (code e khali rakhun)
@@ -27,14 +27,13 @@ GITHUB_TOKEN = "" or os.getenv("GITHUB_TOKEN")
 
 # GitHub Search Settings (Fast & 422/429 Safe)
 USE_GITHUB_SEARCH = True
-SEARCH_PAGES = (1, 2)        # proti query te 200 file nibe (balance speed & channel)
+SEARCH_PAGES = (1,)          # proti query te top 100 file nibe (429 rate-limit safe)
 SEARCH_DELAY = 15            # proti API request er majhe 15s biroti
 GITHUB_SEARCH_QUERIES = [
     "EXTINF bangla extension:m3u",
     "EXTINF bdix extension:m3u8",
     'EXTINF "Star Gold" extension:m3u',
     'EXTINF "Sony Sab" extension:m3u',
-    'EXTINF "Zee Cinema" extension:m3u',
     'EXTINF "http://103." extension:m3u',
 ]
 
@@ -369,13 +368,16 @@ def scrape_pluto_tv():
 
 
 def scrape_extra_repos():
-    """Popular Public BDIX, Free-TV & Sports/Movies Repos"""
+    """Popular Public BDIX, Free-TV & IPTV-org Categories (No Search API Rate Limit)"""
     res = []
     repos = [
         ("BDIX-Mrgify",      "https://raw.githubusercontent.com/abusaeeidx/Mrgify-BDIX-IPTV/main/playlist.m3u"),
         ("Free-TV-IN",       "https://raw.githubusercontent.com/Free-TV/IPTV/master/playlists/playlist_india.m3u8"),
         ("IPTV-org-Sports",  f"{IPTV_BASE}/categories/sports.m3u"),
         ("IPTV-org-Movies",  f"{IPTV_BASE}/categories/movies.m3u"),
+        ("IPTV-org-Ent",     f"{IPTV_BASE}/categories/entertainment.m3u"),
+        ("IPTV-org-Kids",    f"{IPTV_BASE}/categories/kids.m3u"),
+        ("IPTV-org-Doc",     f"{IPTV_BASE}/categories/documentary.m3u"),
     ]
     for label, url in repos:
         try:
@@ -484,7 +486,7 @@ def scrape_github():
     return res
 
 
-# ------------------------------------------------------------------ stream check (Video Only - Single Pass)
+# ------------------------------------------------------------------ stream check (Video Only - TV Compatible)
 def check_stream(raw_url, timeout=CHECK_TIMEOUT):
     """(alive, latency_sec, reason) - Shudhu video stream allow korbe, radio/audio bad dibe"""
     if not raw_url:
@@ -629,10 +631,17 @@ ENGLISH_MOVIE_CH_RE = re.compile(
     r"paramount|amc|cinemax|showtime|tcm|hallmark|syfy|mgm|universal movies)\b"
 )
 
-NETWORK_GROUP_RE = re.compile(
-    r"\b(star plus|star bharat|star utsav|star jalsha|star sports|"
-    r"sony entertainment|sony tv|set hd|set india|sony sab|sab tv|sony pal|sony aath|sony yay|sony bbc|sony ten|sony sports|"
-    r"zee tv|zee anmol|zee bangla|zee news|zee hindustan|zee zing|zee zest|zee business|zee salaam|&tv|and tv)\b"
+# All Popular Pay Channels (Entertainment, Infotainment, Kids, Sports)
+PAY_ENT_CH_RE = re.compile(
+    r"\b(star plus|star bharat|star utsav|star jalsha|colors|rishtey|sony entertainment|sony tv|set hd|set india|"
+    r"sony sab|sab tv|sony pal|sony aath|sony yay|sony bbc|zee tv|zee anmol|zee bangla|zee news|zee hindustan|"
+    r"zee zing|zee zest|zee business|zee salaam|&tv|and tv|dangal|ishara|shemaroo|big magic|bindass|"
+    r"discovery|national geographic|nat geo|animal planet|history tv|tlc|fox life|travel xp|epic tv|"
+    r"disney|hungama|nick|nickelodeon|sonic|cartoon network|pogo|marvel hq)\b"
+)
+PAY_SPORTS_RE = re.compile(
+    r"\b(star sports|sony ten|sony sports|ten sports|t sports|willow|ptv sports|eurosport|"
+    r"bein sports|sky sports|bt sport|tnt sports|fox sports|espn|dazn|super sport|dd sports|sports 18|sports18)\b"
 )
 
 IP_URL_RE = re.compile(r"^https?://\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}")
@@ -644,16 +653,16 @@ POPULAR_BD_IN_RE = re.compile(
 )
 
 
-def classify_network_channel(lname):
+def classify_pay_channel(lname):
     if KOLKATA_RE.search(lname):
         return "Kolkata Movies"
-    if any(w in lname for w in ("star jalsha", "zee bangla", "sony aath")):
+    if any(w in lname for w in ("star jalsha", "zee bangla", "sony aath", "colors bangla", "sun bangla", "akas aath")):
         return "Bangla (India)"
     if HINDI_MOVIE_CH_RE.search(lname):
         return "Hindi Movies"
     if ENGLISH_MOVIE_CH_RE.search(lname):
         return "English Movies"
-    if any(w in lname for w in ("star sports", "sony ten", "sony sports")):
+    if PAY_SPORTS_RE.search(lname):
         return "Sports"
     if "zing" in lname:
         return "Hindi Music"
@@ -671,12 +680,14 @@ def keyword_group(c):
         return "Hindi Movies"
     if ENGLISH_MOVIE_CH_RE.search(t):
         return "English Movies"
-    if NETWORK_GROUP_RE.search(lname):
-        return classify_network_channel(lname)
+    if PAY_SPORTS_RE.search(t):
+        return "Sports"
+    if PAY_ENT_CH_RE.search(lname):
+        return classify_pay_channel(lname)
 
     music = re.search(r"\b(music|song|songs|gaan|mtv|vevo|hits|zing)\b", t)
     movie = re.search(r"\b(movie|movies|cinema|film|films|flix|bollywood|hollywood|action|thriller|romance)\b", t)
-    sport = re.search(r"\b(sport|sports|cricket|football|soccer|ten sports|star sports|t sports|willow|ptv sports|sony ten|sony sports)\b", t)
+    sport = re.search(r"\b(sport|sports|cricket|football|soccer)\b", t)
     bn = re.search(r"\b(bangla|bengali|bangladesh|\bbd\b)\b", t) or POPULAR_BD_IN_RE.search(t)
     hi = re.search(r"\b(hindi|bollywood|bhojpuri|india|indian)\b", t) or c.get("region") == "IN"
     en = re.search(r"\b(english|hollywood)\b", t) or c.get("region") == "US" or c["source"] == "PlutoTV"
@@ -774,8 +785,10 @@ def main():
             c["group"] = "Hindi Movies"
         elif ENGLISH_MOVIE_CH_RE.search(lname):
             c["group"] = "English Movies"
-        elif NETWORK_GROUP_RE.search(lname):
-            c["group"] = classify_network_channel(lname)
+        elif PAY_SPORTS_RE.search(lname):
+            c["group"] = "Sports"
+        elif PAY_ENT_CH_RE.search(lname):
+            c["group"] = classify_pay_channel(lname)
 
         if any(b in c["url"] for b in BLOCK_URLS):
             continue
@@ -805,9 +818,9 @@ def main():
         log(f"Duplicate naam bad: {before} -> {len(alive)}")
 
     alive.sort(key=lambda c: (GROUP_ORDER.index(c["group"]) if c["group"] in GROUP_ORDER else 99,
+                              c["name"].lower(),
                               SOURCE_RANK.get(c["source"], 9),
                               c.get("latency", 99)))
-                              c["name"].lower()))
 
     cnt = Counter(c["group"] for c in alive)
     log("Group wise channel: " + ", ".join(f"{g}: {n}" for g, n in cnt.most_common()))
