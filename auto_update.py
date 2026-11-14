@@ -19,8 +19,8 @@ from pathlib import Path
 
 # ------------------------------------------------------------------ settings
 OUTPUT = Path("playlist.m3u")
-WORKERS = 150                # ek sathe 100 ta link check hobe
-CHECK_TIMEOUT = 6           # sekond
+WORKERS = 100                # ek sathe 100 ta link check hobe
+CHECK_TIMEOUT = 10           # sekond
 MAX_LINKS_PER_CHANNEL = None # kono working link bad dibe na, shob alive link thakbe
 MIN_KEEP_RATIO = 0.5         # alive sonkhya ager playlist er 50% er niche hole overwrite korbe na
 
@@ -94,6 +94,7 @@ UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like
 PAY_UAS = (
     UA,
     "Dalvik/2.1.0 (Linux; Android 11) ExoPlayerLib/2.18.7",
+    "Lavf/58.76.100",
 )
 HEADERS = {"User-Agent": UA, "Accept": "*/*", "Accept-Language": "en-US,en;q=0.9"}
 
