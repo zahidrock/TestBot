@@ -6,7 +6,9 @@ Sources:
   3. Samsung TV Plus (Official Public API - IN & US)
   4. Pluto TV (Official Public API - Movies/Music/Sports)
   5. Extra Public Repos (BDIX, Free-TV India, IPTV-org Categories)
-  6. GitHub Code Search (Star/Sony/Zee/Bangla/IP - Rate-Limit Safe)
+  6. Adaptive Streams Repos (Git Trees API - individual .m3u8 files)
+  7. YuppTV CDN Preview Streams (Direct pattern check)
+  8. GitHub Code Search (2 Pages x 5 Queries - Rate-Limit Safe)
 -> Radio/Audio Filter -> Fast Single-Pass Dead Link Check -> All Working Links Kept -> playlist.m3u
 """
 import json, os, re, ssl, sys, time, uuid
@@ -25,10 +27,10 @@ MIN_KEEP_RATIO = 0.5         # alive sonkhya ager playlist er 50% er niche hole 
 # GitHub Secrets theke token nibe (code e khali rakhun)
 GITHUB_TOKEN = "" or os.getenv("GITHUB_TOKEN")
 
-# GitHub Search Settings (Fast & 422/429 Safe)
+# GitHub Search Settings (2 Pages - 422 & 429 Safe)
 USE_GITHUB_SEARCH = True
-SEARCH_PAGES = (1,)          # proti query te top 100 file nibe (429 rate-limit safe)
-SEARCH_DELAY = 15            # proti API request er majhe 15s biroti
+SEARCH_PAGES = (1, 2)        # proti query te 200 file nibe
+SEARCH_DELAY = 10            # 10 sekond delay dile 429 error ashbe na
 GITHUB_SEARCH_QUERIES = [
     "EXTINF bangla extension:m3u",
     "EXTINF bdix extension:m3u8",
@@ -392,6 +394,85 @@ def scrape_extra_repos():
     return res
 
 
+def scrape_adaptive_repos():
+    """Individual .m3u8 file based repos (YuppTV, JioTV, TataPlay adaptive streams)"""
+    res = []
+    adaptive_repos = [
+        ("amazeyourself", "adaptive-streams", "main"),
+    ]
+    h = {"User-Agent": UA, "Accept": "application/vnd.github+json"}
+    if GITHUB_TOKEN:
+        h["Authorization"] = f"Bearer {GITHUB_TOKEN.strip()}"
+
+    for owner, repo, branch in adaptive_repos:
+        try:
+            tree_url = f"https://api.github.com/repos/{owner}/{repo}/git/trees/{branch}?recursive=1"
+            data = json.loads(http_get(tree_url, headers=h, timeout=20))
+            count = 0
+            for item in data.get("tree", []):
+                path = item.get("path", "")
+                if item.get("type") == "blob" and path.endswith(".m3u8"):
+                    fname = path.rsplit("/", 1)[-1].replace(".m3u8", "")
+                    ch_name = re.sub(r"([a-z])([A-Z])", r"\1 \2", fname).replace("_", " ").replace("-", " ").strip()
+                    raw_url = f"https://raw.githubusercontent.com/{owner}/{repo}/{branch}/{urllib.parse.quote(path)}"
+                    res.append({
+                        "name": ch_name,
+                        "url": raw_url,
+                        "logo": "",
+                        "tvg_id": f"{repo}-{fname.lower()}",
+                        "group": "Others",
+                        "source": "GitHub",
+                        "auto_group": True
+                    })
+                    count += 1
+            log(f"[{owner}/{repo}] {count} ta adaptive stream file paoa gese")
+        except Exception as e:
+            log(f"[{owner}/{repo}] error: {e}")
+    return res
+
+
+def scrape_yupp_preview():
+    """YuppTV CDN pattern based open/preview streams"""
+    res = []
+    base = "https://yupptvcatchupire.yuppcdn.net/preview"
+    slugs = [
+        ("Colors Bangla HD", "colorsbanglahd"),
+        ("Star Jalsha HD", "starjalshahd"),
+        ("Zee Bangla HD", "zeebanglahd"),
+        ("Sony Aath", "sonyaath"),
+        ("Jalsha Movies HD", "jalshamovieshd"),
+        ("Zee Bangla Cinema", "zeebanglacinema"),
+        ("Star Plus HD", "starplushd"),
+        ("Star Gold HD", "stargoldhd"),
+        ("Star Movies HD", "starmovieshd"),
+        ("Sony TV HD", "sonytvhd"),
+        ("Sony SAB HD", "sonysabhd"),
+        ("Sony Max HD", "sonymaxhd"),
+        ("Sony Pix HD", "sonypixhd"),
+        ("Zee TV HD", "zeetvhd"),
+        ("Zee Cinema HD", "zeecinemahd"),
+        ("Colors HD", "colorshd"),
+        ("Colors Cineplex", "colorscineplex"),
+        ("&TV HD", "andtv"),
+        ("&pictures HD", "andpictureshd"),
+        ("Star Sports 1 HD", "starsports1hd"),
+        ("Sony Ten 1 HD", "sonyten1hd"),
+        ("Discovery HD", "discoveryhd"),
+    ]
+    for name, slug in slugs:
+        res.append({
+            "name": name,
+            "url": f"{base}/{slug}/800.m3u8",
+            "logo": "",
+            "tvg_id": f"yupp-{slug}",
+            "group": "Others",
+            "source": "GitHub",
+            "auto_group": True
+        })
+    log(f"[YuppCDN] {len(res)} ta candidate link test er jonno add holo")
+    return res
+
+
 def scrape_github():
     cache = {}
 
@@ -431,7 +512,7 @@ def scrape_github():
             res.append({**c, "group": "Sports" if "sport" in c.get("group", "").lower() else group})
         log(f"[GitHub] {group}: {n_keep}/{n_all} channel rakha holo")
 
-    # 3) Fast GitHub Search (422 & 429 safe)
+    # 3) Safe GitHub Search (2 Pages - 422 & 429 safe)
     if USE_GITHUB_SEARCH and GITHUB_TOKEN:
         h = {
             "User-Agent": UA,
@@ -753,6 +834,8 @@ def main():
         ("SamsungTV", scrape_samsung_tv),
         ("PlutoTV", scrape_pluto_tv),
         ("ExtraRepos", scrape_extra_repos),
+        ("AdaptiveRepos", scrape_adaptive_repos),
+        ("YuppCDN", scrape_yupp_preview),
         ("GitHub", scrape_github),
     )
     for name, fn in scrapers:
