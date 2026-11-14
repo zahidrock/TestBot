@@ -17,8 +17,8 @@ from pathlib import Path
 
 # ------------------------------------------------------------------ settings
 OUTPUT = Path("playlist.m3u")
-WORKERS = 80                 # ek sathe 80 ta link check hobe (onek fast)
-CHECK_TIMEOUT = 6            # sekond (slow/dead link druto bad dibe)
+WORKERS = 100                 # ek sathe 80 ta link check hobe (onek fast)
+CHECK_TIMEOUT = 10            # sekond (slow/dead link druto bad dibe)
 MAX_LINKS_PER_CHANNEL = None  # kono working link bad dibe na, shob alive link thakbe
 MIN_KEEP_RATIO = 0.5         # alive sonkhya ager playlist er 50% er niche hole overwrite korbe na
 
@@ -27,7 +27,7 @@ GITHUB_TOKEN = "" or os.getenv("GITHUB_TOKEN")
 
 # GitHub Search Settings (Fast & 422/429 Safe)
 USE_GITHUB_SEARCH = True
-SEARCH_PAGES = (1,)          # proti query te top 100 file nibe (time bachabe)
+SEARCH_PAGES = (1, 2)        # proti query te 200 file nibe (balance speed & channel)
 SEARCH_DELAY = 15            # proti API request er majhe 15s biroti
 GITHUB_SEARCH_QUERIES = [
     "EXTINF bangla extension:m3u",
@@ -678,7 +678,7 @@ def keyword_group(c):
     movie = re.search(r"\b(movie|movies|cinema|film|films|flix|bollywood|hollywood|action|thriller|romance)\b", t)
     sport = re.search(r"\b(sport|sports|cricket|football|soccer|ten sports|star sports|t sports|willow|ptv sports|sony ten|sony sports)\b", t)
     bn = re.search(r"\b(bangla|bengali|bangladesh|\bbd\b)\b", t) or POPULAR_BD_IN_RE.search(t)
-    hi = re.search(r"\b(hindi|bollywood|bhojpuri)\b", t) or c.get("region") == "IN"
+    hi = re.search(r"\b(hindi|bollywood|bhojpuri|india|indian)\b", t) or c.get("region") == "IN"
     en = re.search(r"\b(english|hollywood)\b", t) or c.get("region") == "US" or c["source"] == "PlutoTV"
 
     if music:
