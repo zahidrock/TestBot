@@ -1,10 +1,9 @@
 """
-Direct (No-Proxy) Live TV Only IPTV Updater
+Balanced Direct (No-Proxy) Live TV IPTV Updater
 Features:
   - Sources: AynaOTT, JagoBD, Extra Public Repos (BDIX, Free-TV IN, IPTV-org), Adaptive Streams, YuppCDN, Safe GitHub Search (2 Pages)
   - Strict VOD / Movie / Radio / DRM / IP-Token Blocker
-  - Xtream Error-Clip & Raw .ts Blocker
-  - Deep Binary Video Segment Check (MPEG-TS 0x47 sync byte & fMP4 box check + HEVC blocker to prevent PIPELINE_ERROR_DECODE)
+  - Balanced Deep HLS Check (Checks top 3 sub-playlists + AES-128 Key URI check + Valid MPEG-TS support for BDIX)
   - Direct M3UIPTV Headers (#EXTVLCOPT)
 """
 import json, os, re, ssl, sys, time
@@ -16,7 +15,7 @@ from pathlib import Path
 # ------------------------------------------------------------------ settings
 OUTPUT = Path("playlist.m3u")
 WORKERS = 150                # ek sathe 150 ta link check hobe
-CHECK_TIMEOUT = 6            # sekond
+CHECK_TIMEOUT = 8            # 8 sekond dile slow-start BDIX/Indian server bad porbe na
 MAX_LINKS_PER_CHANNEL = None # shob alive link thakbe
 MIN_KEEP_RATIO = 0.1         # safety ratio
 
@@ -94,6 +93,7 @@ VOD_NAME_RE = re.compile(
 
 # IP-locked tokens that expire or fail on TV
 IP_TOKEN_RE = re.compile(r"(__hdnea__|hdnts=|wmsAuthSign=|nimblesessionid=)", re.I)
+KEY_URI_RE = re.compile(r'#EXT-X-KEY:[^\n]*URI="([^"]+)"', re.I)
 
 # ------------------------------------------------------------------ http
 SSL_CTX = ssl.create_default_context()
@@ -539,67 +539,72 @@ def scrape_github():
     return res
 
 
-# ------------------------------------------------------------------ stream check (Live TV Only - Deep Binary Check)
-def is_valid_video_segment(chunk):
-    """Ashol MPEG-TS (0x47 sync byte) ba fMP4 (ftyp/moof/styp) video segment kina check korbe"""
-    if not chunk or len(chunk) < 188:
+# ------------------------------------------------------------------ stream check (Balanced Live TV Check)
+def check_hls_key(m3u8_text, base_url, headers, timeout=5):
+    """Jodi #EXT-X-KEY thake, tar key URI valid (16-byte) kina check korbe"""
+    low = m3u8_text.lower()
+    if "#ext-x-key" not in low or "method=none" in low:
+        return True
+    m = KEY_URI_RE.search(m3u8_text)
+    if not m:
         return False
-    # Check 1: Valid MPEG-TS packet (starts with 0x47 and repeats every 188 bytes)
-    if chunk[0] == 0x47 and (len(chunk) < 377 or chunk[188] == 0x47):
-        return True
-    # Check 2: Valid fMP4 / CMAF segment (.m4s / .mp4 init)
-    head = chunk[:64]
-    if any(box in head for box in (b"ftyp", b"moof", b"styp", b"sidx")):
-        return True
-    return False
+    key_url = urllib.parse.urljoin(base_url, m.group(1).strip())
+    try:
+        req = urllib.request.Request(key_url, headers=headers)
+        with urllib.request.urlopen(req, timeout=timeout, context=SSL_CTX) as r:
+            return r.status in (200, 206) and len(r.read(64)) == 16
+    except Exception:
+        return False
 
 
-def verify_deep_hls(m3u8_text, base_url, headers, timeout=5):
-    """M3U8 er vetorer sub-playlist o ashol valid video segment (.ts/.m4s) check korbe"""
-    low_manifest = m3u8_text.lower()
-    # HEVC (hvc1/hev1) codec bad dewa jate TV decoder crash na kore (PIPELINE_ERROR_DECODE prevention)
-    if any(c in low_manifest for c in ('codecs="hvc1', 'codecs="hev1', 'codecs="dvh1')):
+def verify_deep_hls(m3u8_text, base_url, headers, timeout=6):
+    """M3U8 er vetorer sub-playlist (prothom 3 tir jekono 1 ti) o video segment check korbe"""
+    if not check_hls_key(m3u8_text, base_url, headers, timeout=5):
         return False
 
     lines = [ln.strip() for ln in m3u8_text.splitlines() if ln.strip() and not ln.strip().startswith("#")]
     if not lines:
         return False
-    first_entry = urllib.parse.urljoin(base_url, lines[0])
-    if VOD_EXT_RE.search(first_entry):
-        return False
-    try:
-        req = urllib.request.Request(first_entry, headers=headers)
-        with urllib.request.urlopen(req, timeout=timeout, context=SSL_CTX) as r:
-            if r.status not in (200, 206):
-                return False
-            chunk = r.read(2048)
-            low = chunk.decode("utf-8", errors="ignore").lower()
-            if "#ext-x-endlist" in low:
-                return False
-            if any(drm in low for drm in ("sample-aes", "widevine", "playready", "skd://")):
-                return False
-            if "#extm3u" in low:
-                if any(c in low for c in ('codecs="hvc1', 'codecs="hev1', 'codecs="dvh1')):
+
+    # Prothom 3 ta variant/segment er moddhe jekono 1 ta kaj korlei channel alive
+    for candidate in lines[:3]:
+        target_url = urllib.parse.urljoin(base_url, candidate)
+        if VOD_EXT_RE.search(target_url):
+            continue
+        try:
+            req = urllib.request.Request(target_url, headers=headers)
+            with urllib.request.urlopen(req, timeout=timeout, context=SSL_CTX) as r:
+                if r.status not in (200, 206):
+                    continue
+                chunk = r.read(4096)
+                low = chunk.decode("utf-8", errors="ignore").lower()
+                if "#ext-x-endlist" in low:
                     return False
-                sub_lines = [ln.strip() for ln in chunk.decode("utf-8", errors="ignore").splitlines()
-                             if ln.strip() and not ln.strip().startswith("#")]
-                if not sub_lines:
-                    return False
-                seg_url = urllib.parse.urljoin(first_entry, sub_lines[0])
-                if VOD_EXT_RE.search(seg_url):
-                    return False
-                req2 = urllib.request.Request(seg_url, headers=headers)
-                with urllib.request.urlopen(req2, timeout=timeout, context=SSL_CTX) as r2:
-                    if r2.status not in (200, 206):
-                        return False
-                    return is_valid_video_segment(r2.read(1024))
-            return is_valid_video_segment(chunk)
-    except Exception:
-        return False
+                if any(drm in low for drm in ("sample-aes", "widevine", "playready", "skd://")):
+                    continue
+                if "#extm3u" in low:
+                    sub_text = chunk.decode("utf-8", errors="ignore")
+                    if not check_hls_key(sub_text, target_url, headers, timeout=5):
+                        continue
+                    sub_lines = [ln.strip() for ln in sub_text.splitlines()
+                                 if ln.strip() and not ln.strip().startswith("#")]
+                    if not sub_lines:
+                        continue
+                    seg_url = urllib.parse.urljoin(target_url, sub_lines[0])
+                    req2 = urllib.request.Request(seg_url, headers=headers)
+                    with urllib.request.urlopen(req2, timeout=timeout, context=SSL_CTX) as r2:
+                        seg_data = r2.read(1024)
+                        if r2.status in (200, 206) and len(seg_data) > 200 and not seg_data[:20].lstrip().startswith(b"<"):
+                            return True
+                elif len(chunk) > 200 and not chunk[:20].lstrip().startswith(b"<"):
+                    return True
+        except Exception:
+            continue
+    return False
 
 
 def check_stream(raw_url, timeout=CHECK_TIMEOUT):
-    """(alive, latency_sec, reason, matched_ua) - Shudhu Live TV stream allow korbe, VOD/Movie/Error-clip bad dibe"""
+    """(alive, latency_sec, reason, matched_ua) - Balanced Live TV & BDIX stream checker"""
     if not raw_url:
         return False, 0, "empty url", UA
     base, url, custom_ua = dict(HEADERS), raw_url, False
@@ -657,7 +662,6 @@ def check_stream(raw_url, timeout=CHECK_TIMEOUT):
                     reason = "html page (block/login)"
                     continue
 
-                # #EXT-X-ENDLIST mane eta fixed-length VOD/Movie, live TV na
                 if "#ext-x-endlist" in low:
                     return False, 0, "VOD m3u8 (ENDLIST)", ua
 
@@ -670,17 +674,17 @@ def check_stream(raw_url, timeout=CHECK_TIMEOUT):
 
                 if "#extm3u" in low:
                     if any(tag in low for tag in ("#ext-x-stream-inf", "#extinf", "#ext-x-targetduration")):
-                        if verify_deep_hls(text_body, final_url, headers, timeout=5):
+                        if verify_deep_hls(text_body, final_url, headers, timeout=6):
                             return True, lat, "ok", ua
                         return False, 0, "dead/corrupt HLS segment", ua
                     reason = "empty/invalid m3u8"
                     continue
 
-                # Direct .ts / Xtream error-video loop bad dewa (shudhu .m3u8 allow hobe)
-                if raw and raw[0] == 0x47:
-                    return False, 0, "raw ts/xtream error clip", ua
-                if ".ts" in final_url.lower():
-                    return False, 0, "raw ts/xtream error clip", ua
+                # Valid MPEG-TS stream (0x47 sync byte) allow kora jate BDIX channel na kome
+                if raw and raw[0] == 0x47 and len(raw) >= 188:
+                    return True, lat, "ok", ua
+                if ".ts" in final_url.lower() and len(raw) > 512 and not low.startswith("<"):
+                    return True, lat, "ok", ua
                 reason = "not a live TV stream"
         except urllib.error.HTTPError as e:
             reason = f"HTTP {e.code}"
