@@ -31,7 +31,7 @@ GITHUB_TOKEN = "" or os.getenv("GITHUB_TOKEN")
 # GitHub Search Settings (Rate-Limit Safe)
 USE_GITHUB_SEARCH = True
 SEARCH_PAGES = (1, 2)          # proti query te 100 file nibe (429 rate-limit safe)
-SEARCH_DELAY = 10            # 15 sekond delay
+SEARCH_DELAY = 12            # 15 sekond delay
 GITHUB_SEARCH_QUERIES = [
     "EXTINF bangla extension:m3u",
     "EXTINF bdix extension:m3u8",
