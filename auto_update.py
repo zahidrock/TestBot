@@ -654,10 +654,11 @@ def check_stream(raw_url, timeout=CHECK_TIMEOUT):
                     reason = "empty/invalid m3u8"
                     continue
 
+               # Direct .ts / Xtream error-video loop bad dewa (shudhu .m3u8 allow hobe)
                 if raw and raw[0] == 0x47:
-                    return True, lat, "ok", ua
-                if ".ts" in final_url.lower() and len(raw) > 512 and not low.startswith("<"):
-                    return True, lat, "ok", ua
+                    return False, 0, "raw ts/xtream error clip", ua
+                if ".ts" in final_url.lower():
+                    return False, 0, "raw ts/xtream error clip", ua
                 reason = "not a live TV stream"
         except urllib.error.HTTPError as e:
             reason = f"HTTP {e.code}"
