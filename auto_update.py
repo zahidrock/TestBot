@@ -1,15 +1,15 @@
 """
-Full-Featured Proxy IPTV Updater (Cloudflare Worker Relay + All Pay Channels + M3UIPTV Ready).
+Direct (No-Proxy) Live TV Only IPTV Updater (No VOD/Movies, No Radio, Deep Segment Checked).
 Sources:
   1. AynaOTT (BD & Bangla API)
   2. JagoBD (Web Scraper)
   3. Samsung TV Plus (Official Public API - IN & US)
-  4. Pluto TV (Official Public API - Movies/Music/Sports)
+  4. Pluto TV (Official Public API - Live Channels)
   5. Extra Public Repos (BDIX, Free-TV India, IPTV-org Categories)
   6. Adaptive Streams Repos (Git Trees API - individual .m3u8 files)
-  7. YuppTV CDN Preview Streams (Direct pattern check)
-  8. Safe GitHub Search (2 Pages x 5 Queries - Rate-Limit Safe)
--> Multi-UA Check (Chrome/ExoPlayer/FFmpeg) -> Cloudflare Worker Proxy Rewrite -> playlist.m3u
+  7. YuppTV CDN Preview Streams
+  8. Safe GitHub Search (1 Page x 5 Queries - Rate-Limit Safe)
+-> Strict VOD/Movie Blocker -> Deep HLS Segment Check -> Direct M3UIPTV Headers -> playlist.m3u
 """
 import json, os, re, ssl, sys, time, uuid
 from collections import Counter
@@ -19,21 +19,21 @@ from pathlib import Path
 
 # ------------------------------------------------------------------ settings
 OUTPUT = Path("playlist.m3u")
-WORKERS = 100                # ek sathe 100 ta link check hobe
-CHECK_TIMEOUT = 10           # sekond
-MAX_LINKS_PER_CHANNEL = None # kono working link bad dibe na, shob alive link thakbe
-MIN_KEEP_RATIO = 0.5         # alive sonkhya ager playlist er 50% er niche hole overwrite korbe na
+WORKERS = 150                # ek sathe 150 ta link check hobe
+CHECK_TIMEOUT = 6            # sekond
+MAX_LINKS_PER_CHANNEL = None # shob alive link thakbe
+MIN_KEEP_RATIO = 0.1         # safety ratio
 
-# Apnar Cloudflare Worker Proxy URL
-PROXY_URL = "https://iptv.jpbdworld.workers.dev/?url="
+# Proxy off (direct stream links)
+PROXY_URL = ""
 
-# GitHub Secrets theke token nibe (code e khali rakhun)
+# GitHub Secrets theke token nibe
 GITHUB_TOKEN = "" or os.getenv("GITHUB_TOKEN")
 
-# GitHub Search Settings (2 Pages - 422 & 429 Safe)
+# GitHub Search Settings (Rate-Limit Safe)
 USE_GITHUB_SEARCH = True
-SEARCH_PAGES = (1, 2)        # proti query te 200 file nibe
-SEARCH_DELAY = 10            # 10 sekond delay dile 429 error ashbe na
+SEARCH_PAGES = (1, 2)          # proti query te 100 file nibe (429 rate-limit safe)
+SEARCH_DELAY = 10            # 15 sekond delay
 GITHUB_SEARCH_QUERIES = [
     "EXTINF bangla extension:m3u",
     "EXTINF bdix extension:m3u8",
@@ -44,7 +44,6 @@ GITHUB_SEARCH_QUERIES = [
 
 IPTV_BASE = "https://iptv-org.github.io/iptv"
 
-# Desh wise: Bangladesh (shob) & India (shudhu Hindi o Bangla)
 INDIA_LANGS = ("hin", "ben")
 COUNTRY_SOURCES = [
     ("Bangladesh", f"{IPTV_BASE}/countries/bd.m3u", None),
@@ -75,7 +74,7 @@ BLOCK_URLS = [
 
 NOT_BANGLA_HOSTS = ["amagi.tv"]
 
-# Adult & Radio/Audio content filter
+# Adult, Radio & Direct Movie/VOD Filters
 BLOCK_WORDS = ["xxx", "adult", "porn", "18+", "erotic", "sex"]
 RADIO_RE = re.compile(
     r"\b(radio|fm|am\s*radio|podcast|audio\s*only|mirchi|foorti|shadhin|bhoot\s*fm|"
@@ -84,6 +83,21 @@ RADIO_RE = re.compile(
     re.I
 )
 AUDIO_EXT_RE = re.compile(r"\.(mp3|aac|ogg|oga|wav|flac|m4a|wma|opus|pls|asx)(\?|$)", re.I)
+
+# Direct Movie/VOD File Extensions & URL Paths
+VOD_EXT_RE = re.compile(r"\.(mp4|mkv|avi|mov|wmv|flv|webm|m4v|mpg|mpeg|3gp|vob)(\?|$)", re.I)
+VOD_PATH_RE = re.compile(r"/(vod|movies?|films?|series|episodes?|season|natok|drama)/", re.I)
+
+# Movie Title Patterns (e.g., "Pathaan (2023)", "Dual Audio", "WEB-DL", "S01E01")
+VOD_NAME_RE = re.compile(
+    r"(\(\s*(19|20)\d{2}\s*\)|\[\s*(19|20)\d{2}\s*\]|\b(19|20)\d{2}\b.*\b(720p|1080p|480p|hdrip|web-?dl|bluray|dvdrip)\b|"
+    r"\b(dual\s*audio|hindi\s*dubbed|bengali\s*dubbed|web-?dl|hdrip|bluray|brrip|dvdrip|camrip|hdts|uncut|"
+    r"full\s*movie|full\s*natok|episode\s*\d+|s\d{1,2}\s*e\d{1,2}|season\s*\d+)\b)",
+    re.I
+)
+
+# IP-locked tokens that expire or fail on TV
+IP_TOKEN_RE = re.compile(r"(__hdnea__|hdnts=|wmsAuthSign=|nimblesessionid=)", re.I)
 
 # ------------------------------------------------------------------ http
 SSL_CTX = ssl.create_default_context()
@@ -94,7 +108,6 @@ UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like
 PAY_UAS = (
     UA,
     "Dalvik/2.1.0 (Linux; Android 11) ExoPlayerLib/2.18.7",
-    "Lavf/58.76.100",
 )
 HEADERS = {"User-Agent": UA, "Accept": "*/*", "Accept-Language": "en-US,en;q=0.9"}
 
@@ -110,7 +123,6 @@ def http_get(url, headers=None, timeout=15):
 
 
 def github_search_get(api_url, headers, max_retries=2):
-    """429 Too Many Requests ashle antoto 70s wait kore abar try korbe"""
     for attempt in range(max_retries + 1):
         try:
             req = urllib.request.Request(api_url, headers=headers)
@@ -337,7 +349,6 @@ def scrape_jagobd():
 
 
 def scrape_samsung_tv():
-    """Samsung TV Plus Public API (India & US)"""
     res = []
     endpoints = [
         ("IN", "https://i.mjh.nz/SamsungTVPlus/in.m3u8"),
@@ -358,7 +369,6 @@ def scrape_samsung_tv():
 
 
 def scrape_pluto_tv():
-    """Pluto TV Official Public API (Movies, Music, Sports)"""
     res = []
     try:
         sid = str(uuid.uuid4())
@@ -391,7 +401,6 @@ def scrape_pluto_tv():
 
 
 def scrape_extra_repos():
-    """Popular Public BDIX, Free-TV & IPTV-org Categories"""
     res = []
     repos = [
         ("BDIX-Mrgify",      "https://raw.githubusercontent.com/abusaeeidx/Mrgify-BDIX-IPTV/main/playlist.m3u"),
@@ -416,7 +425,6 @@ def scrape_extra_repos():
 
 
 def scrape_adaptive_repos():
-    """Individual .m3u8 file based repos (YuppTV, JioTV, TataPlay adaptive streams)"""
     res = []
     adaptive_repos = [
         ("amazeyourself", "adaptive-streams", "main"),
@@ -453,7 +461,6 @@ def scrape_adaptive_repos():
 
 
 def scrape_yupp_preview():
-    """YuppTV CDN pattern based open/preview streams"""
     res = []
     base = "https://yupptvcatchupire.yuppcdn.net/preview"
     slugs = [
@@ -508,7 +515,6 @@ def scrape_github():
         return cache[url]
 
     res = []
-    # 1) Category x Language
     for group, cat, lang in COMBOS:
         langs = (lang,) if isinstance(lang, str) else lang
         lang_urls = {c["url"].split("|")[0] for lg in langs for c in get(f"{IPTV_BASE}/languages/{lg}.m3u")}
@@ -519,7 +525,6 @@ def scrape_github():
                 n += 1
         log(f"[GitHub] {group}: {n} channel")
 
-    # 2) Country sources (Bangladesh & India [hin/ben])
     for group, url, langs in COUNTRY_SOURCES:
         allowed = None
         if langs:
@@ -533,7 +538,6 @@ def scrape_github():
             res.append({**c, "group": "Sports" if "sport" in c.get("group", "").lower() else group})
         log(f"[GitHub] {group}: {n_keep}/{n_all} channel rakha holo")
 
-    # 3) Safe GitHub Search (2 Pages - 422 & 429 safe)
     if USE_GITHUB_SEARCH and GITHUB_TOKEN:
         h = {
             "User-Agent": UA,
@@ -569,6 +573,8 @@ def scrape_github():
                 txt = http_get(raw_url, timeout=10)
                 if "#EXTINF" in txt:
                     parsed = parse_m3u(txt, "GitHub")
+                    if len(parsed) > 2500:
+                        return []
                     for c in parsed:
                         c["auto_group"] = True
                     return parsed
@@ -588,9 +594,44 @@ def scrape_github():
     return res
 
 
-# ------------------------------------------------------------------ stream check (Multi-UA + Proxy Ready)
+# ------------------------------------------------------------------ stream check (Live TV Only - Deep Check)
+def verify_deep_hls(m3u8_text, base_url, headers, timeout=5):
+    """M3U8 er vetorer sub-playlist o ashol video segment (.ts/.m4s) check korbe"""
+    lines = [ln.strip() for ln in m3u8_text.splitlines() if ln.strip() and not ln.strip().startswith("#")]
+    if not lines:
+        return False
+    first_entry = urllib.parse.urljoin(base_url, lines[0])
+    if VOD_EXT_RE.search(first_entry):
+        return False
+    try:
+        req = urllib.request.Request(first_entry, headers=headers)
+        with urllib.request.urlopen(req, timeout=timeout, context=SSL_CTX) as r:
+            if r.status not in (200, 206):
+                return False
+            chunk = r.read(2048)
+            low = chunk.decode("utf-8", errors="ignore").lower()
+            if "#ext-x-endlist" in low:
+                return False
+            if any(drm in low for drm in ("sample-aes", "widevine", "playready", "skd://")):
+                return False
+            if "#extm3u" in low:
+                sub_lines = [ln.strip() for ln in chunk.decode("utf-8", errors="ignore").splitlines()
+                             if ln.strip() and not ln.strip().startswith("#")]
+                if not sub_lines:
+                    return False
+                seg_url = urllib.parse.urljoin(first_entry, sub_lines[0])
+                if VOD_EXT_RE.search(seg_url):
+                    return False
+                req2 = urllib.request.Request(seg_url, headers=headers)
+                with urllib.request.urlopen(req2, timeout=timeout, context=SSL_CTX) as r2:
+                    return r2.status in (200, 206) and len(r2.read(512)) > 100
+            return len(chunk) > 100 and not low.startswith("<html")
+    except Exception:
+        return False
+
+
 def check_stream(raw_url, timeout=CHECK_TIMEOUT):
-    """(alive, latency_sec, reason, matched_ua) - Chrome/ExoPlayer/FFmpeg UA diye pay channel check korbe"""
+    """(alive, latency_sec, reason, matched_ua) - Shudhu Live TV stream allow korbe, VOD/Movie bad dibe"""
     if not raw_url:
         return False, 0, "empty url", UA
     base, url, custom_ua = dict(HEADERS), raw_url, False
@@ -606,6 +647,10 @@ def check_stream(raw_url, timeout=CHECK_TIMEOUT):
 
     if AUDIO_EXT_RE.search(url):
         return False, 0, "radio/audio file", UA
+    if VOD_EXT_RE.search(url) or VOD_PATH_RE.search(url):
+        return False, 0, "VOD/movie file", UA
+    if IP_TOKEN_RE.search(url):
+        return False, 0, "IP-locked token", UA
 
     if "jagobd.com" in url and "Referer" not in base:
         base["Referer"] = "https://www.jagobd.com/"
@@ -621,13 +666,20 @@ def check_stream(raw_url, timeout=CHECK_TIMEOUT):
         try:
             req = urllib.request.Request(url, headers=headers)
             with urllib.request.urlopen(req, timeout=timeout, context=SSL_CTX) as r:
+                final_url = r.geturl() or url
+                if VOD_EXT_RE.search(final_url):
+                    return False, 0, "VOD redirect", ua
+
                 ctype = r.headers.get("Content-Type", "").lower()
                 icy_name = r.headers.get("icy-name") or r.headers.get("icy-genre")
                 if icy_name or ctype.startswith("audio/"):
                     return False, 0, "radio/audio stream", ua
+                if any(v in ctype for v in ("video/mp4", "video/x-matroska", "video/avi", "video/webm")):
+                    return False, 0, "direct movie file", ua
 
                 raw = r.read(4096)
-                low = raw.decode("utf-8", errors="ignore").strip().lower()
+                text_body = raw.decode("utf-8", errors="ignore")
+                low = text_body.strip().lower()
                 lat = time.time() - t0
 
                 if r.status not in (200, 206):
@@ -637,29 +689,30 @@ def check_stream(raw_url, timeout=CHECK_TIMEOUT):
                     reason = "html page (block/login)"
                     continue
 
-                # Reject DRM encrypted streams
+                # #EXT-X-ENDLIST mane eta fixed-length VOD/Movie, live TV na
+                if "#ext-x-endlist" in low:
+                    return False, 0, "VOD m3u8 (ENDLIST)", ua
+
                 if any(drm in low for drm in ("sample-aes", "widevine", "playready", "skd://",
                                               "edef8ba9-79d6-4ace-a3c8-27dcd51d21ed")):
                     return False, 0, "DRM encrypted", ua
 
-                # Reject audio-only m3u8
                 if "#extm3u" in low and AUDIO_EXT_RE.search(low) and ".ts" not in low and "#ext-x-stream-inf" not in low:
                     return False, 0, "audio-only m3u8", ua
 
-                # Verify valid playable HLS manifest
                 if "#extm3u" in low:
                     if any(tag in low for tag in ("#ext-x-stream-inf", "#extinf", "#ext-x-targetduration")):
-                        return True, lat, "ok", ua
+                        if verify_deep_hls(text_body, final_url, headers, timeout=5):
+                            return True, lat, "ok", ua
+                        return False, 0, "dead/VOD HLS segment", ua
                     reason = "empty/invalid m3u8"
                     continue
 
-                if any(v in ctype for v in ("video/", "mpegurl", "octet-stream")):
-                    return True, lat, "ok", ua
                 if raw and raw[0] == 0x47:
                     return True, lat, "ok", ua
-                if ".ts" in url.lower() and len(raw) > 512 and not low.startswith("<"):
+                if ".ts" in final_url.lower() and len(raw) > 512 and not low.startswith("<"):
                     return True, lat, "ok", ua
-                reason = "not a playable video stream"
+                reason = "not a live TV stream"
         except urllib.error.HTTPError as e:
             reason = f"HTTP {e.code}"
             if e.code in (404, 410):
@@ -693,7 +746,7 @@ def check_all(channels):
                 log(f"checked {done}/{total} | alive {sum(1 for x in channels if x.get('alive'))}")
 
     dead = Counter(c["reason"] for c in channels if not c.get("alive") and c.get("reason"))
-    log("Dead er karon: " + ", ".join(f"{k}: {v}" for k, v in dead.most_common(8)))
+    log("Dead/VOD er karon: " + ", ".join(f"{k}: {v}" for k, v in dead.most_common(8)))
 
 
 # ------------------------------------------------------------------ grouping & dedupe
@@ -710,13 +763,24 @@ def norm(name):
     return "".join(t for t in n.split() if t not in NOISE)
 
 
-def is_blocked_or_radio(c):
+def is_blocked_or_non_tv(c):
     if c.get("radio_tag"):
         return True
-    t = f'{c["name"]} {c.get("group", "")}'.lower()
+    name = c["name"]
+    group = c.get("group", "")
+    url = c.get("url", "")
+    t = f"{name} {group}".lower()
+
     if any(re.search(rf"\b{re.escape(w)}\b", t) for w in BLOCK_WORDS):
         return True
-    if RADIO_RE.search(t) or AUDIO_EXT_RE.search(c.get("url", "")):
+    if RADIO_RE.search(t) or AUDIO_EXT_RE.search(url):
+        return True
+    # Block direct movies / VOD entries
+    if VOD_EXT_RE.search(url) or VOD_PATH_RE.search(url):
+        return True
+    if VOD_NAME_RE.search(name):
+        return True
+    if re.search(r"\b(vod|24/7\s*movies?|box\s*office)\b", group.lower()):
         return True
     return False
 
@@ -814,10 +878,11 @@ def keyword_group(c):
         return classify_pay_channel(lname)
 
     music = re.search(r"\b(music|song|songs|gaan|mtv|vevo|hits|zing)\b", t)
-    movie = re.search(r"\b(movie|movies|cinema|film|films|flix|bollywood|hollywood|action|thriller|romance)\b", t)
+    # Only match TV channels with "cinema/movies/flix" in channel name, not random movie titles
+    movie_ch = re.search(r"\b(movies?\s*(tv|channel|hd|plus|now|action|gold|club)|cinema\s*(tv|hd)|flix\s*tv)\b", t)
     sport = re.search(r"\b(sport|sports|cricket|football|soccer)\b", t)
     bn = re.search(r"\b(bangla|bengali|bangladesh|\bbd\b)\b", t) or POPULAR_BD_IN_RE.search(t)
-    hi = re.search(r"\b(hindi|bollywood|bhojpuri|india|indian)\b", t) or c.get("region") == "IN"
+    hi = re.search(r"\b(hindi|bhojpuri|india|indian)\b", t) or c.get("region") == "IN"
     en = re.search(r"\b(english|hollywood)\b", t) or c.get("region") == "US" or c["source"] == "PlutoTV"
 
     if music:
@@ -827,7 +892,7 @@ def keyword_group(c):
             return "Hindi Music"
         if en:
             return "English Music"
-    if movie:
+    if movie_ch:
         if hi:
             return "Hindi Movies"
         if en:
@@ -860,54 +925,41 @@ def dedupe_by_name(chs, limit):
     return [c for c in chs if id(c) in kept]
 
 
-# ------------------------------------------------------------------ proxy & output
-def apply_proxy(c):
-    raw_url = c["url"]
-    clean_url = raw_url.strip()
-    ref = ""
-    ua = c.get("matched_ua") or UA
-
-    if "|" in raw_url:
-        clean_url, extra = raw_url.split("|", 1)
-        clean_url = clean_url.strip()
-        for part in extra.split("&"):
-            if "=" in part:
-                k, v = part.split("=", 1)
-                if k.strip().lower() == "referer":
-                    ref = v.strip()
-                elif k.strip().lower() == "user-agent":
-                    ua = v.strip()
-
-    if "jagobd.com" in clean_url and not ref:
-        ref = "https://www.jagobd.com/"
-    elif "aynaott.com" in clean_url and not ref:
-        ref = "https://web.aynaott.com/"
-
-    if not PROXY_URL:
-        return clean_url, ref, ua
-
-    proxied = f"{PROXY_URL}{urllib.parse.quote(clean_url, safe='')}"
-    if ref:
-        proxied += f"&referer={urllib.parse.quote(ref, safe='')}"
-    if ua:
-        proxied += f"&ua={urllib.parse.quote(ua, safe='')}"
-    return proxied, "", ""
-
-
+# ------------------------------------------------------------------ output (Direct M3UIPTV Compatible)
 def write_playlist(channels):
     def q(s):
         return str(s).replace('"', "'").replace("\n", " ")
     lines = ["#EXTM3U"]
     for c in channels:
-        final_url, ref, ua = apply_proxy(c)
+        raw_url = c["url"]
+        ref = ""
+        ua = c.get("matched_ua") or UA
+
+        if "|" in raw_url:
+            clean_url, extra = raw_url.split("|", 1)
+            clean_url = clean_url.strip()
+            for part in extra.split("&"):
+                if "=" in part:
+                    k, v = part.split("=", 1)
+                    if k.strip().lower() == "referer":
+                        ref = v.strip()
+                    elif k.strip().lower() == "user-agent":
+                        ua = v.strip()
+        else:
+            clean_url = raw_url.strip()
+
+        if "jagobd.com" in clean_url and not ref:
+            ref = "https://www.jagobd.com/"
+        elif "aynaott.com" in clean_url and not ref:
+            ref = "https://web.aynaott.com/"
+
         lines.append(f'#EXTINF:-1 tvg-id="{q(c.get("tvg_id", ""))}" tvg-name="{q(c["name"])}" '
                      f'tvg-logo="{q(c.get("logo", ""))}" group-title="{q(c["group"])}",{c["name"]}')
-        if not PROXY_URL:
-            if ua:
-                lines.append(f"#EXTVLCOPT:http-user-agent={ua}")
-            if ref:
-                lines.append(f"#EXTVLCOPT:http-referrer={ref}")
-        lines.append(final_url)
+        if ua:
+            lines.append(f"#EXTVLCOPT:http-user-agent={ua}")
+        if ref:
+            lines.append(f"#EXTVLCOPT:http-referrer={ref}")
+        lines.append(clean_url)
     OUTPUT.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
@@ -933,7 +985,7 @@ def main():
     seen, items = set(), []
     for c in pool:
         raw = c["url"].split("|")[0].strip()
-        if not raw or raw in seen or is_blocked_or_radio(c):
+        if not raw or raw in seen or is_blocked_or_non_tv(c):
             continue
         name, lname = c["name"], c["name"].lower()
         if OTHER_LANG_RE.search(lname):
@@ -970,7 +1022,7 @@ def main():
             continue
         seen.add(raw)
         items.append(c)
-    log(f"Total unique video channel: {len(items)}")
+    log(f"Total unique live TV candidate: {len(items)}")
 
     check_all(items)
     alive = [c for c in items if c.get("alive")]
@@ -995,7 +1047,7 @@ def main():
     log("Group wise channel: " + ", ".join(f"{g}: {n}" for g, n in cnt.most_common()))
     write_playlist(alive)
     elapsed = int(time.time() - start_time)
-    log(f"{OUTPUT} e {len(alive)} ta alive video channel save hoise (Total time: {elapsed // 60}m {elapsed % 60}s)")
+    log(f"{OUTPUT} e {len(alive)} ta alive live TV channel save hoise (Total time: {elapsed // 60}m {elapsed % 60}s)")
     return 0
 
 
