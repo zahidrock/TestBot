@@ -1,13 +1,11 @@
 """
-Direct (No-Proxy) Live TV Only IPTV Updater (SamsungTV & PlutoTV Removed, No VOD/Movies, Deep Segment Checked).
-Sources:
-  1. AynaOTT (BD & Bangla API)
-  2. JagoBD (Web Scraper)
-  3. Extra Public Repos (BDIX, Free-TV India, IPTV-org Categories)
-  4. Adaptive Streams Repos (Git Trees API - individual .m3u8 files)
-  5. YuppTV CDN Preview Streams
-  6. Safe GitHub Search (1 Page x 5 Queries - Rate-Limit Safe)
--> Strict VOD/Movie Blocker -> Deep HLS Segment Check -> Direct M3UIPTV Headers -> playlist.m3u
+Direct (No-Proxy) Live TV Only IPTV Updater
+Features:
+  - Sources: AynaOTT, JagoBD, Extra Public Repos (BDIX, Free-TV IN, IPTV-org), Adaptive Streams, YuppCDN, Safe GitHub Search (2 Pages)
+  - Strict VOD / Movie / Radio / DRM / IP-Token Blocker
+  - Xtream Error-Clip & Raw .ts Blocker
+  - Deep Binary Video Segment Check (MPEG-TS 0x47 sync byte & fMP4 box check + HEVC blocker to prevent PIPELINE_ERROR_DECODE)
+  - Direct M3UIPTV Headers (#EXTVLCOPT)
 """
 import json, os, re, ssl, sys, time
 from collections import Counter
@@ -25,13 +23,13 @@ MIN_KEEP_RATIO = 0.1         # safety ratio
 # Proxy off (direct stream links)
 PROXY_URL = ""
 
-# GitHub Secrets theke token nibe
+# GitHub Secrets theke token nibe (workflow e MY_GH_TOKEN pass kora ase)
 GITHUB_TOKEN = "" or os.getenv("GITHUB_TOKEN")
 
-# GitHub Search Settings (Rate-Limit Safe)
+# GitHub Search Settings (2 Pages - Rate-Limit Safe)
 USE_GITHUB_SEARCH = True
-SEARCH_PAGES = (1, 2)          # proti query te 100 file nibe (429 rate-limit safe)
-SEARCH_DELAY = 12            # 15 sekond delay
+SEARCH_PAGES = (1, 2)        # proti query te 2 page (200 file) nibe
+SEARCH_DELAY = 20            # 20 sekond delay dile secondary rate limit (429) ashbe na
 GITHUB_SEARCH_QUERIES = [
     "EXTINF bangla extension:m3u",
     "EXTINF bdix extension:m3u8",
@@ -120,7 +118,8 @@ def http_get(url, headers=None, timeout=15):
         return r.read().decode("utf-8", errors="ignore")
 
 
-def github_search_get(api_url, headers, max_retries=2):
+def github_search_get(api_url, headers, max_retries=3):
+    """429/403 Secondary Rate Limit ashle progressive wait kore abar try korbe"""
     for attempt in range(max_retries + 1):
         try:
             req = urllib.request.Request(api_url, headers=headers)
@@ -128,8 +127,8 @@ def github_search_get(api_url, headers, max_retries=2):
                 return json.loads(r.read().decode("utf-8", errors="ignore"))
         except urllib.error.HTTPError as e:
             if e.code in (429, 403) and attempt < max_retries:
-                raw_wait = int(e.headers.get("Retry-After", 70))
-                wait_sec = max(raw_wait, 70)
+                raw_wait = int(e.headers.get("Retry-After", 0))
+                wait_sec = max(raw_wait, 75 * (attempt + 1))
                 log(f"[GitHub search] Rate limit ({e.code}), {wait_sec}s wait kore abar try korchi...")
                 time.sleep(wait_sec)
             else:
@@ -540,9 +539,28 @@ def scrape_github():
     return res
 
 
-# ------------------------------------------------------------------ stream check (Live TV Only - Deep Check)
+# ------------------------------------------------------------------ stream check (Live TV Only - Deep Binary Check)
+def is_valid_video_segment(chunk):
+    """Ashol MPEG-TS (0x47 sync byte) ba fMP4 (ftyp/moof/styp) video segment kina check korbe"""
+    if not chunk or len(chunk) < 188:
+        return False
+    # Check 1: Valid MPEG-TS packet (starts with 0x47 and repeats every 188 bytes)
+    if chunk[0] == 0x47 and (len(chunk) < 377 or chunk[188] == 0x47):
+        return True
+    # Check 2: Valid fMP4 / CMAF segment (.m4s / .mp4 init)
+    head = chunk[:64]
+    if any(box in head for box in (b"ftyp", b"moof", b"styp", b"sidx")):
+        return True
+    return False
+
+
 def verify_deep_hls(m3u8_text, base_url, headers, timeout=5):
-    """M3U8 er vetorer sub-playlist o ashol video segment (.ts/.m4s) check korbe"""
+    """M3U8 er vetorer sub-playlist o ashol valid video segment (.ts/.m4s) check korbe"""
+    low_manifest = m3u8_text.lower()
+    # HEVC (hvc1/hev1) codec bad dewa jate TV decoder crash na kore (PIPELINE_ERROR_DECODE prevention)
+    if any(c in low_manifest for c in ('codecs="hvc1', 'codecs="hev1', 'codecs="dvh1')):
+        return False
+
     lines = [ln.strip() for ln in m3u8_text.splitlines() if ln.strip() and not ln.strip().startswith("#")]
     if not lines:
         return False
@@ -561,6 +579,8 @@ def verify_deep_hls(m3u8_text, base_url, headers, timeout=5):
             if any(drm in low for drm in ("sample-aes", "widevine", "playready", "skd://")):
                 return False
             if "#extm3u" in low:
+                if any(c in low for c in ('codecs="hvc1', 'codecs="hev1', 'codecs="dvh1')):
+                    return False
                 sub_lines = [ln.strip() for ln in chunk.decode("utf-8", errors="ignore").splitlines()
                              if ln.strip() and not ln.strip().startswith("#")]
                 if not sub_lines:
@@ -570,14 +590,16 @@ def verify_deep_hls(m3u8_text, base_url, headers, timeout=5):
                     return False
                 req2 = urllib.request.Request(seg_url, headers=headers)
                 with urllib.request.urlopen(req2, timeout=timeout, context=SSL_CTX) as r2:
-                    return r2.status in (200, 206) and len(r2.read(512)) > 100
-            return len(chunk) > 100 and not low.startswith("<html")
+                    if r2.status not in (200, 206):
+                        return False
+                    return is_valid_video_segment(r2.read(1024))
+            return is_valid_video_segment(chunk)
     except Exception:
         return False
 
 
 def check_stream(raw_url, timeout=CHECK_TIMEOUT):
-    """(alive, latency_sec, reason, matched_ua) - Shudhu Live TV stream allow korbe, VOD/Movie bad dibe"""
+    """(alive, latency_sec, reason, matched_ua) - Shudhu Live TV stream allow korbe, VOD/Movie/Error-clip bad dibe"""
     if not raw_url:
         return False, 0, "empty url", UA
     base, url, custom_ua = dict(HEADERS), raw_url, False
@@ -650,11 +672,11 @@ def check_stream(raw_url, timeout=CHECK_TIMEOUT):
                     if any(tag in low for tag in ("#ext-x-stream-inf", "#extinf", "#ext-x-targetduration")):
                         if verify_deep_hls(text_body, final_url, headers, timeout=5):
                             return True, lat, "ok", ua
-                        return False, 0, "dead/VOD HLS segment", ua
+                        return False, 0, "dead/corrupt HLS segment", ua
                     reason = "empty/invalid m3u8"
                     continue
 
-               # Direct .ts / Xtream error-video loop bad dewa (shudhu .m3u8 allow hobe)
+                # Direct .ts / Xtream error-video loop bad dewa (shudhu .m3u8 allow hobe)
                 if raw and raw[0] == 0x47:
                     return False, 0, "raw ts/xtream error clip", ua
                 if ".ts" in final_url.lower():
@@ -693,7 +715,7 @@ def check_all(channels):
                 log(f"checked {done}/{total} | alive {sum(1 for x in channels if x.get('alive'))}")
 
     dead = Counter(c["reason"] for c in channels if not c.get("alive") and c.get("reason"))
-    log("Dead/VOD er karon: " + ", ".join(f"{k}: {v}" for k, v in dead.most_common(8)))
+    log("Dead/Invalid er karon: " + ", ".join(f"{k}: {v}" for k, v in dead.most_common(8)))
 
 
 # ------------------------------------------------------------------ grouping & dedupe
