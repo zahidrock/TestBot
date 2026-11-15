@@ -23,7 +23,7 @@ jobs:
 
       - name: Run updater
         env:
-          GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.MY_GH_TOKEN }}
         run: python auto_update.py
 
       - name: Commit playlist
