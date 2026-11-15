@@ -21,10 +21,10 @@ jobs:
         with:
           python-version: '3.11'
 
-- name: Run updater
-     env:
-       GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
-     run: python auto_update.py
+      - name: Run updater
+        env:
+          GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+        run: python auto_update.py
 
       - name: Commit playlist
         run: |
