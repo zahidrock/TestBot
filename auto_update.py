@@ -1,17 +1,15 @@
 """
-Direct (No-Proxy) Live TV Only IPTV Updater (No VOD/Movies, No Radio, Deep Segment Checked).
+Direct (No-Proxy) Live TV Only IPTV Updater (SamsungTV & PlutoTV Removed, No VOD/Movies, Deep Segment Checked).
 Sources:
   1. AynaOTT (BD & Bangla API)
   2. JagoBD (Web Scraper)
-  3. Samsung TV Plus (Official Public API - IN & US)
-  4. Pluto TV (Official Public API - Live Channels)
-  5. Extra Public Repos (BDIX, Free-TV India, IPTV-org Categories)
-  6. Adaptive Streams Repos (Git Trees API - individual .m3u8 files)
-  7. YuppTV CDN Preview Streams
-  8. Safe GitHub Search (1 Page x 5 Queries - Rate-Limit Safe)
+  3. Extra Public Repos (BDIX, Free-TV India, IPTV-org Categories)
+  4. Adaptive Streams Repos (Git Trees API - individual .m3u8 files)
+  5. YuppTV CDN Preview Streams
+  6. Safe GitHub Search (1 Page x 5 Queries - Rate-Limit Safe)
 -> Strict VOD/Movie Blocker -> Deep HLS Segment Check -> Direct M3UIPTV Headers -> playlist.m3u
 """
-import json, os, re, ssl, sys, time, uuid
+import json, os, re, ssl, sys, time
 from collections import Counter
 import urllib.error, urllib.parse, urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -345,58 +343,6 @@ def scrape_jagobd():
             if r:
                 res.append(r)
     log(f"[JagoBD] stream URL: {len(res)}")
-    return res
-
-
-def scrape_samsung_tv():
-    res = []
-    endpoints = [
-        ("IN", "https://i.mjh.nz/SamsungTVPlus/in.m3u8"),
-        ("US", "https://i.mjh.nz/SamsungTVPlus/us.m3u8"),
-    ]
-    for region, url in endpoints:
-        try:
-            txt = http_get(url, timeout=15)
-            chs = parse_m3u(txt, "SamsungTV")
-            for c in chs:
-                c["region"] = region
-                c["auto_group"] = True
-            res.extend(chs)
-            log(f"[SamsungTV] {region}: {len(chs)} channel")
-        except Exception as e:
-            log(f"[SamsungTV] {region} error: {e}")
-    return res
-
-
-def scrape_pluto_tv():
-    res = []
-    try:
-        sid = str(uuid.uuid4())
-        did = str(uuid.uuid4())
-        api = (f"https://api.pluto.tv/v2/channels?start=2026-01-01T00:00:00Z&stop=2026-01-01T01:00:00Z"
-               f"&deviceId={did}&sid={sid}&deviceType=web&deviceMake=Chrome&deviceModel=web&appName=web&appVersion=5.0")
-        data = json.loads(http_get(api, timeout=15))
-        for ch in data:
-            if not ch.get("isStitched"):
-                continue
-            urls = ch.get("stitched", {}).get("urls", [])
-            stream_url = urls[0].get("url", "") if urls else ""
-            if not stream_url:
-                continue
-            cat = ch.get("category", "")
-            logo = ch.get("colorLogoPNG", {}).get("path", "") or ch.get("logo", {}).get("path", "")
-            res.append({
-                "name": ch.get("name", "Unknown").strip(),
-                "url": stream_url,
-                "logo": logo,
-                "tvg_id": f"pluto-{ch.get('slug', '')}",
-                "group": cat,
-                "source": "PlutoTV",
-                "auto_group": True
-            })
-        log(f"[PlutoTV] stream URL: {len(res)}")
-    except Exception as e:
-        log(f"[PlutoTV] error: {e}")
     return res
 
 
@@ -751,7 +697,7 @@ def check_all(channels):
 
 # ------------------------------------------------------------------ grouping & dedupe
 NOISE = {"hd", "fhd", "sd", "uhd", "4k", "live", "official", "hevc", "h265", "h264"}
-SOURCE_RANK = {"AynaOTT": 0, "JagoBD": 1, "SamsungTV": 2, "PlutoTV": 3, "GitHub": 4}
+SOURCE_RANK = {"AynaOTT": 0, "JagoBD": 1, "GitHub": 2}
 
 
 def norm(name):
@@ -775,7 +721,6 @@ def is_blocked_or_non_tv(c):
         return True
     if RADIO_RE.search(t) or AUDIO_EXT_RE.search(url):
         return True
-    # Block direct movies / VOD entries
     if VOD_EXT_RE.search(url) or VOD_PATH_RE.search(url):
         return True
     if VOD_NAME_RE.search(name):
@@ -878,12 +823,11 @@ def keyword_group(c):
         return classify_pay_channel(lname)
 
     music = re.search(r"\b(music|song|songs|gaan|mtv|vevo|hits|zing)\b", t)
-    # Only match TV channels with "cinema/movies/flix" in channel name, not random movie titles
     movie_ch = re.search(r"\b(movies?\s*(tv|channel|hd|plus|now|action|gold|club)|cinema\s*(tv|hd)|flix\s*tv)\b", t)
     sport = re.search(r"\b(sport|sports|cricket|football|soccer)\b", t)
     bn = re.search(r"\b(bangla|bengali|bangladesh|\bbd\b)\b", t) or POPULAR_BD_IN_RE.search(t)
-    hi = re.search(r"\b(hindi|bhojpuri|india|indian)\b", t) or c.get("region") == "IN"
-    en = re.search(r"\b(english|hollywood)\b", t) or c.get("region") == "US" or c["source"] == "PlutoTV"
+    hi = re.search(r"\b(hindi|bhojpuri|india|indian)\b", t)
+    en = re.search(r"\b(english|hollywood)\b", t)
 
     if music:
         if bn:
@@ -901,7 +845,7 @@ def keyword_group(c):
         return "Sports"
     if bn:
         return "Bangladesh"
-    if hi and c.get("region") != "IN":
+    if hi:
         return "India"
     if IP_URL_RE.match(url) and re.search(r"\b(bd|bangla|india|kolkata|live)\b", t):
         return "Bangladesh"
@@ -969,8 +913,6 @@ def main():
     scrapers = (
         ("AynaOTT", scrape_aynaott),
         ("JagoBD", scrape_jagobd),
-        ("SamsungTV", scrape_samsung_tv),
-        ("PlutoTV", scrape_pluto_tv),
         ("ExtraRepos", scrape_extra_repos),
         ("AdaptiveRepos", scrape_adaptive_repos),
         ("YuppCDN", scrape_yupp_preview),
