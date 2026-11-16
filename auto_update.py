@@ -1,9 +1,10 @@
 """
-Balanced Direct (No-Proxy) Live TV IPTV Updater
+Balanced Direct (No-Proxy) Live TV IPTV Updater with Xtream .ts -> .m3u8 Auto-Converter
 Features:
   - Sources: AynaOTT, JagoBD, Extra Public Repos (BDIX, Free-TV IN, IPTV-org), Adaptive Streams, YuppCDN, Safe GitHub Search (2 Pages)
+  - Auto-converts Xtream .ts / output=ts / extensionless stream links to .m3u8 for M3UIPTV compatibility
   - Strict VOD / Movie / Radio / DRM / IP-Token Blocker
-  - Balanced Deep HLS Check (Checks top 3 sub-playlists + AES-128 Key URI check + Valid MPEG-TS support for BDIX)
+  - Balanced Deep HLS Check (Checks top 3 sub-playlists + AES-128 Key URI check; blocks raw .ts so 'output=m3u8' error never appears)
   - Direct M3UIPTV Headers (#EXTVLCOPT)
 """
 import json, os, re, ssl, sys, time
@@ -95,6 +96,9 @@ VOD_NAME_RE = re.compile(
 IP_TOKEN_RE = re.compile(r"(__hdnea__|hdnts=|wmsAuthSign=|nimblesessionid=)", re.I)
 KEY_URI_RE = re.compile(r'#EXT-X-KEY:[^\n]*URI="([^"]+)"', re.I)
 
+# Xtream .ts / extensionless URL pattern
+XTREAM_NUM_RE = re.compile(r"^(https?://[^/]+(?:/live)?/[^/]+/[^/]+/\d+)(?:\.ts)?$", re.I)
+
 # ------------------------------------------------------------------ http
 SSL_CTX = ssl.create_default_context()
 SSL_CTX.check_hostname = False
@@ -136,7 +140,23 @@ def github_search_get(api_url, headers, max_retries=3):
     return {}
 
 
-# ------------------------------------------------------------------ m3u parse
+# ------------------------------------------------------------------ URL converter & m3u parse
+def convert_to_hls_url(url):
+    """Xtream .ts ba output=ts link ke m3u8 e convert korbe jate M3UIPTV player e error na dey"""
+    if not url:
+        return url
+    if "output=ts" in url.lower():
+        return re.sub(r"output=ts", "output=m3u8", url, flags=re.I)
+    if "output=mpegts" in url.lower():
+        return re.sub(r"output=mpegts", "output=m3u8", url, flags=re.I)
+    base_part = url.split("?")[0]
+    m = XTREAM_NUM_RE.match(base_part)
+    if m:
+        qs = ("?" + url.split("?", 1)[1]) if "?" in url else ""
+        return f"{m.group(1)}.m3u8{qs}"
+    return url
+
+
 def parse_m3u(text, source):
     out, meta = [], None
     vlc_ua, vlc_ref = "", ""
@@ -166,13 +186,18 @@ def parse_m3u(text, source):
                 vlc_ref = opt.split("=", 1)[1].strip()
         elif meta and not line.startswith("#"):
             if re.match(r"^https?://", line):
-                if "|" not in line and (vlc_ua or vlc_ref):
-                    parts = []
-                    if vlc_ua:
-                        parts.append(f"User-Agent={vlc_ua}")
-                    if vlc_ref:
-                        parts.append(f"Referer={vlc_ref}")
-                    line = f"{line}|{'&'.join(parts)}"
+                if "|" in line:
+                    u_part, h_part = line.split("|", 1)
+                    line = f"{convert_to_hls_url(u_part.strip())}|{h_part}"
+                else:
+                    line = convert_to_hls_url(line)
+                    if vlc_ua or vlc_ref:
+                        parts = []
+                        if vlc_ua:
+                            parts.append(f"User-Agent={vlc_ua}")
+                        if vlc_ref:
+                            parts.append(f"Referer={vlc_ref}")
+                        line = f"{line}|{'&'.join(parts)}"
                 meta["url"] = line
                 out.append(meta)
             meta = None
@@ -539,7 +564,7 @@ def scrape_github():
     return res
 
 
-# ------------------------------------------------------------------ stream check (Balanced Live TV Check)
+# ------------------------------------------------------------------ stream check (HLS / .m3u8 Only)
 def check_hls_key(m3u8_text, base_url, headers, timeout=5):
     """Jodi #EXT-X-KEY thake, tar key URI valid (16-byte) kina check korbe"""
     low = m3u8_text.lower()
@@ -604,7 +629,7 @@ def verify_deep_hls(m3u8_text, base_url, headers, timeout=6):
 
 
 def check_stream(raw_url, timeout=CHECK_TIMEOUT):
-    """(alive, latency_sec, reason, matched_ua) - Balanced Live TV & BDIX stream checker"""
+    """(alive, latency_sec, reason, matched_ua) - Shudhu valid .m3u8 HLS live TV stream allow korbe"""
     if not raw_url:
         return False, 0, "empty url", UA
     base, url, custom_ua = dict(HEADERS), raw_url, False
@@ -680,12 +705,12 @@ def check_stream(raw_url, timeout=CHECK_TIMEOUT):
                     reason = "empty/invalid m3u8"
                     continue
 
-                # Valid MPEG-TS stream (0x47 sync byte) allow kora jate BDIX channel na kome
-                if raw and raw[0] == 0x47 and len(raw) >= 188:
-                    return True, lat, "ok", ua
-                if ".ts" in final_url.lower() and len(raw) > 512 and not low.startswith("<"):
-                    return True, lat, "ok", ua
-                reason = "not a live TV stream"
+                # Shudhu .m3u8 HLS stream allow korbe (unconverted raw .ts bad dibe jate 'output=m3u8' error na ashe)
+                if raw and raw[0] == 0x47:
+                    return False, 0, "raw ts stream (not m3u8)", ua
+                if ".ts" in final_url.lower():
+                    return False, 0, "raw ts stream (not m3u8)", ua
+                reason = "not an m3u8 live stream"
         except urllib.error.HTTPError as e:
             reason = f"HTTP {e.code}"
             if e.code in (404, 410):
