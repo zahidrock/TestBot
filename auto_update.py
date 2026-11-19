@@ -1,10 +1,11 @@
 """
-Balanced Direct (No-Proxy) Live TV IPTV Updater with Xtream .ts -> .m3u8 Auto-Converter
+All-in-One Direct (No-Proxy) Live TV IPTV Updater
 Features:
-  - Sources: AynaOTT, JagoBD, Extra Public Repos (BDIX, Free-TV IN, IPTV-org), Adaptive Streams, YuppCDN, Safe GitHub Search (2 Pages)
+  - Loads upstream websites/APIs & active bot feeds discovered by discover_sources.py (discovered_sources.json)
+  - Direct Scrapers: AynaOTT, JagoBD, Extra BDIX/Free-TV Repos, Adaptive Streams, YuppCDN, GitHub Code Search (2 Pages)
   - Auto-converts Xtream .ts / output=ts / extensionless stream links to .m3u8 for M3UIPTV compatibility
   - Strict VOD / Movie / Radio / DRM / IP-Token Blocker
-  - Balanced Deep HLS Check (Checks top 3 sub-playlists + AES-128 Key URI check; blocks raw .ts so 'output=m3u8' error never appears)
+  - Balanced Deep HLS Check (Top 3 sub-playlists + AES-128 Key URI check; blocks raw .ts so 'output=m3u8' error never appears)
   - Direct M3UIPTV Headers (#EXTVLCOPT)
 """
 import json, os, re, ssl, sys, time
@@ -15,6 +16,7 @@ from pathlib import Path
 
 # ------------------------------------------------------------------ settings
 OUTPUT = Path("playlist.m3u")
+DISCOVERED_FILE = Path("discovered_sources.json")
 WORKERS = 150                # ek sathe 150 ta link check hobe
 CHECK_TIMEOUT = 8            # 8 sekond dile slow-start BDIX/Indian server bad porbe na
 MAX_LINKS_PER_CHANNEL = None # shob alive link thakbe
@@ -26,7 +28,7 @@ PROXY_URL = ""
 # GitHub Secrets theke token nibe (workflow e MY_GH_TOKEN pass kora ase)
 GITHUB_TOKEN = "" or os.getenv("GITHUB_TOKEN")
 
-# GitHub Search Settings (2 Pages - Rate-Limit Safe)
+# GitHub Code Search Settings (2 Pages - Rate-Limit Safe)
 USE_GITHUB_SEARCH = True
 SEARCH_PAGES = (1, 2)        # proti query te 2 page (200 file) nibe
 SEARCH_DELAY = 20            # 20 sekond delay dile secondary rate limit (429) ashbe na
@@ -374,6 +376,8 @@ def scrape_extra_repos():
     res = []
     repos = [
         ("BDIX-Mrgify",      "https://raw.githubusercontent.com/abusaeeidx/Mrgify-BDIX-IPTV/main/playlist.m3u"),
+        ("BDIX-Saeid",       "https://raw.githubusercontent.com/saeidrahmanbd/BDIX-IPTV/main/playlist.m3u"),
+        ("DhakaFLIX-Safin",  "https://raw.githubusercontent.com/SafinBhuiyan/DhakaFLIX/main/playlist.m3u"),
         ("Free-TV-IN",       "https://raw.githubusercontent.com/Free-TV/IPTV/master/playlists/playlist_india.m3u8"),
         ("IPTV-org-Sports",  f"{IPTV_BASE}/categories/sports.m3u"),
         ("IPTV-org-Movies",  f"{IPTV_BASE}/categories/movies.m3u"),
@@ -390,7 +394,74 @@ def scrape_extra_repos():
             res.extend(chs)
             log(f"[{label}] {len(chs)} channel")
         except Exception as e:
-            log(f"[{label}] error: {e}")
+            log(f"[{label}] skip/error: {e}")
+    return res
+
+
+def scrape_discovered_sources():
+    """discover_sources.py theke paoa shob upstream source o bot list auto-scrape korbe"""
+    if not DISCOVERED_FILE.exists():
+        log("[DiscoveredSources] discovered_sources.json paoa jay ni, skip kora holo")
+        return []
+
+    try:
+        data = json.loads(DISCOVERED_FILE.read_text(encoding="utf-8"))
+    except Exception as e:
+        log(f"[DiscoveredSources] JSON read error: {e}")
+        return []
+
+    upstream_urls = data.get("all_upstream_sources", [])
+    bot_playlists = data.get("all_bot_playlists", [])
+    log(f"[DiscoveredSources] {len(upstream_urls)} ti upstream source o {len(bot_playlists)} ti bot feed check kora hocche...")
+
+    res = []
+
+    def fetch_upstream(u):
+        out = []
+        try:
+            txt = http_get(u, timeout=10)
+            if "#EXTINF" in txt:
+                chs = parse_m3u(txt, "GitHub")
+                if len(chs) <= 3000:
+                    for c in chs:
+                        c["auto_group"] = True
+                    return chs
+                return []
+            links = re.findall(r'[\'"](https?://[^\'"]+?\.m3u8[^\'"]*)[\'"]', txt)
+            for idx, lk in enumerate(dict.fromkeys(links)):
+                out.append({
+                    "name": f"Live Stream {idx + 1}",
+                    "url": convert_to_hls_url(lk),
+                    "logo": "",
+                    "tvg_id": "",
+                    "group": "Others",
+                    "source": "GitHub",
+                    "auto_group": True
+                })
+        except Exception:
+            pass
+        return out
+
+    def fetch_bot_pl(u):
+        try:
+            txt = http_get(u, timeout=12)
+            if "#EXTINF" in txt:
+                chs = parse_m3u(txt, "GitHub")
+                if len(chs) <= 3000:
+                    for c in chs:
+                        c["auto_group"] = True
+                    return chs
+        except Exception:
+            pass
+        return []
+
+    with ThreadPoolExecutor(max_workers=30) as ex:
+        futs = [ex.submit(fetch_upstream, u) for u in upstream_urls] + \
+               [ex.submit(fetch_bot_pl, p) for p in bot_playlists]
+        for f in as_completed(futs):
+            res.extend(f.result())
+
+    log(f"[DiscoveredSources] mot {len(res)} ti candidate channel paoa gese")
     return res
 
 
@@ -591,7 +662,6 @@ def verify_deep_hls(m3u8_text, base_url, headers, timeout=6):
     if not lines:
         return False
 
-    # Prothom 3 ta variant/segment er moddhe jekono 1 ta kaj korlei channel alive
     for candidate in lines[:3]:
         target_url = urllib.parse.urljoin(base_url, candidate)
         if VOD_EXT_RE.search(target_url):
@@ -966,6 +1036,7 @@ def main():
         ("AynaOTT", scrape_aynaott),
         ("JagoBD", scrape_jagobd),
         ("ExtraRepos", scrape_extra_repos),
+        ("DiscoveredSources", scrape_discovered_sources),
         ("AdaptiveRepos", scrape_adaptive_repos),
         ("YuppCDN", scrape_yupp_preview),
         ("GitHub", scrape_github),
