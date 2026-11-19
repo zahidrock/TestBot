@@ -1,6 +1,6 @@
 """
-GitHub IPTV Bot & Upstream Source Discovery Script (With Persistent Merge)
-1. Loads previously saved bots & upstream sources from 'discovered_sources.json' so nothing is ever lost.
+GitHub IPTV Bot & Upstream Source Discovery Script (24-Hour Rate-Limit Safe + Persistent Merge)
+1. Loads previously saved bots & upstream sources from 'discovered_sources.json'.
 2. Finds new active GitHub repositories running automated IPTV playlist bots.
 3. Inspects their source code (.py, .js, .ts, .sh) to extract the upstream websites/APIs they scrape.
 4. Merges old + new sources and saves them permanently into 'discovered_sources.json' & 'bot_report.txt'.
@@ -52,7 +52,7 @@ def api_get(url, max_retries=2):
                 return json.loads(r.read().decode("utf-8", errors="ignore"))
         except urllib.error.HTTPError as e:
             if e.code in (429, 403) and attempt < max_retries:
-                wait_sec = max(int(e.headers.get("Retry-After", 0)), 65)
+                wait_sec = max(int(e.headers.get("Retry-After", 0)), 70)
                 log(f"[Rate Limit {e.code}] {wait_sec}s wait korchi...")
                 time.sleep(wait_sec)
             else:
@@ -86,10 +86,8 @@ def discover():
     if not GITHUB_TOKEN:
         log("[Warning] GITHUB_TOKEN set kora nai! Rate limit hote pare.")
 
-    # 0. Ager save kora data load kora (Merge er jonno)
     merged_bots, merged_upstream, merged_playlists = load_existing_data()
 
-    # 1. Notun Active GitHub Bot Repository Khuja
     newly_found = {}
     for q in BOT_SEARCH_QUERIES:
         try:
@@ -109,11 +107,10 @@ def discover():
                     }
         except Exception as e:
             log(f"[Search Error] {q}: {e}")
-        time.sleep(3)
+        time.sleep(5)  # 5 sekond gap dile secondary rate limit ashbe na
 
     log(f"Ebar {len(newly_found)} ti active repository paoa gese. Vetorer code o source analyze kora hocche...")
 
-    # 2. Protiti Bot Repo-r file tree check kore script o playlist ber kora
     def analyze_repo(repo_info):
         repo = repo_info["repo"]
         branch = repo_info["branch"]
@@ -138,7 +135,6 @@ def discover():
             elif lpath.endswith((".py", ".js", ".ts", ".sh")) and f.get("size", 0) < 150000:
                 script_paths.append(path)
 
-        # Script gulo pore dekha tara kon website/API theke scrape korche
         upstream = set()
         for sp in script_paths[:5]:
             raw_code_url = f"https://raw.githubusercontent.com/{repo}/{branch}/{urllib.parse.quote(sp)}"
@@ -155,12 +151,12 @@ def discover():
         repo_info["upstream_sources"] = sorted(upstream)
         return repo_info
 
-    with ThreadPoolExecutor(max_workers=12) as ex:
+    # max_workers=5 rakha hoyeche jate GitHub API te ek sathe beshi request giye rate limit na hoy
+    with ThreadPoolExecutor(max_workers=5) as ex:
         for f in as_completed([ex.submit(analyze_repo, info) for info in newly_found.values()]):
             b = f.result()
             repo_key = b["repo"]
             if repo_key in merged_bots:
-                # Purono bot-er sathe notun source o playlist merge kora
                 old_b = merged_bots[repo_key]
                 b["is_auto_bot"] = b["is_auto_bot"] or old_b.get("is_auto_bot", False)
                 b["playlists"] = sorted(set(old_b.get("playlists", [])) | set(b["playlists"]))
@@ -170,7 +166,6 @@ def discover():
     all_bots_list = list(merged_bots.values())
     all_bots_list.sort(key=lambda x: (not x.get("is_auto_bot", False), x.get("updated", "")), reverse=False)
 
-    # Shob purono + notun unique URL merge kora
     for b in all_bots_list:
         merged_upstream.update(b.get("upstream_sources", []))
         merged_playlists.update(b.get("playlists", []))
@@ -187,7 +182,6 @@ def discover():
     }
     OUT_JSON.write_text(json.dumps(result_data, indent=2), encoding="utf-8")
 
-    # Human-readable list report (bot_report.txt)
     report_lines = [
         f"=== GitHub IPTV Bots & Upstream Sources Report ({result_data['generated_at']}) ===",
         f"Total Active Repositories Saved (Merged): {len(all_bots_list)}",
