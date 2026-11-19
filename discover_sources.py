@@ -1,10 +1,11 @@
 """
-GitHub IPTV Bot & Upstream Source Discovery Script
-1. Finds all active GitHub repositories running automated IPTV playlist bots.
-2. Inspects their source code (.py, .js, .sh, .yml) to extract the upstream websites/APIs they scrape.
-3. Saves the complete structured list into 'discovered_sources.json' and 'bot_report.txt' for auto_update.py.
+GitHub IPTV Bot & Upstream Source Discovery Script (With Persistent Merge)
+1. Loads previously saved bots & upstream sources from 'discovered_sources.json' so nothing is ever lost.
+2. Finds new active GitHub repositories running automated IPTV playlist bots.
+3. Inspects their source code (.py, .js, .ts, .sh) to extract the upstream websites/APIs they scrape.
+4. Merges old + new sources and saves them permanently into 'discovered_sources.json' & 'bot_report.txt'.
 """
-import json, os, re, sys, time
+import json, os, re, time
 import urllib.error, urllib.parse, urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
@@ -65,20 +66,39 @@ def raw_get(url):
         return r.read().decode("utf-8", errors="ignore")
 
 
+def load_existing_data():
+    """Ager save kora discovered_sources.json theke purono bot o source load korbe"""
+    if not OUT_JSON.exists():
+        return {}, set(), set()
+    try:
+        old = json.loads(OUT_JSON.read_text(encoding="utf-8"))
+        old_bots = {b["repo"]: b for b in old.get("bots", []) if "repo" in b}
+        old_upstream = set(old.get("all_upstream_sources", []))
+        old_playlists = set(old.get("all_bot_playlists", []))
+        log(f"Ager save kora {len(old_bots)} ti bot o {len(old_upstream)} ti upstream source load holo.")
+        return old_bots, old_upstream, old_playlists
+    except Exception as e:
+        log(f"[Warning] Purono JSON pora jay ni: {e}")
+        return {}, set(), set()
+
+
 def discover():
     if not GITHUB_TOKEN:
         log("[Warning] GITHUB_TOKEN set kora nai! Rate limit hote pare.")
 
-    # 1. Active GitHub Bot Repository Khuja
-    active_bots = {}
+    # 0. Ager save kora data load kora (Merge er jonno)
+    merged_bots, merged_upstream, merged_playlists = load_existing_data()
+
+    # 1. Notun Active GitHub Bot Repository Khuja
+    newly_found = {}
     for q in BOT_SEARCH_QUERIES:
         try:
             url = f"https://api.github.com/search/repositories?q={urllib.parse.quote(q)}&sort=updated&per_page=30"
             data = api_get(url)
             for item in data.get("items", []):
                 full_name = item["full_name"]
-                if full_name not in active_bots:
-                    active_bots[full_name] = {
+                if full_name not in newly_found:
+                    newly_found[full_name] = {
                         "repo": full_name,
                         "branch": item.get("default_branch", "main"),
                         "updated": item.get("pushed_at", "")[:10],
@@ -91,7 +111,7 @@ def discover():
             log(f"[Search Error] {q}: {e}")
         time.sleep(3)
 
-    log(f"Mot {len(active_bots)} ti active repository paoa gese. Vetorer code o source analyze kora hocche...")
+    log(f"Ebar {len(newly_found)} ti active repository paoa gese. Vetorer code o source analyze kora hocche...")
 
     # 2. Protiti Bot Repo-r file tree check kore script o playlist ber kora
     def analyze_repo(repo_info):
@@ -135,21 +155,33 @@ def discover():
         repo_info["upstream_sources"] = sorted(upstream)
         return repo_info
 
-    analyzed = []
     with ThreadPoolExecutor(max_workers=12) as ex:
-        for f in as_completed([ex.submit(analyze_repo, info) for info in active_bots.values()]):
-            analyzed.append(f.result())
+        for f in as_completed([ex.submit(analyze_repo, info) for info in newly_found.values()]):
+            b = f.result()
+            repo_key = b["repo"]
+            if repo_key in merged_bots:
+                # Purono bot-er sathe notun source o playlist merge kora
+                old_b = merged_bots[repo_key]
+                b["is_auto_bot"] = b["is_auto_bot"] or old_b.get("is_auto_bot", False)
+                b["playlists"] = sorted(set(old_b.get("playlists", [])) | set(b["playlists"]))
+                b["upstream_sources"] = sorted(set(old_b.get("upstream_sources", [])) | set(b["upstream_sources"]))
+            merged_bots[repo_key] = b
 
-    # Prioritize auto-bots first
-    analyzed.sort(key=lambda x: (not x["is_auto_bot"], x["updated"]), reverse=False)
+    all_bots_list = list(merged_bots.values())
+    all_bots_list.sort(key=lambda x: (not x.get("is_auto_bot", False), x.get("updated", "")), reverse=False)
 
-    all_upstream_urls = sorted({u for b in analyzed for u in b["upstream_sources"]})
-    all_bot_playlists = sorted({p for b in analyzed for p in b["playlists"]})
+    # Shob purono + notun unique URL merge kora
+    for b in all_bots_list:
+        merged_upstream.update(b.get("upstream_sources", []))
+        merged_playlists.update(b.get("playlists", []))
+
+    all_upstream_urls = sorted(merged_upstream)
+    all_bot_playlists = sorted(merged_playlists)
 
     result_data = {
         "generated_at": time.strftime("%Y-%m-%d %H:%M:%S UTC", time.gmtime()),
-        "total_bots_found": len(analyzed),
-        "bots": analyzed,
+        "total_bots_found": len(all_bots_list),
+        "bots": all_bots_list,
         "all_upstream_sources": all_upstream_urls,
         "all_bot_playlists": all_bot_playlists,
     }
@@ -158,29 +190,29 @@ def discover():
     # Human-readable list report (bot_report.txt)
     report_lines = [
         f"=== GitHub IPTV Bots & Upstream Sources Report ({result_data['generated_at']}) ===",
-        f"Total Active Repositories Scanned: {len(analyzed)}",
-        f"Total Unique Upstream Scraping Sources Found: {len(all_upstream_urls)}",
-        f"Total Bot Playlists Found: {len(all_bot_playlists)}\n",
+        f"Total Active Repositories Saved (Merged): {len(all_bots_list)}",
+        f"Total Unique Upstream Scraping Sources Saved: {len(all_upstream_urls)}",
+        f"Total Bot Playlists Saved: {len(all_bot_playlists)}\n",
         "--- 1. UPSTREAM WEBSITES / APIS USED BY BOTS ---"
     ]
     for u in all_upstream_urls:
         report_lines.append(f"  - {u}")
 
     report_lines.append("\n--- 2. ACTIVE GITHUB BOTS & THEIR SOURCES ---")
-    for b in analyzed:
-        tag = "[AUTO-BOT]" if b["is_auto_bot"] else "[REPO]"
-        report_lines.append(f"\n{tag} {b['repo']} (Updated: {b['updated']}, Stars: {b['stars']})")
-        if b["upstream_sources"]:
+    for b in all_bots_list:
+        tag = "[AUTO-BOT]" if b.get("is_auto_bot") else "[REPO]"
+        report_lines.append(f"\n{tag} {b['repo']} (Updated: {b.get('updated', 'N/A')}, Stars: {b.get('stars', 0)})")
+        if b.get("upstream_sources"):
             report_lines.append("  Scrapes from:")
             for src in b["upstream_sources"]:
                 report_lines.append(f"    * {src}")
-        if b["playlists"]:
+        if b.get("playlists"):
             report_lines.append("  Outputs:")
             for pl in b["playlists"]:
                 report_lines.append(f"    > {pl}")
 
     OUT_REPORT.write_text("\n".join(report_lines) + "\n", encoding="utf-8")
-    log(f"Done! {len(analyzed)} ti bot, {len(all_upstream_urls)} ti upstream source o {len(all_bot_playlists)} ti playlist '{OUT_JSON}' & '{OUT_REPORT}' e save hoyeche.")
+    log(f"Done! Total Merged: {len(all_bots_list)} ti bot, {len(all_upstream_urls)} ti upstream source o {len(all_bot_playlists)} ti playlist '{OUT_JSON}' & '{OUT_REPORT}' e save hoyeche.")
 
 
 if __name__ == "__main__":
