@@ -2,8 +2,8 @@ name: Update IPTV Playlist
 
 on:
   schedule:
-    - cron: '0 */6 * * *' # Proti 6 ghonta porpor auto-update hobe
-  workflow_dispatch:      # Manual run korar option
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -21,18 +21,23 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Discover GitHub Bots & Upstream Sources
+        env:
+          GITHUB_TOKEN: ${{ secrets.MY_GH_TOKEN }}
+        run: python discover_sources.py
+
       - name: Run updater
         env:
           GITHUB_TOKEN: ${{ secrets.MY_GH_TOKEN }}
         run: python auto_update.py
 
-      - name: Commit playlist
+      - name: Commit playlist & reports
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add playlist.m3u
+          git add playlist.m3u discovered_sources.json bot_report.txt
           if ! git diff --staged --quiet; then
-            git commit -m "Daily update: $(date +'%Y-%m-%d')"
+            git commit -m "Auto update playlist & discovered sources: $(date +'%Y-%m-%d')"
             git pull --rebase --autostash origin main
             git push origin main
           fi
