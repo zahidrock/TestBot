@@ -2,8 +2,9 @@ name: Update IPTV Playlist
 
 on:
   schedule:
-    - cron: '0 */6 * * *'
-  workflow_dispatch:
+    - cron: '0 */6 * * *'   # Proti 6 ghonta porpor playlist refresh hobe
+    - cron: '0 18 * * *'    # Proti 24 ghontay 1 bar (BD Time 12:00 AM) GitHub search cholbe
+  workflow_dispatch:        # Manual run korar option (ei khetre shob cholbe)
 
 permissions:
   contents: write
@@ -21,7 +22,8 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Discover GitHub Bots & Upstream Sources
+      - name: Discover GitHub Bots & Upstream Sources (Once every 24h)
+        if: github.event_name == 'workflow_dispatch' || github.event.schedule == '0 18 * * *'
         env:
           GITHUB_TOKEN: ${{ secrets.MY_GH_TOKEN }}
         run: python discover_sources.py
@@ -29,6 +31,7 @@ jobs:
       - name: Run updater
         env:
           GITHUB_TOKEN: ${{ secrets.MY_GH_TOKEN }}
+          RUN_GH_SEARCH: ${{ (github.event_name == 'workflow_dispatch' || github.event.schedule == '0 18 * * *') && 'true' || 'false' }}
         run: python auto_update.py
 
       - name: Commit playlist & reports
@@ -37,7 +40,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add playlist.m3u discovered_sources.json bot_report.txt
           if ! git diff --staged --quiet; then
-            git commit -m "Auto update playlist & discovered sources: $(date +'%Y-%m-%d')"
+            git commit -m "Auto update playlist & sources: $(date +'%Y-%m-%d %H:%M')"
             git pull --rebase --autostash origin main
             git push origin main
           fi
