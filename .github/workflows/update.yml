@@ -4,7 +4,7 @@ on:
   schedule:
     - cron: '0 */6 * * *'   # Proti 6 ghonta porpor playlist refresh hobe
     - cron: '0 18 * * *'    # Proti 24 ghontay 1 bar (BD Time 12:00 AM) GitHub search cholbe
-  workflow_dispatch:        # Manual run korar option (ei khetre shob cholbe)
+  workflow_dispatch:        # Manual run korar option
 
 permissions:
   contents: write
@@ -38,9 +38,9 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add playlist.m3u discovered_sources.json bot_report.txt
+          git add playlist.m3u playlist_clean.m3u discovered_sources.json bot_report.txt
           if ! git diff --staged --quiet; then
-            git commit -m "Auto update playlist & sources: $(date +'%Y-%m-%d %H:%M')"
+            git commit -m "Auto update playlists & sources: $(date +'%Y-%m-%d %H:%M')"
             git pull --rebase --autostash origin main
             git push origin main
           fi
