@@ -1,11 +1,12 @@
 """
-All-in-One Direct (No-Proxy) Live TV IPTV Updater
+All-in-One Direct (No-Proxy) Live TV IPTV Updater (24h GitHub Search + 6h Playlist Refresh)
 Features:
-  - Loads upstream websites/APIs & active bot feeds discovered by discover_sources.py (discovered_sources.json)
-  - Direct Scrapers: AynaOTT, JagoBD, Extra BDIX/Free-TV Repos, Adaptive Streams, YuppCDN, GitHub Code Search (2 Pages)
+  - Loads upstream websites/APIs & active bot feeds from 'discovered_sources.json'
+  - Runs GitHub Code Search once every 24 hours (or on manual run) to avoid rate limits
+  - Direct Scrapers: AynaOTT, JagoBD, Extra BDIX/Free-TV Repos, Adaptive Streams, YuppCDN
   - Auto-converts Xtream .ts / output=ts / extensionless stream links to .m3u8 for M3UIPTV compatibility
   - Strict VOD / Movie / Radio / DRM / IP-Token Blocker
-  - Balanced Deep HLS Check (Top 3 sub-playlists + AES-128 Key URI check; blocks raw .ts so 'output=m3u8' error never appears)
+  - Balanced Deep HLS Check (Top 3 sub-playlists + AES-128 Key URI check; blocks raw .ts)
   - Direct M3UIPTV Headers (#EXTVLCOPT)
 """
 import json, os, re, ssl, sys, time
@@ -28,8 +29,8 @@ PROXY_URL = ""
 # GitHub Secrets theke token nibe (workflow e MY_GH_TOKEN pass kora ase)
 GITHUB_TOKEN = "" or os.getenv("GITHUB_TOKEN")
 
-# GitHub Code Search Settings (2 Pages - Rate-Limit Safe)
-USE_GITHUB_SEARCH = True
+# GitHub Code Search Settings (Proti 24 ghontay 1 bar cholbe workflow schedule onujayi)
+USE_GITHUB_SEARCH = os.getenv("RUN_GH_SEARCH", "true").lower() == "true"
 SEARCH_PAGES = (1, 2)        # proti query te 2 page (200 file) nibe
 SEARCH_DELAY = 20            # 20 sekond delay dile secondary rate limit (429) ashbe na
 GITHUB_SEARCH_QUERIES = [
@@ -86,7 +87,7 @@ AUDIO_EXT_RE = re.compile(r"\.(mp3|aac|ogg|oga|wav|flac|m4a|wma|opus|pls|asx)(\?
 VOD_EXT_RE = re.compile(r"\.(mp4|mkv|avi|mov|wmv|flv|webm|m4v|mpg|mpeg|3gp|vob)(\?|$)", re.I)
 VOD_PATH_RE = re.compile(r"/(vod|movies?|films?|series|episodes?|season|natok|drama)/", re.I)
 
-# Movie Title Patterns (e.g., "Pathaan (2023)", "Dual Audio", "WEB-DL", "S01E01")
+# Movie Title Patterns
 VOD_NAME_RE = re.compile(
     r"(\(\s*(19|20)\d{2}\s*\)|\[\s*(19|20)\d{2}\s*\]|\b(19|20)\d{2}\b.*\b(720p|1080p|480p|hdrip|web-?dl|bluray|dvdrip)\b|"
     r"\b(dual\s*audio|hindi\s*dubbed|bengali\s*dubbed|web-?dl|hdrip|bluray|brrip|dvdrip|camrip|hdts|uncut|"
@@ -630,8 +631,8 @@ def scrape_github():
                 res.extend(chs)
                 found += len(chs)
         log(f"[GitHub search] mot {len(unique_raws)} file theke {found} channel paoa gese")
-    elif USE_GITHUB_SEARCH:
-        log("[GitHub search] GITHUB_TOKEN boshano hoy ni, keyword search skip kora holo")
+    else:
+        log("[GitHub search] Ajker 24h cycle er search agei hoyeche (ba token nai), saved sources theke update hocche.")
     return res
 
 
@@ -775,7 +776,6 @@ def check_stream(raw_url, timeout=CHECK_TIMEOUT):
                     reason = "empty/invalid m3u8"
                     continue
 
-                # Shudhu .m3u8 HLS stream allow korbe (unconverted raw .ts bad dibe jate 'output=m3u8' error na ashe)
                 if raw and raw[0] == 0x47:
                     return False, 0, "raw ts stream (not m3u8)", ua
                 if ".ts" in final_url.lower():
