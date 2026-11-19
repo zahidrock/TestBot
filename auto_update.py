@@ -1,6 +1,9 @@
 """
-All-in-One Direct (No-Proxy) Live TV IPTV Updater (24h GitHub Search + 6h Playlist Refresh)
+All-in-One Direct (No-Proxy) Live TV IPTV Updater
 Features:
+  - Generates TWO playlists:
+      1. 'playlist.m3u': All verified alive streams (with backups)
+      2. 'playlist_clean.m3u': Duplicate-free, lowest ping (fastest response) 1 link per channel
   - Loads upstream websites/APIs & active bot feeds from 'discovered_sources.json'
   - Runs GitHub Code Search once every 24 hours (or on manual run) to avoid rate limits
   - Direct Scrapers: AynaOTT, JagoBD, Extra BDIX/Free-TV Repos, Adaptive Streams, YuppCDN
@@ -17,10 +20,11 @@ from pathlib import Path
 
 # ------------------------------------------------------------------ settings
 OUTPUT = Path("playlist.m3u")
+CLEAN_OUTPUT = Path("playlist_clean.m3u")  # Duplicate-free & lowest ping playlist
 DISCOVERED_FILE = Path("discovered_sources.json")
 WORKERS = 150                # ek sathe 150 ta link check hobe
 CHECK_TIMEOUT = 8            # 8 sekond dile slow-start BDIX/Indian server bad porbe na
-MAX_LINKS_PER_CHANNEL = None # shob alive link thakbe
+MAX_LINKS_PER_CHANNEL = None # main playlist e shob alive link thakbe
 MIN_KEEP_RATIO = 0.1         # safety ratio
 
 # Proxy off (direct stream links)
@@ -992,7 +996,7 @@ def dedupe_by_name(chs, limit):
 
 
 # ------------------------------------------------------------------ output (Direct M3UIPTV Compatible)
-def write_playlist(channels):
+def write_playlist(channels, target_path=OUTPUT):
     def q(s):
         return str(s).replace('"', "'").replace("\n", " ")
     lines = ["#EXTM3U"]
@@ -1026,7 +1030,7 @@ def write_playlist(channels):
         if ref:
             lines.append(f"#EXTVLCOPT:http-referrer={ref}")
         lines.append(clean_url)
-    OUTPUT.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    target_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 def main():
@@ -1110,9 +1114,26 @@ def main():
 
     cnt = Counter(c["group"] for c in alive)
     log("Group wise channel: " + ", ".join(f"{g}: {n}" for g, n in cnt.most_common()))
-    write_playlist(alive)
+
+    # 1. Save full playlist (with backup links)
+    write_playlist(alive, OUTPUT)
+
+    # 2. Save duplicate-free & lowest ping (fastest) playlist
+    best_by_channel = {}
+    for c in alive:
+        key = norm(c["name"]) or c["name"].lower()
+        if key not in best_by_channel or c.get("latency", 99) < best_by_channel[key].get("latency", 99):
+            best_by_channel[key] = c
+
+    clean_alive = sorted(
+        best_by_channel.values(),
+        key=lambda c: (GROUP_ORDER.index(c["group"]) if c["group"] in GROUP_ORDER else 99,
+                       c["name"].lower())
+    )
+    write_playlist(clean_alive, CLEAN_OUTPUT)
+
     elapsed = int(time.time() - start_time)
-    log(f"{OUTPUT} e {len(alive)} ta alive live TV channel save hoise (Total time: {elapsed // 60}m {elapsed % 60}s)")
+    log(f"{OUTPUT} e {len(alive)} ta channel ebong {CLEAN_OUTPUT} e {len(clean_alive)} ta duplicate-free fastest ping channel save hoise (Total time: {elapsed // 60}m {elapsed % 60}s)")
     return 0
 
 
