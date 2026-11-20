@@ -2,8 +2,7 @@ name: Update IPTV Playlist
 
 on:
   schedule:
-    - cron: '0 */6 * * *'   # Proti 6 ghonta porpor playlist refresh hobe
-    - cron: '0 18 * * *'    # Proti 24 ghontay 1 bar (BD Time 12:00 AM) GitHub search cholbe
+    - cron: '0 */6 * * *'   # Proti 6 ghonta porpor cholbe (00, 06, 12, 18 UTC)
   workflow_dispatch:        # Manual run korar option
 
 permissions:
@@ -22,23 +21,37 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Discover GitHub Bots & Upstream Sources (Once every 24h)
-        if: github.event_name == 'workflow_dispatch' || github.event.schedule == '0 18 * * *'
+      - name: Discover GitHub Bots & Upstream Sources (Once every 24h at 18:00 UTC / 12 AM BD)
+        if: github.event_name == 'workflow_dispatch' || github.event.schedule == '0 */6 * * *' && startsWith(github.event.repository.updated_at, '') == false
         env:
           GITHUB_TOKEN: ${{ secrets.MY_GH_TOKEN }}
-        run: python discover_sources.py
+        run: |
+          HOUR=$(date -u +%H)
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "$HOUR" = "18" ] || [ "$HOUR" = "19" ]; then
+            python discover_sources.py
+          else
+            echo "Skipping 24h bot discovery (Current UTC hour: $HOUR)"
+          fi
 
       - name: Run updater
         env:
           GITHUB_TOKEN: ${{ secrets.MY_GH_TOKEN }}
-          RUN_GH_SEARCH: ${{ (github.event_name == 'workflow_dispatch' || github.event.schedule == '0 18 * * *') && 'true' || 'false' }}
-        run: python auto_update.py
+        run: |
+          HOUR=$(date -u +%H)
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "$HOUR" = "18" ] || [ "$HOUR" = "19" ]; then
+            export RUN_GH_SEARCH="true"
+          else
+            export RUN_GH_SEARCH="false"
+          fi
+          python auto_update.py
 
       - name: Commit playlist & reports
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add playlist.m3u playlist_clean.m3u discovered_sources.json bot_report.txt
+          for f in playlist.m3u playlist_clean.m3u discovered_sources.json bot_report.txt; do
+            [ -f "$f" ] && git add "$f"
+          done
           if ! git diff --staged --quiet; then
             git commit -m "Auto update playlists & sources: $(date +'%Y-%m-%d %H:%M')"
             git pull --rebase --autostash origin main
