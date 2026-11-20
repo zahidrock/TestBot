@@ -4,11 +4,13 @@ Features:
   - Generates TWO playlists:
       1. 'playlist.m3u': All verified alive streams (with backups)
       2. 'playlist_clean.m3u': Duplicate-free, lowest ping (fastest response) 1 link per channel
+  - Allows token-based live streams (auto-removed on next 6h cycle if expired)
+  - Includes English Drama, Entertainment & Documentary channels alongside English Movies & Music
   - Loads upstream websites/APIs & active bot feeds from 'discovered_sources.json'
   - Runs GitHub Code Search once every 24 hours (or on manual run) to avoid rate limits
   - Direct Scrapers: AynaOTT, JagoBD, Extra BDIX/Free-TV Repos, Adaptive Streams, YuppCDN
   - Auto-converts Xtream .ts / output=ts / extensionless stream links to .m3u8 for M3UIPTV compatibility
-  - Strict VOD / Movie / Radio / DRM / IP-Token Blocker
+  - Strict VOD / Movie / Radio / DRM Blocker
   - Balanced Deep HLS Check (Top 3 sub-playlists + AES-128 Key URI check; blocks raw .ts)
   - Direct M3UIPTV Headers (#EXTVLCOPT)
 """
@@ -56,19 +58,22 @@ COUNTRY_SOURCES = [
 STRICT_GROUPS = True
 
 COMBOS = [
-    ("Kolkata Movies", "movies", "ben"),
-    ("Hindi Movies",   "movies", "hin"),
-    ("English Movies", "movies", "eng"),
-    ("Hindi Music",    "music",  "hin"),
-    ("English Music",  "music",  "eng"),
-    ("Bangla Music",   "music",  "ben"),
-    ("Sports",         "sports", ("hin", "eng", "ben")),
+    ("Kolkata Movies",        "movies",        "ben"),
+    ("Hindi Movies",          "movies",        "hin"),
+    ("English Movies",        "movies",        "eng"),
+    ("English Entertainment", "entertainment", "eng"),
+    ("English Entertainment", "series",        "eng"),
+    ("English Entertainment", "documentary",   "eng"),
+    ("Hindi Music",           "music",         "hin"),
+    ("English Music",         "music",         "eng"),
+    ("Bangla Music",          "music",         "ben"),
+    ("Sports",                "sports",        ("hin", "eng", "ben")),
 ]
 
 GROUP_ORDER = [
     "Bangladesh", "Bangla (India)", "Kolkata Movies", "Bangla Music",
-    "Hindi Movies", "Hindi Music", "English Movies", "English Music",
-    "Sports", "India"
+    "Hindi Movies", "Hindi Music", "English Movies", "English Entertainment",
+    "English Music", "Sports", "India"
 ]
 
 BLOCK_URLS = [
@@ -99,8 +104,6 @@ VOD_NAME_RE = re.compile(
     re.I
 )
 
-# IP-locked tokens that expire or fail on TV
-IP_TOKEN_RE = re.compile(r"(__hdnea__|hdnts=|wmsAuthSign=|nimblesessionid=)", re.I)
 KEY_URI_RE = re.compile(r'#EXT-X-KEY:[^\n]*URI="([^"]+)"', re.I)
 
 # Xtream .ts / extensionless URL pattern
@@ -385,6 +388,7 @@ def scrape_extra_repos():
         ("IPTV-org-Sports",  f"{IPTV_BASE}/categories/sports.m3u"),
         ("IPTV-org-Movies",  f"{IPTV_BASE}/categories/movies.m3u"),
         ("IPTV-org-Ent",     f"{IPTV_BASE}/categories/entertainment.m3u"),
+        ("IPTV-org-Series",  f"{IPTV_BASE}/categories/series.m3u"),
         ("IPTV-org-Kids",    f"{IPTV_BASE}/categories/kids.m3u"),
         ("IPTV-org-Doc",     f"{IPTV_BASE}/categories/documentary.m3u"),
     ]
@@ -567,7 +571,7 @@ def scrape_github():
             if c["url"].split("|")[0] in lang_urls:
                 res.append({**c, "group": group})
                 n += 1
-        log(f"[GitHub] {group}: {n} channel")
+        log(f"[GitHub] {group} ({cat}): {n} channel")
 
     for group, url, langs in COUNTRY_SOURCES:
         allowed = None
@@ -702,7 +706,7 @@ def verify_deep_hls(m3u8_text, base_url, headers, timeout=6):
 
 
 def check_stream(raw_url, timeout=CHECK_TIMEOUT):
-    """(alive, latency_sec, reason, matched_ua) - Shudhu valid .m3u8 HLS live TV stream allow korbe"""
+    """(alive, latency_sec, reason, matched_ua) - Token-based o regular valid .m3u8 HLS live TV stream allow korbe"""
     if not raw_url:
         return False, 0, "empty url", UA
     base, url, custom_ua = dict(HEADERS), raw_url, False
@@ -720,8 +724,6 @@ def check_stream(raw_url, timeout=CHECK_TIMEOUT):
         return False, 0, "radio/audio file", UA
     if VOD_EXT_RE.search(url) or VOD_PATH_RE.search(url):
         return False, 0, "VOD/movie file", UA
-    if IP_TOKEN_RE.search(url):
-        return False, 0, "IP-locked token", UA
 
     if "jagobd.com" in url and "Referer" not in base:
         base["Referer"] = "https://www.jagobd.com/"
@@ -892,13 +894,17 @@ ENGLISH_MOVIE_CH_RE = re.compile(
     r"\b(star movies|hbo|sony pix|zee cafe|and priv|&priv|movies now|mnx|mn\+|romedy now|axn|wb|warner bros|"
     r"paramount|amc|cinemax|showtime|tcm|hallmark|syfy|mgm|universal movies)\b"
 )
+ENGLISH_ENT_CH_RE = re.compile(
+    r"\b(star world|colors infinity|comedy central|fox life|fox crime|fx|tlc|discovery|national geographic|nat geo|"
+    r"animal planet|history tv|travel xp|bbc entertainment|bbc earth|cbs drama|cbs reality|syfy|usa network|"
+    r"tnt|tbs|amc|cw|nbc|abc|cbs|fox|itv|channel 4|e4|sky one|sky witness|sky atlantic|bravo|lifetime|hgtv|food network)\b"
+)
 
 PAY_ENT_CH_RE = re.compile(
     r"\b(star plus|star bharat|star utsav|star jalsha|colors|rishtey|sony entertainment|sony tv|set hd|set india|"
     r"sony sab|sab tv|sony pal|sony aath|sony yay|sony bbc|zee tv|zee anmol|zee bangla|zee news|zee hindustan|"
     r"zee zing|zee zest|zee business|zee salaam|&tv|and tv|dangal|ishara|shemaroo|big magic|bindass|"
-    r"discovery|national geographic|nat geo|animal planet|history tv|tlc|fox life|travel xp|epic tv|"
-    r"disney|hungama|nick|nickelodeon|sonic|cartoon network|pogo|marvel hq)\b"
+    r"epic tv|disney|hungama|nick|nickelodeon|sonic|cartoon network|pogo|marvel hq)\b"
 )
 PAY_SPORTS_RE = re.compile(
     r"\b(star sports|sony ten|sony sports|ten sports|t sports|willow|ptv sports|eurosport|"
@@ -923,6 +929,8 @@ def classify_pay_channel(lname):
         return "Hindi Movies"
     if ENGLISH_MOVIE_CH_RE.search(lname):
         return "English Movies"
+    if ENGLISH_ENT_CH_RE.search(lname):
+        return "English Entertainment"
     if PAY_SPORTS_RE.search(lname):
         return "Sports"
     if "zing" in lname:
@@ -941,6 +949,8 @@ def keyword_group(c):
         return "Hindi Movies"
     if ENGLISH_MOVIE_CH_RE.search(t):
         return "English Movies"
+    if ENGLISH_ENT_CH_RE.search(t):
+        return "English Entertainment"
     if PAY_SPORTS_RE.search(t):
         return "Sports"
     if PAY_ENT_CH_RE.search(lname):
@@ -948,10 +958,11 @@ def keyword_group(c):
 
     music = re.search(r"\b(music|song|songs|gaan|mtv|vevo|hits|zing)\b", t)
     movie_ch = re.search(r"\b(movies?\s*(tv|channel|hd|plus|now|action|gold|club)|cinema\s*(tv|hd)|flix\s*tv)\b", t)
+    drama_ch = re.search(r"\b(drama|series|entertainment|documentary|lifestyle|sci-?fi|comedy)\b", t)
     sport = re.search(r"\b(sport|sports|cricket|football|soccer)\b", t)
     bn = re.search(r"\b(bangla|bengali|bangladesh|\bbd\b)\b", t) or POPULAR_BD_IN_RE.search(t)
     hi = re.search(r"\b(hindi|bhojpuri|india|indian)\b", t)
-    en = re.search(r"\b(english|hollywood)\b", t)
+    en = re.search(r"\b(english|hollywood|usa|uk|british|american)\b", t)
 
     if music:
         if bn:
@@ -965,6 +976,8 @@ def keyword_group(c):
             return "Hindi Movies"
         if en:
             return "English Movies"
+    if drama_ch and en and not hi and not bn:
+        return "English Entertainment"
     if sport:
         return "Sports"
     if bn:
@@ -1073,6 +1086,8 @@ def main():
             c["group"] = "Hindi Movies"
         elif ENGLISH_MOVIE_CH_RE.search(lname):
             c["group"] = "English Movies"
+        elif ENGLISH_ENT_CH_RE.search(lname):
+            c["group"] = "English Entertainment"
         elif PAY_SPORTS_RE.search(lname):
             c["group"] = "Sports"
         elif PAY_ENT_CH_RE.search(lname):
