@@ -381,8 +381,6 @@ def scrape_extra_repos():
     res = []
     repos = [
         ("BDIX-Mrgify",      "https://raw.githubusercontent.com/abusaeeidx/Mrgify-BDIX-IPTV/main/playlist.m3u"),
-        ("BDIX-Saeid",       "https://raw.githubusercontent.com/saeidrahmanbd/BDIX-IPTV/main/playlist.m3u"),
-        ("DhakaFLIX-Safin",  "https://raw.githubusercontent.com/SafinBhuiyan/DhakaFLIX/main/playlist.m3u"),
         ("Free-TV-IN",       "https://raw.githubusercontent.com/Free-TV/IPTV/master/playlists/playlist_india.m3u8"),
         ("IPTV-org-Sports",  f"{IPTV_BASE}/categories/sports.m3u"),
         ("IPTV-org-Movies",  f"{IPTV_BASE}/categories/movies.m3u"),
