@@ -1,0 +1,378 @@
+=== GitHub IPTV Bots & Upstream Sources Report (2026-11-20 00:18:57 UTC) ===
+Total Active Repositories Saved (Merged): 35
+Total Unique Upstream Scraping Sources Saved: 95
+Total Bot Playlists Saved: 56
+
+--- 1. UPSTREAM WEBSITES / APIS USED BY BOTS ---
+  - http://198.195.239.50/tv_channels.json
+  - http://bazario.space/token/stream.php
+  - http://pr.example/show.m3u8
+  - http://tr.example/hd720.m3u8
+  - http://tr.example/old.m3u8
+  - http://tr.example/sd1080.m3u8
+  - http://tr.example/show.m3u8
+  - http://tvsen7.aynascope.net/sspts1/index.m3u8
+  - https://app.ncare.live/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcGVMZEJCTEFWeVN3PTOmdFsaWRtaW51aiPhnPTI2/greentv.stream/live-orgin/greentv.stream/chunks.m3u8
+  - https://aspaltvpasti.top/Drmvidbos/Akun121/bosstv.m3u8
+  - https://byphdgllyk.gpcdn.net/hls/deeptotv/index.m3u8
+  - https://d3qs3d2rkhfqrt.cloudfront.net/out/v1/7ff57cc9046b4c188b51a0d506f36e7f/index_3.m3u8
+  - https://dlive.sx
+  - https://fonts.googleapis.com
+  - https://images.toffeelive.com/images/program/343/logo/240x240/mobile_logo_496322001666780228.png
+  - https://iptv-org.github.io/api/blocklist.json
+  - https://iptv-org.github.io/api/channels.json
+  - https://iptv-org.github.io/api/countries.json
+  - https://iptv-org.github.io/api/streams.json
+  - https://iptv-org.github.io/iptv
+  - https://iptv-org.github.io/iptv/categories/animation.m3u
+  - https://iptv-org.github.io/iptv/categories/documentary.m3u
+  - https://iptv-org.github.io/iptv/categories/education.m3u
+  - https://iptv-org.github.io/iptv/categories/entertainment.m3u
+  - https://iptv-org.github.io/iptv/categories/general.m3u
+  - https://iptv-org.github.io/iptv/categories/kids.m3u
+  - https://iptv-org.github.io/iptv/categories/movies.m3u
+  - https://iptv-org.github.io/iptv/categories/music.m3u
+  - https://iptv-org.github.io/iptv/categories/news.m3u
+  - https://iptv-org.github.io/iptv/categories/religious.m3u
+  - https://iptv-org.github.io/iptv/categories/series.m3u
+  - https://iptv-org.github.io/iptv/categories/sports.m3u
+  - https://iptv-org.github.io/iptv/countries
+  - https://iptv-org.github.io/iptv/countries/$
+  - https://iptv-org.github.io/iptv/countries/bd.m3u
+  - https://iptv-org.github.io/iptv/countries/br.m3u
+  - https://iptv-org.github.io/iptv/countries/ca.m3u
+  - https://iptv-org.github.io/iptv/countries/cn.m3u
+  - https://iptv-org.github.io/iptv/countries/de.m3u
+  - https://iptv-org.github.io/iptv/countries/es.m3u
+  - https://iptv-org.github.io/iptv/countries/fr.m3u
+  - https://iptv-org.github.io/iptv/countries/hk.m3u
+  - https://iptv-org.github.io/iptv/countries/in.m3u
+  - https://iptv-org.github.io/iptv/countries/it.m3u
+  - https://iptv-org.github.io/iptv/countries/mo.m3u
+  - https://iptv-org.github.io/iptv/countries/pk.m3u
+  - https://iptv-org.github.io/iptv/countries/tr.m3u
+  - https://iptv-org.github.io/iptv/countries/tw.m3u
+  - https://iptv-org.github.io/iptv/countries/uk.m3u
+  - https://iptv-org.github.io/iptv/countries/us.m3u
+  - https://iptv-org.github.io/iptv/index.country.m3u
+  - https://iptv-org.github.io/iptv/index.m3u
+  - https://iptv-org.github.io/iptv/languages/ara.m3u
+  - https://iptv-org.github.io/iptv/languages/ben.m3u
+  - https://iptv-org.github.io/iptv/languages/eng.m3u
+  - https://iptv-org.github.io/iptv/regions/afr.m3u
+  - https://iptv-org.github.io/iptv/regions/amer.m3u
+  - https://iptv-org.github.io/iptv/regions/asia.m3u
+  - https://iptv-org.github.io/iptv/regions/eur.m3u
+  - https://iptv-org.github.io/iptv/regions/oce.m3u
+  - https://lupael.github.io/IPTV/running.m3u
+  - https://owrcovcrpy.gpcdn.net/bpk-tv/1701/output/index.m3u8
+  - https://owrcovcrpy.gpcdn.net/bpk-tv/1702/output/1702.m3u8
+  - https://owrcovcrpy.gpcdn.net/bpk-tv/1703/output/1703.m3u8
+  - https://owrcovcrpy.gpcdn.net/bpk-tv/1704/output/1704.m3u8
+  - https://owrcovcrpy.gpcdn.net/bpk-tv/1705/output/1705.m3u8
+  - https://owrcovcrpy.gpcdn.net/bpk-tv/1706/output/1706.m3u8
+  - https://owrcovcrpy.gpcdn.net/bpk-tv/1708/output/index.m3u8
+  - https://owrcovcrpy.gpcdn.net/bpk-tv/1709/output/1709.m3u8
+  - https://owrcovcrpy.gpcdn.net/bpk-tv/1715/output/index.m3u8
+  - https://owrcovcrpy.gpcdn.net/bpk-tv/1716/output/1716.m3u8
+  - https://owrcovcrpy.gpcdn.net/bpk-tv/1720/output/1720.m3u8
+  - https://owrcovcrpy.gpcdn.net/bpk-tv/1722/output/1722.m3u8
+  - https://owrcovcrpy.gpcdn.net/bpk-tv/1723/output/index.m3u8
+  - https://owrcovcrpy.gpcdn.net/bpk-tv/1728/output/1728.m3u8
+  - https://owrcovcrpy.gpcdn.net/bpk-tv/1729/output/1729.m3u8
+  - https://playlist.gmaxhub.workers.dev
+  - https://site.api.espn.com/apis/site/v2/sports/soccer/
+  - https://site.web.api.espn.com/apis/v2/scoreboard/header
+  - https://static.wikia.nocookie.net/logopedia/images/5/5d/Ekattor_TV_logo.png
+  - https://stream.ottplus.bd/live/sony_aath_abr/live/sony_aath_720/chunks.m3u8
+  - https://tvsen4.aynaott.com/n64PH4YL/index.m3u8
+  - https://tvsen6.aynaott.com/rtv/tracks-v1a1/mono.ts.m3u8
+  - https://tvsen7.aynaott.com/tsports-hd/index.m3u8
+  - https://tvwatch.app
+  - https://ww7.vcdnlare.com
+  - https://ww7.vcdnlare.com/
+  - https://www.4movierulz.tv
+  - https://www.dens.tv
+  - https://www.dens.tv/
+  - https://www.indihometv.com/
+  - https://www.jiotv.com/
+  - https://www.visionplustv.id/
+  - https://xstreamcp-assets-msp.streamready.in/assets/LIVETV/LIVECHANNEL/LIVETV_LIVETVCHANNEL_ZEE_BANGLA/images/LOGO_HD/LOGO_HD_image.png
+  - https://yupptvcatchupire.yuppcdn.net/preview/colorsbanglahd/800.m3u8
+
+--- 2. ACTIVE GITHUB BOTS & THEIR SOURCES ---
+
+[AUTO-BOT] md-sayem-hossain/My-BD-IPTV-Playlist (Updated: 2026-09-02, Stars: 0)
+  Outputs:
+    > https://raw.githubusercontent.com/md-sayem-hossain/My-BD-IPTV-Playlist/main/channels.m3u
+    > https://raw.githubusercontent.com/md-sayem-hossain/My-BD-IPTV-Playlist/main/playlist.m3u
+
+[AUTO-BOT] Shariqtechie/kodi-livetv-free (Updated: 2026-10-13, Stars: 0)
+  Scrapes from:
+    * https://iptv-org.github.io/api/countries.json
+    * https://iptv-org.github.io/iptv
+
+[AUTO-BOT] Zaman-Topu/Ip-tv-Collection (Updated: 2026-10-22, Stars: 32)
+  Scrapes from:
+    * http://198.195.239.50/tv_channels.json
+    * https://iptv-org.github.io/iptv/categories/documentary.m3u
+    * https://iptv-org.github.io/iptv/categories/entertainment.m3u
+    * https://iptv-org.github.io/iptv/categories/kids.m3u
+    * https://iptv-org.github.io/iptv/categories/movies.m3u
+    * https://iptv-org.github.io/iptv/categories/music.m3u
+    * https://iptv-org.github.io/iptv/categories/news.m3u
+    * https://iptv-org.github.io/iptv/categories/sports.m3u
+    * https://iptv-org.github.io/iptv/countries/bd.m3u
+    * https://iptv-org.github.io/iptv/countries/br.m3u
+    * https://iptv-org.github.io/iptv/countries/ca.m3u
+    * https://iptv-org.github.io/iptv/countries/de.m3u
+    * https://iptv-org.github.io/iptv/countries/es.m3u
+    * https://iptv-org.github.io/iptv/countries/fr.m3u
+    * https://iptv-org.github.io/iptv/countries/in.m3u
+    * https://iptv-org.github.io/iptv/countries/it.m3u
+    * https://iptv-org.github.io/iptv/countries/uk.m3u
+    * https://iptv-org.github.io/iptv/countries/us.m3u
+    * https://iptv-org.github.io/iptv/index.m3u
+    * https://iptv-org.github.io/iptv/languages/ben.m3u
+    * https://iptv-org.github.io/iptv/languages/eng.m3u
+    * https://iptv-org.github.io/iptv/regions/afr.m3u
+    * https://iptv-org.github.io/iptv/regions/amer.m3u
+    * https://iptv-org.github.io/iptv/regions/asia.m3u
+    * https://iptv-org.github.io/iptv/regions/eur.m3u
+    * https://iptv-org.github.io/iptv/regions/oce.m3u
+    * https://lupael.github.io/IPTV/running.m3u
+  Outputs:
+    > https://raw.githubusercontent.com/Zaman-Topu/Ip-tv-Collection/main/FINAL_IPTV_ACTIVE.m3u
+    > https://raw.githubusercontent.com/Zaman-Topu/Ip-tv-Collection/main/FINAL_IPTV_COMPLETE.m3u
+    > https://raw.githubusercontent.com/Zaman-Topu/Ip-tv-Collection/main/FINAL_IPTV_DEAD.m3u
+    > https://raw.githubusercontent.com/Zaman-Topu/Ip-tv-Collection/main/FINAL_IPTV_GEO.m3u
+    > https://raw.githubusercontent.com/Zaman-Topu/Ip-tv-Collection/main/FINAL_MOVIES_COMPLETE.m3u
+
+[AUTO-BOT] thirud4a4/movies_m3u (Updated: 2026-10-25, Stars: 6)
+  Scrapes from:
+    * https://ww7.vcdnlare.com
+    * https://ww7.vcdnlare.com/
+    * https://www.4movierulz.tv
+  Outputs:
+    > https://raw.githubusercontent.com/thirud4a4/movies_m3u/main/old_playlist.m3u
+    > https://raw.githubusercontent.com/thirud4a4/movies_m3u/main/playlist.m3u
+
+[AUTO-BOT] Lonestar1306/iptv-auto-playlists (Updated: 2026-10-30, Stars: 1)
+  Scrapes from:
+    * https://dlive.sx
+  Outputs:
+    > https://raw.githubusercontent.com/Lonestar1306/iptv-auto-playlists/main/daddylive.m3u
+
+[AUTO-BOT] workaybarsh/automatic-iptv-channel-list-updater (Updated: 2026-11-12, Stars: 1)
+  Scrapes from:
+    * http://pr.example/show.m3u8
+    * http://tr.example/hd720.m3u8
+    * http://tr.example/old.m3u8
+    * http://tr.example/sd1080.m3u8
+    * http://tr.example/show.m3u8
+    * https://iptv-org.github.io/api/blocklist.json
+    * https://iptv-org.github.io/api/channels.json
+    * https://iptv-org.github.io/api/streams.json
+
+[AUTO-BOT] Masterxv/movies_m3u (Updated: 2026-11-15, Stars: 0)
+  Scrapes from:
+    * https://ww7.vcdnlare.com
+    * https://ww7.vcdnlare.com/
+    * https://www.4movierulz.tv
+  Outputs:
+    > https://raw.githubusercontent.com/Masterxv/movies_m3u/main/old_playlist.m3u
+    > https://raw.githubusercontent.com/Masterxv/movies_m3u/main/playlist.m3u
+
+[AUTO-BOT] nazelahi/LiveTV (Updated: 2026-11-18, Stars: 0)
+
+[AUTO-BOT] tunnabri-ops/BDIX-IPTV (Updated: 2026-11-19, Stars: 2)
+  Outputs:
+    > https://raw.githubusercontent.com/tunnabri-ops/BDIX-IPTV/main/bdix/playlist.m3u
+
+[AUTO-BOT] sultanarabi161/filoox-bdix (Updated: 2026-11-19, Stars: 29)
+  Scrapes from:
+    * http://bazario.space/token/stream.php
+  Outputs:
+    > https://raw.githubusercontent.com/sultanarabi161/filoox-bdix/main/playlist.m3u
+
+[AUTO-BOT] saeidrahmanbd/BDIX-IPTV (Updated: 2026-11-19, Stars: 20)
+  Outputs:
+    > https://raw.githubusercontent.com/saeidrahmanbd/BDIX-IPTV/main/IPTV-Playlist.m3u
+    > https://raw.githubusercontent.com/saeidrahmanbd/BDIX-IPTV/main/International-Playlist.m3u
+
+[AUTO-BOT] Sonaton11/tvwatch-m3u (Updated: 2026-11-19, Stars: 0)
+  Scrapes from:
+    * https://tvwatch.app
+  Outputs:
+    > https://raw.githubusercontent.com/Sonaton11/tvwatch-m3u/main/tvwatch_all.m3u
+    > https://raw.githubusercontent.com/Sonaton11/tvwatch-m3u/main/tvwatch_live.m3u
+
+[AUTO-BOT] iqbal8846/sports-iptv (Updated: 2026-11-19, Stars: 2)
+  Scrapes from:
+    * https://site.api.espn.com/apis/site/v2/sports/soccer/
+    * https://site.web.api.espn.com/apis/v2/scoreboard/header
+  Outputs:
+    > https://raw.githubusercontent.com/iqbal8846/sports-iptv/main/output/cricket.m3u
+    > https://raw.githubusercontent.com/iqbal8846/sports-iptv/main/output/football.m3u
+    > https://raw.githubusercontent.com/iqbal8846/sports-iptv/main/output/sports_all.m3u
+
+[AUTO-BOT] raymondchanzip-cell/IPTV-Auto-Update (Updated: 2026-11-19, Stars: 1)
+  Scrapes from:
+    * https://iptv-org.github.io/iptv/countries/cn.m3u
+    * https://iptv-org.github.io/iptv/countries/hk.m3u
+    * https://iptv-org.github.io/iptv/countries/mo.m3u
+    * https://iptv-org.github.io/iptv/countries/tw.m3u
+    * https://iptv-org.github.io/iptv/countries/us.m3u
+  Outputs:
+    > https://raw.githubusercontent.com/raymondchanzip-cell/IPTV-Auto-Update/main/IPTV.m3u
+
+[AUTO-BOT] 4yt1k/m3u-autoupdate (Updated: 2026-11-19, Stars: 41)
+  Outputs:
+    > https://raw.githubusercontent.com/4yt1k/m3u-autoupdate/master/output/ipv4/result.m3u
+    > https://raw.githubusercontent.com/4yt1k/m3u-autoupdate/master/output/ipv6/result.m3u
+    > https://raw.githubusercontent.com/4yt1k/m3u-autoupdate/master/output/result.m3u
+    > https://raw.githubusercontent.com/4yt1k/m3u-autoupdate/master/output/user_result.m3u
+
+[AUTO-BOT] raihan-rifat007/Streamverse (Updated: 2026-11-19, Stars: 0)
+  Scrapes from:
+    * https://fonts.googleapis.com
+    * https://iptv-org.github.io/iptv/categories/animation.m3u
+    * https://iptv-org.github.io/iptv/categories/documentary.m3u
+    * https://iptv-org.github.io/iptv/categories/education.m3u
+    * https://iptv-org.github.io/iptv/categories/entertainment.m3u
+    * https://iptv-org.github.io/iptv/categories/general.m3u
+    * https://iptv-org.github.io/iptv/categories/kids.m3u
+    * https://iptv-org.github.io/iptv/categories/movies.m3u
+    * https://iptv-org.github.io/iptv/categories/music.m3u
+    * https://iptv-org.github.io/iptv/categories/news.m3u
+    * https://iptv-org.github.io/iptv/categories/religious.m3u
+    * https://iptv-org.github.io/iptv/categories/series.m3u
+    * https://iptv-org.github.io/iptv/categories/sports.m3u
+    * https://iptv-org.github.io/iptv/countries/$
+    * https://iptv-org.github.io/iptv/countries/bd.m3u
+    * https://iptv-org.github.io/iptv/countries/in.m3u
+    * https://iptv-org.github.io/iptv/countries/pk.m3u
+    * https://iptv-org.github.io/iptv/countries/tr.m3u
+    * https://iptv-org.github.io/iptv/index.m3u
+    * https://iptv-org.github.io/iptv/languages/ara.m3u
+
+[AUTO-BOT] Romaxa55/world_ip_tv (Updated: 2026-11-19, Stars: 160)
+  Scrapes from:
+    * https://iptv-org.github.io/iptv/index.country.m3u
+  Outputs:
+    > https://raw.githubusercontent.com/Romaxa55/world_ip_tv/master/output/ad.m3u
+    > https://raw.githubusercontent.com/Romaxa55/world_ip_tv/master/output/ae.m3u
+    > https://raw.githubusercontent.com/Romaxa55/world_ip_tv/master/output/af.m3u
+    > https://raw.githubusercontent.com/Romaxa55/world_ip_tv/master/output/ai.m3u
+    > https://raw.githubusercontent.com/Romaxa55/world_ip_tv/master/output/al.m3u
+
+[AUTO-BOT] dhasap/dhanytv (Updated: 2026-11-19, Stars: 148)
+  Scrapes from:
+    * https://aspaltvpasti.top/Drmvidbos/Akun121/bosstv.m3u8
+    * https://iptv-org.github.io/iptv/countries
+    * https://www.dens.tv
+    * https://www.dens.tv/
+    * https://www.indihometv.com/
+    * https://www.visionplustv.id/
+  Outputs:
+    > https://raw.githubusercontent.com/dhasap/dhanytv/main/dhanytv-ott.m3u
+    > https://raw.githubusercontent.com/dhasap/dhanytv/main/dhanytv.m3u
+    > https://raw.githubusercontent.com/dhasap/dhanytv/main/update-script/extra_channels.m3u
+
+[AUTO-BOT] Mrbotrx/BDXI_KB (Updated: 2026-11-19, Stars: 4)
+  Outputs:
+    > https://raw.githubusercontent.com/Mrbotrx/BDXI_KB/main/KBC/KBC_playlist.m3u
+    > https://raw.githubusercontent.com/Mrbotrx/BDXI_KB/main/KBC/KBC_playlist_BD.m3u
+    > https://raw.githubusercontent.com/Mrbotrx/BDXI_KB/main/KBC/KBC_playlist_IN.m3u
+    > https://raw.githubusercontent.com/Mrbotrx/BDXI_KB/main/playlists/BDXI.m3u8
+    > https://raw.githubusercontent.com/Mrbotrx/BDXI_KB/main/playlists/Bangladesh.m3u8
+
+[AUTO-BOT] ashik4u/mrgify-clean (Updated: 2026-11-20, Stars: 18)
+  Outputs:
+    > https://raw.githubusercontent.com/ashik4u/mrgify-clean/main/playlist.m3u
+
+[AUTO-BOT] Mrbotrx/VIP-m3u-playlist (Updated: 2026-11-20, Stars: 2)
+  Outputs:
+    > https://raw.githubusercontent.com/Mrbotrx/VIP-m3u-playlist/main/Vip%20playlists/vip_kbpro.m3u8
+
+[REPO] mdislammondol160-del/Bangladesh-IPTV-Scraper (Updated: 2026-09-15, Stars: 0)
+  Scrapes from:
+    * http://tvsen7.aynascope.net/sspts1/index.m3u8
+    * https://app.ncare.live/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcGVMZEJCTEFWeVN3PTOmdFsaWRtaW51aiPhnPTI2/greentv.stream/live-orgin/greentv.stream/chunks.m3u8
+    * https://byphdgllyk.gpcdn.net/hls/deeptotv/index.m3u8
+    * https://d3qs3d2rkhfqrt.cloudfront.net/out/v1/7ff57cc9046b4c188b51a0d506f36e7f/index_3.m3u8
+    * https://images.toffeelive.com/images/program/343/logo/240x240/mobile_logo_496322001666780228.png
+    * https://owrcovcrpy.gpcdn.net/bpk-tv/1701/output/index.m3u8
+    * https://owrcovcrpy.gpcdn.net/bpk-tv/1702/output/1702.m3u8
+    * https://owrcovcrpy.gpcdn.net/bpk-tv/1703/output/1703.m3u8
+    * https://owrcovcrpy.gpcdn.net/bpk-tv/1704/output/1704.m3u8
+    * https://owrcovcrpy.gpcdn.net/bpk-tv/1705/output/1705.m3u8
+    * https://owrcovcrpy.gpcdn.net/bpk-tv/1706/output/1706.m3u8
+    * https://owrcovcrpy.gpcdn.net/bpk-tv/1708/output/index.m3u8
+    * https://owrcovcrpy.gpcdn.net/bpk-tv/1709/output/1709.m3u8
+    * https://owrcovcrpy.gpcdn.net/bpk-tv/1715/output/index.m3u8
+    * https://owrcovcrpy.gpcdn.net/bpk-tv/1716/output/1716.m3u8
+    * https://owrcovcrpy.gpcdn.net/bpk-tv/1720/output/1720.m3u8
+    * https://owrcovcrpy.gpcdn.net/bpk-tv/1722/output/1722.m3u8
+    * https://owrcovcrpy.gpcdn.net/bpk-tv/1723/output/index.m3u8
+    * https://owrcovcrpy.gpcdn.net/bpk-tv/1728/output/1728.m3u8
+    * https://owrcovcrpy.gpcdn.net/bpk-tv/1729/output/1729.m3u8
+    * https://static.wikia.nocookie.net/logopedia/images/5/5d/Ekattor_TV_logo.png
+    * https://stream.ottplus.bd/live/sony_aath_abr/live/sony_aath_720/chunks.m3u8
+    * https://tvsen4.aynaott.com/n64PH4YL/index.m3u8
+    * https://tvsen6.aynaott.com/rtv/tracks-v1a1/mono.ts.m3u8
+    * https://tvsen7.aynaott.com/tsports-hd/index.m3u8
+    * https://xstreamcp-assets-msp.streamready.in/assets/LIVETV/LIVECHANNEL/LIVETV_LIVETVCHANNEL_ZEE_BANGLA/images/LOGO_HD/LOGO_HD_image.png
+    * https://yupptvcatchupire.yuppcdn.net/preview/colorsbanglahd/800.m3u8
+
+[REPO] Rak-git/OWN_BDIX-IPTV (Updated: 2026-09-21, Stars: 0)
+  Outputs:
+    > https://raw.githubusercontent.com/Rak-git/OWN_BDIX-IPTV/main/playlist.m3u
+
+[REPO] MehrabBillah/Mehrab-TV-BDIX (Updated: 2026-09-22, Stars: 0)
+  Outputs:
+    > https://raw.githubusercontent.com/MehrabBillah/Mehrab-TV-BDIX/main/Playlist.m3u
+
+[REPO] TheBigZero1/bdix-iptv (Updated: 2026-10-17, Stars: 0)
+
+[REPO] ado1d/bdix-iptv-player (Updated: 2026-10-23, Stars: 0)
+
+[REPO] dhrubonai/Free-BD-IPTV (Updated: 2026-10-25, Stars: 2)
+  Outputs:
+    > https://raw.githubusercontent.com/dhrubonai/Free-BD-IPTV/main/playlists/bd_all_channels.m3u
+    > https://raw.githubusercontent.com/dhrubonai/Free-BD-IPTV/main/playlists/bd_news.m3u
+    > https://raw.githubusercontent.com/dhrubonai/Free-BD-IPTV/main/playlists/entertainment/cartoon.m3u
+    > https://raw.githubusercontent.com/dhrubonai/Free-BD-IPTV/main/playlists/entertainment/movies.m3u
+    > https://raw.githubusercontent.com/dhrubonai/Free-BD-IPTV/main/playlists/entertainment/music.m3u
+
+[REPO] SudipMHX/jolsha-tv (Updated: 2026-10-27, Stars: 1)
+  Outputs:
+    > https://raw.githubusercontent.com/SudipMHX/jolsha-tv/main/app/src/main/assets/sample_playlist.m3u
+    > https://raw.githubusercontent.com/SudipMHX/jolsha-tv/main/playlist.m3u
+
+[REPO] lokmancu/IPTV-BDIX (Updated: 2026-11-05, Stars: 0)
+  Outputs:
+    > https://raw.githubusercontent.com/lokmancu/IPTV-BDIX/main/Favorite_TV_Channels_EPG.m3u
+
+[REPO] daumedia/MikaPlusPlayer (Updated: 2026-11-15, Stars: 0)
+
+[REPO] istiakrahman15/iptv-api (Updated: 2026-11-16, Stars: 33)
+
+[REPO] ashik-maybe/bdix-ftp-server-tester (Updated: 2026-11-18, Stars: 1)
+
+[REPO] abusaeeidx/Mrgify-BDIX-IPTV (Updated: 2026-11-19, Stars: 152)
+  Outputs:
+    > https://raw.githubusercontent.com/abusaeeidx/Mrgify-BDIX-IPTV/main/playlist.m3u
+
+[REPO] time2shine/Rokon-IPTV (Updated: 2026-11-19, Stars: 10)
+  Outputs:
+    > https://raw.githubusercontent.com/time2shine/Rokon-IPTV/main/playlist.m3u
+
+[REPO] rmia41735-commits/BDIX-Live-TV (Updated: 2026-11-19, Stars: 0)
+  Scrapes from:
+    * https://playlist.gmaxhub.workers.dev
+    * https://www.jiotv.com/
+  Outputs:
+    > https://raw.githubusercontent.com/rmia41735-commits/BDIX-Live-TV/main/BiggBoss%20%281%29.m3u
+    > https://raw.githubusercontent.com/rmia41735-commits/BDIX-Live-TV/main/BiggBoss.m3u
+    > https://raw.githubusercontent.com/rmia41735-commits/BDIX-Live-TV/main/Sport_S1.m3u

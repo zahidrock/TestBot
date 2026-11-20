@@ -1,0 +1,681 @@
+{
+  "generated_at": "2026-11-20 00:18:57 UTC",
+  "total_bots_found": 35,
+  "bots": [
+    {
+      "repo": "md-sayem-hossain/My-BD-IPTV-Playlist",
+      "branch": "main",
+      "updated": "2026-09-02",
+      "stars": 0,
+      "is_auto_bot": true,
+      "playlists": [
+        "https://raw.githubusercontent.com/md-sayem-hossain/My-BD-IPTV-Playlist/main/channels.m3u",
+        "https://raw.githubusercontent.com/md-sayem-hossain/My-BD-IPTV-Playlist/main/playlist.m3u"
+      ],
+      "upstream_sources": []
+    },
+    {
+      "repo": "Shariqtechie/kodi-livetv-free",
+      "branch": "main",
+      "updated": "2026-10-13",
+      "stars": 0,
+      "is_auto_bot": true,
+      "playlists": [],
+      "upstream_sources": [
+        "https://iptv-org.github.io/api/countries.json",
+        "https://iptv-org.github.io/iptv"
+      ]
+    },
+    {
+      "repo": "Zaman-Topu/Ip-tv-Collection",
+      "branch": "main",
+      "updated": "2026-10-22",
+      "stars": 32,
+      "is_auto_bot": true,
+      "playlists": [
+        "https://raw.githubusercontent.com/Zaman-Topu/Ip-tv-Collection/main/FINAL_IPTV_ACTIVE.m3u",
+        "https://raw.githubusercontent.com/Zaman-Topu/Ip-tv-Collection/main/FINAL_IPTV_COMPLETE.m3u",
+        "https://raw.githubusercontent.com/Zaman-Topu/Ip-tv-Collection/main/FINAL_IPTV_DEAD.m3u",
+        "https://raw.githubusercontent.com/Zaman-Topu/Ip-tv-Collection/main/FINAL_IPTV_GEO.m3u",
+        "https://raw.githubusercontent.com/Zaman-Topu/Ip-tv-Collection/main/FINAL_MOVIES_COMPLETE.m3u"
+      ],
+      "upstream_sources": [
+        "http://198.195.239.50/tv_channels.json",
+        "https://iptv-org.github.io/iptv/categories/documentary.m3u",
+        "https://iptv-org.github.io/iptv/categories/entertainment.m3u",
+        "https://iptv-org.github.io/iptv/categories/kids.m3u",
+        "https://iptv-org.github.io/iptv/categories/movies.m3u",
+        "https://iptv-org.github.io/iptv/categories/music.m3u",
+        "https://iptv-org.github.io/iptv/categories/news.m3u",
+        "https://iptv-org.github.io/iptv/categories/sports.m3u",
+        "https://iptv-org.github.io/iptv/countries/bd.m3u",
+        "https://iptv-org.github.io/iptv/countries/br.m3u",
+        "https://iptv-org.github.io/iptv/countries/ca.m3u",
+        "https://iptv-org.github.io/iptv/countries/de.m3u",
+        "https://iptv-org.github.io/iptv/countries/es.m3u",
+        "https://iptv-org.github.io/iptv/countries/fr.m3u",
+        "https://iptv-org.github.io/iptv/countries/in.m3u",
+        "https://iptv-org.github.io/iptv/countries/it.m3u",
+        "https://iptv-org.github.io/iptv/countries/uk.m3u",
+        "https://iptv-org.github.io/iptv/countries/us.m3u",
+        "https://iptv-org.github.io/iptv/index.m3u",
+        "https://iptv-org.github.io/iptv/languages/ben.m3u",
+        "https://iptv-org.github.io/iptv/languages/eng.m3u",
+        "https://iptv-org.github.io/iptv/regions/afr.m3u",
+        "https://iptv-org.github.io/iptv/regions/amer.m3u",
+        "https://iptv-org.github.io/iptv/regions/asia.m3u",
+        "https://iptv-org.github.io/iptv/regions/eur.m3u",
+        "https://iptv-org.github.io/iptv/regions/oce.m3u",
+        "https://lupael.github.io/IPTV/running.m3u"
+      ]
+    },
+    {
+      "repo": "thirud4a4/movies_m3u",
+      "branch": "main",
+      "updated": "2026-10-25",
+      "stars": 6,
+      "is_auto_bot": true,
+      "playlists": [
+        "https://raw.githubusercontent.com/thirud4a4/movies_m3u/main/old_playlist.m3u",
+        "https://raw.githubusercontent.com/thirud4a4/movies_m3u/main/playlist.m3u"
+      ],
+      "upstream_sources": [
+        "https://ww7.vcdnlare.com",
+        "https://ww7.vcdnlare.com/",
+        "https://www.4movierulz.tv"
+      ]
+    },
+    {
+      "repo": "Lonestar1306/iptv-auto-playlists",
+      "branch": "main",
+      "updated": "2026-10-30",
+      "stars": 1,
+      "is_auto_bot": true,
+      "playlists": [
+        "https://raw.githubusercontent.com/Lonestar1306/iptv-auto-playlists/main/daddylive.m3u"
+      ],
+      "upstream_sources": [
+        "https://dlive.sx"
+      ]
+    },
+    {
+      "repo": "workaybarsh/automatic-iptv-channel-list-updater",
+      "branch": "main",
+      "updated": "2026-11-12",
+      "stars": 1,
+      "is_auto_bot": true,
+      "playlists": [],
+      "upstream_sources": [
+        "http://pr.example/show.m3u8",
+        "http://tr.example/hd720.m3u8",
+        "http://tr.example/old.m3u8",
+        "http://tr.example/sd1080.m3u8",
+        "http://tr.example/show.m3u8",
+        "https://iptv-org.github.io/api/blocklist.json",
+        "https://iptv-org.github.io/api/channels.json",
+        "https://iptv-org.github.io/api/streams.json"
+      ]
+    },
+    {
+      "repo": "Masterxv/movies_m3u",
+      "branch": "main",
+      "updated": "2026-11-15",
+      "stars": 0,
+      "is_auto_bot": true,
+      "playlists": [
+        "https://raw.githubusercontent.com/Masterxv/movies_m3u/main/old_playlist.m3u",
+        "https://raw.githubusercontent.com/Masterxv/movies_m3u/main/playlist.m3u"
+      ],
+      "upstream_sources": [
+        "https://ww7.vcdnlare.com",
+        "https://ww7.vcdnlare.com/",
+        "https://www.4movierulz.tv"
+      ]
+    },
+    {
+      "repo": "nazelahi/LiveTV",
+      "branch": "main",
+      "updated": "2026-11-18",
+      "stars": 0,
+      "is_auto_bot": true,
+      "playlists": [],
+      "upstream_sources": []
+    },
+    {
+      "repo": "tunnabri-ops/BDIX-IPTV",
+      "branch": "main",
+      "updated": "2026-11-19",
+      "stars": 2,
+      "is_auto_bot": true,
+      "playlists": [
+        "https://raw.githubusercontent.com/tunnabri-ops/BDIX-IPTV/main/bdix/playlist.m3u"
+      ],
+      "upstream_sources": []
+    },
+    {
+      "repo": "sultanarabi161/filoox-bdix",
+      "branch": "main",
+      "updated": "2026-11-19",
+      "stars": 29,
+      "is_auto_bot": true,
+      "playlists": [
+        "https://raw.githubusercontent.com/sultanarabi161/filoox-bdix/main/playlist.m3u"
+      ],
+      "upstream_sources": [
+        "http://bazario.space/token/stream.php"
+      ]
+    },
+    {
+      "repo": "saeidrahmanbd/BDIX-IPTV",
+      "branch": "main",
+      "updated": "2026-11-19",
+      "stars": 20,
+      "is_auto_bot": true,
+      "playlists": [
+        "https://raw.githubusercontent.com/saeidrahmanbd/BDIX-IPTV/main/IPTV-Playlist.m3u",
+        "https://raw.githubusercontent.com/saeidrahmanbd/BDIX-IPTV/main/International-Playlist.m3u"
+      ],
+      "upstream_sources": []
+    },
+    {
+      "repo": "Sonaton11/tvwatch-m3u",
+      "branch": "main",
+      "updated": "2026-11-19",
+      "stars": 0,
+      "is_auto_bot": true,
+      "playlists": [
+        "https://raw.githubusercontent.com/Sonaton11/tvwatch-m3u/main/tvwatch_all.m3u",
+        "https://raw.githubusercontent.com/Sonaton11/tvwatch-m3u/main/tvwatch_live.m3u"
+      ],
+      "upstream_sources": [
+        "https://tvwatch.app"
+      ]
+    },
+    {
+      "repo": "iqbal8846/sports-iptv",
+      "branch": "main",
+      "updated": "2026-11-19",
+      "stars": 2,
+      "is_auto_bot": true,
+      "playlists": [
+        "https://raw.githubusercontent.com/iqbal8846/sports-iptv/main/output/cricket.m3u",
+        "https://raw.githubusercontent.com/iqbal8846/sports-iptv/main/output/football.m3u",
+        "https://raw.githubusercontent.com/iqbal8846/sports-iptv/main/output/sports_all.m3u"
+      ],
+      "upstream_sources": [
+        "https://site.api.espn.com/apis/site/v2/sports/soccer/",
+        "https://site.web.api.espn.com/apis/v2/scoreboard/header"
+      ]
+    },
+    {
+      "repo": "raymondchanzip-cell/IPTV-Auto-Update",
+      "branch": "main",
+      "updated": "2026-11-19",
+      "stars": 1,
+      "is_auto_bot": true,
+      "playlists": [
+        "https://raw.githubusercontent.com/raymondchanzip-cell/IPTV-Auto-Update/main/IPTV.m3u"
+      ],
+      "upstream_sources": [
+        "https://iptv-org.github.io/iptv/countries/cn.m3u",
+        "https://iptv-org.github.io/iptv/countries/hk.m3u",
+        "https://iptv-org.github.io/iptv/countries/mo.m3u",
+        "https://iptv-org.github.io/iptv/countries/tw.m3u",
+        "https://iptv-org.github.io/iptv/countries/us.m3u"
+      ]
+    },
+    {
+      "repo": "4yt1k/m3u-autoupdate",
+      "branch": "master",
+      "updated": "2026-11-19",
+      "stars": 41,
+      "is_auto_bot": true,
+      "playlists": [
+        "https://raw.githubusercontent.com/4yt1k/m3u-autoupdate/master/output/ipv4/result.m3u",
+        "https://raw.githubusercontent.com/4yt1k/m3u-autoupdate/master/output/ipv6/result.m3u",
+        "https://raw.githubusercontent.com/4yt1k/m3u-autoupdate/master/output/result.m3u",
+        "https://raw.githubusercontent.com/4yt1k/m3u-autoupdate/master/output/user_result.m3u"
+      ],
+      "upstream_sources": []
+    },
+    {
+      "repo": "raihan-rifat007/Streamverse",
+      "branch": "main",
+      "updated": "2026-11-19",
+      "stars": 0,
+      "is_auto_bot": true,
+      "playlists": [],
+      "upstream_sources": [
+        "https://fonts.googleapis.com",
+        "https://iptv-org.github.io/iptv/categories/animation.m3u",
+        "https://iptv-org.github.io/iptv/categories/documentary.m3u",
+        "https://iptv-org.github.io/iptv/categories/education.m3u",
+        "https://iptv-org.github.io/iptv/categories/entertainment.m3u",
+        "https://iptv-org.github.io/iptv/categories/general.m3u",
+        "https://iptv-org.github.io/iptv/categories/kids.m3u",
+        "https://iptv-org.github.io/iptv/categories/movies.m3u",
+        "https://iptv-org.github.io/iptv/categories/music.m3u",
+        "https://iptv-org.github.io/iptv/categories/news.m3u",
+        "https://iptv-org.github.io/iptv/categories/religious.m3u",
+        "https://iptv-org.github.io/iptv/categories/series.m3u",
+        "https://iptv-org.github.io/iptv/categories/sports.m3u",
+        "https://iptv-org.github.io/iptv/countries/$",
+        "https://iptv-org.github.io/iptv/countries/bd.m3u",
+        "https://iptv-org.github.io/iptv/countries/in.m3u",
+        "https://iptv-org.github.io/iptv/countries/pk.m3u",
+        "https://iptv-org.github.io/iptv/countries/tr.m3u",
+        "https://iptv-org.github.io/iptv/index.m3u",
+        "https://iptv-org.github.io/iptv/languages/ara.m3u"
+      ]
+    },
+    {
+      "repo": "Romaxa55/world_ip_tv",
+      "branch": "master",
+      "updated": "2026-11-19",
+      "stars": 160,
+      "is_auto_bot": true,
+      "playlists": [
+        "https://raw.githubusercontent.com/Romaxa55/world_ip_tv/master/output/ad.m3u",
+        "https://raw.githubusercontent.com/Romaxa55/world_ip_tv/master/output/ae.m3u",
+        "https://raw.githubusercontent.com/Romaxa55/world_ip_tv/master/output/af.m3u",
+        "https://raw.githubusercontent.com/Romaxa55/world_ip_tv/master/output/ai.m3u",
+        "https://raw.githubusercontent.com/Romaxa55/world_ip_tv/master/output/al.m3u"
+      ],
+      "upstream_sources": [
+        "https://iptv-org.github.io/iptv/index.country.m3u"
+      ]
+    },
+    {
+      "repo": "dhasap/dhanytv",
+      "branch": "main",
+      "updated": "2026-11-19",
+      "stars": 148,
+      "is_auto_bot": true,
+      "playlists": [
+        "https://raw.githubusercontent.com/dhasap/dhanytv/main/dhanytv-ott.m3u",
+        "https://raw.githubusercontent.com/dhasap/dhanytv/main/dhanytv.m3u",
+        "https://raw.githubusercontent.com/dhasap/dhanytv/main/update-script/extra_channels.m3u"
+      ],
+      "upstream_sources": [
+        "https://aspaltvpasti.top/Drmvidbos/Akun121/bosstv.m3u8",
+        "https://iptv-org.github.io/iptv/countries",
+        "https://www.dens.tv",
+        "https://www.dens.tv/",
+        "https://www.indihometv.com/",
+        "https://www.visionplustv.id/"
+      ]
+    },
+    {
+      "repo": "Mrbotrx/BDXI_KB",
+      "branch": "main",
+      "updated": "2026-11-19",
+      "stars": 4,
+      "is_auto_bot": true,
+      "playlists": [
+        "https://raw.githubusercontent.com/Mrbotrx/BDXI_KB/main/KBC/KBC_playlist.m3u",
+        "https://raw.githubusercontent.com/Mrbotrx/BDXI_KB/main/KBC/KBC_playlist_BD.m3u",
+        "https://raw.githubusercontent.com/Mrbotrx/BDXI_KB/main/KBC/KBC_playlist_IN.m3u",
+        "https://raw.githubusercontent.com/Mrbotrx/BDXI_KB/main/playlists/BDXI.m3u8",
+        "https://raw.githubusercontent.com/Mrbotrx/BDXI_KB/main/playlists/Bangladesh.m3u8"
+      ],
+      "upstream_sources": []
+    },
+    {
+      "repo": "ashik4u/mrgify-clean",
+      "branch": "main",
+      "updated": "2026-11-20",
+      "stars": 18,
+      "is_auto_bot": true,
+      "playlists": [
+        "https://raw.githubusercontent.com/ashik4u/mrgify-clean/main/playlist.m3u"
+      ],
+      "upstream_sources": []
+    },
+    {
+      "repo": "Mrbotrx/VIP-m3u-playlist",
+      "branch": "main",
+      "updated": "2026-11-20",
+      "stars": 2,
+      "is_auto_bot": true,
+      "playlists": [
+        "https://raw.githubusercontent.com/Mrbotrx/VIP-m3u-playlist/main/Vip%20playlists/vip_kbpro.m3u8"
+      ],
+      "upstream_sources": []
+    },
+    {
+      "repo": "mdislammondol160-del/Bangladesh-IPTV-Scraper",
+      "branch": "main",
+      "updated": "2026-09-15",
+      "stars": 0,
+      "is_auto_bot": false,
+      "playlists": [],
+      "upstream_sources": [
+        "http://tvsen7.aynascope.net/sspts1/index.m3u8",
+        "https://app.ncare.live/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcGVMZEJCTEFWeVN3PTOmdFsaWRtaW51aiPhnPTI2/greentv.stream/live-orgin/greentv.stream/chunks.m3u8",
+        "https://byphdgllyk.gpcdn.net/hls/deeptotv/index.m3u8",
+        "https://d3qs3d2rkhfqrt.cloudfront.net/out/v1/7ff57cc9046b4c188b51a0d506f36e7f/index_3.m3u8",
+        "https://images.toffeelive.com/images/program/343/logo/240x240/mobile_logo_496322001666780228.png",
+        "https://owrcovcrpy.gpcdn.net/bpk-tv/1701/output/index.m3u8",
+        "https://owrcovcrpy.gpcdn.net/bpk-tv/1702/output/1702.m3u8",
+        "https://owrcovcrpy.gpcdn.net/bpk-tv/1703/output/1703.m3u8",
+        "https://owrcovcrpy.gpcdn.net/bpk-tv/1704/output/1704.m3u8",
+        "https://owrcovcrpy.gpcdn.net/bpk-tv/1705/output/1705.m3u8",
+        "https://owrcovcrpy.gpcdn.net/bpk-tv/1706/output/1706.m3u8",
+        "https://owrcovcrpy.gpcdn.net/bpk-tv/1708/output/index.m3u8",
+        "https://owrcovcrpy.gpcdn.net/bpk-tv/1709/output/1709.m3u8",
+        "https://owrcovcrpy.gpcdn.net/bpk-tv/1715/output/index.m3u8",
+        "https://owrcovcrpy.gpcdn.net/bpk-tv/1716/output/1716.m3u8",
+        "https://owrcovcrpy.gpcdn.net/bpk-tv/1720/output/1720.m3u8",
+        "https://owrcovcrpy.gpcdn.net/bpk-tv/1722/output/1722.m3u8",
+        "https://owrcovcrpy.gpcdn.net/bpk-tv/1723/output/index.m3u8",
+        "https://owrcovcrpy.gpcdn.net/bpk-tv/1728/output/1728.m3u8",
+        "https://owrcovcrpy.gpcdn.net/bpk-tv/1729/output/1729.m3u8",
+        "https://static.wikia.nocookie.net/logopedia/images/5/5d/Ekattor_TV_logo.png",
+        "https://stream.ottplus.bd/live/sony_aath_abr/live/sony_aath_720/chunks.m3u8",
+        "https://tvsen4.aynaott.com/n64PH4YL/index.m3u8",
+        "https://tvsen6.aynaott.com/rtv/tracks-v1a1/mono.ts.m3u8",
+        "https://tvsen7.aynaott.com/tsports-hd/index.m3u8",
+        "https://xstreamcp-assets-msp.streamready.in/assets/LIVETV/LIVECHANNEL/LIVETV_LIVETVCHANNEL_ZEE_BANGLA/images/LOGO_HD/LOGO_HD_image.png",
+        "https://yupptvcatchupire.yuppcdn.net/preview/colorsbanglahd/800.m3u8"
+      ]
+    },
+    {
+      "repo": "Rak-git/OWN_BDIX-IPTV",
+      "branch": "main",
+      "updated": "2026-09-21",
+      "stars": 0,
+      "is_auto_bot": false,
+      "playlists": [
+        "https://raw.githubusercontent.com/Rak-git/OWN_BDIX-IPTV/main/playlist.m3u"
+      ],
+      "upstream_sources": []
+    },
+    {
+      "repo": "MehrabBillah/Mehrab-TV-BDIX",
+      "branch": "main",
+      "updated": "2026-09-22",
+      "stars": 0,
+      "is_auto_bot": false,
+      "playlists": [
+        "https://raw.githubusercontent.com/MehrabBillah/Mehrab-TV-BDIX/main/Playlist.m3u"
+      ],
+      "upstream_sources": []
+    },
+    {
+      "repo": "TheBigZero1/bdix-iptv",
+      "branch": "main",
+      "updated": "2026-10-17",
+      "stars": 0,
+      "is_auto_bot": false,
+      "playlists": [],
+      "upstream_sources": []
+    },
+    {
+      "repo": "ado1d/bdix-iptv-player",
+      "branch": "main",
+      "updated": "2026-10-23",
+      "stars": 0,
+      "is_auto_bot": false,
+      "playlists": [],
+      "upstream_sources": []
+    },
+    {
+      "repo": "dhrubonai/Free-BD-IPTV",
+      "branch": "main",
+      "updated": "2026-10-25",
+      "stars": 2,
+      "is_auto_bot": false,
+      "playlists": [
+        "https://raw.githubusercontent.com/dhrubonai/Free-BD-IPTV/main/playlists/bd_all_channels.m3u",
+        "https://raw.githubusercontent.com/dhrubonai/Free-BD-IPTV/main/playlists/bd_news.m3u",
+        "https://raw.githubusercontent.com/dhrubonai/Free-BD-IPTV/main/playlists/entertainment/cartoon.m3u",
+        "https://raw.githubusercontent.com/dhrubonai/Free-BD-IPTV/main/playlists/entertainment/movies.m3u",
+        "https://raw.githubusercontent.com/dhrubonai/Free-BD-IPTV/main/playlists/entertainment/music.m3u"
+      ],
+      "upstream_sources": []
+    },
+    {
+      "repo": "SudipMHX/jolsha-tv",
+      "branch": "main",
+      "updated": "2026-10-27",
+      "stars": 1,
+      "is_auto_bot": false,
+      "playlists": [
+        "https://raw.githubusercontent.com/SudipMHX/jolsha-tv/main/app/src/main/assets/sample_playlist.m3u",
+        "https://raw.githubusercontent.com/SudipMHX/jolsha-tv/main/playlist.m3u"
+      ],
+      "upstream_sources": []
+    },
+    {
+      "repo": "lokmancu/IPTV-BDIX",
+      "branch": "main",
+      "updated": "2026-11-05",
+      "stars": 0,
+      "is_auto_bot": false,
+      "playlists": [
+        "https://raw.githubusercontent.com/lokmancu/IPTV-BDIX/main/Favorite_TV_Channels_EPG.m3u"
+      ],
+      "upstream_sources": []
+    },
+    {
+      "repo": "daumedia/MikaPlusPlayer",
+      "branch": "main",
+      "updated": "2026-11-15",
+      "stars": 0,
+      "is_auto_bot": false,
+      "playlists": [],
+      "upstream_sources": []
+    },
+    {
+      "repo": "istiakrahman15/iptv-api",
+      "branch": "main",
+      "updated": "2026-11-16",
+      "stars": 33,
+      "is_auto_bot": false,
+      "playlists": [],
+      "upstream_sources": []
+    },
+    {
+      "repo": "ashik-maybe/bdix-ftp-server-tester",
+      "branch": "main",
+      "updated": "2026-11-18",
+      "stars": 1,
+      "is_auto_bot": false,
+      "playlists": [],
+      "upstream_sources": []
+    },
+    {
+      "repo": "abusaeeidx/Mrgify-BDIX-IPTV",
+      "branch": "main",
+      "updated": "2026-11-19",
+      "stars": 152,
+      "is_auto_bot": false,
+      "playlists": [
+        "https://raw.githubusercontent.com/abusaeeidx/Mrgify-BDIX-IPTV/main/playlist.m3u"
+      ],
+      "upstream_sources": []
+    },
+    {
+      "repo": "time2shine/Rokon-IPTV",
+      "branch": "main",
+      "updated": "2026-11-19",
+      "stars": 10,
+      "is_auto_bot": false,
+      "playlists": [
+        "https://raw.githubusercontent.com/time2shine/Rokon-IPTV/main/playlist.m3u"
+      ],
+      "upstream_sources": []
+    },
+    {
+      "repo": "rmia41735-commits/BDIX-Live-TV",
+      "branch": "main",
+      "updated": "2026-11-19",
+      "stars": 0,
+      "is_auto_bot": false,
+      "playlists": [
+        "https://raw.githubusercontent.com/rmia41735-commits/BDIX-Live-TV/main/BiggBoss%20%281%29.m3u",
+        "https://raw.githubusercontent.com/rmia41735-commits/BDIX-Live-TV/main/BiggBoss.m3u",
+        "https://raw.githubusercontent.com/rmia41735-commits/BDIX-Live-TV/main/Sport_S1.m3u"
+      ],
+      "upstream_sources": [
+        "https://playlist.gmaxhub.workers.dev",
+        "https://www.jiotv.com/"
+      ]
+    }
+  ],
+  "all_upstream_sources": [
+    "http://198.195.239.50/tv_channels.json",
+    "http://bazario.space/token/stream.php",
+    "http://pr.example/show.m3u8",
+    "http://tr.example/hd720.m3u8",
+    "http://tr.example/old.m3u8",
+    "http://tr.example/sd1080.m3u8",
+    "http://tr.example/show.m3u8",
+    "http://tvsen7.aynascope.net/sspts1/index.m3u8",
+    "https://app.ncare.live/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcGVMZEJCTEFWeVN3PTOmdFsaWRtaW51aiPhnPTI2/greentv.stream/live-orgin/greentv.stream/chunks.m3u8",
+    "https://aspaltvpasti.top/Drmvidbos/Akun121/bosstv.m3u8",
+    "https://byphdgllyk.gpcdn.net/hls/deeptotv/index.m3u8",
+    "https://d3qs3d2rkhfqrt.cloudfront.net/out/v1/7ff57cc9046b4c188b51a0d506f36e7f/index_3.m3u8",
+    "https://dlive.sx",
+    "https://fonts.googleapis.com",
+    "https://images.toffeelive.com/images/program/343/logo/240x240/mobile_logo_496322001666780228.png",
+    "https://iptv-org.github.io/api/blocklist.json",
+    "https://iptv-org.github.io/api/channels.json",
+    "https://iptv-org.github.io/api/countries.json",
+    "https://iptv-org.github.io/api/streams.json",
+    "https://iptv-org.github.io/iptv",
+    "https://iptv-org.github.io/iptv/categories/animation.m3u",
+    "https://iptv-org.github.io/iptv/categories/documentary.m3u",
+    "https://iptv-org.github.io/iptv/categories/education.m3u",
+    "https://iptv-org.github.io/iptv/categories/entertainment.m3u",
+    "https://iptv-org.github.io/iptv/categories/general.m3u",
+    "https://iptv-org.github.io/iptv/categories/kids.m3u",
+    "https://iptv-org.github.io/iptv/categories/movies.m3u",
+    "https://iptv-org.github.io/iptv/categories/music.m3u",
+    "https://iptv-org.github.io/iptv/categories/news.m3u",
+    "https://iptv-org.github.io/iptv/categories/religious.m3u",
+    "https://iptv-org.github.io/iptv/categories/series.m3u",
+    "https://iptv-org.github.io/iptv/categories/sports.m3u",
+    "https://iptv-org.github.io/iptv/countries",
+    "https://iptv-org.github.io/iptv/countries/$",
+    "https://iptv-org.github.io/iptv/countries/bd.m3u",
+    "https://iptv-org.github.io/iptv/countries/br.m3u",
+    "https://iptv-org.github.io/iptv/countries/ca.m3u",
+    "https://iptv-org.github.io/iptv/countries/cn.m3u",
+    "https://iptv-org.github.io/iptv/countries/de.m3u",
+    "https://iptv-org.github.io/iptv/countries/es.m3u",
+    "https://iptv-org.github.io/iptv/countries/fr.m3u",
+    "https://iptv-org.github.io/iptv/countries/hk.m3u",
+    "https://iptv-org.github.io/iptv/countries/in.m3u",
+    "https://iptv-org.github.io/iptv/countries/it.m3u",
+    "https://iptv-org.github.io/iptv/countries/mo.m3u",
+    "https://iptv-org.github.io/iptv/countries/pk.m3u",
+    "https://iptv-org.github.io/iptv/countries/tr.m3u",
+    "https://iptv-org.github.io/iptv/countries/tw.m3u",
+    "https://iptv-org.github.io/iptv/countries/uk.m3u",
+    "https://iptv-org.github.io/iptv/countries/us.m3u",
+    "https://iptv-org.github.io/iptv/index.country.m3u",
+    "https://iptv-org.github.io/iptv/index.m3u",
+    "https://iptv-org.github.io/iptv/languages/ara.m3u",
+    "https://iptv-org.github.io/iptv/languages/ben.m3u",
+    "https://iptv-org.github.io/iptv/languages/eng.m3u",
+    "https://iptv-org.github.io/iptv/regions/afr.m3u",
+    "https://iptv-org.github.io/iptv/regions/amer.m3u",
+    "https://iptv-org.github.io/iptv/regions/asia.m3u",
+    "https://iptv-org.github.io/iptv/regions/eur.m3u",
+    "https://iptv-org.github.io/iptv/regions/oce.m3u",
+    "https://lupael.github.io/IPTV/running.m3u",
+    "https://owrcovcrpy.gpcdn.net/bpk-tv/1701/output/index.m3u8",
+    "https://owrcovcrpy.gpcdn.net/bpk-tv/1702/output/1702.m3u8",
+    "https://owrcovcrpy.gpcdn.net/bpk-tv/1703/output/1703.m3u8",
+    "https://owrcovcrpy.gpcdn.net/bpk-tv/1704/output/1704.m3u8",
+    "https://owrcovcrpy.gpcdn.net/bpk-tv/1705/output/1705.m3u8",
+    "https://owrcovcrpy.gpcdn.net/bpk-tv/1706/output/1706.m3u8",
+    "https://owrcovcrpy.gpcdn.net/bpk-tv/1708/output/index.m3u8",
+    "https://owrcovcrpy.gpcdn.net/bpk-tv/1709/output/1709.m3u8",
+    "https://owrcovcrpy.gpcdn.net/bpk-tv/1715/output/index.m3u8",
+    "https://owrcovcrpy.gpcdn.net/bpk-tv/1716/output/1716.m3u8",
+    "https://owrcovcrpy.gpcdn.net/bpk-tv/1720/output/1720.m3u8",
+    "https://owrcovcrpy.gpcdn.net/bpk-tv/1722/output/1722.m3u8",
+    "https://owrcovcrpy.gpcdn.net/bpk-tv/1723/output/index.m3u8",
+    "https://owrcovcrpy.gpcdn.net/bpk-tv/1728/output/1728.m3u8",
+    "https://owrcovcrpy.gpcdn.net/bpk-tv/1729/output/1729.m3u8",
+    "https://playlist.gmaxhub.workers.dev",
+    "https://site.api.espn.com/apis/site/v2/sports/soccer/",
+    "https://site.web.api.espn.com/apis/v2/scoreboard/header",
+    "https://static.wikia.nocookie.net/logopedia/images/5/5d/Ekattor_TV_logo.png",
+    "https://stream.ottplus.bd/live/sony_aath_abr/live/sony_aath_720/chunks.m3u8",
+    "https://tvsen4.aynaott.com/n64PH4YL/index.m3u8",
+    "https://tvsen6.aynaott.com/rtv/tracks-v1a1/mono.ts.m3u8",
+    "https://tvsen7.aynaott.com/tsports-hd/index.m3u8",
+    "https://tvwatch.app",
+    "https://ww7.vcdnlare.com",
+    "https://ww7.vcdnlare.com/",
+    "https://www.4movierulz.tv",
+    "https://www.dens.tv",
+    "https://www.dens.tv/",
+    "https://www.indihometv.com/",
+    "https://www.jiotv.com/",
+    "https://www.visionplustv.id/",
+    "https://xstreamcp-assets-msp.streamready.in/assets/LIVETV/LIVECHANNEL/LIVETV_LIVETVCHANNEL_ZEE_BANGLA/images/LOGO_HD/LOGO_HD_image.png",
+    "https://yupptvcatchupire.yuppcdn.net/preview/colorsbanglahd/800.m3u8"
+  ],
+  "all_bot_playlists": [
+    "https://raw.githubusercontent.com/4yt1k/m3u-autoupdate/master/output/ipv4/result.m3u",
+    "https://raw.githubusercontent.com/4yt1k/m3u-autoupdate/master/output/ipv6/result.m3u",
+    "https://raw.githubusercontent.com/4yt1k/m3u-autoupdate/master/output/result.m3u",
+    "https://raw.githubusercontent.com/4yt1k/m3u-autoupdate/master/output/user_result.m3u",
+    "https://raw.githubusercontent.com/Lonestar1306/iptv-auto-playlists/main/daddylive.m3u",
+    "https://raw.githubusercontent.com/Masterxv/movies_m3u/main/old_playlist.m3u",
+    "https://raw.githubusercontent.com/Masterxv/movies_m3u/main/playlist.m3u",
+    "https://raw.githubusercontent.com/MehrabBillah/Mehrab-TV-BDIX/main/Playlist.m3u",
+    "https://raw.githubusercontent.com/Mrbotrx/BDXI_KB/main/KBC/KBC_playlist.m3u",
+    "https://raw.githubusercontent.com/Mrbotrx/BDXI_KB/main/KBC/KBC_playlist_BD.m3u",
+    "https://raw.githubusercontent.com/Mrbotrx/BDXI_KB/main/KBC/KBC_playlist_IN.m3u",
+    "https://raw.githubusercontent.com/Mrbotrx/BDXI_KB/main/playlists/BDXI.m3u8",
+    "https://raw.githubusercontent.com/Mrbotrx/BDXI_KB/main/playlists/Bangladesh.m3u8",
+    "https://raw.githubusercontent.com/Mrbotrx/VIP-m3u-playlist/main/Vip%20playlists/vip_kbpro.m3u8",
+    "https://raw.githubusercontent.com/Rak-git/OWN_BDIX-IPTV/main/playlist.m3u",
+    "https://raw.githubusercontent.com/Romaxa55/world_ip_tv/master/output/ad.m3u",
+    "https://raw.githubusercontent.com/Romaxa55/world_ip_tv/master/output/ae.m3u",
+    "https://raw.githubusercontent.com/Romaxa55/world_ip_tv/master/output/af.m3u",
+    "https://raw.githubusercontent.com/Romaxa55/world_ip_tv/master/output/ai.m3u",
+    "https://raw.githubusercontent.com/Romaxa55/world_ip_tv/master/output/al.m3u",
+    "https://raw.githubusercontent.com/Sonaton11/tvwatch-m3u/main/tvwatch_all.m3u",
+    "https://raw.githubusercontent.com/Sonaton11/tvwatch-m3u/main/tvwatch_live.m3u",
+    "https://raw.githubusercontent.com/SudipMHX/jolsha-tv/main/app/src/main/assets/sample_playlist.m3u",
+    "https://raw.githubusercontent.com/SudipMHX/jolsha-tv/main/playlist.m3u",
+    "https://raw.githubusercontent.com/Zaman-Topu/Ip-tv-Collection/main/FINAL_IPTV_ACTIVE.m3u",
+    "https://raw.githubusercontent.com/Zaman-Topu/Ip-tv-Collection/main/FINAL_IPTV_COMPLETE.m3u",
+    "https://raw.githubusercontent.com/Zaman-Topu/Ip-tv-Collection/main/FINAL_IPTV_DEAD.m3u",
+    "https://raw.githubusercontent.com/Zaman-Topu/Ip-tv-Collection/main/FINAL_IPTV_GEO.m3u",
+    "https://raw.githubusercontent.com/Zaman-Topu/Ip-tv-Collection/main/FINAL_MOVIES_COMPLETE.m3u",
+    "https://raw.githubusercontent.com/abusaeeidx/Mrgify-BDIX-IPTV/main/playlist.m3u",
+    "https://raw.githubusercontent.com/ashik4u/mrgify-clean/main/playlist.m3u",
+    "https://raw.githubusercontent.com/dhasap/dhanytv/main/dhanytv-ott.m3u",
+    "https://raw.githubusercontent.com/dhasap/dhanytv/main/dhanytv.m3u",
+    "https://raw.githubusercontent.com/dhasap/dhanytv/main/update-script/extra_channels.m3u",
+    "https://raw.githubusercontent.com/dhrubonai/Free-BD-IPTV/main/playlists/bd_all_channels.m3u",
+    "https://raw.githubusercontent.com/dhrubonai/Free-BD-IPTV/main/playlists/bd_news.m3u",
+    "https://raw.githubusercontent.com/dhrubonai/Free-BD-IPTV/main/playlists/entertainment/cartoon.m3u",
+    "https://raw.githubusercontent.com/dhrubonai/Free-BD-IPTV/main/playlists/entertainment/movies.m3u",
+    "https://raw.githubusercontent.com/dhrubonai/Free-BD-IPTV/main/playlists/entertainment/music.m3u",
+    "https://raw.githubusercontent.com/iqbal8846/sports-iptv/main/output/cricket.m3u",
+    "https://raw.githubusercontent.com/iqbal8846/sports-iptv/main/output/football.m3u",
+    "https://raw.githubusercontent.com/iqbal8846/sports-iptv/main/output/sports_all.m3u",
+    "https://raw.githubusercontent.com/lokmancu/IPTV-BDIX/main/Favorite_TV_Channels_EPG.m3u",
+    "https://raw.githubusercontent.com/md-sayem-hossain/My-BD-IPTV-Playlist/main/channels.m3u",
+    "https://raw.githubusercontent.com/md-sayem-hossain/My-BD-IPTV-Playlist/main/playlist.m3u",
+    "https://raw.githubusercontent.com/raymondchanzip-cell/IPTV-Auto-Update/main/IPTV.m3u",
+    "https://raw.githubusercontent.com/rmia41735-commits/BDIX-Live-TV/main/BiggBoss%20%281%29.m3u",
+    "https://raw.githubusercontent.com/rmia41735-commits/BDIX-Live-TV/main/BiggBoss.m3u",
+    "https://raw.githubusercontent.com/rmia41735-commits/BDIX-Live-TV/main/Sport_S1.m3u",
+    "https://raw.githubusercontent.com/saeidrahmanbd/BDIX-IPTV/main/IPTV-Playlist.m3u",
+    "https://raw.githubusercontent.com/saeidrahmanbd/BDIX-IPTV/main/International-Playlist.m3u",
+    "https://raw.githubusercontent.com/sultanarabi161/filoox-bdix/main/playlist.m3u",
+    "https://raw.githubusercontent.com/thirud4a4/movies_m3u/main/old_playlist.m3u",
+    "https://raw.githubusercontent.com/thirud4a4/movies_m3u/main/playlist.m3u",
+    "https://raw.githubusercontent.com/time2shine/Rokon-IPTV/main/playlist.m3u",
+    "https://raw.githubusercontent.com/tunnabri-ops/BDIX-IPTV/main/bdix/playlist.m3u"
+  ]
+}
