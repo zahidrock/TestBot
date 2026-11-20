@@ -1,8 +1,8 @@
 """
-GitHub IPTV Bot & Upstream Source Discovery Script (Hidden Bot Finder + Persistent Merge)
+GitHub IPTV Bot & Upstream Source Discovery Script (IPTV + M3U Code Signature + Persistent Merge)
 1. Loads previously saved bots & upstream sources from 'discovered_sources.json'.
-2. Finds active GitHub repositories by name AND by hidden code signatures (.github/workflows cron + M3U/IPTV scripts).
-3. Inspects their source code (.py, .js, .ts, .sh) to extract the upstream websites/APIs they scrape.
+2. Finds active GitHub repositories by IPTV/M3U names AND by code signatures (.github/workflows cron + M3U/IPTV scripts).
+3. Inspects their source code (.py, .js, .ts, .sh) and playlist files to extract upstream websites/APIs and M3U sources.
 4. Merges old + new sources and saves them permanently into 'discovered_sources.json' & 'bot_report.txt'.
 """
 import json, os, re, time
@@ -22,19 +22,22 @@ HEADERS = {
 if GITHUB_TOKEN:
     HEADERS["Authorization"] = f"Bearer {GITHUB_TOKEN.strip()}"
 
-# 1. Repository name diye khujar query
+# 1. Repository name diye khujar query (IPTV + M3U)
 BOT_SEARCH_QUERIES = [
+    "iptv pushed:>2026-09-01",
     "bdix iptv pushed:>2026-09-01",
     "bangla iptv m3u pushed:>2026-09-01",
     "iptv auto update m3u pushed:>2026-09-01",
     "live tv m3u8 bangladesh pushed:>2026-09-01",
     "indian iptv m3u8 pushed:>2026-09-01",
-    "iptv scraper m3u8 pushed:>2026-09-01",
 ]
 
-# 2. Hidden Bot Finder: Repo name IPTV na holeo vetorer code signature diye khujar query
+# 2. Code & M3U Signature Finder: Repo name IPTV na holeo vetore IPTV ba M3U source thakle khuje ber korbe
 CODE_SIGNATURE_QUERIES = [
     '"cron:" "m3u" path:.github/workflows',
+    '"cron:" "iptv" path:.github/workflows',
+    '"#EXTINF" "iptv" extension:m3u',
+    '"#EXTINF" "bangla" extension:m3u8',
     '"#EXTINF" "aynaott" extension:py',
     '"#EXTINF" "jagobd" extension:py',
     '"#EXTINF" "103." extension:py',
@@ -97,7 +100,7 @@ def discover():
 
     merged_bots, merged_upstream, merged_playlists = load_existing_data()
 
-    # Step 1A: Repository Name Search
+    # Step 1A: Repository Name Search (IPTV & M3U)
     newly_found = {}
     for q in BOT_SEARCH_QUERIES:
         try:
@@ -119,7 +122,7 @@ def discover():
             log(f"[Repo Search Error] {q}: {e}")
         time.sleep(5)
 
-    # Step 1B: Hidden Bots Search (Code & Workflow Signature)
+    # Step 1B: Code & M3U Signature Search (IPTV + M3U files in any repo)
     if GITHUB_TOKEN:
         for cq in CODE_SIGNATURE_QUERIES:
             try:
@@ -139,12 +142,12 @@ def discover():
                             "upstream_sources": [],
                         }
             except Exception as e:
-                log(f"[Hidden Bot Search Error] {cq}: {e}")
+                log(f"[Code/M3U Search Error] {cq}: {e}")
             time.sleep(8)
 
-    log(f"Ebar {len(newly_found)} ti active o hidden repository paoa gese. Vetorer code o source analyze kora hocche...")
+    log(f"Ebar {len(newly_found)} ti IPTV o M3U repository paoa gese. Vetorer source analyze kora hocche...")
 
-    # Step 2: Inspect Repository File Tree & Extract Upstream Sources
+    # Step 2: Inspect Repository File Tree & Extract Upstream Sources + M3U Files
     def analyze_repo(repo_info):
         repo = repo_info["repo"]
         branch = repo_info["branch"]
@@ -219,7 +222,7 @@ def discover():
         f"=== GitHub IPTV Bots & Upstream Sources Report ({result_data['generated_at']}) ===",
         f"Total Active & Hidden Repositories Saved (Merged): {len(all_bots_list)}",
         f"Total Unique Upstream Scraping Sources Saved: {len(all_upstream_urls)}",
-        f"Total Bot Playlists Saved: {len(all_bot_playlists)}\n",
+        f"Total Bot M3U Playlists Saved: {len(all_bot_playlists)}\n",
         "--- 1. UPSTREAM WEBSITES / APIS USED BY BOTS ---"
     ]
     for u in all_upstream_urls:
@@ -234,12 +237,12 @@ def discover():
             for src in b["upstream_sources"]:
                 report_lines.append(f"    * {src}")
         if b.get("playlists"):
-            report_lines.append("  Outputs:")
+            report_lines.append("  Outputs (M3U):")
             for pl in b["playlists"]:
                 report_lines.append(f"    > {pl}")
 
     OUT_REPORT.write_text("\n".join(report_lines) + "\n", encoding="utf-8")
-    log(f"Done! Total Merged: {len(all_bots_list)} ti bot, {len(all_upstream_urls)} ti upstream source o {len(all_bot_playlists)} ti playlist '{OUT_JSON}' & '{OUT_REPORT}' e save hoyeche.")
+    log(f"Done! Total Merged: {len(all_bots_list)} ti bot, {len(all_upstream_urls)} ti upstream source o {len(all_bot_playlists)} ti M3U playlist '{OUT_JSON}' & '{OUT_REPORT}' e save hoyeche.")
 
 
 if __name__ == "__main__":
