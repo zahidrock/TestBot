@@ -1,7 +1,7 @@
 """
-GitHub IPTV Bot & Upstream Source Discovery Script (24-Hour Rate-Limit Safe + Persistent Merge)
+GitHub IPTV Bot & Upstream Source Discovery Script (Hidden Bot Finder + Persistent Merge)
 1. Loads previously saved bots & upstream sources from 'discovered_sources.json'.
-2. Finds new active GitHub repositories running automated IPTV playlist bots.
+2. Finds active GitHub repositories by name AND by hidden code signatures (.github/workflows cron + M3U/IPTV scripts).
 3. Inspects their source code (.py, .js, .ts, .sh) to extract the upstream websites/APIs they scrape.
 4. Merges old + new sources and saves them permanently into 'discovered_sources.json' & 'bot_report.txt'.
 """
@@ -22,7 +22,7 @@ HEADERS = {
 if GITHUB_TOKEN:
     HEADERS["Authorization"] = f"Bearer {GITHUB_TOKEN.strip()}"
 
-# Active bot repositories khujar search queries
+# 1. Repository name diye khujar query
 BOT_SEARCH_QUERIES = [
     "bdix iptv pushed:>2026-09-01",
     "bangla iptv m3u pushed:>2026-09-01",
@@ -30,6 +30,15 @@ BOT_SEARCH_QUERIES = [
     "live tv m3u8 bangladesh pushed:>2026-09-01",
     "indian iptv m3u8 pushed:>2026-09-01",
     "iptv scraper m3u8 pushed:>2026-09-01",
+]
+
+# 2. Hidden Bot Finder: Repo name IPTV na holeo vetorer code signature diye khujar query
+CODE_SIGNATURE_QUERIES = [
+    '"cron:" "m3u" path:.github/workflows',
+    '"#EXTINF" "aynaott" extension:py',
+    '"#EXTINF" "jagobd" extension:py',
+    '"#EXTINF" "103." extension:py',
+    '"#EXTINF" "Star Jalsha" extension:py',
 ]
 
 URL_RE = re.compile(r'https?://[a-zA-Z0-9.-]+(?:/[a-zA-Z0-9._~:/?#\[\]@!$&\'()*+,;=-]*)?')
@@ -88,6 +97,7 @@ def discover():
 
     merged_bots, merged_upstream, merged_playlists = load_existing_data()
 
+    # Step 1A: Repository Name Search
     newly_found = {}
     for q in BOT_SEARCH_QUERIES:
         try:
@@ -106,11 +116,35 @@ def discover():
                         "upstream_sources": [],
                     }
         except Exception as e:
-            log(f"[Search Error] {q}: {e}")
-        time.sleep(5)  # 5 sekond gap dile secondary rate limit ashbe na
+            log(f"[Repo Search Error] {q}: {e}")
+        time.sleep(5)
 
-    log(f"Ebar {len(newly_found)} ti active repository paoa gese. Vetorer code o source analyze kora hocche...")
+    # Step 1B: Hidden Bots Search (Code & Workflow Signature)
+    if GITHUB_TOKEN:
+        for cq in CODE_SIGNATURE_QUERIES:
+            try:
+                c_url = f"https://api.github.com/search/code?q={urllib.parse.quote(cq)}&per_page=30"
+                c_data = api_get(c_url)
+                for item in c_data.get("items", []):
+                    repo_obj = item.get("repository", {})
+                    full_name = repo_obj.get("full_name")
+                    if full_name and full_name not in newly_found:
+                        newly_found[full_name] = {
+                            "repo": full_name,
+                            "branch": repo_obj.get("default_branch", "main"),
+                            "updated": time.strftime("%Y-%m-%d"),
+                            "stars": 0,
+                            "is_auto_bot": True,
+                            "playlists": [],
+                            "upstream_sources": [],
+                        }
+            except Exception as e:
+                log(f"[Hidden Bot Search Error] {cq}: {e}")
+            time.sleep(8)
 
+    log(f"Ebar {len(newly_found)} ti active o hidden repository paoa gese. Vetorer code o source analyze kora hocche...")
+
+    # Step 2: Inspect Repository File Tree & Extract Upstream Sources
     def analyze_repo(repo_info):
         repo = repo_info["repo"]
         branch = repo_info["branch"]
@@ -151,7 +185,6 @@ def discover():
         repo_info["upstream_sources"] = sorted(upstream)
         return repo_info
 
-    # max_workers=5 rakha hoyeche jate GitHub API te ek sathe beshi request giye rate limit na hoy
     with ThreadPoolExecutor(max_workers=5) as ex:
         for f in as_completed([ex.submit(analyze_repo, info) for info in newly_found.values()]):
             b = f.result()
@@ -184,7 +217,7 @@ def discover():
 
     report_lines = [
         f"=== GitHub IPTV Bots & Upstream Sources Report ({result_data['generated_at']}) ===",
-        f"Total Active Repositories Saved (Merged): {len(all_bots_list)}",
+        f"Total Active & Hidden Repositories Saved (Merged): {len(all_bots_list)}",
         f"Total Unique Upstream Scraping Sources Saved: {len(all_upstream_urls)}",
         f"Total Bot Playlists Saved: {len(all_bot_playlists)}\n",
         "--- 1. UPSTREAM WEBSITES / APIS USED BY BOTS ---"
@@ -192,7 +225,7 @@ def discover():
     for u in all_upstream_urls:
         report_lines.append(f"  - {u}")
 
-    report_lines.append("\n--- 2. ACTIVE GITHUB BOTS & THEIR SOURCES ---")
+    report_lines.append("\n--- 2. ACTIVE & HIDDEN GITHUB BOTS & THEIR SOURCES ---")
     for b in all_bots_list:
         tag = "[AUTO-BOT]" if b.get("is_auto_bot") else "[REPO]"
         report_lines.append(f"\n{tag} {b['repo']} (Updated: {b.get('updated', 'N/A')}, Stars: {b.get('stars', 0)})")
