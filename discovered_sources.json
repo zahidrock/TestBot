@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-21 03:26:42 UTC",
-  "total_bots_found": 196,
+  "generated_at": "2026-11-21 12:47:24 UTC",
+  "total_bots_found": 223,
   "bots": [
     {
       "repo": "md-sayem-hossain/My-BD-IPTV-Playlist",
@@ -144,7 +144,7 @@
     {
       "repo": "tunnabri-ops/BDIX-IPTV",
       "branch": "main",
-      "updated": "2026-11-20",
+      "updated": "2026-11-21",
       "stars": 2,
       "is_auto_bot": true,
       "playlists": [
@@ -155,7 +155,7 @@
     {
       "repo": "raymondchanzip-cell/IPTV-Auto-Update",
       "branch": "main",
-      "updated": "2026-11-20",
+      "updated": "2026-11-21",
       "stars": 1,
       "is_auto_bot": true,
       "playlists": [
@@ -172,7 +172,7 @@
     {
       "repo": "raihan-rifat007/Streamverse",
       "branch": "main",
-      "updated": "2026-11-20",
+      "updated": "2026-11-21",
       "stars": 0,
       "is_auto_bot": true,
       "playlists": [],
@@ -202,7 +202,7 @@
     {
       "repo": "Romaxa55/world_ip_tv",
       "branch": "master",
-      "updated": "2026-11-20",
+      "updated": "2026-11-21",
       "stars": 159,
       "is_auto_bot": true,
       "playlists": [
@@ -219,7 +219,7 @@
     {
       "repo": "dhasap/dhanytv",
       "branch": "main",
-      "updated": "2026-11-20",
+      "updated": "2026-11-21",
       "stars": 149,
       "is_auto_bot": true,
       "playlists": [
@@ -239,7 +239,7 @@
     {
       "repo": "ashik4u/mrgify-clean",
       "branch": "main",
-      "updated": "2026-11-20",
+      "updated": "2026-11-21",
       "stars": 18,
       "is_auto_bot": true,
       "playlists": [
@@ -250,7 +250,7 @@
     {
       "repo": "Mrbotrx/VIP-m3u-playlist",
       "branch": "main",
-      "updated": "2026-11-20",
+      "updated": "2026-11-21",
       "stars": 2,
       "is_auto_bot": true,
       "playlists": [
@@ -301,7 +301,7 @@
       "repo": "iqbal8846/sports-iptv",
       "branch": "main",
       "updated": "2026-11-21",
-      "stars": 2,
+      "stars": 3,
       "is_auto_bot": true,
       "playlists": [
         "https://raw.githubusercontent.com/iqbal8846/sports-iptv/main/output/cricket.m3u",
@@ -317,7 +317,7 @@
       "repo": "4yt1k/m3u-autoupdate",
       "branch": "master",
       "updated": "2026-11-21",
-      "stars": 41,
+      "stars": 42,
       "is_auto_bot": true,
       "playlists": [
         "https://raw.githubusercontent.com/4yt1k/m3u-autoupdate/master/output/ipv4/result.m3u",
@@ -3252,11 +3252,11 @@
       "stars": 0,
       "is_auto_bot": true,
       "playlists": [
-        "https://raw.githubusercontent.com/jie20091116/cat/main/TVBOX/se/fm/pron.m3u",
         "https://raw.githubusercontent.com/jie20091116/cat/main/TVBOX/se/fm/%E5%9B%BD%E4%BA%A7%E4%BC%A0%E5%AA%92.m3u",
         "https://raw.githubusercontent.com/jie20091116/cat/main/TVBOX/se/fm/%E6%97%A0%E6%95%8C.m3u",
         "https://raw.githubusercontent.com/jie20091116/cat/main/TVBOX/se/fm/%E7%8F%8D%E8%97%8F.m3u",
-        "https://raw.githubusercontent.com/jie20091116/cat/main/TVBOX/se/fm/%E7%BB%8F%E5%85%B8.m3u"
+        "https://raw.githubusercontent.com/jie20091116/cat/main/TVBOX/se/fm/%E7%BB%8F%E5%85%B8.m3u",
+        "https://raw.githubusercontent.com/jie20091116/cat/main/TVBOX/se/fm/pron.m3u"
       ],
       "upstream_sources": [
         "http://api.douban.com/api/v2",
@@ -3335,6 +3335,223 @@
       "playlists": [],
       "upstream_sources": [
         "https://iptv-org.github.io/api/channels.json"
+      ]
+    },
+    {
+      "repo": "hujingguang/ChinaIPTV",
+      "branch": "main",
+      "updated": "2026-11-21",
+      "stars": 0,
+      "is_auto_bot": true,
+      "playlists": [
+        "https://raw.githubusercontent.com/hujingguang/ChinaIPTV/main/Global.m3u8",
+        "https://raw.githubusercontent.com/hujingguang/ChinaIPTV/main/HongKong.m3u8",
+        "https://raw.githubusercontent.com/hujingguang/ChinaIPTV/main/HunanTV1.m3u8",
+        "https://raw.githubusercontent.com/hujingguang/ChinaIPTV/main/HunanTV2.m3u8",
+        "https://raw.githubusercontent.com/hujingguang/ChinaIPTV/main/HunanTV3_notOK.m3u8"
+      ],
+      "upstream_sources": []
+    },
+    {
+      "repo": "dumumaja-byte/iptv",
+      "branch": "main",
+      "updated": "2026-11-21",
+      "stars": 0,
+      "is_auto_bot": true,
+      "playlists": [
+        "https://raw.githubusercontent.com/dumumaja-byte/iptv/main/all-clean.m3u",
+        "https://raw.githubusercontent.com/dumumaja-byte/iptv/main/all.m3u",
+        "https://raw.githubusercontent.com/dumumaja-byte/iptv/main/rus3000.m3u",
+        "https://raw.githubusercontent.com/dumumaja-byte/iptv/main/test.m3u",
+        "https://raw.githubusercontent.com/dumumaja-byte/iptv/main/working.m3u"
+      ],
+      "upstream_sources": []
+    },
+    {
+      "repo": "CricZone/my-iptv-channel",
+      "branch": "main",
+      "updated": "2026-11-21",
+      "stars": 0,
+      "is_auto_bot": true,
+      "playlists": [],
+      "upstream_sources": []
+    },
+    {
+      "repo": "turgutozaldemirel-source/Turgut-IPTV",
+      "branch": "main",
+      "updated": "2026-11-21",
+      "stars": 0,
+      "is_auto_bot": true,
+      "playlists": [
+        "https://raw.githubusercontent.com/turgutozaldemirel-source/Turgut-IPTV/main/Turgut.m3u",
+        "https://raw.githubusercontent.com/turgutozaldemirel-source/Turgut-IPTV/main/Turgut_auto.m3u",
+        "https://raw.githubusercontent.com/turgutozaldemirel-source/Turgut-IPTV/main/belgesel.m3u",
+        "https://raw.githubusercontent.com/turgutozaldemirel-source/Turgut-IPTV/main/cocuk.m3u",
+        "https://raw.githubusercontent.com/turgutozaldemirel-source/Turgut-IPTV/main/film-1080p.m3u"
+      ],
+      "upstream_sources": []
+    },
+    {
+      "repo": "EPGStuff/ganja-kids-epg",
+      "branch": "main",
+      "updated": "2026-11-21",
+      "stars": 0,
+      "is_auto_bot": true,
+      "playlists": [],
+      "upstream_sources": []
+    },
+    {
+      "repo": "andreadegiovinebk/xtream-iptv-client-bk",
+      "branch": "main",
+      "updated": "2026-11-21",
+      "stars": 0,
+      "is_auto_bot": true,
+      "playlists": [],
+      "upstream_sources": []
+    },
+    {
+      "repo": "erisgjeladini-cmd/-iptv-playlist",
+      "branch": "main",
+      "updated": "2026-11-21",
+      "stars": 0,
+      "is_auto_bot": true,
+      "playlists": [
+        "https://raw.githubusercontent.com/erisgjeladini-cmd/-iptv-playlist/main/playlist.m3u"
+      ],
+      "upstream_sources": []
+    },
+    {
+      "repo": "celestelsc21-cpu/jellyfin-plugin-iptvorg",
+      "branch": "main",
+      "updated": "2026-11-21",
+      "stars": 0,
+      "is_auto_bot": true,
+      "playlists": [],
+      "upstream_sources": []
+    },
+    {
+      "repo": "hkancelik/IPTV",
+      "branch": "master",
+      "updated": "2026-11-21",
+      "stars": 0,
+      "is_auto_bot": true,
+      "playlists": [],
+      "upstream_sources": []
+    },
+    {
+      "repo": "zengzifeng520/china-iptv-sources",
+      "branch": "main",
+      "updated": "2026-11-21",
+      "stars": 1,
+      "is_auto_bot": true,
+      "playlists": [
+        "https://raw.githubusercontent.com/zengzifeng520/china-iptv-sources/main/crawl/checked/live.m3u",
+        "https://raw.githubusercontent.com/zengzifeng520/china-iptv-sources/main/crawl/extra/migu.m3u",
+        "https://raw.githubusercontent.com/zengzifeng520/china-iptv-sources/main/crawl/hkmo.m3u",
+        "https://raw.githubusercontent.com/zengzifeng520/china-iptv-sources/main/crawl/live.m3u",
+        "https://raw.githubusercontent.com/zengzifeng520/china-iptv-sources/main/output/all.m3u"
+      ],
+      "upstream_sources": [
+        "https://api.809899.xyz",
+        "https://iptv.cqshushu.com/",
+        "https://quake.360.net/api/v3/search/quake_service",
+        "https://zzf.new.tg/live.m3u"
+      ]
+    },
+    {
+      "repo": "notsurewhoisthis/Diamond-IPTV",
+      "branch": "main",
+      "updated": "2026-11-21",
+      "stars": 0,
+      "is_auto_bot": true,
+      "playlists": [
+        "https://raw.githubusercontent.com/notsurewhoisthis/Diamond-IPTV/main/demo/jamrun-demo.m3u"
+      ],
+      "upstream_sources": []
+    },
+    {
+      "repo": "vladimino/iptv-watchlist",
+      "branch": "main",
+      "updated": "2026-11-21",
+      "stars": 0,
+      "is_auto_bot": true,
+      "playlists": [],
+      "upstream_sources": []
+    },
+    {
+      "repo": "worldwide-tv-logos/database",
+      "branch": "main",
+      "updated": "2026-11-21",
+      "stars": 0,
+      "is_auto_bot": true,
+      "playlists": [],
+      "upstream_sources": [
+        "https://worldwide-tv-logos.github.io/database/"
+      ]
+    },
+    {
+      "repo": "urzahil/Emby-LiveTV-Plugin",
+      "branch": "main",
+      "updated": "2026-11-21",
+      "stars": 1,
+      "is_auto_bot": true,
+      "playlists": [],
+      "upstream_sources": []
+    },
+    {
+      "repo": "acidjesuz/EPGTalk",
+      "branch": "master",
+      "updated": "2026-11-21",
+      "stars": 168,
+      "is_auto_bot": true,
+      "playlists": [],
+      "upstream_sources": [
+        "https://site.api.espn.com/apis/site/v2/sports/",
+        "https://site.web.api.espn.com/apis/search/v2"
+      ]
+    },
+    {
+      "repo": "FuadJarrar/IPTV",
+      "branch": "main",
+      "updated": "2026-11-21",
+      "stars": 0,
+      "is_auto_bot": true,
+      "playlists": [
+        "https://raw.githubusercontent.com/FuadJarrar/IPTV/main/arab-countries.m3u",
+        "https://raw.githubusercontent.com/FuadJarrar/IPTV/main/index.country.m3u"
+      ],
+      "upstream_sources": [
+        "https://edge.api.brightcove.com/playback/v1/accounts/",
+        "https://en.roya.tv/images/logo.png",
+        "https://example.invalid/iptv-no-stream",
+        "https://iptv-org.github.io/iptv/index.country.m3u",
+        "https://live.kwikmotion.com/royatvlive/royatv.smil/playlist.m3u8",
+        "https://live.kwikmotion.com/royatvpublic/royatv.smil/playlist.m3u8",
+        "https://players.brightcove.net/",
+        "https://roya.tv/",
+        "https://ticket.roya-tv.com/api/v5/fastchannel/1",
+        "https://www.almamlakatv.com/",
+        "https://www.almamlakatv.com/css/frontcss/images/logo.png",
+        "https://www.almamlakatv.com/live-video"
+      ]
+    },
+    {
+      "repo": "slawa99-prog/sv-iptv",
+      "branch": "main",
+      "updated": "2026-11-21",
+      "stars": 0,
+      "is_auto_bot": true,
+      "playlists": [
+        "https://raw.githubusercontent.com/slawa99-prog/sv-iptv/main/cloud.m3u",
+        "https://raw.githubusercontent.com/slawa99-prog/sv-iptv/main/custom.m3u",
+        "https://raw.githubusercontent.com/slawa99-prog/sv-iptv/main/expanded-preview.m3u",
+        "https://raw.githubusercontent.com/slawa99-prog/sv-iptv/main/expansion-candidates.m3u",
+        "https://raw.githubusercontent.com/slawa99-prog/sv-iptv/main/extra-candidates-2026-11-17.m3u"
+      ],
+      "upstream_sources": [
+        "https://dearbulut.github.io/iptv/playlists/country/ru.m3u",
+        "https://iptv-org.github.io/iptv/countries/ru.m3u",
+        "https://ngrch.github.io/iptv/ru.m3u"
       ]
     },
     {
@@ -3495,17 +3712,6 @@
       "upstream_sources": []
     },
     {
-      "repo": "time2shine/Rokon-IPTV",
-      "branch": "main",
-      "updated": "2026-11-20",
-      "stars": 10,
-      "is_auto_bot": false,
-      "playlists": [
-        "https://raw.githubusercontent.com/time2shine/Rokon-IPTV/main/playlist.m3u"
-      ],
-      "upstream_sources": []
-    },
-    {
       "repo": "rmia41735-commits/BDIX-Live-TV",
       "branch": "main",
       "updated": "2026-11-20",
@@ -3522,10 +3728,21 @@
       ]
     },
     {
+      "repo": "time2shine/Rokon-IPTV",
+      "branch": "main",
+      "updated": "2026-11-21",
+      "stars": 10,
+      "is_auto_bot": false,
+      "playlists": [
+        "https://raw.githubusercontent.com/time2shine/Rokon-IPTV/main/playlist.m3u"
+      ],
+      "upstream_sources": []
+    },
+    {
       "repo": "abusaeeidx/Mrgify-BDIX-IPTV",
       "branch": "main",
       "updated": "2026-11-21",
-      "stars": 153,
+      "stars": 154,
       "is_auto_bot": false,
       "playlists": [
         "https://raw.githubusercontent.com/abusaeeidx/Mrgify-BDIX-IPTV/main/playlist.m3u"
@@ -3722,21 +3939,6 @@
       "upstream_sources": []
     },
     {
-      "repo": "hujingguang/ChinaIPTV",
-      "branch": "main",
-      "updated": "2026-11-21",
-      "stars": 2152,
-      "is_auto_bot": false,
-      "playlists": [
-        "https://raw.githubusercontent.com/hujingguang/ChinaIPTV/main/Global.m3u8",
-        "https://raw.githubusercontent.com/hujingguang/ChinaIPTV/main/HongKong.m3u8",
-        "https://raw.githubusercontent.com/hujingguang/ChinaIPTV/main/HunanTV1.m3u8",
-        "https://raw.githubusercontent.com/hujingguang/ChinaIPTV/main/HunanTV2.m3u8",
-        "https://raw.githubusercontent.com/hujingguang/ChinaIPTV/main/HunanTV3_notOK.m3u8"
-      ],
-      "upstream_sources": []
-    },
-    {
       "repo": "PAANMILE/1000-iptv",
       "branch": "main",
       "updated": "2026-11-21",
@@ -3748,6 +3950,142 @@
       "upstream_sources": [
         "https://tv.trueid.net/th-th/live/"
       ]
+    },
+    {
+      "repo": "simonishvilii/ekrani-iptv",
+      "branch": "main",
+      "updated": "2026-11-21",
+      "stars": 0,
+      "is_auto_bot": false,
+      "playlists": [],
+      "upstream_sources": []
+    },
+    {
+      "repo": "orange4587/iptv",
+      "branch": "main",
+      "updated": "2026-11-21",
+      "stars": 0,
+      "is_auto_bot": false,
+      "playlists": [
+        "https://raw.githubusercontent.com/orange4587/iptv/main/iptv-b.m3u",
+        "https://raw.githubusercontent.com/orange4587/iptv/main/iptv.m3u"
+      ],
+      "upstream_sources": []
+    },
+    {
+      "repo": "djelaili/iptv",
+      "branch": "main",
+      "updated": "2026-11-21",
+      "stars": 0,
+      "is_auto_bot": false,
+      "playlists": [
+        "https://raw.githubusercontent.com/djelaili/iptv/main/Xtream-Player-720p/iqura_international.m3u8",
+        "https://raw.githubusercontent.com/djelaili/iptv/main/Xtream-Player-720p/iqura_international1.m3u8",
+        "https://raw.githubusercontent.com/djelaili/iptv/main/Xtream-player-480p/001-legend-of-zoro.m3u",
+        "https://raw.githubusercontent.com/djelaili/iptv/main/Xtream-player-480p/002-legend-of-tarazan.m3u",
+        "https://raw.githubusercontent.com/djelaili/iptv/main/Xtream-player-480p/003-secrets-of-the-ocean.m3u"
+      ],
+      "upstream_sources": []
+    },
+    {
+      "repo": "antolikpiestany/Moja-IPTV",
+      "branch": "main",
+      "updated": "2026-11-21",
+      "stars": 2,
+      "is_auto_bot": false,
+      "playlists": [
+        "https://raw.githubusercontent.com/antolikpiestany/Moja-IPTV/main/playlist.m3u"
+      ],
+      "upstream_sources": []
+    },
+    {
+      "repo": "iptv-ch/iptv-ch.github.io",
+      "branch": "master",
+      "updated": "2026-11-21",
+      "stars": 357,
+      "is_auto_bot": false,
+      "playlists": [
+        "https://raw.githubusercontent.com/iptv-ch/iptv-ch.github.io/master/SwisscomIPTV-brut.m3u",
+        "https://raw.githubusercontent.com/iptv-ch/iptv-ch.github.io/master/SwisscomIPTVfreeCA.m3u",
+        "https://raw.githubusercontent.com/iptv-ch/iptv-ch.github.io/master/citycable.m3u",
+        "https://raw.githubusercontent.com/iptv-ch/iptv-ch.github.io/master/iktv.m3u8",
+        "https://raw.githubusercontent.com/iptv-ch/iptv-ch.github.io/master/init7-srg-fhd-mc.m3u"
+      ],
+      "upstream_sources": []
+    },
+    {
+      "repo": "piko8666/IPTV",
+      "branch": "main",
+      "updated": "2026-11-21",
+      "stars": 0,
+      "is_auto_bot": false,
+      "playlists": [
+        "https://raw.githubusercontent.com/piko8666/IPTV/main/IPTV.m3u",
+        "https://raw.githubusercontent.com/piko8666/IPTV/main/content.m3u",
+        "https://raw.githubusercontent.com/piko8666/IPTV/main/dianshjia.m3u",
+        "https://raw.githubusercontent.com/piko8666/IPTV/main/index.m3u",
+        "https://raw.githubusercontent.com/piko8666/IPTV/main/livechina.m3u"
+      ],
+      "upstream_sources": []
+    },
+    {
+      "repo": "OnlyBuild/saimo-tv.org",
+      "branch": "main",
+      "updated": "2026-11-21",
+      "stars": 0,
+      "is_auto_bot": false,
+      "playlists": [],
+      "upstream_sources": [
+        "https://saimo-tv.org"
+      ]
+    },
+    {
+      "repo": "danielpress135-netizen/DankoTV",
+      "branch": "main",
+      "updated": "2026-11-21",
+      "stars": 2,
+      "is_auto_bot": false,
+      "playlists": [
+        "https://raw.githubusercontent.com/danielpress135-netizen/DankoTV/main/dankoTV.YTmania.m3u",
+        "https://raw.githubusercontent.com/danielpress135-netizen/DankoTV/main/dankoTV.christian.m3u",
+        "https://raw.githubusercontent.com/danielpress135-netizen/DankoTV/main/dankoTV.free.FHD.m3u",
+        "https://raw.githubusercontent.com/danielpress135-netizen/DankoTV/main/dankoTV.free.m3u",
+        "https://raw.githubusercontent.com/danielpress135-netizen/DankoTV/main/dankoTV.m3u"
+      ],
+      "upstream_sources": []
+    },
+    {
+      "repo": "gambiarras/legal-iptv",
+      "branch": "main",
+      "updated": "2026-11-21",
+      "stars": 95,
+      "is_auto_bot": false,
+      "playlists": [
+        "https://raw.githubusercontent.com/gambiarras/legal-iptv/main/companion-youtube.kodi.m3u",
+        "https://raw.githubusercontent.com/gambiarras/legal-iptv/main/companion.m3u",
+        "https://raw.githubusercontent.com/gambiarras/legal-iptv/main/playlist.m3u"
+      ],
+      "upstream_sources": []
+    },
+    {
+      "repo": "csev7n/xoilacz-iptv",
+      "branch": "main",
+      "updated": "2026-11-21",
+      "stars": 3,
+      "is_auto_bot": false,
+      "playlists": [
+        "https://raw.githubusercontent.com/csev7n/xoilacz-iptv/main/playlist.m3u"
+      ],
+      "upstream_sources": []
+    },
+    {
+      "repo": "omeos-demo/iptv",
+      "branch": "main",
+      "updated": "2026-11-21",
+      "stars": 0,
+      "is_auto_bot": false,
+      "playlists": [],
+      "upstream_sources": []
     }
   ],
   "all_upstream_sources": [
@@ -3990,6 +4328,7 @@
     "https://amg02159-kcglobal-amg02159c1-samsung-in-521.playouts.now.amagi.tv/playlist/amg02159-kcglobal-animax-samsungin/playlist.m3u8",
     "https://amg13643-amg13643c2-amgplt0173.playout.now3.amagi.tv/playlist/amg13643-amg13643c2-amgplt0173/playlist.m3u8",
     "https://andro.226503.xyz/checklist/androstreamlivebs3.m3u8",
+    "https://api.809899.xyz",
     "https://api.cdn-live.tv/api/v1/team/logo.png':",
     "https://api.cdnlivetv.tv/api/v1/events/sports/",
     "https://api.globalping.io/v1",
@@ -4175,6 +4514,7 @@
     "https://dai2.xumo.com/amagi_hls_data_xumo1212A-xumo-nbcnewsnow/CDN/master.m3u8",
     "https://dai2.xumo.com/xumocdn/p=roku/amagi_hls_data_xumo1234A-tmz/CDN/1280x720_5000000/index.m3u8",
     "https://dbrb49pjoymg4.cloudfront.net/10001/99991745/hls/master.m3u8",
+    "https://dearbulut.github.io/iptv/playlists/country/ru.m3u",
     "https://deltatesttatasky.akamaized.net/out/i/968284.m3u8",
     "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
     "https://dengetv",
@@ -4240,14 +4580,17 @@
     "https://e4.endpoint.cdn.sctvonline.vn/hls/woman/sd2/index.m3u8",
     "https://e5.thetvapp.to/hls/metv-wjlp-new-jerseynew-york/index.m3u8",
     "https://eb3933ec.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/um9ydv9dcml0zti2mf9itfs/playlist.m3u8",
+    "https://edge.api.brightcove.com/playback/v1/accounts/",
     "https://edge66.magictvbox.com/liveapple/trinity/tracks-v1a1/mono.m3u8",
     "https://ef79b15c8c7c46c7a9de9d33001dbd07.mediatailor.us-west-2.amazonaws.com/v1/master/ba62fe743df0fe93366eba3a257d792884136c7f/linear-859-documentaryplus-documentaryplus/mt/documentaryplus/859/hls/master/playlist.m3u8",
+    "https://en.roya.tv/images/logo.png",
     "https://encrypted-tbn0.gstatic.com/images",
     "https://epg.provider.plex.tv/library/parts/",
     "https://epg.pw/xmltv/epg_CN.xml",
     "https://epg.pw/xmltv/epg_HK.xml",
     "https://epg.pw/xmltv/epg_TW.xml",
     "https://ev-img-cdn-lb.shoq.com.pk/prd-peg-data/default/images/logos/live/PTV-Sports.png",
+    "https://example.invalid/iptv-no-stream",
     "https://f8e7y4c6.ssl.hwcdn.net/andflixhd/playlist.m3u8",
     "https://f8e7y4c6.ssl.hwcdn.net/andprivehd/playlist.m3u8",
     "https://fash2043.cloudycdn.services/slive/ftv_ftv_4k_hevc_73d_42080_default_466_hls.smil/playlist.m3u8",
@@ -4381,6 +4724,7 @@
     "https://iptv-org.github.io/iptv/countries/mo.m3u",
     "https://iptv-org.github.io/iptv/countries/np.m3u",
     "https://iptv-org.github.io/iptv/countries/pk.m3u",
+    "https://iptv-org.github.io/iptv/countries/ru.m3u",
     "https://iptv-org.github.io/iptv/countries/tr.m3u",
     "https://iptv-org.github.io/iptv/countries/tw.m3u",
     "https://iptv-org.github.io/iptv/countries/uk.m3u",
@@ -4395,6 +4739,7 @@
     "https://iptv-org.github.io/iptv/regions/asia.m3u",
     "https://iptv-org.github.io/iptv/regions/eur.m3u",
     "https://iptv-org.github.io/iptv/regions/oce.m3u",
+    "https://iptv.cqshushu.com/",
     "https://iptv.playtorrio.xyz",
     "https://iptv.playtorrio.xyz/",
     "https://iptv.playtorrio.xyz/logo.ico",
@@ -4525,6 +4870,8 @@
     "https://live.hanoitv.vn/hntvlive/tv1live.m3u8",
     "https://live.hanoitv.vn/hntvlive/tv2live.m3u8",
     "https://live.hungyentv.vn/hytvlive/tv1live.m3u8",
+    "https://live.kwikmotion.com/royatvlive/royatv.smil/playlist.m3u8",
+    "https://live.kwikmotion.com/royatvpublic/royatv.smil/playlist.m3u8",
     "https://live.kwikmotion.com/sbrksaquranradiolive/srpksaquranradio/playlist.m3u8",
     "https://live.kwikmotion.com/sharjahtvquranlive/shqurantv.smil/playlist.m3u8",
     "https://live.msnetworks.net/a-sports/master.m3u8",
@@ -4754,6 +5101,7 @@
     "https://n24-cdn-live-b.ntv.co.jp/ch01/High.m3u8",
     "https://nbtv.vn/templates/frontend/nbtv/Assets/img/logo.png",
     "https://nbtv.vncdn.vn/nbtvlive/tv1live.m3u8",
+    "https://ngrch.github.io/iptv/ru.m3u",
     "https://nhkworld.webcdn.stream.ne.jp/www11/nhkworld-tv/global/2003458/live.m3u8",
     "https://nkafmbewiff.gpcdn.net/tile_2/master.m3u8",
     "https://nmxlive.akamaized.net/hls/live/529965/Live_1/index_1080.m3u8",
@@ -4795,6 +5143,7 @@
     "https://owrcovcrpy.gpcdn.net/bpk-tv/1729/output/1729.m3u8",
     "https://pc.api.btime.com/btimeweb/infoFlow",
     "https://pemirateshls.persiana.live/hls/stream.m3u8",
+    "https://players.brightcove.net/",
     "https://playhouse.premiumvideo.click/player/",
     "https://playlist.gmaxhub.workers.dev",
     "https://playyonogames.in/sliv/stream.m3u8",
@@ -4812,6 +5161,7 @@
     "https://pubads.g.doubleclick.net/ssai/event/tqd6w9ojqvoodbcyv3dammw/master.m3u8",
     "https://qtv.vncdn.vn/qtvlive/tv1live.m3u8",
     "https://qtv.vncdn.vn/qtvlive/tv3live.m3u8",
+    "https://quake.360.net/api/v3/search/quake_service",
     "https://r8vx3qkm2ztp7ynj6lpl.rockstreamer.com/v1/019ee554d6cc1567ee93172b12d63f/01a047abffef1ea557842156e6858c/main.m3u8",
     "https://racingvic-i.akamaized.net/hls/live/598695/racingvic/1500.m3u8",
     "https://radiofoorti.fm/api/stream",
@@ -4821,12 +5171,14 @@
     "https://reflect-scvtv.cablecast.tv/live-2/live/live.m3u8",
     "https://reflector.watchtstv.com/hls/livestream.m3u8",
     "https://rfdtv-jw.cdn.vustreams.com/live/7cba1a3b-318a-4097-8492-374478370b91/live.isml/7cba1a3b-318a-4097-8492-374478370b91.m3u8",
+    "https://roya.tv/",
     "https://rsstv.gviet.vn/sctv/157/595/1565944958841.png",
     "https://rsstv.gviet.vn/sctv/159/130/1581298778597.png",
     "https://rt-glb.gcdn.co/live/rtnews/playlist_4500Kb.m3u8",
     "https://rt-rtd.gcdn.co/live/rtdoc/playlist_4500Kb.m3u8",
     "https://s3-us-west-2.amazonaws.com/beverly-hills-high-school.castus-vod/live/ch1/video.m3u8",
     "https://s3.myradiostream.com",
+    "https://saimo-tv.org",
     "https://sbs-live.akamaized.net/hls/live/2002828/channel2/open/master_1800K.m3u8",
     "https://sdxw.iqilu.com/v1/app/play/program/qilu",
     "https://search.cdn.huya.com/",
@@ -4836,7 +5188,9 @@
     "https://service-stitcher.clusters.pluto.tv/stitch/hls/channel/5cb626cfcaf83414128f439c/master.m3u8",
     "https://sh7hls.wns.live/hls/stream.m3u8",
     "https://siloh-ns1.plutotv.net/lilo/production/bein/master_1.m3u8",
+    "https://site.api.espn.com/apis/site/v2/sports/",
     "https://site.api.espn.com/apis/site/v2/sports/soccer/",
+    "https://site.web.api.espn.com/apis/search/v2",
     "https://site.web.api.espn.com/apis/v2/scoreboard/header",
     "https://skylivesky-i.akamaihd.net/hls/live/569780/skylive/sky1_extreme@569780.m3u8",
     "https://skylivesky-i.akamaihd.net/hls/live/569780/skylive/sky2_extreme@569780.m3u8",
@@ -4897,6 +5251,7 @@
     "https://therokuchannel.roku.com/api/v1/csrf",
     "https://therokuchannel.roku.com/api/v2/homescreen/content/https",
     "https://therokuchannel.roku.com/api/v3/playback",
+    "https://ticket.roya-tv.com/api/v5/fastchannel/1",
     "https://tixbolt.com/royaltv/index.fmp4.m3u8",
     "https://truyenhinh.vnptvas.vn/live.m3u8",
     "https://tshift.fptplay.net/dvr/vtc10_1000.stream/chunks_dvr_range-$",
@@ -5020,9 +5375,13 @@
     "https://web.aynaott.com/live-tvs",
     "https://witn.cablecast.tv/live-4/live/live.m3u8",
     "https://wnjtdt.lls.pbs.org/out/v1/e62efd8d4f92403996425fc389df0ffd/index.m3u8",
+    "https://worldwide-tv-logos.github.io/database/",
     "https://ww7.vcdnlare.com",
     "https://ww7.vcdnlare.com/",
     "https://www.4movierulz.tv",
+    "https://www.almamlakatv.com/",
+    "https://www.almamlakatv.com/css/frontcss/images/logo.png",
+    "https://www.almamlakatv.com/live-video",
     "https://www.api.v3.tvp.pl/",
     "https://www.babytv.com/app/uploads/2019/12/LogoBabyTV-2019.png",
     "https://www.bloomberg.com/media-manifest/streams/asia.m3u8",
@@ -5099,7 +5458,8 @@
     "https://yuppmedtaorire.akamaized.net/v1/master/a0d007312bfd99c47f76b77ae26b1ccdaae76cb1/tv5_nim_https/110322/tv5/playlist.m3u8",
     "https://yuppmedtaorire.akamaized.net/v1/master/a0d007312bfd99c47f76b77ae26b1ccdaae76cb1/v6news_nim_https/140622/v6news/playlist.m3u8",
     "https://yupptvcatchupire.yuppcdn.net/preview/colorsbanglahd/800.m3u8",
-    "https://z4rq8tnx2kvm7pyw.rockstreamer.com/v1/019f325acf6615fc60e92c29383152/01a0479164ab1ea557842156e6858b/main.m3u8"
+    "https://z4rq8tnx2kvm7pyw.rockstreamer.com/v1/019f325acf6615fc60e92c29383152/01a0479164ab1ea557842156e6858b/main.m3u8",
+    "https://zzf.new.tg/live.m3u"
   ],
   "all_bot_playlists": [
     "https://raw.githubusercontent.com/365tv/365tv.github.io/main/play/vodmovies.m3u",
@@ -5131,6 +5491,8 @@
     "https://raw.githubusercontent.com/DevelopersCoffee/airo/main/e2e/fixtures/airo-tv-viewport.m3u",
     "https://raw.githubusercontent.com/DevelopersCoffee/airo/main/iptv-data/fixtures/iptv-org/index.m3u",
     "https://raw.githubusercontent.com/DobyMigs/neutv-cable/main/NeuTV.m3u",
+    "https://raw.githubusercontent.com/FuadJarrar/IPTV/main/arab-countries.m3u",
+    "https://raw.githubusercontent.com/FuadJarrar/IPTV/main/index.country.m3u",
     "https://raw.githubusercontent.com/Indiblog/india-iptv/main/output/india_general.m3u",
     "https://raw.githubusercontent.com/Indiblog/india-iptv/main/output/india_iptv.m3u",
     "https://raw.githubusercontent.com/KOCMOC0707/iptv-auto/main/playlist.m3u",
@@ -5232,6 +5594,7 @@
     "https://raw.githubusercontent.com/alvaldes/free-tv/main/free.m3u",
     "https://raw.githubusercontent.com/anasselkadii/jcartoondashboard/main/epesodes/arabiptv.m3u",
     "https://raw.githubusercontent.com/anasselkadii/jcartoondashboard/main/epesodes/toffee.m3u8",
+    "https://raw.githubusercontent.com/antolikpiestany/Moja-IPTV/main/playlist.m3u",
     "https://raw.githubusercontent.com/antonio-bravo/m3u/main/arena4viewer.m3u",
     "https://raw.githubusercontent.com/antonio-bravo/m3u/main/canales_acestream.m3u",
     "https://raw.githubusercontent.com/antonio-bravo/m3u/main/ipfs_io.m3u",
@@ -5254,8 +5617,14 @@
     "https://raw.githubusercontent.com/byte-capsule/x.x.x.x../main/Static_Playlist_AynaOTT.m3u",
     "https://raw.githubusercontent.com/byte-capsule/x.x.x.x../main/Universal_Player_AynaOTT.m3u",
     "https://raw.githubusercontent.com/canghaixiao369/IPTV/main/itvlist.m3u",
+    "https://raw.githubusercontent.com/csev7n/xoilacz-iptv/main/playlist.m3u",
     "https://raw.githubusercontent.com/dalangblog/IPTV/main/iptv.m3u",
     "https://raw.githubusercontent.com/dalangblog/IPTV/main/test.m3u",
+    "https://raw.githubusercontent.com/danielpress135-netizen/DankoTV/main/dankoTV.YTmania.m3u",
+    "https://raw.githubusercontent.com/danielpress135-netizen/DankoTV/main/dankoTV.christian.m3u",
+    "https://raw.githubusercontent.com/danielpress135-netizen/DankoTV/main/dankoTV.free.FHD.m3u",
+    "https://raw.githubusercontent.com/danielpress135-netizen/DankoTV/main/dankoTV.free.m3u",
+    "https://raw.githubusercontent.com/danielpress135-netizen/DankoTV/main/dankoTV.m3u",
     "https://raw.githubusercontent.com/devmujahidul/Auto_Fetch/main/output.m3u",
     "https://raw.githubusercontent.com/dhasap/dhanytv/main/dhanytv-ott.m3u",
     "https://raw.githubusercontent.com/dhasap/dhanytv/main/dhanytv.m3u",
@@ -5267,8 +5636,19 @@
     "https://raw.githubusercontent.com/dhrubonai/Free-BD-IPTV/main/playlists/entertainment/music.m3u",
     "https://raw.githubusercontent.com/dionzarek/iptv/main/2026.m3u",
     "https://raw.githubusercontent.com/dionzarek/iptv/main/tv-dion.m3u",
+    "https://raw.githubusercontent.com/djelaili/iptv/main/Xtream-Player-720p/iqura_international.m3u8",
+    "https://raw.githubusercontent.com/djelaili/iptv/main/Xtream-Player-720p/iqura_international1.m3u8",
+    "https://raw.githubusercontent.com/djelaili/iptv/main/Xtream-player-480p/001-legend-of-zoro.m3u",
+    "https://raw.githubusercontent.com/djelaili/iptv/main/Xtream-player-480p/002-legend-of-tarazan.m3u",
+    "https://raw.githubusercontent.com/djelaili/iptv/main/Xtream-player-480p/003-secrets-of-the-ocean.m3u",
+    "https://raw.githubusercontent.com/dumumaja-byte/iptv/main/all-clean.m3u",
+    "https://raw.githubusercontent.com/dumumaja-byte/iptv/main/all.m3u",
+    "https://raw.githubusercontent.com/dumumaja-byte/iptv/main/rus3000.m3u",
+    "https://raw.githubusercontent.com/dumumaja-byte/iptv/main/test.m3u",
+    "https://raw.githubusercontent.com/dumumaja-byte/iptv/main/working.m3u",
     "https://raw.githubusercontent.com/dzh0ni/iPTV-FREE-LIST/master/Maratones/nexus.m3u",
     "https://raw.githubusercontent.com/dzh0ni/iPTV-FREE-LIST/master/iPTV-Free-List_TV.m3u",
+    "https://raw.githubusercontent.com/erisgjeladini-cmd/-iptv-playlist/main/playlist.m3u",
     "https://raw.githubusercontent.com/f6388600-ai/Auto-playlist-check-/main/playlists/online.m3u",
     "https://raw.githubusercontent.com/f6388600-ai/Auto-playlist-check-/main/playlists/playlist.m3u",
     "https://raw.githubusercontent.com/farhad-iptv/jagobd-scrapper/main/output/playlist.m3u",
@@ -5279,6 +5659,9 @@
     "https://raw.githubusercontent.com/franksun1211/TXT/main/HTB/CFL/live/AV.m3u",
     "https://raw.githubusercontent.com/franksun1211/TXT/main/HTB/CFL/live/m3u8%E6%BA%90.m3u",
     "https://raw.githubusercontent.com/franksun1211/TXT/main/HTB/CFL/live/pron.m3u",
+    "https://raw.githubusercontent.com/gambiarras/legal-iptv/main/companion-youtube.kodi.m3u",
+    "https://raw.githubusercontent.com/gambiarras/legal-iptv/main/companion.m3u",
+    "https://raw.githubusercontent.com/gambiarras/legal-iptv/main/playlist.m3u",
     "https://raw.githubusercontent.com/hmripon66/Indian-IPTV-By-Tech-Edu-bYte/main/India%20IPTV%20.m3u8",
     "https://raw.githubusercontent.com/hououinkami/AppleTV/main/China_v4.m3u",
     "https://raw.githubusercontent.com/hououinkami/AppleTV/main/China_v6.m3u",
@@ -5294,6 +5677,11 @@
     "https://raw.githubusercontent.com/huyulds/QuantumultX/main/iptv.m3u",
     "https://raw.githubusercontent.com/ilxp/iptv/main/ipv4.m3u",
     "https://raw.githubusercontent.com/ilxp/iptv/main/ipv6.m3u",
+    "https://raw.githubusercontent.com/iptv-ch/iptv-ch.github.io/master/SwisscomIPTV-brut.m3u",
+    "https://raw.githubusercontent.com/iptv-ch/iptv-ch.github.io/master/SwisscomIPTVfreeCA.m3u",
+    "https://raw.githubusercontent.com/iptv-ch/iptv-ch.github.io/master/citycable.m3u",
+    "https://raw.githubusercontent.com/iptv-ch/iptv-ch.github.io/master/iktv.m3u8",
+    "https://raw.githubusercontent.com/iptv-ch/iptv-ch.github.io/master/init7-srg-fhd-mc.m3u",
     "https://raw.githubusercontent.com/iqbal8846/sports-iptv/main/output/cricket.m3u",
     "https://raw.githubusercontent.com/iqbal8846/sports-iptv/main/output/football.m3u",
     "https://raw.githubusercontent.com/iqbal8846/sports-iptv/main/output/sports_all.m3u",
@@ -5361,7 +5749,10 @@
     "https://raw.githubusercontent.com/ndkhoams/iptv/main/sports-channels-4k.m3u",
     "https://raw.githubusercontent.com/ndkhoams/iptv/main/thethao.m3u",
     "https://raw.githubusercontent.com/ndkhoams/iptv/main/vmttv.m3u",
+    "https://raw.githubusercontent.com/notsurewhoisthis/Diamond-IPTV/main/demo/jamrun-demo.m3u",
     "https://raw.githubusercontent.com/oleksa0663/smarttv/main/iptv.m3u",
+    "https://raw.githubusercontent.com/orange4587/iptv/main/iptv-b.m3u",
+    "https://raw.githubusercontent.com/orange4587/iptv/main/iptv.m3u",
     "https://raw.githubusercontent.com/owen-the-kid/OwnCast-M3U-Generator/main/categories/247.m3u",
     "https://raw.githubusercontent.com/owen-the-kid/OwnCast-M3U-Generator/main/categories/anime.m3u",
     "https://raw.githubusercontent.com/owen-the-kid/OwnCast-M3U-Generator/main/categories/freie-software.m3u",
@@ -5377,6 +5768,11 @@
     "https://raw.githubusercontent.com/pdd520/IPTV/master/output/result.m3u",
     "https://raw.githubusercontent.com/pdd520/IPTV/master/output/rtp/iptv.m3u",
     "https://raw.githubusercontent.com/pdd520/IPTV/master/output/rtp/tw.m3u",
+    "https://raw.githubusercontent.com/piko8666/IPTV/main/IPTV.m3u",
+    "https://raw.githubusercontent.com/piko8666/IPTV/main/content.m3u",
+    "https://raw.githubusercontent.com/piko8666/IPTV/main/dianshjia.m3u",
+    "https://raw.githubusercontent.com/piko8666/IPTV/main/index.m3u",
+    "https://raw.githubusercontent.com/piko8666/IPTV/main/livechina.m3u",
     "https://raw.githubusercontent.com/profekadi/iptv/main/SA86.m3u",
     "https://raw.githubusercontent.com/profekadi/iptv/main/Viajeros.m3u",
     "https://raw.githubusercontent.com/profekadi/iptv/main/all.m3u",
@@ -5434,6 +5830,11 @@
     "https://raw.githubusercontent.com/sjnhnp/adblock/main/filtered_global_attributes_removed.m3u",
     "https://raw.githubusercontent.com/sjnhnp/adblock/main/filtered_http_only_valid.m3u",
     "https://raw.githubusercontent.com/sjnhnp/adblock/main/filtered_https_only.m3u",
+    "https://raw.githubusercontent.com/slawa99-prog/sv-iptv/main/cloud.m3u",
+    "https://raw.githubusercontent.com/slawa99-prog/sv-iptv/main/custom.m3u",
+    "https://raw.githubusercontent.com/slawa99-prog/sv-iptv/main/expanded-preview.m3u",
+    "https://raw.githubusercontent.com/slawa99-prog/sv-iptv/main/expansion-candidates.m3u",
+    "https://raw.githubusercontent.com/slawa99-prog/sv-iptv/main/extra-candidates-2026-11-17.m3u",
     "https://raw.githubusercontent.com/sowahsun/My-Books/main/custom_lives.m3u",
     "https://raw.githubusercontent.com/sowahsun/My-Books/main/kl_lives.m3u",
     "https://raw.githubusercontent.com/stablesports711-hue/stable-sports-iptv/main/STABLE-SPORTS%20TV.m3u",
@@ -5447,6 +5848,11 @@
     "https://raw.githubusercontent.com/towerstreet/IPTV-TVBOX/main/IPTV.m3u",
     "https://raw.githubusercontent.com/towerstreet/IPTV-TVBOX/main/ITV.m3u",
     "https://raw.githubusercontent.com/tunnabri-ops/BDIX-IPTV/main/bdix/playlist.m3u",
+    "https://raw.githubusercontent.com/turgutozaldemirel-source/Turgut-IPTV/main/Turgut.m3u",
+    "https://raw.githubusercontent.com/turgutozaldemirel-source/Turgut-IPTV/main/Turgut_auto.m3u",
+    "https://raw.githubusercontent.com/turgutozaldemirel-source/Turgut-IPTV/main/belgesel.m3u",
+    "https://raw.githubusercontent.com/turgutozaldemirel-source/Turgut-IPTV/main/cocuk.m3u",
+    "https://raw.githubusercontent.com/turgutozaldemirel-source/Turgut-IPTV/main/film-1080p.m3u",
     "https://raw.githubusercontent.com/tutw/platinsport-m3u-updater/main/canales_acestream.m3u",
     "https://raw.githubusercontent.com/tutw/platinsport-m3u-updater/main/lista.m3u",
     "https://raw.githubusercontent.com/tutw/platinsport-m3u-updater/main/lista_icastresana.m3u",
@@ -5484,6 +5890,11 @@
     "https://raw.githubusercontent.com/x3yyy/demo/main/ipv6.m3u",
     "https://raw.githubusercontent.com/x3yyy/demo/main/xyyy.m3u",
     "https://raw.githubusercontent.com/x3yyy/demo/main/xyyy.m3u8",
+    "https://raw.githubusercontent.com/zengzifeng520/china-iptv-sources/main/crawl/checked/live.m3u",
+    "https://raw.githubusercontent.com/zengzifeng520/china-iptv-sources/main/crawl/extra/migu.m3u",
+    "https://raw.githubusercontent.com/zengzifeng520/china-iptv-sources/main/crawl/hkmo.m3u",
+    "https://raw.githubusercontent.com/zengzifeng520/china-iptv-sources/main/crawl/live.m3u",
+    "https://raw.githubusercontent.com/zengzifeng520/china-iptv-sources/main/output/all.m3u",
     "https://raw.githubusercontent.com/zhuxinfu88/EDIPTV/main/m3u/CCTV.m3u",
     "https://raw.githubusercontent.com/zhuxinfu88/EDIPTV/main/m3u/CNTV.m3u",
     "https://raw.githubusercontent.com/zhuxinfu88/EDIPTV/main/m3u/IPTV.m3u",
