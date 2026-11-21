@@ -1,12 +1,13 @@
 """
-All-in-One Direct (No-Proxy) Live TV IPTV Updater (Clean Original Names + Fast Anti-Hang + Language-Aware)
+All-in-One Direct (No-Proxy) Live TV IPTV Updater (Token-Aware + Original Names + Fast Anti-Hang)
 Features:
+  - Blocks expired or soon-to-expire tokens (exp=/expires= timestamp check + third-party bot token filter)
+  - Deep HLS segment verification (requires >= 5KB real video chunk, blocks fake 200 OK empty/loop streams)
   - Strict Original Channel Name Filter (blocks Amagi server IDs like Amg17902, numeric-only, and gibberish names)
   - Separates Bangladeshi channels ('Bangladesh') from Indian Bangla channels ('Bangla (India)')
   - Global socket timeout (8s) + 1.5MB read cap + 120 discovery workers (prevents infinite hang)
   - Relies on 'discovered_sources.json' for all upstream sources & bot playlists (zero GitHub Search API load)
   - Live token scrapers for AynaOTT & JagoBD
-  - Detects actual broadcast language from live .m3u8 audio tracks (#EXT-X-MEDIA LANGUAGE) + metadata
   - Generates TWO playlists:
       1. 'playlist.m3u': All verified alive streams across all languages (with backups)
       2. 'playlist_clean.m3u': Duplicate-free, lowest ping (fastest response) 1 link per channel
@@ -67,6 +68,12 @@ BLOCK_URLS = [
 ]
 
 NOT_BANGLA_HOSTS = ["amagi.tv"]
+
+# External bot theke asha expired/session-locked token URL pattern
+EXPIRED_TOKEN_URL_RE = re.compile(
+    r"(\?|&)(token|hdnts|wmsAuthSign|signature|auth|expires|policy|key-pair-id)=",
+    re.I
+)
 
 # Adult, Radio & Direct Movie/VOD Filters
 BLOCK_WORDS = ["xxx", "adult", "porn", "18+", "erotic", "sex"]
@@ -585,7 +592,7 @@ def check_hls_key(m3u8_text, base_url, headers, timeout=4):
 
 
 def verify_deep_hls(m3u8_text, base_url, headers, timeout=5):
-    """M3U8 er vetorer sub-playlist (prothom 3 tir jekono 1 ti) o video segment check korbe"""
+    """M3U8 er vetorer sub-playlist o ashol video segment (minimum 5KB) check korbe"""
     if not check_hls_key(m3u8_text, base_url, headers, timeout=4):
         return False
 
@@ -602,7 +609,7 @@ def verify_deep_hls(m3u8_text, base_url, headers, timeout=5):
             with urllib.request.urlopen(req, timeout=timeout, context=SSL_CTX) as r:
                 if r.status not in (200, 206):
                     continue
-                chunk = r.read(4096)
+                chunk = r.read(8192)
                 low = chunk.decode("utf-8", errors="ignore").lower()
                 if "#ext-x-endlist" in low:
                     return False
@@ -619,10 +626,11 @@ def verify_deep_hls(m3u8_text, base_url, headers, timeout=5):
                     seg_url = urllib.parse.urljoin(target_url, sub_lines[0])
                     req2 = urllib.request.Request(seg_url, headers=headers)
                     with urllib.request.urlopen(req2, timeout=timeout, context=SSL_CTX) as r2:
-                        seg_data = r2.read(1024)
-                        if r2.status in (200, 206) and len(seg_data) > 200 and not seg_data[:20].lstrip().startswith(b"<"):
+                        seg_data = r2.read(16384)
+                        # Ashol live video segment অন্তত 5KB (5000 bytes) er boro hoy
+                        if r2.status in (200, 206) and len(seg_data) >= 5000 and not seg_data[:20].lstrip().startswith(b"<"):
                             return True
-                elif len(chunk) > 200 and not chunk[:20].lstrip().startswith(b"<"):
+                elif len(chunk) >= 5000 and not chunk[:20].lstrip().startswith(b"<"):
                     return True
         except Exception:
             continue
@@ -643,6 +651,11 @@ def check_stream(raw_url, timeout=CHECK_TIMEOUT):
                 base[k.strip()] = v.strip()
                 if k.strip().lower() == "user-agent":
                     custom_ua = True
+
+    # Check if token timestamp (exp=/expires=) is already expired or expiring within 2 hours
+    exp_m = re.search(r"(?:exp|expires)=(\d{10})", url, re.I)
+    if exp_m and int(exp_m.group(1)) < int(time.time()) + 7200:
+        return False, 0, "token expired or expiring soon", UA, ""
 
     if AUDIO_EXT_RE.search(url):
         return False, 0, "radio/audio file", UA, ""
@@ -837,6 +850,10 @@ def is_blocked_or_non_tv(c):
     group = c.get("group", "")
     url = c.get("url", "")
     t = f"{name} {group}".lower()
+
+    # External GitHub bot theke asha third-party expired/session-locked token link bad debe (AynaOTT/JagoBD bade)
+    if c.get("source") == "GitHub" and EXPIRED_TOKEN_URL_RE.search(url):
+        return True
 
     if any(re.search(rf"\b{re.escape(w)}\b", t) for w in BLOCK_WORDS):
         return True
