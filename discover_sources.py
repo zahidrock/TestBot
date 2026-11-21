@@ -1,9 +1,9 @@
 """
-GitHub IPTV Bot & Upstream Source Discovery Script (Direct Upstream Extractor + Persistent Merge)
-1. Loads previously saved bots & upstream sources from 'discovered_sources.json'.
+GitHub IPTV Bot & Upstream Source Discovery Script (Direct Upstream Extractor + Image/Asset Filter + Persistent Merge)
+1. Loads previously saved bots & upstream sources from 'discovered_sources.json' and purges image/static asset URLs.
 2. Finds active GitHub repositories by IPTV/M3U names AND by code signatures.
 3. Inspects their source code (.py, .js, .ts, .sh, .yml, .json) to extract direct upstream M3U/API sources
-   (including raw.githubusercontent.com upstream feeds used by other bots, excluding self-outputs).
+   (including raw.githubusercontent.com upstream feeds used by other bots, excluding self-outputs and images).
 4. Merges old + new sources and saves them permanently into 'discovered_sources.json' & 'bot_report.txt'.
 """
 import json, os, re, time
@@ -59,6 +59,28 @@ IGNORE_DOMAINS = (
     "api.github.com", "gist.github.com"
 )
 
+# Image, icon, stylesheet, archive o non-stream static file extension list
+IGNORE_EXTENSIONS = (
+    ".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg", ".ico", ".bmp", ".tiff",
+    ".css", ".scss", ".less", ".woff", ".woff2", ".ttf", ".eot",
+    ".mp4", ".mkv", ".avi", ".mp3", ".wav", ".ogg",
+    ".zip", ".tar", ".gz", ".rar", ".7z", ".pdf", ".md", ".exe", ".apk"
+)
+
+
+def is_valid_upstream_url(url, self_repo_prefix=""):
+    """Check korbe URL ti sothik upstream source kina (image/static file/self-output noy)"""
+    low_u = url.lower().split("?")[0].split("#")[0]
+    if low_u.endswith(IGNORE_EXTENSIONS):
+        return False
+    if self_repo_prefix and self_repo_prefix in low_u:
+        return False
+    if any(d in low_u for d in IGNORE_DOMAINS):
+        return False
+    if any(k in low_u for k in ("api", "live", "tv", "stream", "m3u", "cdn", "103.", "portal", "play", "iptv", "mjh.nz")):
+        return True
+    return False
+
 
 def log(msg):
     print(msg, flush=True)
@@ -87,15 +109,27 @@ def raw_get(url):
 
 
 def load_existing_data():
-    """Ager save kora discovered_sources.json theke purono bot o source load korbe"""
+    """Ager save kora discovered_sources.json theke purono bot o source load korbe ebong image URL clean korbe"""
     if not OUT_JSON.exists():
         return {}, set(), set()
     try:
         old = json.loads(OUT_JSON.read_text(encoding="utf-8"))
-        old_bots = {b["repo"]: b for b in old.get("bots", []) if "repo" in b}
-        old_upstream = set(old.get("all_upstream_sources", []))
+        old_bots = {}
+        for b in old.get("bots", []):
+            if "repo" in b:
+                prefix = f"raw.githubusercontent.com/{b['repo'].lower()}/"
+                b["upstream_sources"] = [
+                    u for u in b.get("upstream_sources", [])
+                    if is_valid_upstream_url(u, prefix)
+                ]
+                old_bots[b["repo"]] = b
+
+        old_upstream = {
+            u for u in old.get("all_upstream_sources", [])
+            if is_valid_upstream_url(u)
+        }
         old_playlists = set(old.get("all_bot_playlists", []))
-        log(f"Ager save kora {len(old_bots)} ti bot o {len(old_upstream)} ti upstream source load holo.")
+        log(f"Ager save kora {len(old_bots)} ti bot o {len(old_upstream)} ti clean upstream source load holo.")
         return old_bots, old_upstream, old_playlists
     except Exception as e:
         log(f"[Warning] Purono JSON pora jay ni: {e}")
@@ -191,13 +225,7 @@ def discover():
                 code_txt = raw_get(raw_code_url)
                 for found_url in URL_RE.findall(code_txt):
                     clean_u = found_url.rstrip(".,;'\")}]").split("?")[0]
-                    low_u = clean_u.lower()
-                    # Nijeder repo-er output file bad diye onno source er upstream link nibe
-                    if self_repo_prefix in low_u:
-                        continue
-                    if any(d in low_u for d in IGNORE_DOMAINS):
-                        continue
-                    if any(k in low_u for k in ("api", "live", "tv", "stream", "m3u", "cdn", "103.", "portal", "play", "iptv", "mjh.nz")):
+                    if is_valid_upstream_url(clean_u, self_repo_prefix):
                         upstream.add(clean_u)
             except Exception:
                 pass
@@ -218,11 +246,13 @@ def discover():
     all_bots_list = list(merged_bots.values())
     all_bots_list.sort(key=lambda x: (not x.get("is_auto_bot", False), x.get("updated", "")), reverse=False)
 
+    # Rebuild merged_upstream strictly from cleaned bot upstream sources + cleaned old_upstream
+    clean_merged_upstream = {u for u in merged_upstream if is_valid_upstream_url(u)}
     for b in all_bots_list:
-        merged_upstream.update(b.get("upstream_sources", []))
+        clean_merged_upstream.update(b.get("upstream_sources", []))
         merged_playlists.update(b.get("playlists", []))
 
-    all_upstream_urls = sorted(merged_upstream)
+    all_upstream_urls = sorted(clean_merged_upstream)
     all_bot_playlists = sorted(merged_playlists)
 
     result_data = {
@@ -258,7 +288,7 @@ def discover():
                 report_lines.append(f"    > {pl}")
 
     OUT_REPORT.write_text("\n".join(report_lines) + "\n", encoding="utf-8")
-    log(f"Done! Total Merged: {len(all_bots_list)} ti bot, {len(all_upstream_urls)} ti upstream source o {len(all_bot_playlists)} ti M3U playlist '{OUT_JSON}' & '{OUT_REPORT}' e save hoyeche.")
+    log(f"Done! Total Merged: {len(all_bots_list)} ti bot, {len(all_upstream_urls)} ti clean upstream source o {len(all_bot_playlists)} ti M3U playlist '{OUT_JSON}' & '{OUT_REPORT}' e save hoyeche.")
 
 
 if __name__ == "__main__":
