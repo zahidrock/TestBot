@@ -1,16 +1,14 @@
 """
-All-in-One Direct (No-Proxy) Live TV IPTV Updater
+All-in-One Direct (No-Proxy) Live TV IPTV Updater (All Languages + Live M3U8 Audio Language Detection)
 Features:
+  - Detects actual broadcast language from live .m3u8 audio tracks (#EXT-X-MEDIA LANGUAGE) + metadata
+  - Includes ALL languages (Bangla, Hindi, English, Tamil, Telugu, Malayalam, Marathi, Punjabi, Urdu, Arabic, International)
+  - Auto-categorizes channels accurately by language & genre
+  - Extracts real channel names from raw .m3u8 URLs (no 'Live Stream 1, 2, 3' entries)
   - Generates TWO playlists:
-      1. 'playlist.m3u': All verified alive streams (with backups)
+      1. 'playlist.m3u': All verified alive streams across all languages (with backups)
       2. 'playlist_clean.m3u': Duplicate-free, lowest ping (fastest response) 1 link per channel
   - Allows token-based live streams (auto-removed on next 6h cycle if expired)
-  - Includes English Drama, Entertainment & Documentary channels alongside English Movies & Music
-  - Loads upstream websites/APIs & active bot feeds from 'discovered_sources.json'
-  - Runs GitHub Code Search once every 24 hours (or on manual run) to avoid rate limits
-  - Direct Scrapers: AynaOTT, JagoBD, Extra BDIX/Free-TV Repos, Adaptive Streams, YuppCDN
-  - Auto-converts Xtream .ts / output=ts / extensionless stream links to .m3u8 for M3UIPTV compatibility
-  - Strict VOD / Movie / Radio / DRM Blocker
   - Balanced Deep HLS Check (Top 3 sub-playlists + AES-128 Key URI check; blocks raw .ts)
   - Direct M3UIPTV Headers (#EXTVLCOPT)
 """
@@ -25,7 +23,7 @@ OUTPUT = Path("playlist.m3u")
 CLEAN_OUTPUT = Path("playlist_clean.m3u")  # Duplicate-free & lowest ping playlist
 DISCOVERED_FILE = Path("discovered_sources.json")
 WORKERS = 150                # ek sathe 150 ta link check hobe
-CHECK_TIMEOUT = 8            # 8 sekond dile slow-start BDIX/Indian server bad porbe na
+CHECK_TIMEOUT = 8            # 8 sekond dile slow-start BDIX/International server bad porbe na
 MAX_LINKS_PER_CHANNEL = None # main playlist e shob alive link thakbe
 MIN_KEEP_RATIO = 0.1         # safety ratio
 
@@ -49,13 +47,13 @@ GITHUB_SEARCH_QUERIES = [
 
 IPTV_BASE = "https://iptv-org.github.io/iptv"
 
-INDIA_LANGS = ("hin", "ben")
+# Shob bhashar channel allow kora hoyeche (lang filter None)
 COUNTRY_SOURCES = [
     ("Bangladesh", f"{IPTV_BASE}/countries/bd.m3u", None),
-    ("India",      f"{IPTV_BASE}/countries/in.m3u", INDIA_LANGS),
+    ("India",      f"{IPTV_BASE}/countries/in.m3u", None),
 ]
 
-STRICT_GROUPS = True
+STRICT_GROUPS = False
 
 COMBOS = [
     ("Kolkata Movies",        "movies",        "ben"),
@@ -67,13 +65,16 @@ COMBOS = [
     ("Hindi Music",           "music",         "hin"),
     ("English Music",         "music",         "eng"),
     ("Bangla Music",          "music",         "ben"),
-    ("Sports",                "sports",        ("hin", "eng", "ben")),
+    ("Sports",                "sports",        None),
 ]
 
 GROUP_ORDER = [
     "Bangladesh", "Bangla (India)", "Kolkata Movies", "Bangla Music",
-    "Hindi Movies", "Hindi Music", "English Movies", "English Entertainment",
-    "English Music", "Sports", "India"
+    "Hindi Movies", "Hindi Music", "India",
+    "English Movies", "English Entertainment", "English Music",
+    "Sports", "Tamil", "Telugu", "Malayalam", "Kannada",
+    "Marathi", "Punjabi", "Gujarati", "Odia", "Assamese",
+    "Urdu", "Arabic", "International"
 ]
 
 BLOCK_URLS = [
@@ -105,9 +106,28 @@ VOD_NAME_RE = re.compile(
 )
 
 KEY_URI_RE = re.compile(r'#EXT-X-KEY:[^\n]*URI="([^"]+)"', re.I)
+M3U8_AUDIO_LANG_RE = re.compile(r'#EXT-X-MEDIA:[^\n]*TYPE=AUDIO[^\n]*LANGUAGE="([^"]+)"', re.I)
 
 # Xtream .ts / extensionless URL pattern
 XTREAM_NUM_RE = re.compile(r"^(https?://[^/]+(?:/live)?/[^/]+/[^/]+/\d+)(?:\.ts)?$", re.I)
+
+# ISO-639 Language Code to Standard Name Mapping
+ISO_LANG_MAP = {
+    "ben": "ben", "bn": "ben", "bengali": "ben", "bangla": "ben",
+    "hin": "hin", "hi": "hin", "hindi": "hin",
+    "eng": "eng", "en": "eng", "english": "eng",
+    "tam": "tam", "ta": "tam", "tamil": "tam",
+    "tel": "tel", "te": "tel", "telugu": "tel",
+    "mal": "mal", "ml": "mal", "malayalam": "mal",
+    "kan": "kan", "kn": "kan", "kannada": "kan",
+    "mar": "mar", "mr": "mar", "marathi": "mar",
+    "pan": "pan", "pa": "pan", "punjabi": "pan",
+    "guj": "guj", "gu": "guj", "gujarati": "guj",
+    "ori": "ori", "or": "ori", "odia": "ori", "oriya": "ori",
+    "asm": "asm", "as": "asm", "assamese": "asm",
+    "urd": "urd", "ur": "urd", "urdu": "urd",
+    "ara": "ara", "ar": "ara", "arabic": "ara",
+}
 
 # ------------------------------------------------------------------ http
 SSL_CTX = ssl.create_default_context()
@@ -167,6 +187,15 @@ def convert_to_hls_url(url):
     return url
 
 
+def normalize_lang_code(raw_lang):
+    if not raw_lang:
+        return ""
+    for token in re.split(r"[,;/\s-]+", raw_lang.strip().lower()):
+        if token in ISO_LANG_MAP:
+            return ISO_LANG_MAP[token]
+    return raw_lang.strip().lower()[:3]
+
+
 def parse_m3u(text, source):
     out, meta = [], None
     vlc_ua, vlc_ref = "", ""
@@ -179,11 +208,13 @@ def parse_m3u(text, source):
                 m = re.search(rf'{k}="([^"]*)"', line, re.I)
                 return m.group(1).strip() if m else ""
             name = line.rsplit(",", 1)[-1].strip() if "," in line else attr("tvg-name")
+            raw_lang = attr("tvg-language") or attr("language")
             meta = {
                 "name": name or attr("tvg-name") or "Unknown",
                 "tvg_id": attr("tvg-id"),
                 "logo": attr("tvg-logo"),
                 "group": attr("group-title") or "Others",
+                "lang": normalize_lang_code(raw_lang),
                 "source": source,
                 "radio_tag": bool(re.search(r'radio="true"', line, re.I))
             }
@@ -262,7 +293,8 @@ def scrape_aynaott():
                     "url": url,
                     "logo": logo,
                     "tvg_id": f"aynaott-{slug}",
-                    "group": "Bangla TV",
+                    "group": "Bangladesh",
+                    "lang": "ben",
                     "source": "AynaOTT"
                 }
         except Exception:
@@ -363,7 +395,8 @@ def scrape_jagobd():
                     "url": format_jagobd_url(stream),
                     "logo": c["logo"],
                     "tvg_id": f"jagobd-{c['slug']}",
-                    "group": "Bangla TV",
+                    "group": "Bangladesh",
+                    "lang": "ben",
                     "source": "JagoBD"
                 }
         except Exception:
@@ -423,6 +456,30 @@ def scrape_discovered_sources():
 
     res = []
 
+    def extract_name_from_url(url):
+        """M3U8 URL er path theke channel er ashol naam ber korbe"""
+        try:
+            path = urllib.parse.urlparse(url).path
+            parts = [p for p in path.split("/") if p]
+            skip_words = {
+                "index.m3u8", "playlist.m3u8", "master.m3u8", "live.m3u8",
+                "chunklist.m3u8", "800.m3u8", "720p.m3u8", "1080p.m3u8",
+                "480p.m3u8", "hls", "live", "stream", "streams", "tv",
+                "preview", "tracks-v1a1", "mono.m3u8"
+            }
+            for p in reversed(parts):
+                low = p.lower()
+                if low in skip_words or low.isdigit():
+                    continue
+                clean = re.sub(r"\.m3u8?$", "", p, flags=re.I)
+                clean = re.sub(r"([a-z])([A-Z])", r"\1 \2", clean)
+                clean = re.sub(r"[-_]+", " ", clean).strip()
+                if len(clean) >= 3 and not clean.isdigit():
+                    return clean.title()
+        except Exception:
+            pass
+        return None
+
     def fetch_upstream(u):
         out = []
         try:
@@ -435,16 +492,19 @@ def scrape_discovered_sources():
                     return chs
                 return []
             links = re.findall(r'[\'"](https?://[^\'"]+?\.m3u8[^\'"]*)[\'"]', txt)
-            for idx, lk in enumerate(dict.fromkeys(links)):
-                out.append({
-                    "name": f"Live Stream {idx + 1}",
-                    "url": convert_to_hls_url(lk),
-                    "logo": "",
-                    "tvg_id": "",
-                    "group": "Others",
-                    "source": "GitHub",
-                    "auto_group": True
-                })
+            for lk in dict.fromkeys(links):
+                ch_name = extract_name_from_url(lk)
+                if ch_name:
+                    out.append({
+                        "name": ch_name,
+                        "url": convert_to_hls_url(lk),
+                        "logo": "",
+                        "tvg_id": "",
+                        "group": "Others",
+                        "lang": "",
+                        "source": "GitHub",
+                        "auto_group": True
+                    })
         except Exception:
             pass
         return out
@@ -498,6 +558,7 @@ def scrape_adaptive_repos():
                         "logo": "",
                         "tvg_id": f"{repo}-{fname.lower()}",
                         "group": "Others",
+                        "lang": "",
                         "source": "GitHub",
                         "auto_group": True
                     })
@@ -512,36 +573,37 @@ def scrape_yupp_preview():
     res = []
     base = "https://yupptvcatchupire.yuppcdn.net/preview"
     slugs = [
-        ("Colors Bangla HD", "colorsbanglahd"),
-        ("Star Jalsha HD", "starjalshahd"),
-        ("Zee Bangla HD", "zeebanglahd"),
-        ("Sony Aath", "sonyaath"),
-        ("Jalsha Movies HD", "jalshamovieshd"),
-        ("Zee Bangla Cinema", "zeebanglacinema"),
-        ("Star Plus HD", "starplushd"),
-        ("Star Gold HD", "stargoldhd"),
-        ("Star Movies HD", "starmovieshd"),
-        ("Sony TV HD", "sonytvhd"),
-        ("Sony SAB HD", "sonysabhd"),
-        ("Sony Max HD", "sonymaxhd"),
-        ("Sony Pix HD", "sonypixhd"),
-        ("Zee TV HD", "zeetvhd"),
-        ("Zee Cinema HD", "zeecinemahd"),
-        ("Colors HD", "colorshd"),
-        ("Colors Cineplex", "colorscineplex"),
-        ("&TV HD", "andtv"),
-        ("&pictures HD", "andpictureshd"),
-        ("Star Sports 1 HD", "starsports1hd"),
-        ("Sony Ten 1 HD", "sonyten1hd"),
-        ("Discovery HD", "discoveryhd"),
+        ("Colors Bangla HD", "colorsbanglahd", "ben"),
+        ("Star Jalsha HD", "starjalshahd", "ben"),
+        ("Zee Bangla HD", "zeebanglahd", "ben"),
+        ("Sony Aath", "sonyaath", "ben"),
+        ("Jalsha Movies HD", "jalshamovieshd", "ben"),
+        ("Zee Bangla Cinema", "zeebanglacinema", "ben"),
+        ("Star Plus HD", "starplushd", "hin"),
+        ("Star Gold HD", "stargoldhd", "hin"),
+        ("Star Movies HD", "starmovieshd", "eng"),
+        ("Sony TV HD", "sonytvhd", "hin"),
+        ("Sony SAB HD", "sonysabhd", "hin"),
+        ("Sony Max HD", "sonymaxhd", "hin"),
+        ("Sony Pix HD", "sonypixhd", "eng"),
+        ("Zee TV HD", "zeetvhd", "hin"),
+        ("Zee Cinema HD", "zeecinemahd", "hin"),
+        ("Colors HD", "colorshd", "hin"),
+        ("Colors Cineplex", "colorscineplex", "hin"),
+        ("&TV HD", "andtv", "hin"),
+        ("&pictures HD", "andpictureshd", "hin"),
+        ("Star Sports 1 HD", "starsports1hd", "eng"),
+        ("Sony Ten 1 HD", "sonyten1hd", "eng"),
+        ("Discovery HD", "discoveryhd", "eng"),
     ]
-    for name, slug in slugs:
+    for name, slug, lng in slugs:
         res.append({
             "name": name,
             "url": f"{base}/{slug}/800.m3u8",
             "logo": "",
             "tvg_id": f"yupp-{slug}",
             "group": "Others",
+            "lang": lng,
             "source": "GitHub",
             "auto_group": True
         })
@@ -562,14 +624,22 @@ def scrape_github():
             log(f"[GitHub] {url.replace(IPTV_BASE + '/', '')}: {len(cache[url])} channel")
         return cache[url]
 
+    # Build URL-to-language lookup map from iptv-org official language lists
+    url_lang_map = {}
+    for lg in ("ben", "hin", "eng", "tam", "tel", "mal", "kan", "mar", "pan", "guj", "ori", "asm", "urd", "ara"):
+        for c in get(f"{IPTV_BASE}/languages/{lg}.m3u"):
+            url_lang_map[c["url"].split("|")[0]] = lg
+
     res = []
     for group, cat, lang in COMBOS:
-        langs = (lang,) if isinstance(lang, str) else lang
-        lang_urls = {c["url"].split("|")[0] for lg in langs for c in get(f"{IPTV_BASE}/languages/{lg}.m3u")}
+        langs = (lang,) if isinstance(lang, str) else (lang if lang else None)
+        lang_urls = {c["url"].split("|")[0] for lg in langs for c in get(f"{IPTV_BASE}/languages/{lg}.m3u")} if langs else None
         n = 0
         for c in get(f"{IPTV_BASE}/categories/{cat}.m3u"):
-            if c["url"].split("|")[0] in lang_urls:
-                res.append({**c, "group": group})
+            clean_u = c["url"].split("|")[0]
+            if lang_urls is None or clean_u in lang_urls:
+                detected_lg = url_lang_map.get(clean_u, c.get("lang", ""))
+                res.append({**c, "group": group, "lang": detected_lg})
                 n += 1
         log(f"[GitHub] {group} ({cat}): {n} channel")
 
@@ -580,10 +650,12 @@ def scrape_github():
         n_all = n_keep = 0
         for c in get(url):
             n_all += 1
-            if allowed is not None and c["url"].split("|")[0] not in allowed:
+            clean_u = c["url"].split("|")[0]
+            if allowed is not None and clean_u not in allowed:
                 continue
             n_keep += 1
-            res.append({**c, "group": "Sports" if "sport" in c.get("group", "").lower() else group})
+            detected_lg = url_lang_map.get(clean_u, "ben" if group == "Bangladesh" else c.get("lang", ""))
+            res.append({**c, "group": "Sports" if "sport" in c.get("group", "").lower() else group, "lang": detected_lg, "auto_group": True})
         log(f"[GitHub] {group}: {n_keep}/{n_all} channel rakha holo")
 
     if USE_GITHUB_SEARCH and GITHUB_TOKEN:
@@ -642,7 +714,20 @@ def scrape_github():
     return res
 
 
-# ------------------------------------------------------------------ stream check (HLS / .m3u8 Only)
+# ------------------------------------------------------------------ stream check & M3U8 audio lang detection
+def detect_m3u8_audio_lang(m3u8_text):
+    """Live .m3u8 playlist er #EXT-X-MEDIA:TYPE=AUDIO LANGUAGE tag theke ashol bhasha ber korbe"""
+    langs = M3U8_AUDIO_LANG_RE.findall(m3u8_text)
+    if not langs:
+        return ""
+    normed = [normalize_lang_code(lg) for lg in langs if lg.strip()]
+    # Jodi multi-audio hoy, ben > hin > eng > prothom bhasha priority dibe
+    for pref in ("ben", "hin", "eng", "tam", "tel", "mal", "kan", "mar", "pan", "urd", "ara"):
+        if pref in normed:
+            return pref
+    return normed[0] if normed else ""
+
+
 def check_hls_key(m3u8_text, base_url, headers, timeout=5):
     """Jodi #EXT-X-KEY thake, tar key URI valid (16-byte) kina check korbe"""
     low = m3u8_text.lower()
@@ -706,9 +791,9 @@ def verify_deep_hls(m3u8_text, base_url, headers, timeout=6):
 
 
 def check_stream(raw_url, timeout=CHECK_TIMEOUT):
-    """(alive, latency_sec, reason, matched_ua) - Token-based o regular valid .m3u8 HLS live TV stream allow korbe"""
+    """(alive, latency_sec, reason, matched_ua, detected_stream_lang)"""
     if not raw_url:
-        return False, 0, "empty url", UA
+        return False, 0, "empty url", UA, ""
     base, url, custom_ua = dict(HEADERS), raw_url, False
     if "|" in raw_url:
         url, extra = raw_url.split("|", 1)
@@ -721,9 +806,9 @@ def check_stream(raw_url, timeout=CHECK_TIMEOUT):
                     custom_ua = True
 
     if AUDIO_EXT_RE.search(url):
-        return False, 0, "radio/audio file", UA
+        return False, 0, "radio/audio file", UA, ""
     if VOD_EXT_RE.search(url) or VOD_PATH_RE.search(url):
-        return False, 0, "VOD/movie file", UA
+        return False, 0, "VOD/movie file", UA, ""
 
     if "jagobd.com" in url and "Referer" not in base:
         base["Referer"] = "https://www.jagobd.com/"
@@ -741,16 +826,16 @@ def check_stream(raw_url, timeout=CHECK_TIMEOUT):
             with urllib.request.urlopen(req, timeout=timeout, context=SSL_CTX) as r:
                 final_url = r.geturl() or url
                 if VOD_EXT_RE.search(final_url):
-                    return False, 0, "VOD redirect", ua
+                    return False, 0, "VOD redirect", ua, ""
 
                 ctype = r.headers.get("Content-Type", "").lower()
                 icy_name = r.headers.get("icy-name") or r.headers.get("icy-genre")
                 if icy_name or ctype.startswith("audio/"):
-                    return False, 0, "radio/audio stream", ua
+                    return False, 0, "radio/audio stream", ua, ""
                 if any(v in ctype for v in ("video/mp4", "video/x-matroska", "video/avi", "video/webm")):
-                    return False, 0, "direct movie file", ua
+                    return False, 0, "direct movie file", ua, ""
 
-                raw = r.read(4096)
+                raw = r.read(6144)
                 text_body = raw.decode("utf-8", errors="ignore")
                 low = text_body.strip().lower()
                 lat = time.time() - t0
@@ -763,32 +848,33 @@ def check_stream(raw_url, timeout=CHECK_TIMEOUT):
                     continue
 
                 if "#ext-x-endlist" in low:
-                    return False, 0, "VOD m3u8 (ENDLIST)", ua
+                    return False, 0, "VOD m3u8 (ENDLIST)", ua, ""
 
                 if any(drm in low for drm in ("sample-aes", "widevine", "playready", "skd://",
                                               "edef8ba9-79d6-4ace-a3c8-27dcd51d21ed")):
-                    return False, 0, "DRM encrypted", ua
+                    return False, 0, "DRM encrypted", ua, ""
 
                 if "#extm3u" in low and AUDIO_EXT_RE.search(low) and ".ts" not in low and "#ext-x-stream-inf" not in low:
-                    return False, 0, "audio-only m3u8", ua
+                    return False, 0, "audio-only m3u8", ua, ""
 
                 if "#extm3u" in low:
                     if any(tag in low for tag in ("#ext-x-stream-inf", "#extinf", "#ext-x-targetduration")):
                         if verify_deep_hls(text_body, final_url, headers, timeout=6):
-                            return True, lat, "ok", ua
-                        return False, 0, "dead/corrupt HLS segment", ua
+                            stream_lang = detect_m3u8_audio_lang(text_body)
+                            return True, lat, "ok", ua, stream_lang
+                        return False, 0, "dead/corrupt HLS segment", ua, ""
                     reason = "empty/invalid m3u8"
                     continue
 
                 if raw and raw[0] == 0x47:
-                    return False, 0, "raw ts stream (not m3u8)", ua
+                    return False, 0, "raw ts stream (not m3u8)", ua, ""
                 if ".ts" in final_url.lower():
-                    return False, 0, "raw ts stream (not m3u8)", ua
+                    return False, 0, "raw ts stream (not m3u8)", ua, ""
                 reason = "not an m3u8 live stream"
         except urllib.error.HTTPError as e:
             reason = f"HTTP {e.code}"
             if e.code in (404, 410):
-                return False, 0, reason, ua
+                return False, 0, reason, ua, ""
         except urllib.error.URLError as e:
             msg = str(e.reason)
             reason = "timeout" if "timed out" in msg.lower() else f"connect: {msg[:35]}"
@@ -799,7 +885,7 @@ def check_stream(raw_url, timeout=CHECK_TIMEOUT):
         except Exception as e:
             reason = f"error: {type(e).__name__}"
             break
-    return False, 0, reason, UA
+    return False, 0, reason, UA, ""
 
 
 def check_all(channels):
@@ -809,10 +895,12 @@ def check_all(channels):
         for f in as_completed(fut):
             c = fut[f]
             try:
-                ok, lat, reason, matched_ua = f.result()
+                ok, lat, reason, matched_ua, stream_lang = f.result()
             except Exception as e:
-                ok, lat, reason, matched_ua = False, 0, f"error: {type(e).__name__}", UA
+                ok, lat, reason, matched_ua, stream_lang = False, 0, f"error: {type(e).__name__}", UA, ""
             c["alive"], c["latency"], c["reason"], c["matched_ua"] = ok, lat, reason, matched_ua
+            if stream_lang:
+                c["stream_lang"] = stream_lang
             done += 1
             if done % 500 == 0 or done == total:
                 log(f"checked {done}/{total} | alive {sum(1 for x in channels if x.get('alive'))}")
@@ -821,7 +909,7 @@ def check_all(channels):
     log("Dead/Invalid er karon: " + ", ".join(f"{k}: {v}" for k, v in dead.most_common(8)))
 
 
-# ------------------------------------------------------------------ grouping & dedupe
+# ------------------------------------------------------------------ language-based grouping & dedupe
 NOISE = {"hd", "fhd", "sd", "uhd", "4k", "live", "official", "hevc", "h265", "h264"}
 SOURCE_RANK = {"AynaOTT": 0, "JagoBD": 1, "GitHub": 2}
 
@@ -866,127 +954,150 @@ HINDI_RE = re.compile(
     r"mtv india|9xm|9x jalwa|zing|utv|filamchi|goldmines|manoranjan|cineplex|news nation|india news|good news today|"
     r"bharat 24|\btez\b|zoom tv|mastiii|movie plus|enter10|bflix")
 
-OTHER_LANG_RE = re.compile(
-    r"tamil|telugu|malayalam|kannada|marathi|punjabi|gujarati|odia|oriya|assamese|konkani|"
-    r"star vijay|star maa|star pravah|star suvarna|star kirano|zee tamil|zee telugu|zee keralam|zee kannada|"
-    r"zee marathi|zee punjabi|zee sarthak|zee talkies|zee yuva|zee thirai|zee cinemalu|zee picchar|"
-    r"sony marathi|sun tv|vijay|asianet|surya|kairali|maa tv|etv telugu|gemini|raj tv|jaya tv|polimer|"
-    r"arabic|russian|french|german|spanish|turkish|italian|portuguese|polish|greek|dutch|swedish|ukrainian|romanian|"
-    r"farsi|persian|hebrew|japanese|chinese|mandarin|korean|thai|vietnamese|indonesian|tagalog|filipino|"
-    r"al jazeera|al arabiya|\bnhk\b|\bcctv\b|\bkbs\b|\bmbc\b|telemundo|univision")
+REGIONAL_LANG_PATTERNS = [
+    ("Tamil",     re.compile(r"\b(tamil|star vijay|vijay tv|sun tv|kalaignar|jaya tv|raj tv|polimer|puthiya thalaimurai|thanthi|zee tamil|colors tamil|ktv|adithya)\b", re.I)),
+    ("Telugu",    re.compile(r"\b(telugu|star maa|maa tv|etv telugu|gemini|zee telugu|ntv telugu|tv9 telugu|sakshi|abn|v6 news|10tv)\b", re.I)),
+    ("Malayalam", re.compile(r"\b(malayalam|asianet|surya tv|mazhavil|manorama|kairali|flowers tv|zee keralam|amrita|media one|twentyfour|mathrubhumi)\b", re.I)),
+    ("Kannada",   re.compile(r"\b(kannada|star suvarna|udaya|zee kannada|colors kannada|tv9 kannada|public tv|suvarna news)\b", re.I)),
+    ("Marathi",   re.compile(r"\b(marathi|star pravah|zee marathi|zee talkies|zee yuva|colors marathi|sony marathi|abp majha|lokshahi|saam tv)\b", re.I)),
+    ("Punjabi",   re.compile(r"\b(punjabi|ptc punjabi|ptc chak de|zee punjabi|pitaara|mh one|chardikla)\b", re.I)),
+    ("Gujarati",  re.compile(r"\b(gujarati|colors gujarati|tv9 gujarati|abp asmita|sandesh news|vtv gujarati)\b", re.I)),
+    ("Odia",      re.compile(r"\b(odia|oriya|tarang|zee sarthak|star kirano|otv|kanak news|kalinga tv)\b", re.I)),
+    ("Assamese",  re.compile(r"\b(assamese|rengoni|rang tv|jonack|prag news|dy 365|pratidin time|news live assam)\b", re.I)),
+    ("Urdu",      re.compile(r"\b(urdu|hum tv|ary digital|ary news|geo tv|geo news|samaa|dunya news|express entertainment|ptv home|ptv news|green entertainment)\b", re.I)),
+    ("Arabic",    re.compile(r"\b(arabic|al jazeera|al arabiya|\bmbc\b|rotana|abu dhabi|dubai tv|sharjah|sky news arabia|al hadath|iqraa|spacetoon)\b", re.I)),
+]
 
-HINDI_REMAP = {"Bangladesh": "India", "Kolkata Movies": "Hindi Movies", "Bangla Music": "Hindi Music"}
-
-
-def bd_group(name):
-    return "Bangla Music" if re.search(r"\b(music|gaan|song|sangeet)\b", name.lower()) else "Bangladesh"
-
+LANG_CODE_TO_GROUP = {
+    "tam": "Tamil",
+    "tel": "Telugu",
+    "mal": "Malayalam",
+    "kan": "Kannada",
+    "mar": "Marathi",
+    "pan": "Punjabi",
+    "guj": "Gujarati",
+    "ori": "Odia",
+    "asm": "Assamese",
+    "urd": "Urdu",
+    "ara": "Arabic",
+}
 
 KOLKATA_RE = re.compile(r"\b(jalsha movies|zee bangla cinema|colors bangla cinema|bangla cinema|"
-                        r"bangla movies?|bengali movies?|bengali cinema)\b")
+                        r"bangla movies?|bengali movies?|bengali cinema)\b", re.I)
 
 HINDI_MOVIE_CH_RE = re.compile(
     r"\b(star gold|sony max|sony wah|zee cinema|zee classic|zee action|zee bollywood|zee anmol cinema|"
     r"colors cineplex|and pictures|&pictures|utv movies|utv action|b4u movies|b4u kadak|"
-    r"filamchi|goldmines|manoranjan|enter10|bflix|movie plus)\b"
+    r"filamchi|goldmines|manoranjan|enter10|bflix|movie plus)\b", re.I
 )
 ENGLISH_MOVIE_CH_RE = re.compile(
     r"\b(star movies|hbo|sony pix|zee cafe|and priv|&priv|movies now|mnx|mn\+|romedy now|axn|wb|warner bros|"
-    r"paramount|amc|cinemax|showtime|tcm|hallmark|syfy|mgm|universal movies)\b"
+    r"paramount|amc|cinemax|showtime|tcm|hallmark|syfy|mgm|universal movies)\b", re.I
 )
 ENGLISH_ENT_CH_RE = re.compile(
     r"\b(star world|colors infinity|comedy central|fox life|fox crime|fx|tlc|discovery|national geographic|nat geo|"
     r"animal planet|history tv|travel xp|bbc entertainment|bbc earth|cbs drama|cbs reality|syfy|usa network|"
-    r"tnt|tbs|amc|cw|nbc|abc|cbs|fox|itv|channel 4|e4|sky one|sky witness|sky atlantic|bravo|lifetime|hgtv|food network)\b"
+    r"tnt|tbs|amc|cw|nbc|abc|cbs|fox|itv|channel 4|e4|sky one|sky witness|sky atlantic|bravo|lifetime|hgtv|food network)\b", re.I
 )
 
 PAY_ENT_CH_RE = re.compile(
     r"\b(star plus|star bharat|star utsav|star jalsha|colors|rishtey|sony entertainment|sony tv|set hd|set india|"
     r"sony sab|sab tv|sony pal|sony aath|sony yay|sony bbc|zee tv|zee anmol|zee bangla|zee news|zee hindustan|"
     r"zee zing|zee zest|zee business|zee salaam|&tv|and tv|dangal|ishara|shemaroo|big magic|bindass|"
-    r"epic tv|disney|hungama|nick|nickelodeon|sonic|cartoon network|pogo|marvel hq)\b"
+    r"epic tv|disney|hungama|nick|nickelodeon|sonic|cartoon network|pogo|marvel hq)\b", re.I
 )
 PAY_SPORTS_RE = re.compile(
     r"\b(star sports|sony ten|sony sports|ten sports|t sports|willow|ptv sports|eurosport|"
-    r"bein sports|sky sports|bt sport|tnt sports|fox sports|espn|dazn|super sport|dd sports|sports 18|sports18)\b"
+    r"bein sports|sky sports|bt sport|tnt sports|fox sports|espn|dazn|super sport|dd sports|sports 18|sports18)\b", re.I
 )
 
-IP_URL_RE = re.compile(r"^https?://\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}")
 POPULAR_BD_IN_RE = re.compile(
     r"\b(btv|somoy|jamuna|ekattor|channel 24|dbc|independent|atn|news 24|channel i|ntv|rtv|"
     r"banglavision|maasranga|deepto|boishakhi|desh tv|nagorik|gtv|gazi|asian tv|sa tv|mohona|"
-    r"my tv|bijoy|ananda|nexus|t sports|duronto|gaan bangla|star jalsha|zee bangla|colors bangla|"
-    r"sony aath|jalsha movies|sun bangla|akas aath|sangeet bangla)\b"
+    r"my tv|bijoy|ananda|nexus|t sports|duronto|gaan bangla)\b", re.I
+)
+INDIA_BANGLA_RE = re.compile(
+    r"\b(star jalsha|zee bangla|sony aath|colors bangla|sun bangla|akas aath|sangeet bangla|rupashi bangla|dd bangla|abp ananda|news18 bangla|calcutta news|kolkata tv|r plus)\b", re.I
 )
 
 
-def classify_pay_channel(lname):
-    if KOLKATA_RE.search(lname):
-        return "Kolkata Movies"
-    if any(w in lname for w in ("star jalsha", "zee bangla", "sony aath", "colors bangla", "sun bangla", "akas aath")):
-        return "Bangla (India)"
-    if HINDI_MOVIE_CH_RE.search(lname):
-        return "Hindi Movies"
-    if ENGLISH_MOVIE_CH_RE.search(lname):
-        return "English Movies"
-    if ENGLISH_ENT_CH_RE.search(lname):
-        return "English Entertainment"
-    if PAY_SPORTS_RE.search(lname):
-        return "Sports"
-    if "zing" in lname:
-        return "Hindi Music"
-    return "India"
-
-
-def keyword_group(c):
-    name, group, url = c["name"], c.get("group", ""), c.get("url", "")
+def classify_by_language_and_name(c):
+    """Stream er live audio language + metadata lang + channel name diye category nirdharon korbe"""
+    name = c["name"]
+    group = c.get("group", "")
+    url = c.get("url", "")
     lname = name.lower()
     t = f"{name} {group}".lower()
 
+    # Priority 1: Live M3U8 audio track language > M3U metadata language
+    detected_lang = c.get("stream_lang") or c.get("lang") or ""
+
+    # Sports always goes to Sports
+    if PAY_SPORTS_RE.search(t) or re.search(r"\b(sport|sports|cricket|football|soccer)\b", t):
+        return "Sports"
+
+    # Explicit Kolkata / Indian Bangla checks
     if KOLKATA_RE.search(t):
         return "Kolkata Movies"
+    if INDIA_BANGLA_RE.search(lname):
+        return "Bangla Music" if re.search(r"\b(music|gaan|song|sangeet)\b", lname) else "Bangla (India)"
+
+    # Explicit Movie / Entertainment channels
     if HINDI_MOVIE_CH_RE.search(t):
         return "Hindi Movies"
     if ENGLISH_MOVIE_CH_RE.search(t):
         return "English Movies"
     if ENGLISH_ENT_CH_RE.search(t):
         return "English Entertainment"
-    if PAY_SPORTS_RE.search(t):
-        return "Sports"
-    if PAY_ENT_CH_RE.search(lname):
-        return classify_pay_channel(lname)
 
-    music = re.search(r"\b(music|song|songs|gaan|mtv|vevo|hits|zing)\b", t)
-    movie_ch = re.search(r"\b(movies?\s*(tv|channel|hd|plus|now|action|gold|club)|cinema\s*(tv|hd)|flix\s*tv)\b", t)
-    drama_ch = re.search(r"\b(drama|series|entertainment|documentary|lifestyle|sci-?fi|comedy)\b", t)
-    sport = re.search(r"\b(sport|sports|cricket|football|soccer)\b", t)
-    bn = re.search(r"\b(bangla|bengali|bangladesh|\bbd\b)\b", t) or POPULAR_BD_IN_RE.search(t)
-    hi = re.search(r"\b(hindi|bhojpuri|india|indian)\b", t)
-    en = re.search(r"\b(english|hollywood|usa|uk|british|american)\b", t)
+    # Regional & International languages by detected ISO language code
+    if detected_lang in LANG_CODE_TO_GROUP:
+        return LANG_CODE_TO_GROUP[detected_lang]
 
-    if music:
-        if bn:
+    # Regional & International languages by channel/group name pattern
+    for reg_group, reg_re in REGIONAL_LANG_PATTERNS:
+        if reg_re.search(t):
+            return reg_group
+
+    music = bool(re.search(r"\b(music|song|songs|gaan|mtv|vevo|hits|zing|sangeet)\b", t))
+    movie_ch = bool(re.search(r"\b(movies?\s*(tv|channel|hd|plus|now|action|gold|club)|cinema\s*(tv|hd)|flix\s*tv)\b", t))
+    drama_ch = bool(re.search(r"\b(drama|series|entertainment|documentary|lifestyle|sci-?fi|comedy)\b", t))
+
+    # Bangla / Bangladesh classification (confirmed by lang='ben' or explicit Bangla/BD name)
+    if detected_lang == "ben" or c["source"] in ("AynaOTT", "JagoBD") or POPULAR_BD_IN_RE.search(lname) or BANGLA_RE.search(t):
+        # Prevent Hindi channels from slipping into Bangladesh
+        if HINDI_RE.search(lname) and not BANGLA_RE.search(lname) and detected_lang != "ben":
+            return "Hindi Movies" if movie_ch else ("Hindi Music" if music else "India")
+        if music:
             return "Bangla Music"
-        if hi:
+        if "kolkata" in t or "calcutta" in t:
+            return "Bangla (India)"
+        return "Bangladesh"
+
+    # Hindi / India classification
+    if detected_lang == "hin" or HINDI_RE.search(t) or PAY_ENT_CH_RE.search(lname) or re.search(r"\b(hindi|bhojpuri|india|indian)\b", t):
+        if "zing" in lname or music:
             return "Hindi Music"
-        if en:
-            return "English Music"
-    if movie_ch:
-        if hi:
+        if movie_ch:
             return "Hindi Movies"
-        if en:
-            return "English Movies"
-    if drama_ch and en and not hi and not bn:
-        return "English Entertainment"
-    if sport:
-        return "Sports"
-    if bn:
-        return "Bangladesh"
-    if hi:
         return "India"
-    if IP_URL_RE.match(url) and re.search(r"\b(bd|bangla|india|kolkata|live)\b", t):
-        return "Bangladesh"
-    return None
+
+    # English classification
+    if detected_lang == "eng" or re.search(r"\b(english|hollywood|usa|uk|british|american)\b", t):
+        if music:
+            return "English Music"
+        if movie_ch:
+            return "English Movies"
+        return "English Entertainment"
+
+    # Fallback: If live stream has another specific ISO language code (e.g., fra, spa, rus, kor, jpn)
+    if detected_lang and detected_lang not in ("und", "mul"):
+        return "International"
+
+    # Keep valid existing group if meaningful, otherwise International
+    if group in GROUP_ORDER:
+        return group
+    return "International"
 
 
 def dedupe_by_name(chs, limit):
@@ -1034,8 +1145,9 @@ def write_playlist(channels, target_path=OUTPUT):
         elif "aynaott.com" in clean_url and not ref:
             ref = "https://web.aynaott.com/"
 
+        lang_attr = f' tvg-language="{q(c.get("stream_lang") or c.get("lang") or "")}"' if (c.get("stream_lang") or c.get("lang")) else ""
         lines.append(f'#EXTINF:-1 tvg-id="{q(c.get("tvg_id", ""))}" tvg-name="{q(c["name"])}" '
-                     f'tvg-logo="{q(c.get("logo", ""))}" group-title="{q(c["group"])}",{c["name"]}')
+                     f'tvg-logo="{q(c.get("logo", ""))}"{lang_attr} group-title="{q(c["group"])}",{c["name"]}')
         if ua:
             lines.append(f"#EXTVLCOPT:http-user-agent={ua}")
         if ref:
@@ -1067,48 +1179,22 @@ def main():
         raw = c["url"].split("|")[0].strip()
         if not raw or raw in seen or is_blocked_or_non_tv(c):
             continue
-        name, lname = c["name"], c["name"].lower()
-        if OTHER_LANG_RE.search(lname):
-            continue
-
-        if c["source"] in ("AynaOTT", "JagoBD"):
-            c["group"] = bd_group(name)
-        elif c.get("auto_group"):
-            kw = keyword_group(c)
-            if kw:
-                c["group"] = kw
-            else:
-                continue
-
-        if KOLKATA_RE.search(lname):
-            c["group"] = "Kolkata Movies"
-        elif HINDI_MOVIE_CH_RE.search(lname):
-            c["group"] = "Hindi Movies"
-        elif ENGLISH_MOVIE_CH_RE.search(lname):
-            c["group"] = "English Movies"
-        elif ENGLISH_ENT_CH_RE.search(lname):
-            c["group"] = "English Entertainment"
-        elif PAY_SPORTS_RE.search(lname):
-            c["group"] = "Sports"
-        elif PAY_ENT_CH_RE.search(lname):
-            c["group"] = classify_pay_channel(lname)
-
         if any(b in c["url"] for b in BLOCK_URLS):
-            continue
-        if (c["source"] == "GitHub" and c["group"] in HINDI_REMAP
-                and any(h in c["url"].lower() for h in NOT_BANGLA_HOSTS)):
-            continue
-        if c["group"] in HINDI_REMAP and HINDI_RE.search(lname) and not BANGLA_RE.search(lname):
-            c["group"] = HINDI_REMAP[c["group"]]
-        if STRICT_GROUPS and c["group"] not in GROUP_ORDER:
             continue
         seen.add(raw)
         items.append(c)
-    log(f"Total unique live TV candidate: {len(items)}")
+    log(f"Total unique live TV candidate (All Languages): {len(items)}")
 
     check_all(items)
     alive = [c for c in items if c.get("alive")]
     log(f"Alive: {len(alive)} / {len(items)}")
+
+    # Apply language-aware categorization AFTER stream check (so live M3U8 audio language is used!)
+    for c in alive:
+        c["group"] = classify_by_language_and_name(c)
+        if (c["source"] == "GitHub" and c["group"] in ("Bangladesh", "Kolkata Movies", "Bangla Music")
+                and any(h in c["url"].lower() for h in NOT_BANGLA_HOSTS)):
+            c["group"] = "International"
 
     prev = OUTPUT.read_text(encoding="utf-8", errors="ignore").count("#EXTINF") if OUTPUT.exists() else 0
     if prev >= 20 and len(alive) < prev * MIN_KEEP_RATIO:
@@ -1126,7 +1212,7 @@ def main():
                               c.get("latency", 99)))
 
     cnt = Counter(c["group"] for c in alive)
-    log("Group wise channel: " + ", ".join(f"{g}: {n}" for g, n in cnt.most_common()))
+    log("Language & Category wise channel: " + ", ".join(f"{g}: {n}" for g, n in cnt.most_common()))
 
     # 1. Save full playlist (with backup links)
     write_playlist(alive, OUTPUT)
