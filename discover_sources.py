@@ -1,8 +1,9 @@
 """
-GitHub IPTV Bot & Upstream Source Discovery Script (IPTV + M3U Code Signature + Persistent Merge)
+GitHub IPTV Bot & Upstream Source Discovery Script (Direct Upstream Extractor + Persistent Merge)
 1. Loads previously saved bots & upstream sources from 'discovered_sources.json'.
-2. Finds active GitHub repositories by IPTV/M3U names AND by code signatures (.github/workflows cron + M3U/IPTV scripts).
-3. Inspects their source code (.py, .js, .ts, .sh) and playlist files to extract upstream websites/APIs and M3U sources.
+2. Finds active GitHub repositories by IPTV/M3U names AND by code signatures.
+3. Inspects their source code (.py, .js, .ts, .sh, .yml, .json) to extract direct upstream M3U/API sources
+   (including raw.githubusercontent.com upstream feeds used by other bots, excluding self-outputs).
 4. Merges old + new sources and saves them permanently into 'discovered_sources.json' & 'bot_report.txt'.
 """
 import json, os, re, time
@@ -42,13 +43,20 @@ CODE_SIGNATURE_QUERIES = [
     '"#EXTINF" "jagobd" extension:py',
     '"#EXTINF" "103." extension:py',
     '"#EXTINF" "Star Jalsha" extension:py',
+    '"gpcdn.net" extension:m3u',
+    '"gpcdn.net" extension:m3u8',
+    '"iptv-org.github.io" extension:py',
 ]
 
 URL_RE = re.compile(r'https?://[a-zA-Z0-9.-]+(?:/[a-zA-Z0-9._~:/?#\[\]@!$&\'()*+,;=-]*)?')
+
+# Note: 'githubusercontent.com' ekhan theke sorano hoyeche jate onno bot-er code e thaka
+# original upstream raw M3U source gulo (e.g. Free-TV, iptv-org, etc.) extract kora jay.
 IGNORE_DOMAINS = (
-    "github.com", "githubusercontent.com", "shields.io", "google.com",
+    "github.com", "shields.io", "google.com",
     "w3.org", "schemas.xmlsoap.org", "json-schema.org", "opensource.org",
-    "creativecommons.org", "example.com", "localhost", "127.0.0.1"
+    "creativecommons.org", "example.com", "localhost", "127.0.0.1",
+    "api.github.com", "gist.github.com"
 )
 
 
@@ -145,9 +153,9 @@ def discover():
                 log(f"[Code/M3U Search Error] {cq}: {e}")
             time.sleep(8)
 
-    log(f"Ebar {len(newly_found)} ti IPTV o M3U repository paoa gese. Vetorer source analyze kora hocche...")
+    log(f"Ebar {len(newly_found)} ti IPTV o M3U repository paoa gese. Vetorer original upstream source analyze kora hocche...")
 
-    # Step 2: Inspect Repository File Tree & Extract Upstream Sources + M3U Files
+    # Step 2: Inspect Repository File Tree & Extract Original Upstream Sources + M3U Files
     def analyze_repo(repo_info):
         repo = repo_info["repo"]
         branch = repo_info["branch"]
@@ -165,24 +173,32 @@ def discover():
             lpath = path.lower()
             if ".github/workflows/" in lpath:
                 repo_info["is_auto_bot"] = True
+                if f.get("size", 0) < 100000:
+                    script_paths.append(path)
             elif lpath.endswith((".m3u", ".m3u8")) and f.get("size", 0) > 400:
-                if len(repo_info["playlists"]) < 5:
+                if len(repo_info["playlists"]) < 8:
                     raw_pl = f"https://raw.githubusercontent.com/{repo}/{branch}/{urllib.parse.quote(path)}"
                     repo_info["playlists"].append(raw_pl)
-            elif lpath.endswith((".py", ".js", ".ts", ".sh")) and f.get("size", 0) < 150000:
-                script_paths.append(path)
+            elif lpath.endswith((".py", ".js", ".ts", ".sh", ".json", ".txt")) and f.get("size", 0) < 200000:
+                if lpath != "discovered_sources.json":
+                    script_paths.append(path)
 
         upstream = set()
-        for sp in script_paths[:5]:
+        self_repo_prefix = f"raw.githubusercontent.com/{repo.lower()}/"
+        for sp in script_paths[:12]:
             raw_code_url = f"https://raw.githubusercontent.com/{repo}/{branch}/{urllib.parse.quote(sp)}"
             try:
                 code_txt = raw_get(raw_code_url)
                 for found_url in URL_RE.findall(code_txt):
-                    clean_u = found_url.rstrip(".,;'\")}]")
-                    if any(d in clean_u.lower() for d in IGNORE_DOMAINS):
+                    clean_u = found_url.rstrip(".,;'\")}]").split("?")[0]
+                    low_u = clean_u.lower()
+                    # Nijeder repo-er output file bad diye onno source er upstream link nibe
+                    if self_repo_prefix in low_u:
                         continue
-                    if any(k in clean_u.lower() for k in ("api", "live", "tv", "stream", "m3u", "cdn", "103.", "portal", "play")):
-                        upstream.add(clean_u.split("?")[0])
+                    if any(d in low_u for d in IGNORE_DOMAINS):
+                        continue
+                    if any(k in low_u for k in ("api", "live", "tv", "stream", "m3u", "cdn", "103.", "portal", "play", "iptv", "mjh.nz")):
+                        upstream.add(clean_u)
             except Exception:
                 pass
         repo_info["upstream_sources"] = sorted(upstream)
