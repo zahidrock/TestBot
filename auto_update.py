@@ -1,16 +1,14 @@
 """
-All-in-One Direct (No-Proxy) Live TV IPTV Updater (All Languages + Live M3U8 Audio Language Detection)
+All-in-One Direct (No-Proxy) Live TV IPTV Updater (Clean, Fast & Language-Aware)
 Features:
+  - Relies on 'discovered_sources.json' for all 1,396+ upstream sources & 395+ bot playlists (zero GitHub Search API load)
+  - Live token scrapers for AynaOTT & JagoBD
   - Detects actual broadcast language from live .m3u8 audio tracks (#EXT-X-MEDIA LANGUAGE) + metadata
-  - Includes ALL languages (Bangla, Hindi, English, Tamil, Telugu, Malayalam, Marathi, Punjabi, Urdu, Arabic, International)
-  - Auto-categorizes channels accurately by language & genre
+  - Includes ALL languages & auto-categorizes accurately by language & genre
   - Extracts real channel names from raw .m3u8 URLs (no 'Live Stream 1, 2, 3' entries)
   - Generates TWO playlists:
       1. 'playlist.m3u': All verified alive streams across all languages (with backups)
       2. 'playlist_clean.m3u': Duplicate-free, lowest ping (fastest response) 1 link per channel
-  - Allows token-based live streams (auto-removed on next 6h cycle if expired)
-  - Balanced Deep HLS Check (Top 3 sub-playlists + AES-128 Key URI check; blocks raw .ts)
-  - Direct M3UIPTV Headers (#EXTVLCOPT)
 """
 import json, os, re, ssl, sys, time
 from collections import Counter
@@ -27,30 +25,12 @@ CHECK_TIMEOUT = 8            # 8 sekond dile slow-start BDIX/International serve
 MAX_LINKS_PER_CHANNEL = None # main playlist e shob alive link thakbe
 MIN_KEEP_RATIO = 0.1         # safety ratio
 
-# Proxy off (direct stream links)
-PROXY_URL = ""
-
-# GitHub Secrets theke token nibe (workflow e MY_GH_TOKEN pass kora ase)
 GITHUB_TOKEN = "" or os.getenv("GITHUB_TOKEN")
-
-# GitHub Code Search Settings (Proti 24 ghontay 1 bar cholbe workflow schedule onujayi)
-USE_GITHUB_SEARCH = os.getenv("RUN_GH_SEARCH", "true").lower() == "true"
-SEARCH_PAGES = (1, 2)        # proti query te 2 page (200 file) nibe
-SEARCH_DELAY = 20            # 20 sekond delay dile secondary rate limit (429) ashbe na
-GITHUB_SEARCH_QUERIES = [
-    "EXTINF bangla extension:m3u",
-    "EXTINF bdix extension:m3u8",
-    'EXTINF "Star Gold" extension:m3u',
-    'EXTINF "Sony Sab" extension:m3u',
-    'EXTINF "http://103." extension:m3u',
-]
-
 IPTV_BASE = "https://iptv-org.github.io/iptv"
 
-# Shob bhashar channel allow kora hoyeche (lang filter None)
 COUNTRY_SOURCES = [
-    ("Bangladesh", f"{IPTV_BASE}/countries/bd.m3u", None),
-    ("India",      f"{IPTV_BASE}/countries/in.m3u", None),
+    ("Bangladesh", f"{IPTV_BASE}/countries/bd.m3u"),
+    ("India",      f"{IPTV_BASE}/countries/in.m3u"),
 ]
 
 STRICT_GROUPS = False
@@ -150,24 +130,6 @@ def http_get(url, headers=None, timeout=15):
     req = urllib.request.Request(url, headers=headers or HEADERS)
     with urllib.request.urlopen(req, timeout=timeout, context=SSL_CTX) as r:
         return r.read().decode("utf-8", errors="ignore")
-
-
-def github_search_get(api_url, headers, max_retries=3):
-    """429/403 Secondary Rate Limit ashle progressive wait kore abar try korbe"""
-    for attempt in range(max_retries + 1):
-        try:
-            req = urllib.request.Request(api_url, headers=headers)
-            with urllib.request.urlopen(req, timeout=20, context=SSL_CTX) as r:
-                return json.loads(r.read().decode("utf-8", errors="ignore"))
-        except urllib.error.HTTPError as e:
-            if e.code in (429, 403) and attempt < max_retries:
-                raw_wait = int(e.headers.get("Retry-After", 0))
-                wait_sec = max(raw_wait, 75 * (attempt + 1))
-                log(f"[GitHub search] Rate limit ({e.code}), {wait_sec}s wait kore abar try korchi...")
-                time.sleep(wait_sec)
-            else:
-                raise
-    return {}
 
 
 # ------------------------------------------------------------------ URL converter & m3u parse
@@ -413,31 +375,6 @@ def scrape_jagobd():
     return res
 
 
-def scrape_extra_repos():
-    res = []
-    repos = [
-        ("BDIX-Mrgify",      "https://raw.githubusercontent.com/abusaeeidx/Mrgify-BDIX-IPTV/main/playlist.m3u"),
-        ("Free-TV-IN",       "https://raw.githubusercontent.com/Free-TV/IPTV/master/playlists/playlist_india.m3u8"),
-        ("IPTV-org-Sports",  f"{IPTV_BASE}/categories/sports.m3u"),
-        ("IPTV-org-Movies",  f"{IPTV_BASE}/categories/movies.m3u"),
-        ("IPTV-org-Ent",     f"{IPTV_BASE}/categories/entertainment.m3u"),
-        ("IPTV-org-Series",  f"{IPTV_BASE}/categories/series.m3u"),
-        ("IPTV-org-Kids",    f"{IPTV_BASE}/categories/kids.m3u"),
-        ("IPTV-org-Doc",     f"{IPTV_BASE}/categories/documentary.m3u"),
-    ]
-    for label, url in repos:
-        try:
-            txt = http_get(url, timeout=20)
-            chs = parse_m3u(txt, "GitHub")
-            for c in chs:
-                c["auto_group"] = True
-            res.extend(chs)
-            log(f"[{label}] {len(chs)} channel")
-        except Exception as e:
-            log(f"[{label}] skip/error: {e}")
-    return res
-
-
 def scrape_discovered_sources():
     """discover_sources.py theke paoa shob upstream source o bot list auto-scrape korbe"""
     if not DISCOVERED_FILE.exists():
@@ -522,7 +459,7 @@ def scrape_discovered_sources():
             pass
         return []
 
-    with ThreadPoolExecutor(max_workers=30) as ex:
+    with ThreadPoolExecutor(max_workers=35) as ex:
         futs = [ex.submit(fetch_upstream, u) for u in upstream_urls] + \
                [ex.submit(fetch_bot_pl, p) for p in bot_playlists]
         for f in as_completed(futs):
@@ -569,49 +506,8 @@ def scrape_adaptive_repos():
     return res
 
 
-def scrape_yupp_preview():
-    res = []
-    base = "https://yupptvcatchupire.yuppcdn.net/preview"
-    slugs = [
-        ("Colors Bangla HD", "colorsbanglahd", "ben"),
-        ("Star Jalsha HD", "starjalshahd", "ben"),
-        ("Zee Bangla HD", "zeebanglahd", "ben"),
-        ("Sony Aath", "sonyaath", "ben"),
-        ("Jalsha Movies HD", "jalshamovieshd", "ben"),
-        ("Zee Bangla Cinema", "zeebanglacinema", "ben"),
-        ("Star Plus HD", "starplushd", "hin"),
-        ("Star Gold HD", "stargoldhd", "hin"),
-        ("Star Movies HD", "starmovieshd", "eng"),
-        ("Sony TV HD", "sonytvhd", "hin"),
-        ("Sony SAB HD", "sonysabhd", "hin"),
-        ("Sony Max HD", "sonymaxhd", "hin"),
-        ("Sony Pix HD", "sonypixhd", "eng"),
-        ("Zee TV HD", "zeetvhd", "hin"),
-        ("Zee Cinema HD", "zeecinemahd", "hin"),
-        ("Colors HD", "colorshd", "hin"),
-        ("Colors Cineplex", "colorscineplex", "hin"),
-        ("&TV HD", "andtv", "hin"),
-        ("&pictures HD", "andpictureshd", "hin"),
-        ("Star Sports 1 HD", "starsports1hd", "eng"),
-        ("Sony Ten 1 HD", "sonyten1hd", "eng"),
-        ("Discovery HD", "discoveryhd", "eng"),
-    ]
-    for name, slug, lng in slugs:
-        res.append({
-            "name": name,
-            "url": f"{base}/{slug}/800.m3u8",
-            "logo": "",
-            "tvg_id": f"yupp-{slug}",
-            "group": "Others",
-            "lang": lng,
-            "source": "GitHub",
-            "auto_group": True
-        })
-    log(f"[YuppCDN] {len(res)} ta candidate link test er jonno add holo")
-    return res
-
-
-def scrape_github():
+def scrape_iptv_org_base():
+    """IPTV-org official language & country lists (accurate language mapping er jonno)"""
     cache = {}
 
     def get(url):
@@ -619,12 +515,10 @@ def scrape_github():
             try:
                 cache[url] = parse_m3u(http_get(url, timeout=30), "GitHub")
             except Exception as e:
-                log(f"[GitHub] fail {url}: {e}")
+                log(f"[IPTV-org] fail {url}: {e}")
                 cache[url] = []
-            log(f"[GitHub] {url.replace(IPTV_BASE + '/', '')}: {len(cache[url])} channel")
         return cache[url]
 
-    # Build URL-to-language lookup map from iptv-org official language lists
     url_lang_map = {}
     for lg in ("ben", "hin", "eng", "tam", "tel", "mal", "kan", "mar", "pan", "guj", "ori", "asm", "urd", "ara"):
         for c in get(f"{IPTV_BASE}/languages/{lg}.m3u"):
@@ -634,83 +528,19 @@ def scrape_github():
     for group, cat, lang in COMBOS:
         langs = (lang,) if isinstance(lang, str) else (lang if lang else None)
         lang_urls = {c["url"].split("|")[0] for lg in langs for c in get(f"{IPTV_BASE}/languages/{lg}.m3u")} if langs else None
-        n = 0
         for c in get(f"{IPTV_BASE}/categories/{cat}.m3u"):
             clean_u = c["url"].split("|")[0]
             if lang_urls is None or clean_u in lang_urls:
                 detected_lg = url_lang_map.get(clean_u, c.get("lang", ""))
                 res.append({**c, "group": group, "lang": detected_lg})
-                n += 1
-        log(f"[GitHub] {group} ({cat}): {n} channel")
 
-    for group, url, langs in COUNTRY_SOURCES:
-        allowed = None
-        if langs:
-            allowed = {c["url"].split("|")[0] for lg in langs for c in get(f"{IPTV_BASE}/languages/{lg}.m3u")}
-        n_all = n_keep = 0
+    for group, url in COUNTRY_SOURCES:
         for c in get(url):
-            n_all += 1
             clean_u = c["url"].split("|")[0]
-            if allowed is not None and clean_u not in allowed:
-                continue
-            n_keep += 1
             detected_lg = url_lang_map.get(clean_u, "ben" if group == "Bangladesh" else c.get("lang", ""))
             res.append({**c, "group": "Sports" if "sport" in c.get("group", "").lower() else group, "lang": detected_lg, "auto_group": True})
-        log(f"[GitHub] {group}: {n_keep}/{n_all} channel rakha holo")
 
-    if USE_GITHUB_SEARCH and GITHUB_TOKEN:
-        h = {
-            "User-Agent": UA,
-            "Accept": "application/vnd.github+json",
-            "Authorization": f"Bearer {GITHUB_TOKEN.strip()}"
-        }
-        raws = []
-        req_count = 0
-        for idx, kw in enumerate(GITHUB_SEARCH_QUERIES):
-            for page in SEARCH_PAGES:
-                time.sleep(SEARCH_DELAY if req_count > 0 else 5)
-                req_count += 1
-                try:
-                    api = ("https://api.github.com/search/code?q=" +
-                           urllib.parse.quote(kw) + f"&per_page=100&page={page}")
-                    data = github_search_get(api, headers=h)
-                    items = data.get("items", [])
-                    log(f"[GitHub search] query {idx+1} ('{kw}') page {page}: {len(items)} ta file")
-                    for it in items:
-                        raws.append(it["html_url"].replace("https://github.com/",
-                                    "https://raw.githubusercontent.com/").replace("/blob/", "/"))
-                    if len(items) < 100:
-                        break
-                except Exception as e:
-                    log(f"[GitHub search] query {idx+1} page {page} fail: {e}")
-                    break
-
-        unique_raws = list(dict.fromkeys(raws))
-        log(f"[GitHub search] mot {len(unique_raws)} ta unique file download kora hocche...")
-
-        def fetch_raw_file(raw_url):
-            try:
-                txt = http_get(raw_url, timeout=10)
-                if "#EXTINF" in txt:
-                    parsed = parse_m3u(txt, "GitHub")
-                    if len(parsed) > 2500:
-                        return []
-                    for c in parsed:
-                        c["auto_group"] = True
-                    return parsed
-            except Exception:
-                pass
-            return []
-
-        found = 0
-        with ThreadPoolExecutor(max_workers=35) as ex:
-            for f in as_completed([ex.submit(fetch_raw_file, r) for r in unique_raws]):
-                chs = f.result()
-                res.extend(chs)
-                found += len(chs)
-        log(f"[GitHub search] mot {len(unique_raws)} file theke {found} channel paoa gese")
-    else:
-        log("[GitHub search] Ajker 24h cycle er search agei hoyeche (ba token nai), saved sources theke update hocche.")
+    log(f"[IPTV-org] mot {len(res)} official channel load hoyeche")
     return res
 
 
@@ -721,7 +551,6 @@ def detect_m3u8_audio_lang(m3u8_text):
     if not langs:
         return ""
     normed = [normalize_lang_code(lg) for lg in langs if lg.strip()]
-    # Jodi multi-audio hoy, ben > hin > eng > prothom bhasha priority dibe
     for pref in ("ben", "hin", "eng", "tam", "tel", "mal", "kan", "mar", "pan", "urd", "ara"):
         if pref in normed:
             return pref
@@ -1025,24 +854,19 @@ def classify_by_language_and_name(c):
     """Stream er live audio language + metadata lang + channel name diye category nirdharon korbe"""
     name = c["name"]
     group = c.get("group", "")
-    url = c.get("url", "")
     lname = name.lower()
     t = f"{name} {group}".lower()
 
-    # Priority 1: Live M3U8 audio track language > M3U metadata language
     detected_lang = c.get("stream_lang") or c.get("lang") or ""
 
-    # Sports always goes to Sports
     if PAY_SPORTS_RE.search(t) or re.search(r"\b(sport|sports|cricket|football|soccer)\b", t):
         return "Sports"
 
-    # Explicit Kolkata / Indian Bangla checks
     if KOLKATA_RE.search(t):
         return "Kolkata Movies"
     if INDIA_BANGLA_RE.search(lname):
         return "Bangla Music" if re.search(r"\b(music|gaan|song|sangeet)\b", lname) else "Bangla (India)"
 
-    # Explicit Movie / Entertainment channels
     if HINDI_MOVIE_CH_RE.search(t):
         return "Hindi Movies"
     if ENGLISH_MOVIE_CH_RE.search(t):
@@ -1050,22 +874,17 @@ def classify_by_language_and_name(c):
     if ENGLISH_ENT_CH_RE.search(t):
         return "English Entertainment"
 
-    # Regional & International languages by detected ISO language code
     if detected_lang in LANG_CODE_TO_GROUP:
         return LANG_CODE_TO_GROUP[detected_lang]
 
-    # Regional & International languages by channel/group name pattern
     for reg_group, reg_re in REGIONAL_LANG_PATTERNS:
         if reg_re.search(t):
             return reg_group
 
     music = bool(re.search(r"\b(music|song|songs|gaan|mtv|vevo|hits|zing|sangeet)\b", t))
     movie_ch = bool(re.search(r"\b(movies?\s*(tv|channel|hd|plus|now|action|gold|club)|cinema\s*(tv|hd)|flix\s*tv)\b", t))
-    drama_ch = bool(re.search(r"\b(drama|series|entertainment|documentary|lifestyle|sci-?fi|comedy)\b", t))
 
-    # Bangla / Bangladesh classification (confirmed by lang='ben' or explicit Bangla/BD name)
     if detected_lang == "ben" or c["source"] in ("AynaOTT", "JagoBD") or POPULAR_BD_IN_RE.search(lname) or BANGLA_RE.search(t):
-        # Prevent Hindi channels from slipping into Bangladesh
         if HINDI_RE.search(lname) and not BANGLA_RE.search(lname) and detected_lang != "ben":
             return "Hindi Movies" if movie_ch else ("Hindi Music" if music else "India")
         if music:
@@ -1074,7 +893,6 @@ def classify_by_language_and_name(c):
             return "Bangla (India)"
         return "Bangladesh"
 
-    # Hindi / India classification
     if detected_lang == "hin" or HINDI_RE.search(t) or PAY_ENT_CH_RE.search(lname) or re.search(r"\b(hindi|bhojpuri|india|indian)\b", t):
         if "zing" in lname or music:
             return "Hindi Music"
@@ -1082,7 +900,6 @@ def classify_by_language_and_name(c):
             return "Hindi Movies"
         return "India"
 
-    # English classification
     if detected_lang == "eng" or re.search(r"\b(english|hollywood|usa|uk|british|american)\b", t):
         if music:
             return "English Music"
@@ -1090,11 +907,9 @@ def classify_by_language_and_name(c):
             return "English Movies"
         return "English Entertainment"
 
-    # Fallback: If live stream has another specific ISO language code (e.g., fra, spa, rus, kor, jpn)
     if detected_lang and detected_lang not in ("und", "mul"):
         return "International"
 
-    # Keep valid existing group if meaningful, otherwise International
     if group in GROUP_ORDER:
         return group
     return "International"
@@ -1162,11 +977,9 @@ def main():
     scrapers = (
         ("AynaOTT", scrape_aynaott),
         ("JagoBD", scrape_jagobd),
-        ("ExtraRepos", scrape_extra_repos),
         ("DiscoveredSources", scrape_discovered_sources),
         ("AdaptiveRepos", scrape_adaptive_repos),
-        ("YuppCDN", scrape_yupp_preview),
-        ("GitHub", scrape_github),
+        ("IPTV-org", scrape_iptv_org_base),
     )
     for name, fn in scrapers:
         try:
@@ -1189,7 +1002,6 @@ def main():
     alive = [c for c in items if c.get("alive")]
     log(f"Alive: {len(alive)} / {len(items)}")
 
-    # Apply language-aware categorization AFTER stream check (so live M3U8 audio language is used!)
     for c in alive:
         c["group"] = classify_by_language_and_name(c)
         if (c["source"] == "GitHub" and c["group"] in ("Bangladesh", "Kolkata Movies", "Bangla Music")
