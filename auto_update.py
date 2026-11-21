@@ -1,7 +1,8 @@
 """
-All-in-One Direct (No-Proxy) Live TV IPTV Updater (Clean, Fast & Language-Aware)
+All-in-One Direct (No-Proxy) Live TV IPTV Updater (Fast Anti-Hang + Language-Aware)
 Features:
-  - Relies on 'discovered_sources.json' for all 1,396+ upstream sources & 395+ bot playlists (zero GitHub Search API load)
+  - Global socket timeout (8s) + 1.5MB read cap + 120 discovery workers (prevents infinite hang on dead/slow streams)
+  - Relies on 'discovered_sources.json' for all upstream sources & bot playlists (zero GitHub Search API load)
   - Live token scrapers for AynaOTT & JagoBD
   - Detects actual broadcast language from live .m3u8 audio tracks (#EXT-X-MEDIA LANGUAGE) + metadata
   - Includes ALL languages & auto-categorizes accurately by language & genre
@@ -10,18 +11,21 @@ Features:
       1. 'playlist.m3u': All verified alive streams across all languages (with backups)
       2. 'playlist_clean.m3u': Duplicate-free, lowest ping (fastest response) 1 link per channel
 """
-import json, os, re, ssl, sys, time
+import json, os, re, socket, ssl, sys, time
 from collections import Counter
 import urllib.error, urllib.parse, urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
+
+# Global socket timeout to prevent any hanging stream/server from freezing the script
+socket.setdefaulttimeout(8)
 
 # ------------------------------------------------------------------ settings
 OUTPUT = Path("playlist.m3u")
 CLEAN_OUTPUT = Path("playlist_clean.m3u")  # Duplicate-free & lowest ping playlist
 DISCOVERED_FILE = Path("discovered_sources.json")
 WORKERS = 150                # ek sathe 150 ta link check hobe
-CHECK_TIMEOUT = 8            # 8 sekond dile slow-start BDIX/International server bad porbe na
+CHECK_TIMEOUT = 7            # 7 sekond dile slow-start BDIX/International server bad porbe na
 MAX_LINKS_PER_CHANNEL = None # main playlist e shob alive link thakbe
 MIN_KEEP_RATIO = 0.1         # safety ratio
 
@@ -126,10 +130,10 @@ def log(msg):
     print(msg, flush=True)
 
 
-def http_get(url, headers=None, timeout=15):
+def http_get(url, headers=None, timeout=6, max_bytes=1_500_000):
     req = urllib.request.Request(url, headers=headers or HEADERS)
     with urllib.request.urlopen(req, timeout=timeout, context=SSL_CTX) as r:
-        return r.read().decode("utf-8", errors="ignore")
+        return r.read(max_bytes).decode("utf-8", errors="ignore")
 
 
 # ------------------------------------------------------------------ URL converter & m3u parse
@@ -221,7 +225,7 @@ def scrape_aynaott():
     for page in range(1, 20):
         try:
             data = json.loads(http_get(f"{base}/api/v5/catalog/contents?type=live-tvs&per_page=100&page={page}",
-                                       headers=h, timeout=15))
+                                       headers=h, timeout=12))
         except Exception as e:
             log(f"[AynaOTT] catalog page {page}: {e}")
             break
@@ -244,7 +248,7 @@ def scrape_aynaott():
         if logo and not logo.startswith("http"):
             logo = base + logo
         try:
-            d = json.loads(http_get(f"{base}/api/v5/browse/live-tvs/{slug}", headers=h, timeout=10))
+            d = json.loads(http_get(f"{base}/api/v5/browse/live-tvs/{slug}", headers=h, timeout=8))
             rec = d.get("record", d)
             so = rec.get("stream", {})
             url = so.get("url", "") if isinstance(so, dict) else ""
@@ -297,7 +301,7 @@ def format_jagobd_url(raw):
 def scrape_jagobd():
     cands = []
     try:
-        html = http_get("https://www.jagobd.com/", timeout=15)
+        html = http_get("https://www.jagobd.com/", timeout=12)
         skip = ['/category', '/tag', '/contact', '/about', '/privacy', '/page', '/wp-', '/feed',
                 '/disclaimer', 'dmca', 'terms', 'advertise', 'copyright']
         seen = set()
@@ -328,7 +332,7 @@ def scrape_jagobd():
 
     def resolve(c):
         try:
-            page = http_get(c["url"], timeout=10)
+            page = http_get(c["url"], timeout=8)
             embed = None
             for ifr in re.findall(r'<iframe[^>]+src=[\'"]([^\'"]+)[\'"]', page, re.I):
                 if "embed.php" in ifr or "jagobd.com" in ifr:
@@ -341,7 +345,7 @@ def scrape_jagobd():
             else:
                 if embed.startswith("//"):
                     embed = "https:" + embed
-                eh = http_get(embed, headers={"User-Agent": UA, "Referer": c["url"]}, timeout=10)
+                eh = http_get(embed, headers={"User-Agent": UA, "Referer": c["url"]}, timeout=8)
                 for _fn, arr in re.findall(
                         r'function\s+(\w+)\(\)\s*\{\s*return\(\[([^\]]+)\]\.join\([\'"][\'"]\)', eh):
                     val = "".join(x.strip().strip("'\"") for x in arr.split(",")).replace(r"\/", "/")
@@ -376,7 +380,7 @@ def scrape_jagobd():
 
 
 def scrape_discovered_sources():
-    """discover_sources.py theke paoa shob upstream source o bot list auto-scrape korbe"""
+    """discover_sources.py theke paoa shob upstream source o bot list fast auto-scrape korbe"""
     if not DISCOVERED_FILE.exists():
         log("[DiscoveredSources] discovered_sources.json paoa jay ni, skip kora holo")
         return []
@@ -420,7 +424,7 @@ def scrape_discovered_sources():
     def fetch_upstream(u):
         out = []
         try:
-            txt = http_get(u, timeout=10)
+            txt = http_get(u, timeout=5, max_bytes=1_000_000)
             if "#EXTINF" in txt:
                 chs = parse_m3u(txt, "GitHub")
                 if len(chs) <= 3000:
@@ -448,7 +452,7 @@ def scrape_discovered_sources():
 
     def fetch_bot_pl(u):
         try:
-            txt = http_get(u, timeout=12)
+            txt = http_get(u, timeout=6, max_bytes=1_500_000)
             if "#EXTINF" in txt:
                 chs = parse_m3u(txt, "GitHub")
                 if len(chs) <= 3000:
@@ -459,11 +463,16 @@ def scrape_discovered_sources():
             pass
         return []
 
-    with ThreadPoolExecutor(max_workers=35) as ex:
+    total_sources = len(upstream_urls) + len(bot_playlists)
+    done_sources = 0
+    with ThreadPoolExecutor(max_workers=120) as ex:
         futs = [ex.submit(fetch_upstream, u) for u in upstream_urls] + \
                [ex.submit(fetch_bot_pl, p) for p in bot_playlists]
         for f in as_completed(futs):
             res.extend(f.result())
+            done_sources += 1
+            if done_sources % 300 == 0 or done_sources == total_sources:
+                log(f"[DiscoveredSources] progress: {done_sources}/{total_sources} source checked | {len(res)} channel paoa gese")
 
     log(f"[DiscoveredSources] mot {len(res)} ti candidate channel paoa gese")
     return res
@@ -481,7 +490,7 @@ def scrape_adaptive_repos():
     for owner, repo, branch in adaptive_repos:
         try:
             tree_url = f"https://api.github.com/repos/{owner}/{repo}/git/trees/{branch}?recursive=1"
-            data = json.loads(http_get(tree_url, headers=h, timeout=20))
+            data = json.loads(http_get(tree_url, headers=h, timeout=12))
             count = 0
             for item in data.get("tree", []):
                 path = item.get("path", "")
@@ -513,7 +522,7 @@ def scrape_iptv_org_base():
     def get(url):
         if url not in cache:
             try:
-                cache[url] = parse_m3u(http_get(url, timeout=30), "GitHub")
+                cache[url] = parse_m3u(http_get(url, timeout=15, max_bytes=2_000_000), "GitHub")
             except Exception as e:
                 log(f"[IPTV-org] fail {url}: {e}")
                 cache[url] = []
@@ -574,9 +583,9 @@ def check_hls_key(m3u8_text, base_url, headers, timeout=5):
         return False
 
 
-def verify_deep_hls(m3u8_text, base_url, headers, timeout=6):
+def verify_deep_hls(m3u8_text, base_url, headers, timeout=5):
     """M3U8 er vetorer sub-playlist (prothom 3 tir jekono 1 ti) o video segment check korbe"""
-    if not check_hls_key(m3u8_text, base_url, headers, timeout=5):
+    if not check_hls_key(m3u8_text, base_url, headers, timeout=4):
         return False
 
     lines = [ln.strip() for ln in m3u8_text.splitlines() if ln.strip() and not ln.strip().startswith("#")]
@@ -600,7 +609,7 @@ def verify_deep_hls(m3u8_text, base_url, headers, timeout=6):
                     continue
                 if "#extm3u" in low:
                     sub_text = chunk.decode("utf-8", errors="ignore")
-                    if not check_hls_key(sub_text, target_url, headers, timeout=5):
+                    if not check_hls_key(sub_text, target_url, headers, timeout=4):
                         continue
                     sub_lines = [ln.strip() for ln in sub_text.splitlines()
                                  if ln.strip() and not ln.strip().startswith("#")]
@@ -688,7 +697,7 @@ def check_stream(raw_url, timeout=CHECK_TIMEOUT):
 
                 if "#extm3u" in low:
                     if any(tag in low for tag in ("#ext-x-stream-inf", "#extinf", "#ext-x-targetduration")):
-                        if verify_deep_hls(text_body, final_url, headers, timeout=6):
+                        if verify_deep_hls(text_body, final_url, headers, timeout=5):
                             stream_lang = detect_m3u8_audio_lang(text_body)
                             return True, lat, "ok", ua, stream_lang
                         return False, 0, "dead/corrupt HLS segment", ua, ""
