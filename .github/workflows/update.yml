@@ -2,7 +2,7 @@ name: Update IPTV Playlist
 
 on:
   schedule:
-    - cron: '0 */6 * * *'   # Proti 6 ghonta porpor cholbe (00, 06, 12, 18 UTC)
+    - cron: '0 */6 * * *'   # Proti 6 ghonta porpor cholbe
   workflow_dispatch:        # Manual run korar option
 
 permissions:
@@ -21,35 +21,43 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Discover GitHub Bots & Upstream Sources (Once every 24h at 18:00 UTC / 12 AM BD)
-        if: github.event_name == 'workflow_dispatch' || github.event.schedule == '0 */6 * * *' && startsWith(github.event.repository.updated_at, '') == false
+      - name: Check 24h Search Timer
+        id: timer
+        run: |
+          NOW=$(date +%s)
+          LAST=0
+          if [ -f "last_search.txt" ]; then
+            LAST=$(cat last_search.txt | tr -d '[:space:]')
+          fi
+          DIFF=$((NOW - LAST))
+          # 23 ghonta (82800 sec) par hole ba manual run korle search cholbe
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "$DIFF" -ge 82800 ]; then
+            echo "run_search=true" >> $GITHUB_OUTPUT
+          else
+            echo "run_search=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Discover GitHub Bots & Upstream Sources
+        if: steps.timer.outputs.run_search == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.MY_GH_TOKEN }}
-        run: |
-          HOUR=$(date -u +%H)
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "$HOUR" = "18" ] || [ "$HOUR" = "19" ]; then
-            python discover_sources.py
-          else
-            echo "Skipping 24h bot discovery (Current UTC hour: $HOUR)"
-          fi
+        run: python discover_sources.py
 
       - name: Run updater
         env:
           GITHUB_TOKEN: ${{ secrets.MY_GH_TOKEN }}
+          RUN_GH_SEARCH: ${{ steps.timer.outputs.run_search }}
         run: |
-          HOUR=$(date -u +%H)
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "$HOUR" = "18" ] || [ "$HOUR" = "19" ]; then
-            export RUN_GH_SEARCH="true"
-          else
-            export RUN_GH_SEARCH="false"
-          fi
           python auto_update.py
+          if [ "${{ steps.timer.outputs.run_search }}" = "true" ]; then
+            date +%s > last_search.txt
+          fi
 
       - name: Commit playlist & reports
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          for f in playlist.m3u playlist_clean.m3u discovered_sources.json bot_report.txt; do
+          for f in playlist.m3u playlist_clean.m3u discovered_sources.json bot_report.txt last_search.txt; do
             [ -f "$f" ] && git add "$f"
           done
           if ! git diff --staged --quiet; then
