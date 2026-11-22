@@ -1,12 +1,12 @@
 """
-Multi-Platform Internet-Wide Live TV & IPTV Source Discovery Engine
+Global Multi-Platform Live TV & IPTV Source Discovery Engine (BD, Indian & English Focused)
 Searches across:
-1. GitHub (Repositories + Code/M3U Signatures even without 'IPTV' in repo name)
-2. GitLab Public API (Projects matching IPTV, M3U8, BDIX, Bangla, Live TV signatures)
+1. GitHub (Repositories + Topics + Code/M3U Signatures for BD, Indian & English streams)
+2. GitLab Public API (Projects + Public Snippets)
 3. Codeberg Public API (Repositories with 429 Circuit Breaker)
-4. GitHub Public Gists (Live stream & M3U gists)
-5. DuckDuckGo Web Search (Pastebin, Rentry, Telegraph, Open Web M3U8 indexes)
-6. Built-in Official FAST TV & Open Directory Feeds (SamsungTVPlus, PlutoTV, Plex, Roku, Free-TV, iptv-org)
+4. GitHub Public Gists
+5. DuckDuckGo Web Search (Pastebin, Rentry, Telegraph, Bitbucket, HuggingFace, dpaste, Open Indexes)
+6. Built-in Official FAST TV & Open Directory Feeds (SamsungTVPlus, PlutoTV, Plex, Roku, Stirr, LG, Vizio, Xumo, DistroTV, Free-TV, iptv-org)
 """
 import json, os, re, time
 import urllib.error, urllib.parse, urllib.request
@@ -23,16 +23,27 @@ GH_HEADERS = {"User-Agent": UA, "Accept": "application/vnd.github+json"}
 if GITHUB_TOKEN:
     GH_HEADERS["Authorization"] = f"Bearer {GITHUB_TOKEN.strip()}"
 
-# 1. GitHub Repository Name Queries
+# 1. GitHub Repository & Topic Queries (Worldwide BD, Indian & English IPTV)
 BOT_SEARCH_QUERIES = [
-    "iptv pushed:>2026-09-01",
-    "bdix pushed:>2026-09-01",
-    "bangla tv m3u8 pushed:>2026-09-01",
-    "live tv m3u pushed:>2026-09-01",
-    "indian tv m3u8 pushed:>2026-09-01",
-    "fancode m3u8 pushed:>2026-09-01",
-    "samsungtvplus m3u8 pushed:>2026-09-01",
-    "plutotv m3u8 pushed:>2026-09-01",
+    "iptv pushed:>2026-06-01",
+    "m3u8 playlist pushed:>2026-06-01",
+    "bdix tv",
+    "bangla tv m3u8",
+    "bangladesh iptv",
+    "indian tv m3u8",
+    "hindi tv m3u8",
+    "kolkata tv m3u8",
+    "english tv m3u8",
+    "usa uk tv m3u8",
+    "fancode m3u8",
+    "sports iptv m3u8",
+    "samsungtvplus m3u8",
+    "plutotv m3u8",
+    "topic:iptv",
+    "topic:m3u8",
+    "topic:m3u",
+    "topic:bangla-tv",
+    "topic:indian-tv",
 ]
 
 # 2. Content & Code Signatures ('IPTV' naam na thakleo vetorer stream signature dekhe khujbe)
@@ -41,9 +52,12 @@ CODE_SIGNATURE_QUERIES = [
     '"cron:" "m3u8" path:.github/workflows',
     '"#EXTINF" "Somoy" extension:m3u',
     '"#EXTINF" "Jamuna" extension:m3u8',
+    '"#EXTINF" "Ekattor" extension:m3u',
     '"#EXTINF" "Star Jalsha" extension:m3u',
     '"#EXTINF" "Zee Bangla" extension:m3u8',
     '"#EXTINF" "Aaj Tak" extension:m3u',
+    '"#EXTINF" "Star Plus" extension:m3u8',
+    '"#EXTINF" "BBC News" extension:m3u',
     '"#EXTINF" "aynaott" extension:py',
     '"#EXTINF" "jagobd" extension:py',
     '"gpcdn.net" extension:m3u',
@@ -52,34 +66,64 @@ CODE_SIGNATURE_QUERIES = [
     '"ncare.live" extension:m3u',
     '"tangotv.in" extension:m3u',
     '"amagi.tv" extension:m3u',
+    '"mjh.nz" extension:m3u',
+    '"apsattv.com" extension:m3u',
 ]
 
-# 3. GitLab & Codeberg Search Keywords (IPTV charao onno naame thaka list khujbe)
+# 3. GitLab & Codeberg Search Keywords
 ALT_GIT_KEYWORDS = [
-    "iptv", "m3u8", "m3u", "bdix", "bangla-tv", "live-tv", "star-jalsha", "somoy-tv", "sports-tv", "fast-tv"
+    "iptv", "m3u8", "m3u", "bdix", "bangla-tv", "live-tv",
+    "star-jalsha", "somoy-tv", "indian-tv", "hindi-tv", "sports-tv", "fast-tv"
 ]
 
-# 4. Web Paste & Open Index Dorks (Pastebin, Rentry, Telegraph, Gist, Open Web)
+# 4. Global Web Paste, Datasets & Open Index Dorks
 WEB_DORK_QUERIES = [
     'site:pastebin.com "#EXTINF" "Somoy"',
     'site:pastebin.com "#EXTINF" "Star Jalsha"',
+    'site:pastebin.com "#EXTINF" "Hindi"',
     'site:pastebin.com "#EXTINF" "m3u8"',
     'site:rentry.co "#EXTINF" "m3u8"',
     'site:telegra.ph "#EXTINF" "m3u8"',
+    'site:dpaste.org "#EXTINF" "m3u8"',
+    'site:paste.ee "#EXTINF" "m3u8"',
+    'site:bitbucket.org "#EXTINF" "m3u8"',
+    'site:huggingface.co/datasets "m3u8" "iptv"',
     'site:gist.github.com "#EXTINF" "Bangla"',
     'site:gist.github.com "#EXTINF" "Hindi"',
+    'site:gist.github.com "#EXTINF" "English"',
     'site:gist.github.com "#EXTINF" "m3u8"',
     '"#EXTINF:-1" "gpcdn.net"',
     '"#EXTINF:-1" "app24.jagobd.com.bd"',
+    'intitle:"index of" "playlist.m3u"',
+    'intitle:"index of" "tv.m3u8"',
 ]
 
-# 5. Built-in Official FAST TV & Open Directory Feeds (Always Included)
+# 5. Built-in Official FAST TV & Global Open Directory Feeds (Always Included)
 BUILTIN_DIRECT_FEEDS = [
+    # Matt Huisman Official FAST TV Feeds
     "https://i.mjh.nz/SamsungTVPlus/all.m3u8",
     "https://i.mjh.nz/PlutoTV/all.m3u8",
     "https://i.mjh.nz/Plex/all.m3u8",
     "https://i.mjh.nz/Roku/all.m3u8",
-    "https://iptv-org.github.io/iptv/index.m3u",
+    "https://i.mjh.nz/Stirr/all.m3u8",
+    # ApsatTV Official Open FAST Feeds (LG, Vizio, Xumo, DistroTV, LocalNow, Tubi)
+    "https://www.apsattv.com/lg.m3u",
+    "https://www.apsattv.com/vizio.m3u",
+    "https://www.apsattv.com/xumo.m3u",
+    "https://www.apsattv.com/distrotv.m3u",
+    "https://www.apsattv.com/localnow.m3u",
+    "https://www.apsattv.com/tubi.m3u",
+    "https://www.apsattv.com/redbox.m3u",
+    # iptv-org Official Country & Master Feeds (BD, IN & Major English Countries)
+    "https://iptv-org.github.io/iptv/countries/bd.m3u",
+    "https://iptv-org.github.io/iptv/countries/in.m3u",
+    "https://iptv-org.github.io/iptv/countries/us.m3u",
+    "https://iptv-org.github.io/iptv/countries/uk.m3u",
+    "https://iptv-org.github.io/iptv/countries/ca.m3u",
+    "https://iptv-org.github.io/iptv/countries/au.m3u",
+    "https://iptv-org.github.io/iptv/countries/nz.m3u",
+    "https://iptv-org.github.io/iptv/countries/sg.m3u",
+    # Free-TV Official Curated Master Feed
     "https://raw.githubusercontent.com/Free-TV/IPTV/master/playlist.m3u8",
 ]
 
@@ -117,12 +161,14 @@ def load_health_data():
 
 
 def is_valid_upstream_url(url, self_repo_prefix="", health_data=None):
-    # If auto_update.py confirmed this source works, NEVER drop it
+    if url in BUILTIN_DIRECT_FEEDS:
+        return True
+    # Protect any source that produced working BD/Indian/English channels
     if health_data and url in health_data:
         info = health_data[url]
         if info.get("last_hits", 0) > 0:
             return True
-        if info.get("fails", 0) >= 3 and url not in BUILTIN_DIRECT_FEEDS:
+        if info.get("fails", 0) >= 3:
             return False
 
     low_u = url.lower().split("?")[0].split("#")[0]
@@ -134,7 +180,8 @@ def is_valid_upstream_url(url, self_repo_prefix="", health_data=None):
         return False
     if any(k in low_u for k in (
         "api", "live", "tv", "stream", "m3u", "cdn", "103.", "portal", "play",
-        "iptv", "mjh.nz", "gist.githubusercontent", "pastebin.com/raw", "rentry.co", "telegra.ph"
+        "iptv", "mjh.nz", "apsattv.com", "gist.githubusercontent", "pastebin.com/raw",
+        "rentry.co", "telegra.ph", "dpaste.org", "paste.ee", "huggingface.co", "bitbucket.org"
     )):
         return True
     return False
@@ -215,7 +262,7 @@ def search_github():
                     }
         except Exception as e:
             log(f"[GitHub Repo Error] {q}: {e}")
-        time.sleep(4)
+        time.sleep(3)
 
     if GITHUB_TOKEN:
         for cq in CODE_SIGNATURE_QUERIES:
@@ -238,18 +285,18 @@ def search_github():
                         }
             except Exception as e:
                 log(f"[GitHub Code Error] {cq}: {e}")
-            time.sleep(7)
+            time.sleep(6)
     return found
 
 
-# ------------------------------------------------------------------ Engine 2: GitLab & Codeberg
+# ------------------------------------------------------------------ Engine 2: GitLab (Projects + Snippets) & Codeberg
 def search_gitlab_and_codeberg():
     extra_playlists = set()
     extra_repos = {}
 
     for kw in ALT_GIT_KEYWORDS:
         try:
-            gl_url = f"https://gitlab.com/api/v4/projects?search={urllib.parse.quote(kw)}&order_by=last_activity_at&per_page=20"
+            gl_url = f"https://gitlab.com/api/v4/projects?search={urllib.parse.quote(kw)}&order_by=last_activity_at&per_page=25"
             projects = fetch_json(gl_url)
             if isinstance(projects, list):
                 for p in projects:
@@ -267,12 +314,26 @@ def search_gitlab_and_codeberg():
                             "playlists": [],
                             "upstream_sources": [],
                         }
-                        for fname in ("playlist.m3u", "playlist.m3u8", "index.m3u", "index.m3u8", "iptv.m3u", "tv.m3u", "bangla.m3u", "live.m3u"):
+                        for fname in ("playlist.m3u", "playlist.m3u8", "index.m3u", "index.m3u8", "iptv.m3u", "tv.m3u", "bangla.m3u", "india.m3u", "live.m3u"):
                             extra_playlists.add(f"https://gitlab.com/{path_ns}/-/raw/{branch}/{fname}")
         except Exception as e:
             log(f"[GitLab Search Error] {kw}: {e}")
         time.sleep(2)
 
+    # GitLab Public Snippets
+    try:
+        snippets = fetch_json("https://gitlab.com/api/v4/snippets/public?per_page=100", retries=0)
+        if isinstance(snippets, list):
+            for sn in snippets:
+                title = (sn.get("title") or "").lower()
+                fname = (sn.get("file_name") or "").lower()
+                raw_u = sn.get("raw_url")
+                if raw_u and (fname.endswith((".m3u", ".m3u8")) or any(k in f"{title} {fname}" for k in ("iptv", "m3u", "bangla", "hindi", "bdix", "tv"))):
+                    extra_playlists.add(raw_u)
+    except Exception as e:
+        log(f"[GitLab Snippets Error] {e}")
+
+    # Codeberg with 429 Circuit Breaker
     cb_429_count = 0
     for kw in ALT_GIT_KEYWORDS[:6]:
         if cb_429_count >= 2:
@@ -313,7 +374,7 @@ def search_gitlab_and_codeberg():
     return extra_repos, extra_playlists
 
 
-# ------------------------------------------------------------------ Engine 3: Public Gists & Web Pastes
+# ------------------------------------------------------------------ Engine 3: Public Gists, Pastes, Datasets & Open Web
 def search_web_pastes_and_gists():
     discovered_urls = set()
 
@@ -325,7 +386,7 @@ def search_web_pastes_and_gists():
                 files = g.get("files") or {}
                 for fname, fmeta in files.items():
                     low_f = fname.lower()
-                    if low_f.endswith((".m3u", ".m3u8")) or any(k in f"{desc} {low_f}" for k in ("iptv", "m3u", "bangla", "bdix", "live tv")):
+                    if low_f.endswith((".m3u", ".m3u8")) or any(k in f"{desc} {low_f}" for k in ("iptv", "m3u", "bangla", "hindi", "bdix", "live tv")):
                         raw_u = fmeta.get("raw_url")
                         if raw_u:
                             discovered_urls.add(raw_u)
@@ -346,13 +407,21 @@ def search_web_pastes_and_gists():
                     slug = decoded.rstrip("/").split("/")[-1]
                     if slug:
                         discovered_urls.add(f"https://rentry.co/{slug}/raw")
-                elif "telegra.ph/" in decoded or "gist.githubusercontent.com/" in decoded:
+                elif "dpaste.org/" in decoded and "/raw" not in decoded:
+                    discovered_urls.add(decoded.rstrip("/") + "/raw")
+                elif "paste.ee/p/" in decoded:
+                    discovered_urls.add(decoded.replace("/p/", "/r/"))
+                elif "huggingface.co/datasets/" in decoded and "/blob/" in decoded:
+                    discovered_urls.add(decoded.replace("/blob/", "/resolve/"))
+                elif "bitbucket.org/" in decoded and "/src/" in decoded:
+                    discovered_urls.add(decoded.replace("/src/", "/raw/"))
+                elif any(h in decoded for h in ("telegra.ph/", "gist.githubusercontent.com/", ".m3u", ".m3u8")):
                     discovered_urls.add(decoded)
         except Exception as e:
             log(f"[Web Dork Error] {dq}: {e}")
         time.sleep(3)
 
-    log(f"[Web Pastes & Gists] {len(discovered_urls)} ti non-GitHub paste/gist URL paoa gese.")
+    log(f"[Web Pastes, Datasets & Gists] {len(discovered_urls)} ti global URL paoa gese.")
     return discovered_urls
 
 
@@ -393,7 +462,7 @@ def discover():
                 if f.get("size", 0) < 100000:
                     script_paths.append(path)
             elif lpath.endswith((".m3u", ".m3u8")) and f.get("size", 0) > 400:
-                if len(repo_info["playlists"]) < 8:
+                if len(repo_info["playlists"]) < 12:
                     raw_pl = f"https://raw.githubusercontent.com/{repo}/{branch}/{urllib.parse.quote(path)}"
                     repo_info["playlists"].append(raw_pl)
             elif lpath.endswith((".py", ".js", ".ts", ".sh")) and f.get("size", 0) < 150000:
@@ -446,7 +515,7 @@ def discover():
     OUT_JSON.write_text(json.dumps(result_data, indent=2), encoding="utf-8")
 
     report_lines = [
-        f"=== Multi-Source Internet IPTV Discovery Report ({result_data['generated_at']}) ===",
+        f"=== Global Multi-Source IPTV Discovery Report ({result_data['generated_at']}) ===",
         f"Total Repositories Saved (GitHub + GitLab + Codeberg): {len(all_bots_list)}",
         f"Total Unique Upstream Scraping Sources & Pastes Saved: {len(all_upstream_urls)}",
         f"Total Direct M3U Feeds Saved: {len(all_bot_playlists)}\n",
