@@ -8,7 +8,7 @@ Features:
 - Strictly separates Bangladeshi ('Bangladesh') from Indian Bangla ('Bangla (India)' & 'Kolkata Movies')
 - Blocks foreign RTV/NTV/BTV/News24/GTV homonyms, expired tokens, unresolved macro URLs, VOD, radio, spam
 - Strips leading channel numbers (e.g. '14.SOMOY TV' -> 'Somoy TV') for true deduplication
-- Deep HLS segment verification (requires >= 5KB real video chunk)
+- Deep HLS segment verification (requires >= 5KB real video chunk) + Dead-host fast skip cache
 - Tracks upstream source health ('source_health.json') to protect working feeds & prune dead ones
 - Generates outputs:
   1. 'playlist.m3u': All verified alive BD, Indian & English streams (with backups)
@@ -16,7 +16,7 @@ Features:
   3. 'source_report.txt': Detailed breakdown of active channels per source engine & streaming domain
   4. 'source_health.json': Real-time health feedback for discover_sources.py
 """
-import json, os, re, socket, ssl, sys, time
+import json, os, re, socket, ssl, sys, threading, time
 from collections import Counter, defaultdict
 import urllib.error, urllib.parse, urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -30,8 +30,8 @@ CLEAN_OUTPUT = Path("playlist_clean.m3u")
 SOURCE_REPORT = Path("source_report.txt")
 DISCOVERED_FILE = Path("discovered_sources.json")
 HEALTH_FILE = Path("source_health.json")
-WORKERS = 150
-CHECK_TIMEOUT = 7
+WORKERS = 160
+CHECK_TIMEOUT = 6
 MAX_LINKS_PER_CHANNEL = None
 MIN_KEEP_RATIO = 0.1
 
@@ -146,12 +146,17 @@ ISO_LANG_MAP = {
     "ara": "ara", "ar": "ara", "arabic": "ara",
 }
 
+# Dead-host fast skip cache (avoids waiting on hundreds of links from a dead NXDOMAIN/refused server)
+DEAD_HOSTS = set()
+DEAD_HOST_LOCK = threading.Lock()
+HOST_FAIL_COUNTS = Counter()
+
 # ------------------------------------------------------------------ http
 SSL_CTX = ssl.create_default_context()
 SSL_CTX.check_hostname = False
 SSL_CTX.verify_mode = ssl.CERT_NONE
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
-      "Chrome/129.0.0.0 Safari/537.36")
+      "Chrome/131.0.0.0 Safari/537.36")
 PAY_UAS = (
     UA,
     "Dalvik/2.1.0 (Linux; Android 11) ExoPlayerLib/2.18.7",
@@ -445,8 +450,22 @@ def scrape_discovered_and_global_feeds(checked_feed_urls):
         except Exception as e:
             log(f"[DiscoveredSources] JSON read error: {e}")
 
-    upstream_urls = list(dict.fromkeys(upstream_urls))
-    bot_playlists = list(dict.fromkeys(bot_playlists))
+    # Skip known dead feeds from health file so runtime stays fast
+    try:
+        health_map = json.loads(HEALTH_FILE.read_text(encoding="utf-8")) if HEALTH_FILE.exists() else {}
+    except Exception:
+        health_map = {}
+
+    always_keep = {u for _, u in DIRECT_GLOBAL_FEEDS}
+    upstream_urls = [
+        u for u in dict.fromkeys(upstream_urls)
+        if u in always_keep or health_map.get(u, {}).get("last_hits", 0) > 0 or health_map.get(u, {}).get("fails", 0) < 2
+    ]
+    bot_playlists = [
+        p for p in dict.fromkeys(bot_playlists)
+        if p in always_keep or health_map.get(p, {}).get("last_hits", 0) > 0 or health_map.get(p, {}).get("fails", 0) < 2
+    ]
+
     log(f"[InternetSources] {len(upstream_urls)} ti upstream/FAST/paste source o {len(bot_playlists)} ti repo feed check kora hocche...")
 
     res = []
@@ -478,7 +497,7 @@ def scrape_discovered_and_global_feeds(checked_feed_urls):
         out = []
         src_label = detect_source_label(u)
         try:
-            txt = http_get(u, timeout=6, max_bytes=2_500_000)
+            txt = http_get(u, timeout=5, max_bytes=2_500_000)
             if "#EXTINF" in txt:
                 chs = parse_m3u(txt, src_label)
                 if len(chs) <= 5000:
@@ -508,12 +527,12 @@ def scrape_discovered_and_global_feeds(checked_feed_urls):
     checked_feed_urls.extend(all_urls)
     total_sources = len(all_urls)
     done_sources = 0
-    with ThreadPoolExecutor(max_workers=120) as ex:
+    with ThreadPoolExecutor(max_workers=140) as ex:
         futs = [ex.submit(fetch_any_feed, u) for u in all_urls]
         for f in as_completed(futs):
             res.extend(f.result())
             done_sources += 1
-            if done_sources % 300 == 0 or done_sources == total_sources:
+            if done_sources % 500 == 0 or done_sources == total_sources:
                 log(f"[InternetSources] progress: {done_sources}/{total_sources} source checked | {len(res)} channel paoa gese")
 
     log(f"[InternetSources] mot {len(res)} ti candidate channel paoa gese")
@@ -562,7 +581,7 @@ def scrape_iptv_org_base():
     def get(url):
         if url not in cache:
             try:
-                cache[url] = parse_m3u(http_get(url, timeout=15, max_bytes=2_500_000), "IPTV-org")
+                cache[url] = parse_m3u(http_get(url, timeout=15, max_bytes=3_000_000), "IPTV-org")
             except Exception as e:
                 log(f"[IPTV-org] fail {url}: {e}")
                 cache[url] = []
@@ -590,9 +609,9 @@ def scrape_iptv_org_base():
             detected_lg = url_lang_map.get(clean_u, default_lg)
             res.append({**c, "group": "Sports" if "sport" in c.get("group", "").lower() else group, "lang": detected_lg})
 
-    # Direct iptv-org JSON API (catches unindexed BD, IN, US, UK, CA, AU, NZ, SG, IE streams)
+    # Direct iptv-org JSON API (15MB buffer so large JSON never truncates)
     try:
-        streams_api = json.loads(http_get("https://iptv-org.github.io/api/streams.json", timeout=15, max_bytes=5_000_000))
+        streams_api = json.loads(http_get("https://iptv-org.github.io/api/streams.json", timeout=20, max_bytes=15_000_000))
         for st in streams_api:
             ch_id = st.get("channel") or ""
             st_url = st.get("url") or ""
@@ -699,6 +718,10 @@ def check_stream(raw_url, timeout=CHECK_TIMEOUT):
                 if k.strip().lower() == "user-agent":
                     custom_ua = True
 
+    host = urllib.parse.urlparse(url).netloc.lower()
+    if host in DEAD_HOSTS:
+        return False, 0, "dead host (cached)", UA, ""
+
     exp_m = re.search(r"(?:exp|expires)=(\d{10})", url, re.I)
     if exp_m and int(exp_m.group(1)) < int(time.time()) + 7200:
         return False, 0, "token expired or expiring soon", UA, ""
@@ -771,11 +794,17 @@ def check_stream(raw_url, timeout=CHECK_TIMEOUT):
                 reason = "not an m3u8 live stream"
         except urllib.error.HTTPError as e:
             reason = f"HTTP {e.code}"
-            if e.code in (404, 410):
+            if e.code in (404, 410, 451):
                 return False, 0, reason, ua, ""
         except urllib.error.URLError as e:
             msg = str(e.reason)
             reason = "timeout" if "timed out" in msg.lower() else f"connect: {msg[:35]}"
+            if "name or service not known" in msg.lower() or "errno -2" in msg.lower() or "errno 111" in msg.lower():
+                with DEAD_HOST_LOCK:
+                    HOST_FAIL_COUNTS[host] += 1
+                    if HOST_FAIL_COUNTS[host] >= 2:
+                        DEAD_HOSTS.add(host)
+                return False, 0, reason, ua, ""
             if idx == 0 and reason != "timeout":
                 break
         except TimeoutError:
@@ -800,7 +829,7 @@ def check_all(channels):
             if stream_lang:
                 c["stream_lang"] = stream_lang
             done += 1
-            if done % 500 == 0 or done == total:
+            if done % 1000 == 0 or done == total:
                 log(f"checked {done}/{total} | alive {sum(1 for x in channels if x.get('alive'))}")
 
     dead = Counter(c["reason"] for c in channels if not c.get("alive") and c.get("reason"))
