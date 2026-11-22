@@ -9,12 +9,11 @@ Features:
 - Strictly separates Bangladeshi ('Bangladesh') from Indian Bangla ('Bangla (India)' & 'Kolkata Movies')
 - Blocks foreign RTV/NTV/BTV/News24/GTV homonyms, expired tokens, unresolved macro URLs, VOD, radio, spam
 - Deep HLS segment verification (requires >= 5KB real video chunk) + Dead-host fast skip cache
-- Tracks upstream source health ('source_health.json') to protect working feeds & prune dead ones
+- Active Pool vs. Sleeping Pool sync ('source_health.json' & 'sleeping_sources.json') so dead feeds sleep and revive automatically when back online
 - Generates outputs:
   1. 'playlist.m3u': All verified alive streams (with backups)
   2. 'playlist_clean.m3u': Duplicate-free, lowest ping (fastest response) 1 link per channel
   3. 'source_report.txt': Detailed breakdown of active channels per source engine & streaming domain
-  4. 'source_health.json': Real-time health feedback for discover_sources.py
 """
 import json, os, re, socket, ssl, sys, threading, time
 from collections import Counter, defaultdict
@@ -30,6 +29,7 @@ CLEAN_OUTPUT = Path("playlist_clean.m3u")
 SOURCE_REPORT = Path("source_report.txt")
 DISCOVERED_FILE = Path("discovered_sources.json")
 HEALTH_FILE = Path("source_health.json")
+SLEEPING_FILE = Path("sleeping_sources.json")
 WORKERS = 160
 CHECK_TIMEOUT = 6
 MAX_LINKS_PER_CHANNEL = None
@@ -149,7 +149,6 @@ ISO_LANG_MAP = {
     "bho": "bho", "bhojpuri": "bho",
 }
 
-# Non-Hindi / Non-Bangla Indian Regional Languages to strictly DROP
 DROP_INDIAN_LANG_CODES = {"tam", "tel", "mal", "kan", "mar", "pan", "guj", "ori", "asm", "bho"}
 
 DROP_REGIONAL_RE = re.compile(
@@ -458,7 +457,7 @@ def scrape_jagobd():
 
 
 def scrape_discovered_and_global_feeds(checked_feed_urls):
-    """GitHub, GitLab, Codeberg, Bitbucket, HuggingFace, Pastes o FAST TV API theke scrape korbe"""
+    """Fetches from Active Pool (discovered_sources.json + DIRECT_GLOBAL_FEEDS)"""
     upstream_urls = [u for _, u in DIRECT_GLOBAL_FEEDS]
     bot_playlists = []
 
@@ -485,7 +484,7 @@ def scrape_discovered_and_global_feeds(checked_feed_urls):
         if p in always_keep or health_map.get(p, {}).get("last_hits", 0) > 0 or health_map.get(p, {}).get("fails", 0) < 2
     ]
 
-    log(f"[InternetSources] {len(upstream_urls)} ti upstream/FAST/paste source o {len(bot_playlists)} ti repo feed check kora hocche...")
+    log(f"[InternetSources] {len(upstream_urls)} ti active upstream/FAST/paste source o {len(bot_playlists)} ti active repo feed check kora hocche...")
 
     res = []
 
@@ -628,7 +627,6 @@ def scrape_iptv_org_base():
             detected_lg = url_lang_map.get(clean_u, default_lg)
             res.append({**c, "group": "Sports" if "sport" in c.get("group", "").lower() else group, "lang": detected_lg})
 
-    # Direct iptv-org JSON API (15MB buffer so large JSON never truncates)
     try:
         streams_api = json.loads(http_get("https://iptv-org.github.io/api/streams.json", timeout=20, max_bytes=15_000_000))
         for st in streams_api:
@@ -973,7 +971,6 @@ HINDI_RE = re.compile(
     r"wow cinema|abzy|pitara|popkorn|housefull|dil se)\b", re.I
 )
 
-# Dedicated Informative / Documentary / Science / Wildlife / History Channels
 INFORMATIVE_RE = re.compile(
     r"\b(discovery|discovery channel|discovery science|discovery turbo|discovery world|discovery kids|discovery\+|\bds\b|"
     r"animal planet|national geographic|nat geo|natgeo|nat geo wild|nat geo people|nat geo adventure|"
@@ -1075,7 +1072,6 @@ def classify_by_language_and_name(c):
 
     detected_lang = c.get("stream_lang") or c.get("lang") or ""
 
-    # Strictly DROP non-Hindi / non-Bangla Indian regional languages (Tamil, Telugu, Punjabi, etc.)
     if detected_lang in DROP_INDIAN_LANG_CODES:
         return "DROP"
     if DROP_REGIONAL_RE.search(t) and not BD_ONLY_RE.search(lname):
@@ -1088,7 +1084,7 @@ def classify_by_language_and_name(c):
     if PAY_SPORTS_RE.search(t) or re.search(r"\b(sport|sports|cricket|football|soccer)\b", lname):
         return "Sports"
 
-    # 2. Informative / Documentary / Science / Wildlife / History (Discovery, Nat Geo, Animal Planet, History, etc.)
+    # 2. Informative / Documentary / Science / Wildlife / History
     if INFORMATIVE_RE.search(lname) or re.search(r"\b(documentary|science|wildlife|nature|history)\b", lgroup):
         return "Informative"
 
@@ -1137,7 +1133,7 @@ def classify_by_language_and_name(c):
             return "Bangla Music"
         return "Bangla (India)"
 
-    # 7. Hindi / India (Hindi & National Indian channels only)
+    # 7. Hindi / India
     if (detected_lang == "hin"
             or HINDI_RE.search(lname)
             or PAY_ENT_CH_RE.search(lname)
@@ -1180,9 +1176,9 @@ def dedupe_by_name(chs, limit):
     return [c for c in chs if id(c) in kept]
 
 
-# ------------------------------------------------------------------ source health updater
+# ------------------------------------------------------------------ source health & sleeping pool sync
 def update_source_health(checked_feed_urls, all_candidate_items):
-    """Updates source_health.json so discover_sources.py keeps all working feeds and prunes dead ones."""
+    """Updates source_health.json and moves repeated zero-hit feeds to sleeping_sources.json."""
     if not checked_feed_urls:
         return
     try:
@@ -1190,25 +1186,41 @@ def update_source_health(checked_feed_urls, all_candidate_items):
     except Exception:
         health_data = {}
 
+    try:
+        sleeping_data = json.loads(SLEEPING_FILE.read_text(encoding="utf-8")) if SLEEPING_FILE.exists() else {}
+        sleeping_set = set(sleeping_data.get("sleeping_urls", []))
+    except Exception:
+        sleeping_set = set()
+
+    always_keep = {u for _, u in DIRECT_GLOBAL_FEEDS}
     alive_hits_by_feed = Counter()
     for c in all_candidate_items:
         f_url = c.get("feed_url")
         if f_url and c.get("alive") and c.get("group") in ALLOWED_GROUPS:
             alive_hits_by_feed[f_url] += 1
 
-    working_count, failing_count = 0, 0
+    working_count, newly_sleeping = 0, 0
     for f_url in set(checked_feed_urls):
         hits = alive_hits_by_feed.get(f_url, 0)
         if hits > 0:
             health_data[f_url] = {"fails": 0, "last_hits": hits}
+            sleeping_set.discard(f_url)
             working_count += 1
         else:
-            prev_fails = health_data.get(f_url, {}).get("fails", 0)
-            health_data[f_url] = {"fails": prev_fails + 1, "last_hits": 0}
-            failing_count += 1
+            prev_fails = health_data.get(f_url, {}).get("fails", 0) + 1
+            health_data[f_url] = {"fails": prev_fails, "last_hits": 0}
+            if prev_fails >= 2 and f_url not in always_keep:
+                if f_url not in sleeping_set:
+                    sleeping_set.add(f_url)
+                    newly_sleeping += 1
 
     HEALTH_FILE.write_text(json.dumps(health_data, indent=2), encoding="utf-8")
-    log(f"[SourceHealth] {HEALTH_FILE} updated: {working_count} working feeds protected, {failing_count} zero-hit feeds tracked.")
+    SLEEPING_FILE.write_text(json.dumps({
+        "updated_at": time.strftime("%Y-%m-%d %H:%M:%S UTC", time.gmtime()),
+        "total_sleeping": len(sleeping_set),
+        "sleeping_urls": sorted(sleeping_set)
+    }, indent=2), encoding="utf-8")
+    log(f"[SourceHealth] {working_count} working feeds active | {newly_sleeping} moved to Sleeping Pool (Total sleeping: {len(sleeping_set)}).")
 
 
 # ------------------------------------------------------------------ output
@@ -1336,7 +1348,6 @@ def main():
         c["group"] = grp
         alive.append(c)
 
-    # Save source health feedback before safety exit check
     update_source_health(checked_feed_urls, alive)
 
     log(f"Alive (Filtered Groups only): {len(alive)} / {len(items)}")
