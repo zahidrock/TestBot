@@ -1,15 +1,16 @@
 """
-All-in-One Direct (No-Proxy) Live TV IPTV Updater (Multi-Source Internet-Wide + BD/Indian/English Only)
+All-in-One Direct (No-Proxy) Global Live TV IPTV Updater (BD / Indian / English Only)
 Features:
-- Collects from AynaOTT, JagoBD, GitHub, GitLab, Codeberg, Pastebin, Rentry, Telegraph,
-  Official FAST TV APIs (SamsungTVPlus, PlutoTV, Plex, Roku), and iptv-org JSON API + M3U feeds
+- Collects from AynaOTT, JagoBD, GitHub, GitLab, Codeberg, Bitbucket, HuggingFace, Pastebin, Rentry, Telegraph,
+  Official FAST TV APIs (SamsungTVPlus, PlutoTV, Plex, Roku, Stirr, LG, Vizio, Xumo, DistroTV, LocalNow, Tubi, Redbox),
+  and iptv-org JSON API + Country M3U feeds (BD, IN, US, UK, CA, AU, NZ, SG)
 - Keeps ONLY Bangladeshi, Indian (all regional languages), and English channels
 - Strictly separates Bangladeshi ('Bangladesh') from Indian Bangla ('Bangla (India)' & 'Kolkata Movies')
 - Blocks foreign RTV/NTV/BTV/News24/GTV homonyms, expired tokens, unresolved macro URLs, VOD, radio, spam
 - Strips leading channel numbers (e.g. '14.SOMOY TV' -> 'Somoy TV') for true deduplication
 - Deep HLS segment verification (requires >= 5KB real video chunk)
 - Tracks upstream source health ('source_health.json') to protect working feeds & prune dead ones
-- Generates THREE outputs + health tracking:
+- Generates outputs:
   1. 'playlist.m3u': All verified alive BD, Indian & English streams (with backups)
   2. 'playlist_clean.m3u': Duplicate-free, lowest ping (fastest response) 1 link per channel
   3. 'source_report.txt': Detailed breakdown of active channels per source engine & streaming domain
@@ -38,16 +39,30 @@ GITHUB_TOKEN = "" or os.getenv("GITHUB_TOKEN")
 IPTV_BASE = "https://iptv-org.github.io/iptv"
 
 COUNTRY_SOURCES = [
-    ("Bangladesh", f"{IPTV_BASE}/countries/bd.m3u"),
-    ("India",      f"{IPTV_BASE}/countries/in.m3u"),
+    ("Bangladesh",            f"{IPTV_BASE}/countries/bd.m3u"),
+    ("India",                 f"{IPTV_BASE}/countries/in.m3u"),
+    ("English Entertainment", f"{IPTV_BASE}/countries/us.m3u"),
+    ("English Entertainment", f"{IPTV_BASE}/countries/uk.m3u"),
+    ("English Entertainment", f"{IPTV_BASE}/countries/ca.m3u"),
+    ("English Entertainment", f"{IPTV_BASE}/countries/au.m3u"),
+    ("English Entertainment", f"{IPTV_BASE}/countries/nz.m3u"),
+    ("English Entertainment", f"{IPTV_BASE}/countries/sg.m3u"),
 ]
 
-# Direct Official FAST TV & Open Community Feeds (Always fetched even without discovered_sources.json)
+# Direct Official Global FAST TV & Open Community Feeds (Always fetched)
 DIRECT_GLOBAL_FEEDS = [
     ("FAST-TV", "https://i.mjh.nz/SamsungTVPlus/all.m3u8"),
     ("FAST-TV", "https://i.mjh.nz/PlutoTV/all.m3u8"),
     ("FAST-TV", "https://i.mjh.nz/Plex/all.m3u8"),
     ("FAST-TV", "https://i.mjh.nz/Roku/all.m3u8"),
+    ("FAST-TV", "https://i.mjh.nz/Stirr/all.m3u8"),
+    ("FAST-TV", "https://www.apsattv.com/lg.m3u"),
+    ("FAST-TV", "https://www.apsattv.com/vizio.m3u"),
+    ("FAST-TV", "https://www.apsattv.com/xumo.m3u"),
+    ("FAST-TV", "https://www.apsattv.com/distrotv.m3u"),
+    ("FAST-TV", "https://www.apsattv.com/localnow.m3u"),
+    ("FAST-TV", "https://www.apsattv.com/tubi.m3u"),
+    ("FAST-TV", "https://www.apsattv.com/redbox.m3u"),
     ("OpenDir", "https://raw.githubusercontent.com/Free-TV/IPTV/master/playlist.m3u8"),
 ]
 
@@ -181,13 +196,17 @@ def normalize_lang_code(raw_lang):
 
 def detect_source_label(url, default_src="Web/Git"):
     low = url.lower()
-    if "mjh.nz" in low:
+    if "mjh.nz" in low or "apsattv.com" in low:
         return "FAST-TV"
     if "gitlab.com" in low:
         return "GitLab"
     if "codeberg.org" in low:
         return "Codeberg"
-    if "pastebin.com" in low or "rentry.co" in low or "telegra.ph" in low:
+    if "bitbucket.org" in low:
+        return "Bitbucket"
+    if "huggingface.co" in low:
+        return "HuggingFace"
+    if any(p in low for p in ("pastebin.com", "rentry.co", "telegra.ph", "dpaste.org", "paste.ee")):
         return "WebPaste"
     if "gist.githubusercontent.com" in low:
         return "GitHub-Gist"
@@ -414,7 +433,7 @@ def scrape_jagobd():
 
 
 def scrape_discovered_and_global_feeds(checked_feed_urls):
-    """GitHub, GitLab, Codeberg, Pastebin, Rentry, Telegraph o FAST TV API theke scrape korbe"""
+    """GitHub, GitLab, Codeberg, Bitbucket, HuggingFace, Pastes o FAST TV API theke scrape korbe"""
     upstream_urls = [u for _, u in DIRECT_GLOBAL_FEEDS]
     bot_playlists = []
 
@@ -459,10 +478,10 @@ def scrape_discovered_and_global_feeds(checked_feed_urls):
         out = []
         src_label = detect_source_label(u)
         try:
-            txt = http_get(u, timeout=6, max_bytes=2_000_000)
+            txt = http_get(u, timeout=6, max_bytes=2_500_000)
             if "#EXTINF" in txt:
                 chs = parse_m3u(txt, src_label)
-                if len(chs) <= 4500:
+                if len(chs) <= 5000:
                     for ch in chs:
                         ch["feed_url"] = u
                     return chs
@@ -543,7 +562,7 @@ def scrape_iptv_org_base():
     def get(url):
         if url not in cache:
             try:
-                cache[url] = parse_m3u(http_get(url, timeout=15, max_bytes=2_000_000), "IPTV-org")
+                cache[url] = parse_m3u(http_get(url, timeout=15, max_bytes=2_500_000), "IPTV-org")
             except Exception as e:
                 log(f"[IPTV-org] fail {url}: {e}")
                 cache[url] = []
@@ -567,23 +586,24 @@ def scrape_iptv_org_base():
     for group, url in COUNTRY_SOURCES:
         for c in get(url):
             clean_u = c["url"].split("|")[0]
-            detected_lg = url_lang_map.get(clean_u, "ben" if group == "Bangladesh" else c.get("lang", ""))
+            default_lg = "ben" if group == "Bangladesh" else ("eng" if group == "English Entertainment" else c.get("lang", ""))
+            detected_lg = url_lang_map.get(clean_u, default_lg)
             res.append({**c, "group": "Sports" if "sport" in c.get("group", "").lower() else group, "lang": detected_lg})
 
-    # Direct iptv-org JSON API (catches unindexed BD, IN, US, UK, CA, AU streams)
+    # Direct iptv-org JSON API (catches unindexed BD, IN, US, UK, CA, AU, NZ, SG, IE streams)
     try:
-        streams_api = json.loads(http_get("https://iptv-org.github.io/api/streams.json", timeout=15, max_bytes=4_000_000))
+        streams_api = json.loads(http_get("https://iptv-org.github.io/api/streams.json", timeout=15, max_bytes=5_000_000))
         for st in streams_api:
             ch_id = st.get("channel") or ""
             st_url = st.get("url") or ""
-            if st_url and any(ch_id.lower().endswith(ext) for ext in (".bd", ".in", ".us", ".uk", ".ca", ".au")):
+            if st_url and any(ch_id.lower().endswith(ext) for ext in (".bd", ".in", ".us", ".uk", ".ca", ".au", ".nz", ".sg", ".ie")):
                 res.append({
                     "name": ch_id.split(".")[0],
                     "url": st_url,
                     "logo": "",
                     "tvg_id": ch_id,
                     "group": "Bangladesh" if ch_id.lower().endswith(".bd") else ("India" if ch_id.lower().endswith(".in") else "English Entertainment"),
-                    "lang": "ben" if ch_id.lower().endswith(".bd") else "",
+                    "lang": "ben" if ch_id.lower().endswith(".bd") else ("eng" if not ch_id.lower().endswith(".in") else ""),
                     "source": "IPTV-org"
                 })
     except Exception as e:
@@ -791,7 +811,8 @@ def check_all(channels):
 NOISE = {"hd", "fhd", "sd", "uhd", "4k", "live", "official", "hevc", "h265", "h264"}
 SOURCE_RANK = {
     "AynaOTT": 0, "JagoBD": 1, "FAST-TV": 2, "IPTV-org": 3,
-    "GitHub": 4, "GitLab": 5, "Codeberg": 6, "GitHub-Gist": 7, "WebPaste": 8
+    "GitHub": 4, "GitLab": 5, "Codeberg": 6, "Bitbucket": 7, "HuggingFace": 8,
+    "GitHub-Gist": 9, "WebPaste": 10, "OpenDir": 11
 }
 
 VALID_SHORT_NAMES = {
@@ -1205,7 +1226,7 @@ def write_source_report(alive, clean_alive):
         by_domain[dom].append(entry)
 
     rep = [
-        f"=== Internet-Wide IPTV Source & Channel Breakdown Report ({time.strftime('%Y-%m-%d %H:%M:%S UTC', time.gmtime())}) ===",
+        f"=== Global IPTV Source & Channel Breakdown Report ({time.strftime('%Y-%m-%d %H:%M:%S UTC', time.gmtime())}) ===",
         f"Total Alive Streams: {len(alive)} | Clean Unique Channels: {len(clean_alive)}\n",
         "--- 1. SUMMARY BY SOURCE PLATFORM / ENGINE ---"
     ]
