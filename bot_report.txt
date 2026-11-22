@@ -1,7 +1,7 @@
-=== GitHub IPTV Bots & Upstream Sources Report (2026-11-22 05:35:16 UTC) ===
-Total Active & Hidden Repositories Saved (Merged): 286
-Total Unique Upstream Scraping Sources Saved: 8831
-Total Bot M3U Playlists Saved: 754
+=== GitHub IPTV Bots & Upstream Sources Report (2026-11-22 10:19:11 UTC) ===
+Total Active & Hidden Repositories Saved (Merged): 309
+Total Unique Upstream Scraping Sources Saved: 9054
+Total Bot M3U Playlists Saved: 797
 
 --- 1. UPSTREAM WEBSITES / APIS USED BY BOTS ---
   - http://.../index.m3u8
@@ -12,6 +12,7 @@ Total Bot M3U Playlists Saved: 754
   - http://10.255.126.3/AHBKLIVE/00000001000000050000000000000633
   - http://103.114.11.37
   - http://103.135.253.32
+  - http://103.140.254.2
   - http://103.144.89.251/
   - http://103.145.12.56
   - http://103.151.60.162
@@ -35,6 +36,8 @@ Total Bot M3U Playlists Saved: 754
   - http://103.213.31.111/HBOHD/index.m3u8
   - http://103.217.190.91
   - http://103.217.221.64/snehjiotv/snehjioo.php
+  - http://103.229.254.25
+  - http://103.250.28.74
   - http://103.253.74.210
   - http://103.39.222.1
   - http://103.40.240.46/jh/
@@ -42,6 +45,8 @@ Total Bot M3U Playlists Saved: 754
   - http://103.58.160.157
   - http://106.53.99.30/tv/api.php
   - http://106.53.99.30/tv/bj.php
+  - http://107.150.60.122/live/gxwshd.m3u8
+  - http://107.150.60.122/live/szwshd.m3u8
   - http://112.25.48.68/live/program/live/ahwshd/4000000/mnf.m3u8
   - http://112.25.48.68/live/program/live/bjwshd/4000000/mnf.m3u8
   - http://112.25.48.68/live/program/live/btws/1300000/mnf.m3u8
@@ -143,6 +148,7 @@ Total Bot M3U Playlists Saved: 754
   - http://120.76.248.139/live/bfgd/4200000111.m3u8#http://tvbox6.icu/tv/migu.php
   - http://120.76.248.139/live/bfgd/4200000133.m3u8
   - http://120.76.248.139/live/bfgd/4200000204.m3u8
+  - http://120.76.248.139/live/bfgd/4200000246.m3u8
   - http://120.76.248.139/live/bfgd/4200000246.m3u8#http://tvbox6.icu/tv/migu.php
   - http://120.76.248.139/live/bfgd/4200000249.m3u8
   - http://120.76.248.139/live/bfgd/4200000473.m3u8#http://111.221.137.234:44330/tsfile/live/0117_1.m3u8
@@ -157,6 +163,7 @@ Total Bot M3U Playlists Saved: 754
   - http://15.235.185.236/hls/bhi.m3u8
   - http://150.230.216.174/tvjx.php
   - http://162.14.106.28/API.php
+  - http://162.249.127.3/live/758811/854100/98895.ts
   - http://174.127.67.246/live330/playlist.m3u8
   - http://175.171.103.1
   - http://183.207.248.10/PLTV/3/224/3221225546/index.m3u8
@@ -311,6 +318,7 @@ Total Bot M3U Playlists Saved: 754
   - http://210.4.72.204/hls-live/livepkgr/_definst_/liveevent/livestream3.m3u8
   - http://216.98.10.85/api.php/iptv/vod/
   - http://217.174.225.146/legacyhls/ch004_720/index.m3u8
+  - http://217.20.112.199/natgeowild/index.m3u8
   - http://218.204.153.158/10.m3u8
   - http://22.shaozeyk.top/api.php/provide/vod/
   - http://223.105.252.57/PLTV/3/224/3221228165/index.m3u8
@@ -521,6 +529,8 @@ Total Bot M3U Playlists Saved: 754
   - http://4000zy.com/api.php/provide/vod/
   - http://4000zy.com/inc/api.php
   - http://41.205.93.154/STARSPORTS1/index.m3u8
+  - http://43.152.224.209/qctv.fengshows.cn/live/0701phk72.flv
+  - http://43.152.224.209/qctv.fengshows.cn/live/0701pin72.flv
   - http://47.102.85.40/api.php/provide/vod/
   - http://47.97.68.224/api.php
   - http://4kdog.tk/api.php/app/
@@ -561,6 +571,15 @@ Total Bot M3U Playlists Saved: 754
   - http://99zyba.com/api.php/provide/vod/
   - http://99zywcj.com/inc/sapi.php
   - http://adultiptv.net/chs.m3u
+  - http://ae325328.ucomist.net/iptv/Z3SWF9EL3YPX5N/6568/index.m3u8
+  - http://ae325328.ucomist.net/iptv/Z3SWF9EL3YPX5N/6569/index.m3u8
+  - http://ae325328.ucomist.net/iptv/Z3SWF9EL3YPX5N/6572/index.m3u8
+  - http://ae325328.ucomist.net/iptv/Z3SWF9EL3YPX5N/6578/index.m3u8
+  - http://ae325328.ucomist.net/iptv/Z3SWF9EL3YPX5N/6579/index.m3u8
+  - http://ae325328.ucomist.net/iptv/Z3SWF9EL3YPX5N/6626/index.m3u8
+  - http://ae325328.ucomist.net/iptv/Z3SWF9EL3YPX5N/6693/index.m3u8
+  - http://ae325328.ucomist.net/iptv/Z3SWF9EL3YPX5N/6698/index.m3u8
+  - http://ae325328.ucomist.net/iptv/Z3SWF9EL3YPX5N/6702/index.m3u8
   - http://africatv.live.net.sa
   - http://ali-m-l.cztv.com
   - http://ali-m-l.cztv.com/channels/lantian/channel001/1080p.m3u8
@@ -1405,6 +1424,7 @@ Total Bot M3U Playlists Saved: 754
   - http://iptvcasomsapi.jprdigital.in/x-media/C0441/master.m3u8
   - http://iptvcasomsapi.jprdigital.in/x-media/C0442/master.m3u8
   - http://iptvcasomsapi.jprdigital.in/x-media/C0451/master.m3u8
+  - http://iptvcasomsapi.jprdigital.in/x-media/C0476/master.m3u8
   - http://iptvcasomsapi.jprdigital.in/x-media/C0480/master.m3u8
   - http://iptvcasomsapi.jprdigital.in/x-media/C0481/master.m3u8
   - http://iptvcasomsapi.jprdigital.in/x-media/C0522/master.m3u8
@@ -1425,6 +1445,7 @@ Total Bot M3U Playlists Saved: 754
   - http://json.84jia.com/api/
   - http://json.84jia.com/home/api
   - http://json.xg688.top/api/
+  - http://jwplay.hebyun.com.cn/live/xtsrmtzs/1500k/tzwj_video.m3u8
   - http://jx.1080jx.top/api/
   - http://jx.999315.xyz/yzzy/20250727/11839_e6a88d08/index.m3u8
   - http://jx.999315.xyz/yzzy/20250727/16714_a69d15dc/index.m3u8
@@ -1612,6 +1633,7 @@ Total Bot M3U Playlists Saved: 754
   - http://mkk.gotka.top/api.php/v1.vod
   - http://mobile.ccdntech.com/transcoder/_definst_/vod164_Live/live/playlist.m3u8
   - http://mobilelive-timeshift.ysp.cctv.cn/timeshift/ysp/2022606701/timeshift.m3u8
+  - http://moul4tv.xyz/play/live.php
   - http://mtv.sunplex.live/MAASRANGA-TV/index.m3u8
   - http://mygzycj.com/api.php
   - http://mygzycj.com/sapi.php
@@ -1624,6 +1646,7 @@ Total Bot M3U Playlists Saved: 754
   - http://nklive.nbs.cn/hls/75b3c462-b831-4de7-a34b-5d3221db2069/index.m3u8
   - http://nlive.zjkgdcs.com
   - http://nnys.cuicanys.cn/lvdou_api.php/v1.vod
+  - http://olxi0fko.ukminlt.fun/iptv/HV7NY9RSQCHYZK/6653/index.m3u8
   - http://onetv.click/schedule/epg.xml
   - http://origin.flive.skcdn.com/mbn-auth1/1000k/playlist.m3u8
   - http://origin5.mediacdn.ru/live/kidstv/index.m3u8
@@ -1875,6 +1898,7 @@ Total Bot M3U Playlists Saved: 754
   - http://tv.shenaitv.com/api.php/iptv/vod/
   - http://tv.tegouys.com/api.php/iptv/vod/
   - http://tv.tkys.tv/api.php/iptv/vod/
+  - http://tv.zapping.life
   - http://tv.zkxww.com
   - http://tv2.aixixi.vip/api.php/iptv/vod/
   - http://tv2.hetaoys.vip/api.php/iptv/vod/
@@ -1887,6 +1911,7 @@ Total Bot M3U Playlists Saved: 754
   - http://tvdrs.wsrtv.com.cn
   - http://tvht.lanrentk.cc/api.php/iptv/vod/
   - http://tvmds.tvpassport.com/snippet/white_label/php/session.php
+  - http://tvn1.chowdhury-shaheb.com/gazitv/index.m3u8
   - http://tvpanpan.site
   - http://tvpass.org/playlist/m3u
   - http://tvportal4k.xyz
@@ -1895,6 +1920,8 @@ Total Bot M3U Playlists Saved: 754
   - http://tvsen5.aynascope.net/RtvHD/tracks-v1a1/mono.ts.m3u8
   - http://tvsen5.aynascope.net/cXPB2LKkErN9/index.m3u8
   - http://tvsen5.aynascope.net/maasrangatv/index.m3u8
+  - http://tvsen5.aynascope.net/willowhd/index.m3u8
+  - http://tvsen7.aynascope.net/rEBp38Ax/index.m3u8
   - http://tvsen7.aynascope.net/sspts1/index.m3u8
   - http://tvtj.jxwltx.com
   - http://tvtj1.jxwltx.com
@@ -2093,6 +2120,8 @@ Total Bot M3U Playlists Saved: 754
   - https://9bwaz8y2.gzstv.com/live/CH01_lo.m3u8
   - https://9e754fa707344ccca6d84955c8fcaf36.mediatailor.us-east-1.amazonaws.com/v1/master/44f73ba4d03e9607dcd9bebdcb8494d86964f1d8/rlaxxtv-eu_authentichistory/playlist.m3u8
   - https://9laloma.tv/live.m3u8
+  - https://9x.cdn.runn.tv/9XM/master.m3u8
+  - https://9x.cdn.runn.tv/9X_Jalwa/master.m3u8
   - https://9xjio.wiseplayout.com/9X_Jhakaas/master.m3u8
   - https://9xjio.wiseplayout.com/9X_Tashan/master.m3u8
   - https://CeresLabX.github.io/us-tv-epg/epg.xml
@@ -2105,6 +2134,7 @@ Total Bot M3U Playlists Saved: 754
   - https://a-cdn.klowdtv.com/live3/euronews_720p/playlist.m3u8
   - https://a.7dyu.cn/api.php/provide/vod/
   - https://a.7dyu.cn/api.php/provide/vod/from/ddzy/
+  - https://a.espncdn.com/combiner/i
   - https://a.files.bbci.co.uk/ms6/live/3441A116-B12E-4D2F-ACA8-C1984642FA4B/audio/simulcast/dash/nonuk/cellular_main_sd_abr_v2/cfs/bbc_world_service.mpd
   - https://a.files.bbci.co.uk/ms6/live/3441A116-B12E-4D2F-ACA8-C1984642FA4B/audio/simulcast/hls/nonuk/audio_syndication_vlow_sbr_v1/cfs/bbc_world_service_news_internet.m3u8
   - https://a.jsrdn.com/broadcast/47cff5378f/+0000/high/c.m3u8
@@ -2129,6 +2159,10 @@ Total Bot M3U Playlists Saved: 754
   - https://abizzcbaaaaaaaaml3dau5ew7oiof.otte.live.cf.ww.aiv-cdn.net/fra-nitro/live/dash/enc/w34nznx0bz/out/v1/1c6639b9af994c75847def2249302066/cenc.mpd
   - https://abizzcbaaaaaaaamlniubkrls2bb7.otte.live.cf.ww.aiv-cdn.net/fra-nitro/live/dash/enc/vwq77hfgzw/out/v1/b858e0b845c64cec953887bd4269e4ea/cenc.mpd
   - https://aboboratech-api.wdkvp6.easypanel.host
+  - https://abpnews.cdn.runn.tv/2042871-b/abpnews/master.m3u8
+  - https://abpnews.cdn.runn.tv/2042872/majha/master.m3u8
+  - https://abpnews.cdn.runn.tv/2042873/ananda/master.m3u8
+  - https://abpnews.cdn.runn.tv/2042876/asmita/master.m3u8
   - https://ac-003.live.p7s1video.net/63f8995e/t_003/dazn-fast-hd/cenc-default.mpd
   - https://act-pull.whjyapp.com/live/media70c1bb4720fa939469b2dcc413f8bb55.m3u8
   - https://adultiptv.net/chs.m3u
@@ -2182,6 +2216,7 @@ Total Bot M3U Playlists Saved: 754
   - https://alipullhls.cc.netease.com/pushstation/3d45fc164e85cfd789d4309573382.m3u8
   - https://alipullhls.cc.netease.com/pushstation/e2cde9a16b5147da1854266756597.m3u8
   - https://allottplay.com/tv/toffee/live.php
+  - https://alltimemovies.cdn.runn.tv/penmusic/stream/altmov/playlist.m3u8
   - https://alpha.tv.online.tm/legacyhls/ch004_720/index.m3u8
   - https://amdlive-ch01-ctnd-com.akamaized.net/arirang_1ch/smil:arirang_1ch.smil/chunklist_b2256000_sleng.m3u8
   - https://amdlive-ch01-ctnd-com.akamaized.net/arirang_1ch/smil:arirang_1ch.smil/chunklist_b3256000_sleng.m3u8
@@ -2192,9 +2227,13 @@ Total Bot M3U Playlists Saved: 754
   - https://amg00877-b4unew-amg00877c2-xiaomi-in-5489.playouts.now.amagi.tv/playlist.m3u8
   - https://amg01076-lightningintern-actionhollywood-samsungnz-82rry.amagi.tv/playlist/amg01076-lightningintern-actionhollywood-samsungnz/playlist.m3u8
   - https://amg01218-republictvfast-amg01218c1-samsung-in-1918.playouts.now.amagi.tv/playlist/amg01218-republictvfast-rbangla-samsungin/playlist.m3u8
+  - https://amg01269-amg01269c1-distrotv-us-5379.playouts.now.amagi.tv/playlist/amg01269-willowtvfast-willowplus-distrotvus/playlist.m3u8
+  - https://amg01269-amg01269c1-firetv-us-5377.playouts.now.amagi.tv/playlist.m3u8
+  - https://amg01269-amg01269c1-sportstribal-emea-5204.playouts.now.amagi.tv/ts-eu-w1-n2/playlist/amg01269-willowtvfast-willowplus-sportstribalemea/playlist.m3u8
   - https://amg01312-cw-amg01312c15-firetv-us-3444.playouts.now.amagi.tv/playlist.m3u8
   - https://amg01412-xiaomiasia-abpnews-xiaomi-szg3x.amagi.tv/ts-eu-w1-n2/playlist/amg01412-xiaomiasia-abpnews-xiaomi/playlist.m3u8
   - https://amg01412-xiaomiasia-yrfmusic-xiaomi-1rmk2.amagi.tv/playlist/amg01412-xiaomiasia-yrfmusic-xiaomi/playlist.m3u8
+  - https://amg01448-amg01448c15-samsung-in-3494.playouts.now.amagi.tv/ts-eu-w1-n2/playlist/amg01448-samsungindia-historychannelenglish-samsungin/playlist.m3u8
   - https://amg01448-samsungin-abpananda-samsungin-ad-pw.amagi.tv/playlist/amg01448-samsungin-abpananda-samsungin/playlist.m3u8
   - https://amg01448-samsungin-cnnnow-samsungin-4npqg.amagi.tv/playlist/amg01448-samsungin-cnnnow-samsungin/playlist.m3u8
   - https://amg01448-samsungin-enterr10bangla-samsungin-ad-gg.amagi.tv/playlist/amg01448-samsungin-enterr10bangla-samsungin/playlist.m3u8
@@ -2202,17 +2241,22 @@ Total Bot M3U Playlists Saved: 754
   - https://amg01448-samsungin-tv9bangla-samsungin-9lgnh.amagi.tv/playlist/amg01448-samsungin-tv9bangla-samsungin/playlist.m3u8
   - https://amg01550-indiatv-indiatv-aapkiadalat-mi-xiaomi-n5tuk.amagi.tv/playlist/amg01550-indiatv-indiatv-aapkiadalat-mi-xiaomi/playlist.m3u8
   - https://amg01553-blueantmediaasi-zoomoonz-samsungnz-rdufn.amagi.tv/playlist/amg01553-blueantmediaasi-zoomoonz-samsungnz/playlist.m3u8
+  - https://amg01911-amg01911c2-amgplt0249.playout.now3.amagi.tv/playout/amg01911/amg01911c2/amgplt0249/amgplt0249.m3u8
   - https://amg02159-kcglobal-amg02159c1-samsung-in-521.playouts.now.amagi.tv/playlist/amg02159-kcglobal-animax-samsungin/playlist.m3u8
   - https://amg02873-kravemedia-mtrspt1-sportstribal-ajosc.amagi.tv/playlist/amg02873-kravemedia-mtrspt1-sportstribal/playlist.m3u8
   - https://amg13643-amg13643c1-amgplt0016.playout.now3.amagi.tv/ts-eu-w1-n2/playlist/amg13643-amg13643c1-amgplt0016/playlist.m3u8
   - https://amg13643-amg13643c2-amgplt0016.playout.now3.amagi.tv/ts-eu-w1-n2/playlist/amg13643-amg13643c2-amgplt0016/playlist.m3u8
   - https://amg13643-amg13643c2-amgplt0173.playout.now3.amagi.tv/playlist/amg13643-amg13643c2-amgplt0173/playlist.m3u8
+  - https://amg14122-amg14122c1-amgplt0249.playout.now3.amagi.tv/playout/amg14122/amg14122c1/amgplt0249/amgplt0249.m3u8
   - https://amg17292-amg17292c1-distrotv-us-4170.playouts.now.amagi.tv/playlist/amg17292-tetonridgellc-tetonridgefast-distrotvus/playlist.m3u8
   - https://ams.juraganstreaming.com
+  - https://amuzi-sports.cdn.runn.tv/amuzisports/stream/amzspt/playlist.m3u8
   - https://andro.226503.xyz/checklist/androstreamlivebs3.m3u8
   - https://andro.226503.xyz/checklist/androstreamliveexn2.m3u8
+  - https://animax.cdn.runn.tv/amg02159c9/hls.m3u8
   - https://aosikazy.com/api.php/provide/vod
   - https://aosikazy.com/api.php/provide/vod/
+  - https://api
   - https://api.1080zyku.com
   - https://api.1080zyku.com/inc/api.php/provide/vod/
   - https://api.1080zyku.com/inc/api_mac10.php
@@ -2232,6 +2276,7 @@ Total Bot M3U Playlists Saved: 754
   - https://api.bdxapi.com/api.php
   - https://api.btstu.cn/sjbz/api.php
   - https://api.bwzyz.com
+  - https://api.cdn-live.tv/api/v1/events/sports
   - https://api.cdn-live.tv/api/v1/team/logo.png':
   - https://api.cdnlivetv.tv/api/v1/events/sports/
   - https://api.cloudflare.com/client/v4/accounts/
@@ -2470,8 +2515,13 @@ Total Bot M3U Playlists Saved: 754
   - https://b.umkan.cc/API.php
   - https://b01c02nl.mediatriple.net/videoonlylive/mtkgeuihrlfwlive/broadcast_5c9e2ee690051.smil/playlist.m3u8
   - https://b01c02nl.mediatriple.net/videoonlylive/mtkgeuihrlfwlive/u_stream_5c9e2ee6997cb_1/playlist.m3u8
+  - https://b4u-bhojpuri.cdn.runn.tv/master.m3u8
+  - https://b4u-kadak.cdn.runn.tv/playlist.m3u8
+  - https://b4u-movies.cdn.runn.tv/playlist.m3u8
+  - https://b4u-music.cdn.runn.tv/playlist.m3u8
   - https://b4uplay.com/
   - https://b4uplay.com/sliv/stream.m3u8
+  - https://balajitelefilms-runntv.vgcdn.net/vglive-sk-864130/v1/019d675553f51ea540a815e5635b31/019d67562bdd1ea540a815e5635b34/playlist.m3u8
   - https://baotazy.com/api.php/provide/vod/
   - https://bcovlive-a.akamaihd.net/rce33d845cb9e42dfa302c7ac345f7858/ap-northeast-1/6282251407001/playlist.m3u8
   - https://bd-tv.sm-monirul-islam-rs.workers.dev/btv_news/index.m3u8
@@ -2484,6 +2534,7 @@ Total Bot M3U Playlists Saved: 754
   - https://bfzyapi.com/api.php/provide/vod
   - https://bfzyapi.com/api.php/provide/vod/
   - https://bfzyapi.com/api.php/provide/vod/from/bfzym3u8/
+  - https://binge-giotv.pages.dev/data/id.json
   - https://bintangstreaming.my.id/rcti_pro/index.drm
   - https://blbfq.f3322.net/player/analysis.php
   - https://bobross-xumous.cinedigm.com/midroll/amagi_hls_data_xumo-host-bobross-xumo/cdn/master.m3u8
@@ -2556,7 +2607,9 @@ Total Bot M3U Playlists Saved: 754
   - https://cdn-2.pishow.tv/live/226/master.m3u8
   - https://cdn-2.pishow.tv/live/227/master.m3u8
   - https://cdn-2.pishow.tv/live/415/master.m3u8
+  - https://cdn-3.pishow.tv/live/1123/master.m3u8
   - https://cdn-3.pishow.tv/live/1253/master.m3u8
+  - https://cdn-3.pishow.tv/live/1530/master.m3u8
   - https://cdn-4.pishow.tv/live/1143/master.m3u8
   - https://cdn-4.pishow.tv/live/1231/1231_1.m3u8
   - https://cdn-4.pishow.tv/live/1231/1231_2.m3u8
@@ -2564,6 +2617,7 @@ Total Bot M3U Playlists Saved: 754
   - https://cdn-4.pishow.tv/live/1499/master.m3u8
   - https://cdn-4.pishow.tv/live/229/master.m3u8
   - https://cdn-6.pishow.tv/live/13/master.m3u8
+  - https://cdn-7.pishow.tv/live/1129/master.m3u8
   - https://cdn-apse1-prod.tsv2.amagi.tv/linear/amg01076-lightningintern-actionhollywood-samsungnz/playlist.m3u8
   - https://cdn-cf.fite.tv/linear/fite247/playlist.m3u8
   - https://cdn-globecast.akamaized.net/live/eds/saudi_quran/hls_roku/index.m3u8
@@ -2622,6 +2676,14 @@ Total Bot M3U Playlists Saved: 754
   - https://cdn.mycloudstream.io/hls/live/broadcast/nro19k2h/index.m3u8
   - https://cdn.one.accedo.tv/files/5e60392da0e845000ffa83eb
   - https://cdn.ottlive.co.in/kolkatatv/index.m3u8
+  - https://cdn.pishow.tv/ott/live/1161/master.m3u8
+  - https://cdn.pishow.tv/ott/live/1241/master.m3u8
+  - https://cdn.pishow.tv/ott/live/1245/master.m3u8
+  - https://cdn.pishow.tv/ott/live/1261/master.m3u8
+  - https://cdn.pishow.tv/ott/live/13/master.m3u8
+  - https://cdn.pishow.tv/ott/live/1498/master.m3u8
+  - https://cdn.pishow.tv/ott/live/1612/master.m3u8
+  - https://cdn.pishow.tv/ott/live/1737/master.m3u8
   - https://cdn.pishow.tv/ott/live/453/master.m3u8
   - https://cdn.qd.je/163189/ch8
   - https://cdn.qd.je/163189/chu
@@ -2886,12 +2948,14 @@ Total Bot M3U Playlists Saved: 754
   - https://cdnimg.spectrum.net/imageserver/guide/97163
   - https://cdnimg.spectrum.net/imageserver/guide/99450
   - https://cdntv.tbs.seoul.kr/tbs/tbs_tv_web.smil/playlist.m3u8
+  - https://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/62ea45010d0611000839868c/master.m3u8
   - https://ch8.littletongov.org/live-2/live/live.m3u8
   - https://chaloli.cn/home/api
   - https://chibi-live21.cjyun.org/10138/s10138-CBTV1.m3u8
   - https://chibrics.mediacdn.ru/cdn/brics/chinese/playlist.m3u8
   - https://chibrics.mediacdn.ru/cdn/brics/chinese/tracks-v1a1/mono.m3u8
   - https://cineverse-all3-soreal-1-us.ono.wurl.tv/playlist.m3u8
+  - https://cinshf.cdn.runn.tv/runntv/stream/p_cinshf/playlist.m3u8
   - https://cip4-20424bb140.linear-novi.stvacdn.spectrum.com/LIVE/5146/bpk-tv/18296/drm/manifest.mpd
   - https://cip4-20424bb140.linear-novi.stvacdn.spectrum.com/LIVE/5212/bpk-tv/18302/drm/manifest.mpd
   - https://cip4-20424bb140.linear-novi.stvacdn.spectrum.com/LIVE/5342/bpk-tv/18295/drm/manifest.mpd
@@ -2968,8 +3032,12 @@ Total Bot M3U Playlists Saved: 754
   - https://d2esfk1pb9cdob.cloudfront.net/master.m3u8
   - https://d2lk5u59tns74c.cloudfront.net/out/v1/26e915d6d12b4a06822c5e33c088ed56/index.m3u8
   - https://d2lk5u59tns74c.cloudfront.net/out/v1/67cec794d8b14f9ba21f73924ac65797/index.m3u8
+  - https://d2lk5u59tns74c.cloudfront.net/out/v1/abf46b14847e45499f4a47f3a9afe93d/index.m3u8
   - https://d2lk5u59tns74c.cloudfront.net/out/v1/d4435039c7d1433d9b9d0b6cdc9dd4ff/index.m3u8
   - https://d2lk5u59tns74c.cloudfront.net/out/v1/f913cf893c594f73b114216e74a2efbc/index.m3u8
+  - https://d2o8pibksxtln6.cloudfront.net/live/media/Sun_Music_HD/hls/Sun_Music_HD.m3u8
+  - https://d2o8pibksxtln6.cloudfront.net/live/media/Zee_Tamil_HD/hls/Zee_Tamil_HD.m3u8
+  - https://d2px1d6ssc60fw.cloudfront.net/SunTV/SunTV-HDR10-IN-index.m3u8
   - https://d2w9q46ikgrcwx.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-of5cbk3sav3w5/v1/sysdata_s_p_a_fifa_7/samsungheadend_us/latest/main/hls/playlist.m3u8
   - https://d368vp0qqzvkid.cloudfront.net/11603/88889704/hls/master.m3u8
   - https://d368vp0qqzvkid.cloudfront.net/11603/88889705/hls/master.m3u8
@@ -2979,10 +3047,14 @@ Total Bot M3U Playlists Saved: 754
   - https://d368vp0qqzvkid.cloudfront.net/11603/88889709/hls/master.m3u8
   - https://d368vp0qqzvkid.cloudfront.net/11603/88889711/hls/master.m3u8
   - https://d368vp0qqzvkid.cloudfront.net/11603/88889713/hls/master.m3u8
+  - https://d36r8jifhgsk5j.cloudfront.net/Willow_TV.m3u8
+  - https://d36r8jifhgsk5j.cloudfront.net/Willow_TV1080p.m3u8
   - https://d393sxaxig6bax.cloudfront.net/out/v1/589cf2cf44bf42bb941e817a2240d62e/index.m3u8
   - https://d39g1vxj2ef6in.cloudfront.net/v1/manifest/3fec3e5cac39a52b2132f9c66c83dae043dc17d4/prod-rakuten-stitched/54947915-6504-4548-aaef-eabd451f8607/1.m3u8
   - https://d3d85c7qkywguj.cloudfront.net/scheduler/schedulemaster/263.m3u8
+  - https://d3dtdt06tmqos6.cloudfront.net/scheduler/scheduleMaster/455.m3u8
   - https://d3e05csss9c272.cloudfront.net/out/v1/f0bf71c57581470fb9379f603e8f5d83/CGNWebLiveCN.m3u8
+  - https://d3kdywbtdfbp9z.cloudfront.net/v1/manifest/93ce20f0f52760bf38be911ff4c91ed02aa2fd92/dff423e0-3c82-46d6-9ecb-3baa96b5694a/b8640d6b-d131-4401-9451-944e1e65fe79/0.m3u8
   - https://d3qs3d2rkhfqrt.cloudfront.net/out/v1/2e31d831f08640ff92f65003bdc89991/index.m3u8
   - https://d3qs3d2rkhfqrt.cloudfront.net/out/v1/3e22a9c278db4e3eb779afd42e41b0a6/index.m3u8
   - https://d3qs3d2rkhfqrt.cloudfront.net/out/v1/40492a64c1db4a1385ba1a397d357d3a/index.m3u8
@@ -3002,9 +3074,12 @@ Total Bot M3U Playlists Saved: 754
   - https://d4whmvwm0rdvi.cloudfront.net/manifest/3fec3e5cac39a52b2132f9c66c83dae043dc17d4/prod_default_xumo-nbcu-linear/e7275bfb-fb8d-49d8-969f-854481fa7e71/4.m3u8
   - https://d4whmvwm0rdvi.cloudfront.net/manifest/3fec3e5cac39a52b2132f9c66c83dae043dc17d4/prod_default_xumo-nbcu-linear/fd4a4071-8a85-4989-9e8b-446ace3b7127/4.m3u8
   - https://d7x8z4yuq42qn.cloudfront.net/index_7.m3u8
+  - https://da86m1sqpm3o0.cloudfront.net/28072023/smil:colorstamilhd11.smil/playlist.m3u8
   - https://da86m1sqpm3o0.cloudfront.net/28072023/smil:maamovies.smil/chunklist_b2628000.m3u8
   - https://da86m1sqpm3o0.cloudfront.net/28072023/smil:starjalsha.smil/chunklist_b1928000.m3u8
   - https://da86m1sqpm3o0.cloudfront.net/28072023/smil:starmaa1.smil/chunklist_b2628000.m3u8
+  - https://da86m1sqpm3o0.cloudfront.net/28072023/smil:starvijayuk.smil/playlist.m3u8
+  - https://da86m1sqpm3o0.cloudfront.net/28072023/smil:zeetamil1.smil/playlist.m3u8
   - https://dadiapi.com/api.php
   - https://dadiapi.com/api.php/
   - https://dadiapi.com/api.php/provide/vod/at/xml
@@ -3014,6 +3089,7 @@ Total Bot M3U Playlists Saved: 754
   - https://dai2.xumo.com/amagi_hls_data_xumo1212A-rokuhallmark/CDN/playlist.m3u8
   - https://dai2.xumo.com/amagi_hls_data_xumo1212A-xumo-nbcnewsnow/CDN/master.m3u8
   - https://dai2.xumo.com/xumocdn/p=roku/amagi_hls_data_xumo1234A-tmz/CDN/1280x720_5000000/index.m3u8
+  - https://damitv.st
   - https://dash2.antik.sk/live/test_cctv_tizen/playlist.m3u8
   - https://dash2.antik.sk/stream/nvidia_eurosport1/playlist_cenc.mpd
   - https://dash2.antik.sk/stream/nvidia_eurosport2/playlist_cenc.mpd
@@ -3024,6 +3100,7 @@ Total Bot M3U Playlists Saved: 754
   - https://dbrb49pjoymg4.cloudfront.net/10001/99991745/hls/master.m3u8
   - https://dbzy.tv
   - https://dbzy.tv/api.php/provide/vod
+  - https://ddash74r36xqp.cloudfront.net/master_2000.m3u8
   - https://dearbulut.github.io/iptv/playlists/country/ru.m3u
   - https://deltatesttatasky.akamaized.net/out/i/968284.m3u8
   - https://demo.if101.tv/api.php/provide/vod
@@ -3042,6 +3119,7 @@ Total Bot M3U Playlists Saved: 754
   - https://dgrtv.sun0769.com/index.php/online2/5
   - https://dgrtv.sun0769.com/online/279.html
   - https://dgrtv.sun0769.com/online/280.html
+  - https://dicemedia.cdn.runn.tv/pocketaces/stream/dicmed/playlist.m3u8
   - https://directory.owncast.online/api/iptv
   - https://distro001-gb-hls1-prd.delivery.skycdp.com/easel_cdn/ngrp:weather_loop.stream_all/playlist.m3u8
   - https://dknttpxmr0dwf.cloudfront.net/index_2.m3u8
@@ -3050,6 +3128,7 @@ Total Bot M3U Playlists Saved: 754
   - https://dmidspta.cdn.mgmlcdn.com
   - https://dmieigthvllta.cdn.mgmlcdn.com/dubaitvht/smil:dubaitv.stream.smil/chunklist.m3u8
   - https://dmr1h4skdal9h.cloudfront.net/playlist.m3u8
+  - https://dnuk7lvye3m03.cloudfront.net/runntv/platform/channels/NEWNAT/Web/thumbnail/NEWS
   - https://docurama-plex-ingest.cinedigm.com/playlist.m3u8
   - https://down.nigx.cn/raw.githubusercontent.com/Kimentanm/aptv/master/m3u/iptv.m3u
   - https://doxm3u8.netlify.app/
@@ -3129,12 +3208,14 @@ Total Bot M3U Playlists Saved: 754
   - https://edge4-moblive.yuppcdn.net/drm1/smil:peosports2drm.smil/manifest.mpd
   - https://edge4-moblive.yuppcdn.net/drm1/smil:peosports3drm.smil/manifest.mpd
   - https://edge4-moblive.yuppcdn.net/drm2/smil:tencricketdrm1.smil/manifest.mpd
+  - https://edge4-moblive.yuppcdn.net/trans1sd/smil:strtml19.smil/playlist.m3u8
   - https://edge66.magictvbox.com/liveapple/trinity/tracks-v1a1/mono.m3u8
   - https://ef79b15c8c7c46c7a9de9d33001dbd07.mediatailor.us-west-2.amazonaws.com/v1/master/ba62fe743df0fe93366eba3a257d792884136c7f/linear-859-documentaryplus-documentaryplus/mt/documentaryplus/859/hls/master/playlist.m3u8
   - https://ekusheyserver.com/etvlivesn.m3u8
   - https://ekusheyserver.com/hls-live/livepkgr/_definst_/liveevent/livestream3.m3u8
   - https://embed.smashystream.com/
   - https://embed.warezcdn.com/
+  - https://embedhd.org/api-event.php
   - https://english-livebkali.cgtn.com/live/doccgtn_0.m3u8
   - https://english-livebkali.cgtn.com/live/encgtn_0.m3u8
   - https://english-livetx.cgtn.com/hls/yypdjlctzb_hd.m3u8
@@ -3142,8 +3223,11 @@ Total Bot M3U Playlists Saved: 754
   - https://epg.pw/xmltv/epg_CN.xml
   - https://epg.pw/xmltv/epg_HK.xml
   - https://epg.pw/xmltv/epg_TW.xml
+  - https://eros-blywdcnm.cdn.runn.tv/eros/stream/blywcm/playlist.m3u8
+  - https://eros-entrtnmnt.cdn.runn.tv/eros/stream/ersent/playlist.m3u8
   - https://espanol-liveali.cgtn.com/hls/LSveOGBaBw41Ea7ukkVAUdKQ220802LSTexu6xAuFH8VZNBLE1ZNEa220802cd/playlist.m3u8
   - https://estreams.tv.nej.cz/dash/CH_TVP_SPORT_Portable.ism/playlist.mpd
+  - https://ev-eu-hw-fast-mpd.starzplayarabia.com/Zee_Tamil/dash/drm/index.mpd
   - https://event.pull.hebtv.com
   - https://event.pull.hebtv.com/jishi/cp1.m3u8#http://ali-m-l.cztv.com/channels/lantian/channel21/1080p.m3u8#http://tvbox6.icu/tv/migu.php
   - https://event.pull.hebtv.com/jishi/cp2.m3u8#http://tvbox6.icu/tv/migu.php
@@ -3176,6 +3260,7 @@ Total Bot M3U Playlists Saved: 754
   - https://ffmpeg.pendy.dpdns.org/mgtv/mgtv.m3u8
   - https://ffzyplayer.com/
   - https://files.cnblogs.com/files/johnjackson/tvbox.json
+  - https://filtercopy.cdn.runn.tv/pocketaces/stream/fltrcopy/playlist.m3u8
   - https://firebaseremoteconfig.googleapis.com/v1/projects/791583031279/namespaces/firebase:fetch
   - https://fjkkk.cn/api.php/v1.vod
   - https://fl3.moveonjoy.com/FOX_Sports_1/index.m3u8
@@ -3211,6 +3296,9 @@ Total Bot M3U Playlists Saved: 754
   - https://freeipapi.com/api/json/
   - https://freem3u.xyz/api/live/play.m3u8
   - https://frontdoor.wcat-tv.org/live-12/live/live.m3u8
+  - https://fta.ektv.in/live/280/master.m3u8
+  - https://fta.ektv.in/live/64/64_0.m3u8
+  - https://fta.ektv.in/live/679/master.m3u8
   - https://fta1-cdn-flr.visionplus.id/out/v1/6bdbe6ce7f034807aba5f09bed048b05/index.mpd
   - https://fta1-cdn-flr.visionplus.id/out/v1/6dc5412d26ea4e65961c825d866f2a34/index.mpd
   - https://fta4-cdn-flr.visionplus.id/out/v1/751a0982779f4edd904205eb351e220d/index.mpd
@@ -3219,6 +3307,7 @@ Total Bot M3U Playlists Saved: 754
   - https://fuel-streaming-prod01.fuelmedia.io/v1/sem/c4067ddc-0e67-4928-b7ec-624481f721a6.m3u8
   - https://fuel-streaming-prod01.fuelmedia.io/v1/sem/cb165faa-41c9-42ad-83ee-ad5ca9fb927c.m3u8
   - https://fuel-streaming-prod01.fuelmedia.io/v1/sem/e48409e7-672d-42f2-b5e0-ebb6744b0425.m3u8
+  - https://futbollive.online/T-Sports/tracks-v1a1/mono.m3u8
   - https://fvmpqluto0obj.vcdn.cloud/Media/files/channels/thumb_1623738494c_Box
   - https://fvmpqluto0obj.vcdn.cloud/Media/files/channels/thumb_1623738727c_Music
   - https://fvmpqluto0obj.vcdn.cloud/Media/files/channels/thumb_1623926685c_BOX
@@ -3269,6 +3358,9 @@ Total Bot M3U Playlists Saved: 754
   - https://global.cgtn.cicc.media.caton.cloud/master/cgtn-america.m3u8
   - https://goliveafrica.media
   - https://gqcyy.com/api.php
+  - https://gtc.ottlive.co.in/gtcnews/index.m3u8
+  - https://gtc.ottlive.co.in/gtcpunjabi/index.m3u8
+  - https://gtc.ottlive.co.in/punjabshort/index.m3u8
   - https://guochan.yangyangtv13.top/index.php/vod/show/id/
   - https://h5.freejson.xyz/player/
   - https://h5.freejson.xyz/player/analysis.php
@@ -3279,6 +3371,8 @@ Total Bot M3U Playlists Saved: 754
   - https://h5cul1yar48um3t.wcetv.com/hls/wcetv318.m3u8
   - https://ha.msbot.dpdns.org/4gtv_api.php
   - https://haititivi.com/haiti/telemix1/index.m3u8
+  - https://hami.gxdx.org/hami/1756.m3u8
+  - https://hami.gxdx.org/hami/1759.m3u8
   - https://haosezyw.com/api.php/provide/vod/
   - https://hatinhtv.vn/hls/httv.m3u8
   - https://hbb-prod.tvp.pl/apps/manager/api/hub/graphql
@@ -3330,6 +3424,7 @@ Total Bot M3U Playlists Saved: 754
   - https://i.mjh.nz/Plex/us.m3u8
   - https://i.mjh.nz/SamsungTVPlus/all.m3u8
   - https://i.mjh.nz/SamsungTVPlus/us.m3u8
+  - https://ibc.massstream.net/IBC/index.m3u8
   - https://ikaola.tv/api.php
   - https://ikaola.tv/api.php/provide/vod/
   - https://ikaola.tv/vwnet/dplayer/
@@ -3340,6 +3435,10 @@ Total Bot M3U Playlists Saved: 754
   - https://imdb-api.com/en/API/MostPopularMovies/k_1kz039kt
   - https://img.smdyw.top/api.php/provide/vod
   - https://img.sofascore.com/api/v1/unique-tournament/18292/image/dark
+  - https://indiatv.cdn.runn.tv/v1/vglive-sk-274906/main.m3u8
+  - https://indiatv.cdn.runn.tv/v1/vglive-sk-385006/main.m3u8
+  - https://indiatv.cdn.runn.tv/v1/vglive-sk-479089/main.m3u8
+  - https://indiatv.cdn.runn.tv/v1/vglive-sk-912213/main.m3u8
   - https://intergalactic.tv/live/smil:mtv.smil/playlist.m3u8
   - https://intergalactic.tv/live/smil:tv.smil/playlist.m3u8
   - https://iptv-org.github.io/api
@@ -3911,10 +4010,12 @@ Total Bot M3U Playlists Saved: 754
   - https://iptvmate.net/files/freeiptv/ZZ_PLAYLIST_ALL_TV.m3u
   - https://iptvmate.net/files/xxx.m3u
   - https://iqyi.xiaohuangrentv.com/api.php/provide/vod/
+  - https://istreameast.app
   - https://iy54321.com/xjzy/jplay
   - https://jable.tv
   - https://jable.tv/
   - https://jable.tv/search/
+  - https://jalworldiptv.vercel.app/iptv/imaitv/playlist.m3u8
   - https://jambitv.globaldigitalcore.com/hls/sah5tu7Eiveepohyieyie3O9Aeich6ooxohm3luqueeFie2ooH2iebahy4haeCh9oobi0j/index.m3u8
   - https://janya-digimix.akamaized.net/vglive-sk-109639/nepali/ngrp:angelnepali_all/playlist.m3u8
   - https://janya-digimix.akamaized.net/vglive-sk-150533/hebrew/ngrp:angelhebrew_all/playlist.m3u8
@@ -3952,6 +4053,7 @@ Total Bot M3U Playlists Saved: 754
   - https://jinyingzy.com/api.php/provide/vod
   - https://jinyingzy.com/api.php/provide/vod/
   - https://jioplaylistdown.yecic62314.workers.dev/live.m3u8
+  - https://jiotvapi.cdn.jio.com/apis/v1.3/getepg/get
   - https://jisu.rongxingvr.top/api/
   - https://jk3lz82elw79-hls-live.5centscdn.com/harPalGeo/955ad3298db330b5ee880c2c9e6f23a0.sdp/playlist.m3u8
   - https://jkunzyapi.com
@@ -3965,9 +4067,11 @@ Total Bot M3U Playlists Saved: 754
   - https://jmp2.uk/plu-62ba60f059624e000781c436.m3u8
   - https://jmp2.uk/plu-65ea8b928145cb0008509426.m3u8
   - https://jmp2.uk/plu-68487fb3f212bedacf5a53e3.m3u8
+  - https://jmp2.uk/plu-6972546cc62833833a187f50.m3u8
   - https://jmp2.uk/stvp-ATAJ0500433A
   - https://jmp2.uk/stvp-FR200016Y5
   - https://jmp2.uk/stvp-IN3800008CX
+  - https://journy.cdn.runn.tv/amg02159c11/hls.m3u8
   - https://jpts.sinovision.net/livestream.m3u8
   - https://jsd.cdn.zzko.cn/gh/2hacc/TVBox@main/h/h.json
   - https://json.heimuer.xyz/api.php/provide/vod
@@ -3979,8 +4083,10 @@ Total Bot M3U Playlists Saved: 754
   - https://jstre.am/live/jsl:7A1swL7Fhlh.m3u8
   - https://jszyapi.com
   - https://jszyapi.com/api.php/provide/vod
+  - https://jtvplusm3u.knvh02v9pi6dct.workers.dev/playlist.m3u
   - https://jtvs.ncare.live/Gznr84Woj7UEye3OPVeWq2ForboWAgdV/jonmobhumitv.stream/tracks-v1a1/mono.m3u8
   - https://jukin-weatherspy-2-in.samsung.wurl.tv/playlist.m3u8
+  - https://jwplay.hebyun.com.cn
   - https://jx.255tv.cn/api/
   - https://jx.255tv.tk/api/
   - https://jx.777jiexi.com/player/
@@ -4002,6 +4108,8 @@ Total Bot M3U Playlists Saved: 754
   - https://jyzyapi.com/provide/vod/from/jinyingm3u8/
   - https://k.json.icu/home/api
   - https://kakaxi.indevs.in/ipv6.m3u
+  - https://kbtvpro.totalh.net/
+  - https://kcm.cdn.runn.tv/amg02159c10/hls.m3u8
   - https://ketsdt.lls.pbs.org/out/v1/03c094dbd7874a4a8c3fe9fb10081bdb/index.m3u8
   - https://khetdt.lls.pbs.org/out/v1/7ec7903413294b72bb64f83963d8ea9b/index.m3u8
   - https://kjsc0310.github.io/tvy/s2.json
@@ -4012,6 +4120,7 @@ Total Bot M3U Playlists Saved: 754
   - https://kuaikan-api.com/api.php/provide/vod
   - https://kuaikan-api.com/api.php/provide/vod/from/kuaikan/
   - https://kuaiyun-api.com/api.php/provide/vod/
+  - https://kuchisofts.github.io/vlc-redesign/tv/catalog.json
   - https://kudianzy.com/api.php/provide/vod/
   - https://kudos111.terranovax1.cfd/kuk4/usergendx0thc60skrdnnd.m3u8
   - https://kudouzy.com/api.php/provide/vod/
@@ -4056,6 +4165,7 @@ Total Bot M3U Playlists Saved: 754
   - https://lienket.vn/VTVCab4
   - https://lienket.vn/btv6binhthuan
   - https://lightning-tracesport-samsungau.amagi.tv/playlist.m3u8
+  - https://lightning-tracesport-samsungau.amagi.tv/playlist1080p.m3u8
   - https://linear-10.frequency.stream/dist/stirr/10/hls/master/playlist.m3u8
   - https://linear-142.frequency.stream/dist/24i/142/hls/master/playlist.m3u8
   - https://linear-43.frequency.stream/dist/galxy/43/hls/master/playlist.m3u8
@@ -4786,6 +4896,7 @@ Total Bot M3U Playlists Saved: 754
   - https://live12.szyac.com/live/22457616.m3u8
   - https://live12.szyac.com/live/35291799.m3u8
   - https://live2
+  - https://live20.bozztv.com/akamaissh101/ssh101/imaitv/playlist.m3u8
   - https://live20.bozztv.com/giatvplayout7/giatv-208314/tracks-v1a1/mono.ts.m3u8
   - https://live20.bozztv.com/giatvplayout7/giatv-209592/tracks-v1a1/mono.ts.m3u8
   - https://live20.bozztv.com/giatvplayout7/giatv-209593/tracks-v1a1/mono.ts.m3u8
@@ -4920,6 +5031,7 @@ Total Bot M3U Playlists Saved: 754
   - https://livestream-bt.nmtv.cn/nmtv/3621481general.m3u8
   - https://livestream.hannews.com.cn/hannews/1511-hannews.m3u8
   - https://livestream.pbskids.org/out/v1/1e3d77b418ad4a819b3f4c80ac0373b5/est_124.m3u8
+  - https://livestream.rajtv.tv/hlslive/Admin/px08241087/live/RAJTV/master_1.m3u8
   - https://livestreamcdn.net
   - https://livetr.teleromagna.it/mia/live/playlist.m3u8
   - https://livetv.powerapp.com.tr/powerturkTV/powerturkhd.smil/playlist.m3u8
@@ -4934,6 +5046,7 @@ Total Bot M3U Playlists Saved: 754
   - https://logo.clearbit.com/romedy.tv
   - https://logo.clearbit.com/sabtv.com
   - https://logo.clearbit.com/startv.com
+  - https://loolookids.cdn.runn.tv/146-235-11653.m3u8
   - https://lsfb.avap.jilintv.cn/zqvk7vpj/channel/0a76740c72b74fabae611845aa21e06a/index.m3u8
   - https://lsfb.avap.jilintv.cn/zqvk7vpj/channel/3ffc4824dce54b92be185555923ce382/index.m3u8
   - https://lsfb.avap.jilintv.cn/zqvk7vpj/channel/7e8474e6daea44ccaa5aa2300191439e/index.m3u8
@@ -4980,6 +5093,9 @@ Total Bot M3U Playlists Saved: 754
   - https://mag03.tvx.prd.tv.odido.nl/.../3221241560.mpd
   - https://mag03.tvx.prd.tv.odido.nl/.../3221241590.mpd
   - https://mag04.tvx.prd.tv.odido.nl/.../3221241610.mpd
+  - https://mahua-khabar.cdn.runn.tv/mahuakhabarjio/index.m3u8
+  - https://mahua-play.cdn.runn.tv/mahuaplayjio/index.m3u8
+  - https://mainportal66.com
   - https://mainstreammedia-worldoffreesportsintl-rakuten.amagi.tv/hls/amagi_hls_data_rakutenAA-mainstreammediafreesportsintl-rakuten/CDN/master.m3u8
   - https://malimali3.com/api.php
   - https://maoyingshi.cc/api.php
@@ -5016,6 +5132,7 @@ Total Bot M3U Playlists Saved: 754
   - https://moviesapi.club/
   - https://moviesphereuk-samsunguk.amagi.tv/playlist.m3u8
   - https://mozhuazy.com/api.php/provide/vod
+  - https://mrbeanus.cdn.runn.tv/master.m3u8
   - https://mtv.sunplex.live/MAASRANGA/index.m3u8
   - https://multi-playlist-zmp3.zadn.vn/62YE6lXdY4w/zhls/playback-realtime/db68d4afe8ea01b458fb/index.m3u8
   - https://multi-playlist-zmp3.zadn.vn/94rxZ-Dfzro/zhls/playback-realtime/ff294ded71a898f6c1b9/index.m3u8
@@ -5025,19 +5142,43 @@ Total Bot M3U Playlists Saved: 754
   - https://multi-playlist-zmp3.zadn.vn/RckDo1XPsU4/zhls/playback-realtime/111c87d8bb9d52c30b8c/index.m3u8
   - https://multi-playlist-zmp3.zadn.vn/ktkT8IgzcQQ/zhls/playback-realtime/08aae96dd5283c766539/index.m3u8
   - https://multi-playlist-zmp3.zadn.vn/wTSwRIGOON0/zhls/playback-realtime/6eeb692c5569bc37e578/index.m3u8
+  - https://mumbai-edge.smartplaytv.in/DDSports/index.m3u8
+  - https://mumbai-edge.smartplaytv.in/DDSportsHD/index.m3u8
   - https://mumbai-edge.smartplaytv.in/GeminiMoviesHD/index.m3u8
   - https://mumbai-edge.smartplaytv.in/GeminiMusicHD/index.m3u8
+  - https://mumbai-edge.smartplaytv.in/JayaPLus/index.m3u8
   - https://mumbai-edge.smartplaytv.in/LoveNature/index.m3u8
+  - https://mumbai-edge.smartplaytv.in/Puthiyathalaimurai/index.m3u8
   - https://mumt01.tangotv.in/AADINATHTV/index.m3u8
+  - https://mumt01.tangotv.in/KAIRALI/index.m3u8
+  - https://mumt03.tangotv.in/Dsly5z3HTHANTHITV/index.m3u8
+  - https://mumt04.tangotv.in/RAJMUSIXMALAYALAM/index.m3u8
+  - https://mumt04.tangotv.in/m18aqlK4POLIMERTV/index.m3u8
+  - https://mumt05.tangotv.in/87NeALx2POLIMERNEWS/index.m3u8
+  - https://mumt07.tangotv.in/zHjX9OFlDDSPORTS/index.m3u8
+  - https://mumt07.tangotv.in/zHjX9OFlNEWS7TAMIL/index.m3u8
+  - https://mumt07.tangotv.in/zHjX9OFlPUTHIYAEXPRESS/index.m3u8
+  - https://mumt07.tangotv.in/zHjX9OFlPUTHIYATHALAIMURAI/index.m3u8
+  - https://mumt07.tangotv.in/zHjX9OFlSATHIYAMTV/index.m3u8
   - https://mutixx5hq1liv.akamaized.net/vtv5tn/vtv5tn@720p.m3u8
   - https://mutixx5hq1liv.akamaized.net/vtv5tnb/vtv5tnb@720p.m3u8
   - https://muzzik-live.morescreens.com/mts-5/playlist.m3u8
   - https://mytvbangla.com/0.m3u8
   - https://mzkj.maccms.cf/api.php/provide/vod/
+  - https://n18syndication-runn-tv.akamaized.net/bpk-tv/CNN_News18_NW18_MOB/output01/index.m3u8
+  - https://n18syndication-runn-tv.akamaized.net/bpk-tv/News18_Bangla_NW18_MOB/output01/index.m3u8
+  - https://n18syndication-runn-tv.akamaized.net/bpk-tv/News18_India_NW18_MOB/output01/index.m3u8
+  - https://n18syndication-runn-tv.akamaized.net/bpk-tv/News18_Lokmat_NW18_MOB/output01/index.m3u8
+  - https://n18syndication-runn-tv.akamaized.net/bpk-tv/News18_MP_Chhattisgarh_NW18_MOB/output01/index.m3u8
+  - https://n18syndication-runn-tv.akamaized.net/bpk-tv/News18_Punjab_Haryana_HP_NW18_MOB/output01/index.m3u8
+  - https://n18syndication-runn-tv.akamaized.net/bpk-tv/News18_Tamil_Nadu_NW18_MOB/output01/index.m3u8
+  - https://n18syndication-runn-tv.akamaized.net/bpk-tv/News18_UP_Uttarakhand_NW18_MOB/output01/index.m3u8
   - https://n18syndication.akamaized.net/bpk-tv/CNN_News18_NW18_MOB/output01/index.m3u8
   - https://n18syndication.akamaized.net/bpk-tv/History_TV18_Hindi_NW18_MOB/output01/master.m3u8
+  - https://n18syndication.akamaized.net/bpk-tv/News18_Tamil_Nadu_NW18_MOB/output01/master.m3u8
   - https://n24-cdn-live-b.ntv.co.jp/ch01/High.m3u8
   - https://naixxzy.com/api.php/provide/vod/
+  - https://navbharat.cdn.runn.tv/master.m3u8
   - https://nbcu-telemundoflorida-firetv.amagi.tv/playlist.m3u8
   - https://nbculocallive.akamaized.net/hls/live/2037499/puertorico/stream1/master.m3u8
   - https://nbtv.vncdn.vn/nbtvlive/tv1live.m3u8
@@ -5050,12 +5191,21 @@ Total Bot M3U Playlists Saved: 754
   - https://news.cgtn.com/resource/live/espanol/cgtn-e.m3u8
   - https://news.cgtn.com/resource/live/french/cgtn-f.m3u8
   - https://news.cgtn.com/resource/live/russian/cgtn-r.m3u8
+  - https://news9.cdn.runn.tv/amg01106c3/hls.m3u8
+  - https://newsnation.cdn.runn.tv/national/master_nnna_runntv.m3u8
+  - https://newsnation.cdn.runn.tv/nnbrjh/master_nnbrjh_runntv.m3u8
+  - https://newsnation.cdn.runn.tv/nnmp/master_nnmp_runntv.m3u8
+  - https://newsnation.cdn.runn.tv/nnpunj/master_nnpunj_runntv.m3u8
+  - https://newsnation.cdn.runn.tv/nnup/master_nnup_runntv.m3u8
   - https://nextjs.org/docs/app/api-reference/functions/cookies#options
   - https://nextjs.org/docs/app/api-reference/functions/headers
   - https://nextjs.org/docs/app/api-reference/functions/use-search-params#updating-searchparams
   - https://nextjs.org/docs/messages/next-dynamic-api-wrong-context
   - https://nextjs.org/docs/messages/sync-dynamic-apis
   - https://ngrch.github.io/iptv/ru.m3u
+  - https://nh-runntv-blyflx.cdn.runn.tv/nhstdz/stream/blyflx/playlist.m3u8
+  - https://nh-runntv-blygld.cdn.runn.tv/nhstdz/stream/blygld/playlist.m3u8
+  - https://nh-runntv-blyrag.cdn.runn.tv/nhstdz/stream/blyrag/playlist.m3u8
   - https://nhk4.mov3.co/hls/nhk.m3u8
   - https://nhkworld.webcdn.stream.ne.jp/www11/nhkworld-tv/global/2003458/live.m3u8
   - https://nkafmbewiff.gpcdn.net/tile_2/master.m3u8
@@ -5101,6 +5251,7 @@ Total Bot M3U Playlists Saved: 754
   - https://ntvstream-scraper.aymanisthedude1.workers.dev/cdnlive
   - https://ntvstream-scraper.aymanisthedude1.workers.dev/cdnlive/channels
   - https://ntvstream-scraper.aymanisthedude1.workers.dev/matches
+  - https://nunutv.cdn.runn.tv/runntv/stream/p_nunutv/playlist.m3u8
   - https://okzyw9.com/api.php/provide/vod/
   - https://ola1.com.ar/atccohd/playlist.m3u8
   - https://oneamericanews-roku-us.amagi.tv/playlistR1080p.m3u8
@@ -5433,6 +5584,12 @@ Total Bot M3U Playlists Saved: 754
   - https://otte.live.fly.ww.aiv-cdn.net/pdx-nitro/live/clients/dash/enc/aczgdiuxsu/out/v1/31374ef324ce4bd2bd278b78f4a97d60/cenc.mpd
   - https://otte.live.fly.ww.aiv-cdn.net/pdx-nitro/live/clients/dash/enc/tll6uwepxa/out/v1/a7f67cbb33df46539312956427343886/cenc.mpd
   - https://otte.live.fly.ww.aiv-cdn.net/pdx-nitro/live/clients/dash/enc/uiffe4jhf0/out/v1/3534efafca8c4815adbb4d2e9a1fe003/cenc.mpd
+  - https://outlivecloud-cdn.ysp.cctv.cn/3927EE6D80C42B0DEE135C0EFDEFA00F2B71772E3380482269E3622B6092D308BA334DF528690D05F47ABF07D15257396AD4307A6F1C86BF593B9205A809F4A94C7B95B9E704CCEB3C1646EEFB22B37FD404D5191AA75F4F83D720F4FE48A60A66500079A8C4ADAF87C1E25399DF9876352EF746AEA18CA4258AE993147B7438704E2824E17408CBFE5DB5F577C3FCC8CFDC6D7214E91E4DA1B76083E80D200B/2027249003_dlna.m3u8
+  - https://outlivecloud-cdn.ysp.cctv.cn/4A8E657B7770E2B254DFF337B9460A7C9A9560BD68871D9D3B9209D2A72078F68BE51014A60616B5A8E101232840A3F804804DA3057AFF46082245814D7922092480725AD3CB7B1BDB4AFE80DC718151D0FFFA29692FBB7410DD6C555C1AAF4E2D6B385CB34996851C74EDE4BDE7A6737DFFE7CCD5C26FEBC0203B9F01B882A9AD2B681F1680ABD59AA69F16CB3A8D3D2758BD9394DDD6039835DEDD735DE233/2024054503.m3u8
+  - https://outlivecloud-cdn.ysp.cctv.cn/4ABDDCA41BEA007F3D3B35351E6D5DF4BF09279EA619C6C5FBAD68D6024DC7A970F76599FFBA9E5D7CDEDC7EC0DBE19812B428EE682ECC4F6AE2BDC4BF0D1218CE0A4F02043CAAF2810A4212371B37039DF6BC15C5D75D63E54D65D667CF8506EF4F5A0E1A54D5AC7779537CE8443B423E58006AED23EB2B0FD0DCA2F61B9C562EEECDC6A355A3962E96F11B3790D5286ACF6EC2169322BA5F107B3285D10142/2024068503.m3u8
+  - https://outlivecloud-cdn.ysp.cctv.cn/95B46411847C6F90F28C5CD4AD9B952BA134B1CCEB439C62214B2D8BFF45BEEB3462AD5F5D26B987E9E3644DF41DD51F733AABBC5A4C01027661375BEFAD584E4029E2C8B2A51A6FDDD2CF6B7CE794FE71C55DA3B6C573E75640E993D6A6C9139F898058A6E2E53BE80395E6127CE1ED532424C43B28428A8543A4B84877E63A1A48144EECCB400D5CD777C6D57C9FD4A852EA19CBCF4C70518F8738A056A939/2025560803.m3u8
+  - https://outlivecloud-cdn.ysp.cctv.cn/9E63857644BE130F486E6C4220CBFE0A05679CFC1F3F1769AFD93EC43C7716E18C5C2EC5984AA8696701567D2AB0539A9F8F019CD193375E7F2B4FE3CEF78E39F891CD8ADD1E073C62FF92D4C4E5D8ABEDA737B08ADCC68509847F1FE7BCBA364CDC9F2D14EF91AEB0641CEDAE02239B3ABC113926F5C0EC499D19FD7B567019E8346B829D504A29C418652B990A0B23E1A733F9252A96A80DA2B5B4BEA79CA4/2025560803.m3u8
+  - https://outlivecloud-cdn.ysp.cctv.cn/AB3CB97A32C533666941E91554D0D3A61361E75CCE8603A813FA2D61B2C17F8B1E0D92C1ABAAB745BEBDF794C31A8541469CBB2C71B1BF9B1B7049577D4D4D9CB47046FA82CFC4F58797943CB07B91CD984B686E5A1809CE1FFDED286F2FBC28EF37FB7EC9E63414E4A52259254E255B1C675E5A6A650314B7C93EB803C74A062ADEAC8E50562903D5EC2D2A2AD6A32E63C6BE12DCC4C8E3FF2CCB2F37CD6FE3/2024061703.m3u8
   - https://owrcovcrpy.gpcdn.net/bpk-tv/1701/output/1701-audio_113312_eng=113200-video=1692000.m3u8
   - https://owrcovcrpy.gpcdn.net/bpk-tv/1701/output/index.m3u8
   - https://owrcovcrpy.gpcdn.net/bpk-tv/1702/output/1702-audio_113322_eng=113200-video=2202800.m3u8
@@ -5506,6 +5663,11 @@ Total Bot M3U Playlists Saved: 754
   - https://php.946985.filegear-sg.me/jackTV.m3u
   - https://php.jdshipin.com/TVOD/iptv.php
   - https://pili-live-hls-zdzz-tv.zzxwcm.cn/zdzz-tv/nqzh.m3u8
+  - https://pitaaratv.cdn.runn.tv/ptnr-RUNNTV/title-Divya_Bhajan_NONSSAI/v1/vglive-sk-987805/playlist.m3u8
+  - https://pitaaratv.cdn.runn.tv/ptnr-RunnTV/title-DivyaTV/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/vglive-sk-906482/playlist.m3u8
+  - https://pitaaratv.cdn.runn.tv/ptnr-RunnTV/title-PitaaraTV_NonSSAI/v1/vglive-sk-326599/playlist.m3u8
+  - https://pitaaratv.cdn.runn.tv/ptnr-RunnTV/title-Pitaara_Comedy/v1/vglive-sk-217489/playlist.m3u8
+  - https://pktflm.cdn.runn.tv/runntv/stream/p_pktflm/playlist.m3u8
   - https://pl-indiatvnews.akamaized.net/out/v1/db79179b608641ceaa5a4d0dd0dca8da/index.m3u8
   - https://play-live-hls.jxtvcn.com.cn/live-city/tv_jxtv2.m3u8
   - https://play-live-hls.jxtvcn.com.cn/live-city/tv_jxtv3.m3u8
@@ -5538,6 +5700,8 @@ Total Bot M3U Playlists Saved: 754
   - https://playhouse.premiumvideo.click/player/
   - https://playlist.gmaxhub.workers.dev
   - https://playyonogames.in/sliv/stream.m3u8
+  - https://prod-runn.cdn.runn.tv/runntv/stream/jagran/playlist.m3u8
+  - https://prod-runn.cdn.runn.tv/runntv/stream/p_supflm/playlist.m3u8
   - https://protokolldns.xyz/rtvislamweb554/index.m3u8
   - https://proxy.futuredesh.com/api/proxy
   - https://proxydizifun.vercel.app/api/proxy.js
@@ -5577,6 +5741,7 @@ Total Bot M3U Playlists Saved: 754
   - https://qtv.vncdn.vn/qtvlive/tv3live.m3u8
   - https://quake.360.net/api/v3/search/quake_service
   - https://qvcuk-live.akamaized.net/hls/live/2097112/qby/3/3.m3u8
+  - https://r2.amml.in/sony-ten-3-hd/live.m3u8
   - https://r8vx3qkm2ztp7ynj6lpl.rockstreamer.com/v1/019ee554d6cc1567ee93172b12d63f/01a047abffef1ea557842156e6858c/main.m3u8
   - https://racingvic-i.akamaized.net/hls/live/598695/racingvic/1500.m3u8
   - https://radiofoorti.fm/api/stream
@@ -5701,6 +5866,12 @@ Total Bot M3U Playlists Saved: 754
   - https://raw.githubusercontent.com/abusaeeidx/Yupptv-Playlist/refs/heads/main/playlist.m3u
   - https://raw.githubusercontent.com/ahXN00/OwnTV_Core/core-$PIN/tools/i18n/locales.json
   - https://raw.githubusercontent.com/aliluya1977/TVBox/master/spider.jar
+  - https://raw.githubusercontent.com/amazeyourself/adaptive-streams/refs/heads/main/streams/in/YuppTV/KalaignarSeithigal.m3u8
+  - https://raw.githubusercontent.com/amazeyourself/adaptive-streams/refs/heads/main/streams/in/YuppTV/PolimerNews.m3u8
+  - https://raw.githubusercontent.com/amazeyourself/adaptive-streams/refs/heads/main/streams/in/YuppTV/PolimerTV.m3u8
+  - https://raw.githubusercontent.com/amazeyourself/adaptive-streams/refs/heads/main/streams/in/ZMCL/ZeeTamilNews.m3u8
+  - https://raw.githubusercontent.com/amazeyourself/tamil-local-iptv/main/channels-ml.m3u
+  - https://raw.githubusercontent.com/amazeyourself/tamil-local-iptv/main/channels.m3u
   - https://raw.githubusercontent.com/aniksarakash/IPTV/master/BDIXI_IPTV.m3u
   - https://raw.githubusercontent.com/ashik4u/mrgify-clean/main/playlist.m3u
   - https://raw.githubusercontent.com/azimjon-95/tvgraber/main/in.xml
@@ -5816,6 +5987,7 @@ Total Bot M3U Playlists Saved: 754
   - https://raw.githubusercontent.com/stablesports711-hue/stable-sports-toffee/refs/heads/main/final.m3u8
   - https://raw.githubusercontent.com/subirkumarpaul/Logo/main/BTV
   - https://raw.githubusercontent.com/suxuang/myIPTV/main/ipv4.m3u
+  - https://raw.githubusercontent.com/suxuang/myIPTV/refs/heads/main/ipv4.m3u
   - https://raw.githubusercontent.com/time2shine/IPTV/master/combined.m3u
   - https://raw.githubusercontent.com/time2shine/IPTV/refs/heads/master/combined.m3u
   - https://raw.githubusercontent.com/time2shine/IPTV/refs/heads/master/epg.xml
@@ -5824,6 +5996,7 @@ Total Bot M3U Playlists Saved: 754
   - https://raw.githubusercontent.com/uddhavz/iptv-logos/main/logos/
   - https://raw.githubusercontent.com/user/repo/main/playlist.m3u
   - https://raw.githubusercontent.com/vbskycn/iptv/master/tv/iptv4.m3u
+  - https://raw.githubusercontent.com/vbskycn/iptv/refs/heads/master/tv/iptv4.m3u
   - https://raw.githubusercontent.com/vip-weizhen/tvlist/main/dszb.js
   - https://raw.githubusercontent.com/xiongjian83/TvBox/main/live.m3u
   - https://raw.githubusercontent.com/youhunwl/TVAPP/main/
@@ -6014,6 +6187,8 @@ Total Bot M3U Playlists Saved: 754
   - https://rjav.tv/zh/videotype/
   - https://rmtv.akamaized.net/hls/live/2043153/rmtv-es-web/bitrate_3.m3u8
   - https://roya.tv/
+  - https://royalstarindia.co.in/pularitv_hls/pularitv.m3u8
+  - https://rpn.bozztv.com/slrclive/slrc/slrclive/index.m3u8
   - https://rt-glb.gcdn.co/live/rtnews/playlist_4500Kb.m3u8
   - https://rt-glb.rttv.com/dvr/rtnews/playlist_4500Kb.m3u8
   - https://rt-glb.rttv.com/live/rtnews/playlist_1600Kb.m3u8
@@ -6025,6 +6200,16 @@ Total Bot M3U Playlists Saved: 754
   - https://rthktv34-live.akamaized.net/hls/live/2101642/RTHKTV34/master.m3u8
   - https://rthktv35-live.akamaized.net/hls/live/2101643/RTHKTV35/master.m3u8
   - https://rtm-player.glueapi.io/
+  - https://rtmp01.voaplus.com/hls/6x6ik312qk4grfxocfcv.m3u8
+  - https://runact.cdn.runn.tv/runntv/stream/p_runact/playlist.m3u8
+  - https://runntv-grngld.cdn.runn.tv/greengold/stream/grngld/playlist.m3u8
+  - https://runntv.kableone.com/hls/live/2111218/SagaHaryanvi/master.m3u8
+  - https://runntv.kableone.com/hls/live/2111218/SagaMusic/master.m3u8
+  - https://runntv.kableone.com/hls/live/2111218/SikhRatnavali/master.m3u8
+  - https://runntv.kableone.com/hls/live/2111218/YrfMusic/master.m3u8
+  - https://runshf.cdn.runn.tv/runntv/stream/p_runshf/playlist.m3u8
+  - https://runthr.cdn.runn.tv/runntv/stream/p_runthr/playlist.m3u8
+  - https://ruskmedia.cdn.runn.tv/ruskmedia/stream/alrght/playlist.m3u8
   - https://russian-liveali.cgtn.com/hls/LSvexABhNipibK5KRuUkvHZ7220802LSTeze9o8tdFXMHsb1VosgoT220802cd/playlist.m3u8
   - https://s.emisoras.tv
   - https://s3-us-west-2.amazonaws.com/beverly-hills-high-school.castus-vod/live/ch1/video.m3u8
@@ -6042,6 +6227,12 @@ Total Bot M3U Playlists Saved: 754
   - https://sdzyapi.com/api.php/provide/vod
   - https://sdzyapi.com/api.php/provide/vod/from/sdm3u8/
   - https://search.cdn.huya.com/
+  - https://segment.yuppcdn.net/110322/polimernews/playlist.m3u8
+  - https://segment.yuppcdn.net/140622/isaiaruvi/playlist.m3u8
+  - https://segment.yuppcdn.net/240122/kalaignartv/playlist.m3u8
+  - https://segment.yuppcdn.net/240122/news7/playlist.m3u8
+  - https://segment.yuppcdn.net/240122/puthiya/playlist.m3u8
+  - https://segment.yuppcdn.net/240122/siripoli/playlist.m3u8
   - https://server.itcnbd.live/stream/sony_sports_1_hd.m3u8
   - https://server.itcnbd.live/stream/sony_sports_2_hd.m3u8
   - https://server.itcnbd.live/stream/sony_sports_5_hd.m3u8
@@ -6083,6 +6274,8 @@ Total Bot M3U Playlists Saved: 754
   - https://slive.ytn.co.kr/weather/weather_20140419_1/chunklist_w556856077.m3u8
   - https://sm-monirul.top/tof/live/toffee6/index.m3u8
   - https://smithsonianaus-samsungau.amagi.tv/playlist1080p.m3u8
+  - https://smr-runntv-blywd.cdn.runn.tv/shemaroo/stream/smrbol/playlist.m3u8
+  - https://smr-runntv-flmgn.cdn.runn.tv/shemaroo/stream/smrfgn/playlist.m3u8
   - https://smt999.cc/api.php/provide/vod/
   - https://so2.cc/api.php
   - https://sony.dongobd247.workers.dev/stream.m3u8
@@ -6228,6 +6421,7 @@ Total Bot M3U Playlists Saved: 754
   - https://stream.ads.ottera.tv/cl/260421d7jmp97108ighs2i413g/1280x720_2300000_0_f.m3u8
   - https://stream.ads.ottera.tv/playlist.m3u8
   - https://stream.channeleuropetvboxlondon.co.uk/live/channeleurope/chunklist_w572284654.m3u8
+  - https://stream.galaxyott.live/live/utv/index.m3u8
   - https://stream.hrbtv.net/xwzh/playlist.m3u8
   - https://stream.hrbtv.net/yspd/playlist.m3u8
   - https://stream.jmtv.com.cn/ggsh/playlist.m3u8
@@ -6235,6 +6429,7 @@ Total Bot M3U Playlists Saved: 754
   - https://stream.jmtv.com.cn/xwzh/playlist.m3u8
   - https://stream.jmtv.com.cn/xwzh/sd/live.m3u8
   - https://stream.jogjatv.co.id/jtvlive/stream/index.m3u8
+  - https://stream.logichost.in/NTV/live/chunklist_w1420234415.m3u8
   - https://stream.ottplus.bd/live/and_picture_hd_abr/live/and_picture_hd_720/index.m3u8
   - https://stream.ottplus.bd/live/euro_sports_hd_abr/live/euro_sports_hd/chunks.m3u8
   - https://stream.ottplus.bd/live/sony_aath_abr/live/sony_aath_720/chunks.m3u8
@@ -6273,6 +6468,7 @@ Total Bot M3U Playlists Saved: 754
   - https://stream3.shopch.jp/httporiginlivech1/ch1.stream_1280p/chunklist.m3u8
   - https://stream6.scientology.org/master.m3u8
   - https://streamapp-catalog.muhd-faisal-work.workers.dev
+  - https://streameast.cool
   - https://streamer.bdstream.site
   - https://streaming.madanichannel.tv/static/streaming-playlists/hls/d3e49b76-ac06-4689-a641-9200445b647f/master.m3u8
   - https://streaming.radiohub.hr/RadioHub_WEB_streaming/BHWUC27pGZ/3.m3u8
@@ -6290,6 +6486,19 @@ Total Bot M3U Playlists Saved: 754
   - https://streams.sofast.tv/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/anyaott5_sofast/5bd21267-3c07-4732-866f-8cc13ba07203_0_HLS/manifest.m3u8
   - https://streams.sofast.tv/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/anyaott5_sofast/9bdb24cb-42c5-4d79-97d2-f4ebf569f7b9_0_HLS/manifest.m3u8
   - https://streams.sofast.tv/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/anyaott5_sofast/e3221fcc-3db5-4759-ba9e-ef1478c8329c_0_HLS/manifest.m3u8
+  - https://streams.tangotv.in/NEWS7TAMIL/ORIGIN/index.m3u8
+  - https://streams.tangotv.in/POLIMERNEWS/ORIGIN/index.m3u8
+  - https://streams.tangotv.in/PUTHIYATHALAIMURAI/ORIGIN/index.m3u8
+  - https://streams.tangotv.in/THANTHITV/ORIGIN/index.m3u8
+  - https://streams2.sofast.tv/ptnr-runntv/title-CARTOON_TV/sofastplayout/3e3230ae-4664-4ba3-9ea7-15c06471d5ce_0_HLS/manifest.m3u8
+  - https://streams2.sofast.tv/ptnr-runntv/title-CricketGold/sofastplayout/CricketGold/manifest.m3u8
+  - https://streams2.sofast.tv/ptnr-runntv/title-DRIVE__SPEED/sofastplayout/2f833f43-9e48-4a6e-88a8-8d99c32eb898_0_HLS/manifest.m3u8
+  - https://streams2.sofast.tv/ptnr-runntv/title-FIGHT-TV-ENG/sofastplayout/2c1b92e0-9ef4-41b1-9713-ba53b562e94c_0_HLS/manifest.m3u8
+  - https://streams2.sofast.tv/ptnr-runntv/title-Goal_TV/sofastplayout/WiseM3U8_1/master.m3u8
+  - https://streams2.sofast.tv/ptnr-runntv/title-Hoop_TV/WiseM3U8_28/sofast/cleanhls/master.m3u8
+  - https://streams2.sofast.tv/ptnr-runntv/title-JUST_FOR_LAUGHS_GAGS/sofastplayout/4c727f82-d2ec-4a07-870c-49a6f22ee6f9_0_HLS/manifest.m3u8
+  - https://streams2.sofast.tv/ptnr-runntv/title-MMA/vglive-sk-462904/playlist.m3u8
+  - https://streams2.sofast.tv/ptnr-runntv/title-XTREM-SPORTS-ENG/sofastplayout/dd07c1bf-9b89-4e56-b819-224b2bbcd807_0_HLS/manifest.m3u8
   - https://streams2.sofast.tv/sofastplayout/WiseM3U8_1/master.m3u8
   - https://streams2.sofast.tv/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/e0b81a5c-6ab5-48cd-aaa9-f82de4ab5bf9/manifest.m3u8
   - https://streams2.sofast.tv/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/eea68b79-bfe2-451e-a227-d637a5b9548a/manifest.m3u8
@@ -6311,6 +6520,9 @@ Total Bot M3U Playlists Saved: 754
   - https://suoniapi.com/api.php/provide/vod/
   - https://super.playr.top/
   - https://superflixapi.top/
+  - https://supflm-tamil.cdn.runn.tv/runntv/stream/suptam/playlist.m3u8
+  - https://supflm-telugu.cdn.runn.tv/runntv/stream/suptel/playlist.m3u8
+  - https://supflm.cdn.runn.tv/runntv/stream/p_supjio/playlist.m3u8
   - https://svara-stream.radioddns.net
   - https://svip.iremind.me/api/
   - https://svip.rongxingvr.top/api/
@@ -6327,6 +6539,9 @@ Total Bot M3U Playlists Saved: 754
   - https://t2.qlplayer.cyou/player/analysis.php
   - https://taopianapi.com/home/cjapi/as/mc/vod/xml
   - https://taopianapi.com/home/cjapi/as/mc10/vod/json
+  - https://tata.jeanjofi.workers.dev/astro.m3u
+  - https://tata.jeanjofi.workers.dev/izzigo.m3u
+  - https://tata.jeanjofi.workers.dev/mumbai.m3u
   - https://tbs5.mov3.co/hls/tbs.m3u8
   - https://telegram-feiyangdigital.v1.mk/bestv.m3u
   - https://telered.live
@@ -6418,6 +6633,7 @@ Total Bot M3U Playlists Saved: 754
   - https://tv.cctv.com/live/cctvjilu/
   - https://tv.cdn.xsg.ge/gpb-2tv/index.m3u8
   - https://tv.garden/
+  - https://tv.hiruhost.com
   - https://tv.iill.top//m3u/Adult
   - https://tv.iill.top/m3u/Adult
   - https://tv.jindcloud.com/api.php/v1.vod
@@ -6434,6 +6650,9 @@ Total Bot M3U Playlists Saved: 754
   - https://tv2.hykjtv.cn/api.php/v1.vod
   - https://tv360.vn
   - https://tv360.vn/tv
+  - https://tv9-bharatvarsh.cdn.runn.tv/amg01106c2/hls.m3u8
+  - https://tv9-marathi.cdn.runn.tv/amg01106c7/hls.m3u8
+  - https://tv9-telugu.cdn.runn.tv/amg01106c4/hls.m3u8
   - https://tv91.hostingnuclear.com
   - https://tva.in.ua/live/susp-sport.m3u8
   - https://tvbox.newhi.net/live.txt
@@ -6954,6 +7173,7 @@ Total Bot M3U Playlists Saved: 754
   - https://tvsen5.aynaott.com/RtvHD/index.m3u8
   - https://tvsen5.aynaott.com/SyQuXz8sC3TB/index.m3u8
   - https://tvsen5.aynaott.com/TnMn5kZz8/index.m3u8
+  - https://tvsen5.aynaott.com/TnMn5kZz8aLm/index.m3u8
   - https://tvsen5.aynaott.com/asdfadsf/index.m3u8
   - https://tvsen5.aynaott.com/atnbangla/index.m3u8
   - https://tvsen5.aynaott.com/ba47dHpDk3Se/index.m3u8
@@ -6967,6 +7187,7 @@ Total Bot M3U Playlists Saved: 754
   - https://tvsen5.aynaott.com/tgUzpPc9r6xw/index.m3u8
   - https://tvsen5.aynaott.com/tgUzpPc9r6xw/tracks-v1a1/mono.ts.m3u8
   - https://tvsen5.aynaott.com/u3LkNQ7UHhFX/index.m3u8
+  - https://tvsen5.aynaott.com/willowhd/index.m3u8
   - https://tvsen5.aynaott.com/xV4jEKf3D9zc/index.m3u8
   - https://tvsen5.aynaott.com/xV4jEKf3D9zc/tracks-v1a1/mono.ts.m3u8
   - https://tvsen6.aynaott.com/1d3uG9VCgrR9DRtWZM57/index.m3u8
@@ -7091,6 +7312,7 @@ Total Bot M3U Playlists Saved: 754
   - https://tvsen7.aynaott.com/tsports-hd/index.m3u8
   - https://tvsen7.aynaott.com/tsportsfhd/index.m3u8
   - https://tvsen7.aynaott.com/vtvusa/index.m3u8
+  - https://tvsen7.aynascope.net/Sports1/index.m3u8
   - https://tvsen7.aynascope.net/sspts1/index.m3u8
   - https://tvsilo.vip/app/basem3u.json
   - https://tvsilo.vip/app/cache.php
@@ -8750,6 +8972,7 @@ Total Bot M3U Playlists Saved: 754
   - https://yuppmedtaorire.akamaized.net/v1/master/a0d007312bfd99c47f76b77ae26b1ccdaae76cb1/sakshi_nim_https/240122/sakshi/playlist.m3u8
   - https://yuppmedtaorire.akamaized.net/v1/master/a0d007312bfd99c47f76b77ae26b1ccdaae76cb1/tv5_nim_https/110322/tv5/playlist.m3u8
   - https://yuppmedtaorire.akamaized.net/v1/master/a0d007312bfd99c47f76b77ae26b1ccdaae76cb1/v6news_nim_https/140622/v6news/playlist.m3u8
+  - https://yuppnimresmum.akamaized.net/120723/smil:seithagal.smil/playlist.m3u8
   - https://yupptvcatchupire.yuppcdn.net/preview/colorsbanglahd/800.m3u8
   - https://yupptvcatchupire.yuppcdn.net/preview/starjalsha/1800.m3u8
   - https://yupptvcatchupire.yuppcdn.net/preview/zeebangla/2500.m3u8
@@ -8948,61 +9171,6 @@ Total Bot M3U Playlists Saved: 754
   Scrapes from:
     * https://raw.githubusercontent.com/saeidrahmanbd/BDIX-IPTV/main/International-Playlist.m3u
 
-[AUTO-BOT] tunnabri-ops/BDIX-IPTV (Updated: 2026-11-21, Stars: 2)
-  Scrapes from:
-    * http://27.124.71.27/Willow_Extra/index.m3u8
-    * http://27.124.71.27/Zee_Bangla/tracks-v1a1/mono.m3u8
-    * http://bitcdn-kronehit.bitmovin.com/v2/hls/chunklist_b3128000.m3u8
-    * http://stream.pardesitv.online/pardesi/tracks-v1a1/mono.m3u8
-    * https://30a-tv.com/music.m3u8
-    * https://a.files.bbci.co.uk/ms6/live/3441A116-B12E-4D2F-ACA8-C1984642FA4B/audio/simulcast/hls/nonuk/audio_syndication_vlow_sbr_v1/cfs/bbc_world_service_news_internet.m3u8
-    * https://amg02873-kravemedia-mtrspt1-sportstribal-ajosc.amagi.tv/playlist/amg02873-kravemedia-mtrspt1-sportstribal/playlist.m3u8
-    * https://bein-esp-xumo.amagi.tv/playlistR1080p.m3u8
-    * https://boishakhi.sonarbanglatv.com/boishakhi/boishakhitv/index.m3u8
-    * https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg00864-shemarooenterta-shemabollywood-ono/playlist.m3u8
-    * https://deshitv.deshitv24.net/live/myStream/playlist.m3u8
-    * https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/master.m3u8
-    * https://ekusheyserver.com/etvlivesn.m3u8
-    * https://hncfree-samsungau.amagi.tv/playlist.m3u8
-    * https://lightning-tracesport-samsungau.amagi.tv/playlist.m3u8
-    * https://live-bhojpuri.akamaized.net/liveabr/playlist.m3u8
-    * https://server.thelegitpro.in/rongeentv/rongeentv/tracks-v1a1/mono.m3u8
-    * https://stream.shariarsuvo.com/hls5/rajdhanicable.m3u8
-    * https://tntm.mediacdn.ru/cdn/tntmusic/playlist.m3u8
-    * https://tvsen5.aynaott.com/RtvHD/index.m3u8
-    * https://tvsen5.aynaott.com/maasrangatv/index.m3u8
-    * https://tvsen5.aynaott.com/xV4jEKf3D9zc/index.m3u8
-    * https://tvsen5.aynaott.com/xV4jEKf3D9zc/tracks-v1a1/mono.ts.m3u8
-    * https://tvsen6.aynaott.com/1d3uG9VCgrR9DRtWZM57/index.m3u8
-    * https://tvsen6.aynaott.com/6xyZ3N4oHv2KBJdB6W4p/index.m3u8
-    * https://tvsen6.aynaott.com/EWDrV5QskgarZEUBb3pU/index.m3u8
-    * https://tvsen6.aynaott.com/Epm7WrFa/index.m3u8
-    * https://tvsen6.aynaott.com/FNHpYvGZ7FkCE10PwTHm/index.m3u8
-    * https://tvsen6.aynaott.com/LeUAm4F1iixYns3s3Non/index.m3u8
-    * https://tvsen6.aynaott.com/M2W2UR49dmeKbZnmdRzN/index.m3u8
-    * https://tvsen6.aynaott.com/TjGR1GcxKetHNVcMVxbq/index.m3u8
-    * https://tvsen6.aynaott.com/XMpHaEf0ANBhv8w6NWR7/index.m3u8
-    * https://tvsen6.aynaott.com/da6WMXAk/index.m3u8
-    * https://tvsen6.aynaott.com/fbgZV3X17hwWcyfZ4pdb/index.m3u8
-    * https://tvsen6.aynaott.com/rELXiuUXqbgzPb06Npom/index.m3u8
-    * https://tvsen6.aynaott.com/ryFkXfd1a4CQ7mMdc820/index.m3u8
-    * https://tvsen6.aynaott.com/y0q9eFAuquAtvTxRzUHq/index.m3u8
-    * https://tvsen6.aynaott.com/y4mEVZNAbeNWTbd6Z2Pw/index.m3u8
-    * https://tvsen6.aynaott.com/zv68oqPDu7MZZwmHhRxt/index.m3u8
-  Outputs (M3U):
-    > https://raw.githubusercontent.com/tunnabri-ops/BDIX-IPTV/main/bdix/playlist.m3u
-
-[AUTO-BOT] raymondchanzip-cell/IPTV-Auto-Update (Updated: 2026-11-21, Stars: 1)
-  Scrapes from:
-    * https://iptv-org.github.io/iptv/countries/cn.m3u
-    * https://iptv-org.github.io/iptv/countries/hk.m3u
-    * https://iptv-org.github.io/iptv/countries/mo.m3u
-    * https://iptv-org.github.io/iptv/countries/tw.m3u
-    * https://iptv-org.github.io/iptv/countries/us.m3u
-    * https://raw.githubusercontent.com/ineed2underfit/hk-iptv/main/hk_live.m3u
-  Outputs (M3U):
-    > https://raw.githubusercontent.com/raymondchanzip-cell/IPTV-Auto-Update/main/IPTV.m3u
-
 [AUTO-BOT] raihan-rifat007/Streamverse (Updated: 2026-11-21, Stars: 0)
   Scrapes from:
     * https://fonts.googleapis.com
@@ -9147,12 +9315,6 @@ Total Bot M3U Playlists Saved: 754
     * https://iptv-org.github.io/iptv
     * https://iptv-org.github.io/iptv/index.m3u
 
-[AUTO-BOT] sjnhnp/adblock (Updated: 2026-11-21, Stars: 0)
-  Outputs (M3U):
-    > https://raw.githubusercontent.com/sjnhnp/adblock/main/filtered_global_attributes_removed.m3u
-    > https://raw.githubusercontent.com/sjnhnp/adblock/main/filtered_http_only_valid.m3u
-    > https://raw.githubusercontent.com/sjnhnp/adblock/main/filtered_https_only.m3u
-
 [AUTO-BOT] dumumaja-byte/iptv (Updated: 2026-11-21, Stars: 0)
   Outputs (M3U):
     > https://raw.githubusercontent.com/dumumaja-byte/iptv/main/all-clean.m3u
@@ -9172,8 +9334,6 @@ Total Bot M3U Playlists Saved: 754
     > https://raw.githubusercontent.com/turgutozaldemirel-source/Turgut-IPTV/main/film-1080p.m3u
 
 [AUTO-BOT] EPGStuff/ganja-kids-epg (Updated: 2026-11-21, Stars: 0)
-
-[AUTO-BOT] andreadegiovinebk/xtream-iptv-client-bk (Updated: 2026-11-21, Stars: 0)
 
 [AUTO-BOT] erisgjeladini-cmd/-iptv-playlist (Updated: 2026-11-21, Stars: 0)
   Outputs (M3U):
@@ -9201,10 +9361,6 @@ Total Bot M3U Playlists Saved: 754
     > https://raw.githubusercontent.com/notsurewhoisthis/Diamond-IPTV/main/demo/jamrun-demo.m3u
 
 [AUTO-BOT] vladimino/iptv-watchlist (Updated: 2026-11-21, Stars: 0)
-
-[AUTO-BOT] worldwide-tv-logos/database (Updated: 2026-11-21, Stars: 0)
-  Scrapes from:
-    * https://worldwide-tv-logos.github.io/database/
 
 [AUTO-BOT] urzahil/Emby-LiveTV-Plugin (Updated: 2026-11-21, Stars: 1)
 
@@ -9240,6 +9396,77 @@ Total Bot M3U Playlists Saved: 754
     > https://raw.githubusercontent.com/slawa99-prog/sv-iptv/main/expanded-preview.m3u
     > https://raw.githubusercontent.com/slawa99-prog/sv-iptv/main/expansion-candidates.m3u
     > https://raw.githubusercontent.com/slawa99-prog/sv-iptv/main/extra-candidates-2026-11-17.m3u
+
+[AUTO-BOT] tunnabri-ops/BDIX-IPTV (Updated: 2026-11-22, Stars: 2)
+  Scrapes from:
+    * http://27.124.71.27/Willow_Extra/index.m3u8
+    * http://27.124.71.27/Zee_Bangla/tracks-v1a1/mono.m3u8
+    * http://bitcdn-kronehit.bitmovin.com/v2/hls/chunklist_b3128000.m3u8
+    * http://stream.pardesitv.online/pardesi/tracks-v1a1/mono.m3u8
+    * https://30a-tv.com/music.m3u8
+    * https://a.files.bbci.co.uk/ms6/live/3441A116-B12E-4D2F-ACA8-C1984642FA4B/audio/simulcast/hls/nonuk/audio_syndication_vlow_sbr_v1/cfs/bbc_world_service_news_internet.m3u8
+    * https://amg02873-kravemedia-mtrspt1-sportstribal-ajosc.amagi.tv/playlist/amg02873-kravemedia-mtrspt1-sportstribal/playlist.m3u8
+    * https://bein-esp-xumo.amagi.tv/playlistR1080p.m3u8
+    * https://boishakhi.sonarbanglatv.com/boishakhi/boishakhitv/index.m3u8
+    * https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg00864-shemarooenterta-shemabollywood-ono/playlist.m3u8
+    * https://deshitv.deshitv24.net/live/myStream/playlist.m3u8
+    * https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/master.m3u8
+    * https://ekusheyserver.com/etvlivesn.m3u8
+    * https://hncfree-samsungau.amagi.tv/playlist.m3u8
+    * https://lightning-tracesport-samsungau.amagi.tv/playlist.m3u8
+    * https://live-bhojpuri.akamaized.net/liveabr/playlist.m3u8
+    * https://server.thelegitpro.in/rongeentv/rongeentv/tracks-v1a1/mono.m3u8
+    * https://stream.shariarsuvo.com/hls5/rajdhanicable.m3u8
+    * https://tntm.mediacdn.ru/cdn/tntmusic/playlist.m3u8
+    * https://tvsen5.aynaott.com/RtvHD/index.m3u8
+    * https://tvsen5.aynaott.com/maasrangatv/index.m3u8
+    * https://tvsen5.aynaott.com/xV4jEKf3D9zc/index.m3u8
+    * https://tvsen5.aynaott.com/xV4jEKf3D9zc/tracks-v1a1/mono.ts.m3u8
+    * https://tvsen6.aynaott.com/1d3uG9VCgrR9DRtWZM57/index.m3u8
+    * https://tvsen6.aynaott.com/6xyZ3N4oHv2KBJdB6W4p/index.m3u8
+    * https://tvsen6.aynaott.com/EWDrV5QskgarZEUBb3pU/index.m3u8
+    * https://tvsen6.aynaott.com/Epm7WrFa/index.m3u8
+    * https://tvsen6.aynaott.com/FNHpYvGZ7FkCE10PwTHm/index.m3u8
+    * https://tvsen6.aynaott.com/LeUAm4F1iixYns3s3Non/index.m3u8
+    * https://tvsen6.aynaott.com/M2W2UR49dmeKbZnmdRzN/index.m3u8
+    * https://tvsen6.aynaott.com/TjGR1GcxKetHNVcMVxbq/index.m3u8
+    * https://tvsen6.aynaott.com/XMpHaEf0ANBhv8w6NWR7/index.m3u8
+    * https://tvsen6.aynaott.com/da6WMXAk/index.m3u8
+    * https://tvsen6.aynaott.com/fbgZV3X17hwWcyfZ4pdb/index.m3u8
+    * https://tvsen6.aynaott.com/rELXiuUXqbgzPb06Npom/index.m3u8
+    * https://tvsen6.aynaott.com/ryFkXfd1a4CQ7mMdc820/index.m3u8
+    * https://tvsen6.aynaott.com/y0q9eFAuquAtvTxRzUHq/index.m3u8
+    * https://tvsen6.aynaott.com/y4mEVZNAbeNWTbd6Z2Pw/index.m3u8
+    * https://tvsen6.aynaott.com/zv68oqPDu7MZZwmHhRxt/index.m3u8
+  Outputs (M3U):
+    > https://raw.githubusercontent.com/tunnabri-ops/BDIX-IPTV/main/bdix/playlist.m3u
+
+[AUTO-BOT] raymondchanzip-cell/IPTV-Auto-Update (Updated: 2026-11-22, Stars: 1)
+  Scrapes from:
+    * https://iptv-org.github.io/iptv/countries/cn.m3u
+    * https://iptv-org.github.io/iptv/countries/hk.m3u
+    * https://iptv-org.github.io/iptv/countries/mo.m3u
+    * https://iptv-org.github.io/iptv/countries/tw.m3u
+    * https://iptv-org.github.io/iptv/countries/us.m3u
+    * https://raw.githubusercontent.com/ineed2underfit/hk-iptv/main/hk_live.m3u
+  Outputs (M3U):
+    > https://raw.githubusercontent.com/raymondchanzip-cell/IPTV-Auto-Update/main/IPTV.m3u
+
+[AUTO-BOT] sjnhnp/adblock (Updated: 2026-11-22, Stars: 0)
+  Scrapes from:
+    * https://raw.githubusercontent.com/YueChan/Live/refs/heads/main/Global.m3u
+    * https://raw.githubusercontent.com/suxuang/myIPTV/refs/heads/main/ipv4.m3u
+    * https://raw.githubusercontent.com/vbskycn/iptv/refs/heads/master/tv/iptv4.m3u
+  Outputs (M3U):
+    > https://raw.githubusercontent.com/sjnhnp/adblock/main/filtered_global_attributes_removed.m3u
+    > https://raw.githubusercontent.com/sjnhnp/adblock/main/filtered_http_only_valid.m3u
+    > https://raw.githubusercontent.com/sjnhnp/adblock/main/filtered_https_only.m3u
+
+[AUTO-BOT] andreadegiovinebk/xtream-iptv-client-bk (Updated: 2026-11-22, Stars: 0)
+
+[AUTO-BOT] worldwide-tv-logos/database (Updated: 2026-11-22, Stars: 0)
+  Scrapes from:
+    * https://worldwide-tv-logos.github.io/database/
 
 [AUTO-BOT] Romaxa55/world_ip_tv (Updated: 2026-11-22, Stars: 159)
   Scrapes from:
@@ -18696,7 +18923,7 @@ Total Bot M3U Playlists Saved: 754
     * https://raw.githubusercontent.com/vbskycn/iptv/master/tv/iptv4.m3u
     * https://xxx.com/subscribe.m3u
 
-[AUTO-BOT] hujingguang/ChinaIPTV (Updated: 2026-11-22, Stars: 2153)
+[AUTO-BOT] hujingguang/ChinaIPTV (Updated: 2026-11-22, Stars: 2155)
   Outputs (M3U):
     > https://raw.githubusercontent.com/hujingguang/ChinaIPTV/main/Global.m3u8
     > https://raw.githubusercontent.com/hujingguang/ChinaIPTV/main/HongKong.m3u8
@@ -19600,6 +19827,398 @@ Total Bot M3U Playlists Saved: 754
   Scrapes from:
     * https://gitlab.com/api/v4/projects/$
 
+[AUTO-BOT] sandman1983/IPTV-TV (Updated: 2026-11-22, Stars: 0)
+
+[AUTO-BOT] mohamedzakee/my-iptv (Updated: 2026-11-22, Stars: 0)
+  Scrapes from:
+    * http://103.135.253.32
+    * http://103.250.28.74
+    * http://tvn1.chowdhury-shaheb.com/gazitv/index.m3u8
+    * http://tvsen5.aynascope.net/willowhd/index.m3u8
+    * http://tvsen7.aynascope.net/rEBp38Ax/index.m3u8
+    * https://amg01269-amg01269c1-distrotv-us-5379.playouts.now.amagi.tv/playlist/amg01269-willowtvfast-willowplus-distrotvus/playlist.m3u8
+    * https://amg01269-amg01269c1-firetv-us-5377.playouts.now.amagi.tv/playlist.m3u8
+    * https://amg01269-amg01269c1-sportstribal-emea-5204.playouts.now.amagi.tv/ts-eu-w1-n2/playlist/amg01269-willowtvfast-willowplus-sportstribalemea/playlist.m3u8
+    * https://app.ncare.live/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcGVMZEJCTEFWeVN3PTOmdFsaWRtaW51aiPhnPTI2/gazibdz.stream/live-orgin/gazibdz.stream/playlist.m3u8
+    * https://cdn.pishow.tv/ott/live/1161/master.m3u8
+    * https://cdn.pishow.tv/ott/live/1241/master.m3u8
+    * https://cdn.pishow.tv/ott/live/1245/master.m3u8
+    * https://cdn.pishow.tv/ott/live/1261/master.m3u8
+    * https://cdn.pishow.tv/ott/live/13/master.m3u8
+    * https://cdn.pishow.tv/ott/live/1498/master.m3u8
+    * https://cdn.pishow.tv/ott/live/1612/master.m3u8
+    * https://cdn.pishow.tv/ott/live/1737/master.m3u8
+    * https://d2lk5u59tns74c.cloudfront.net/out/v1/abf46b14847e45499f4a47f3a9afe93d/index.m3u8
+    * https://d2o8pibksxtln6.cloudfront.net/live/media/Zee_Tamil_HD/hls/Zee_Tamil_HD.m3u8
+    * https://d36r8jifhgsk5j.cloudfront.net/Willow_TV.m3u8
+    * https://d36r8jifhgsk5j.cloudfront.net/Willow_TV1080p.m3u8
+    * https://d3kdywbtdfbp9z.cloudfront.net/v1/manifest/93ce20f0f52760bf38be911ff4c91ed02aa2fd92/dff423e0-3c82-46d6-9ecb-3baa96b5694a/b8640d6b-d131-4401-9451-944e1e65fe79/0.m3u8
+    * https://d3qs3d2rkhfqrt.cloudfront.net/out/v1/b17adfe543354fdd8d189b110617cddd/index.m3u8
+    * https://da86m1sqpm3o0.cloudfront.net/28072023/smil:colorstamilhd11.smil/playlist.m3u8
+    * https://da86m1sqpm3o0.cloudfront.net/28072023/smil:starvijayuk.smil/playlist.m3u8
+    * https://da86m1sqpm3o0.cloudfront.net/28072023/smil:zeetamil1.smil/playlist.m3u8
+    * https://edge4-moblive.yuppcdn.net/trans1sd/smil:strtml19.smil/playlist.m3u8
+    * https://ev-eu-hw-fast-mpd.starzplayarabia.com/Zee_Tamil/dash/drm/index.mpd
+    * https://fta.ektv.in/live/280/master.m3u8
+    * https://fta.ektv.in/live/64/64_0.m3u8
+    * https://fta.ektv.in/live/679/master.m3u8
+    * https://ibc.massstream.net/IBC/index.m3u8
+    * https://jalworldiptv.vercel.app/iptv/imaitv/playlist.m3u8
+    * https://jmp2.uk/plu-6972546cc62833833a187f50.m3u8
+    * https://live20.bozztv.com/akamaissh101/ssh101/imaitv/playlist.m3u8
+    * https://livestream.rajtv.tv/hlslive/Admin/px08241087/live/RAJTV/master_1.m3u8
+    * https://mumbai-edge.smartplaytv.in/DDSports/index.m3u8
+    * https://mumbai-edge.smartplaytv.in/DDSportsHD/index.m3u8
+    * https://mumbai-edge.smartplaytv.in/JayaPLus/index.m3u8
+    * https://mumbai-edge.smartplaytv.in/Puthiyathalaimurai/index.m3u8
+    * https://mumt03.tangotv.in/Dsly5z3HTHANTHITV/index.m3u8
+    * https://mumt04.tangotv.in/m18aqlK4POLIMERTV/index.m3u8
+    * https://mumt05.tangotv.in/87NeALx2POLIMERNEWS/index.m3u8
+    * https://mumt07.tangotv.in/zHjX9OFlDDSPORTS/index.m3u8
+    * https://mumt07.tangotv.in/zHjX9OFlNEWS7TAMIL/index.m3u8
+    * https://mumt07.tangotv.in/zHjX9OFlPUTHIYAEXPRESS/index.m3u8
+    * https://mumt07.tangotv.in/zHjX9OFlPUTHIYATHALAIMURAI/index.m3u8
+    * https://mumt07.tangotv.in/zHjX9OFlSATHIYAMTV/index.m3u8
+    * https://n18syndication.akamaized.net/bpk-tv/News18_Tamil_Nadu_NW18_MOB/output01/master.m3u8
+    * https://r2.amml.in/sony-ten-3-hd/live.m3u8
+    * https://raw.githubusercontent.com/amazeyourself/adaptive-streams/refs/heads/main/streams/in/YuppTV/KalaignarSeithigal.m3u8
+    * https://raw.githubusercontent.com/amazeyourself/adaptive-streams/refs/heads/main/streams/in/YuppTV/PolimerNews.m3u8
+    * https://raw.githubusercontent.com/amazeyourself/adaptive-streams/refs/heads/main/streams/in/YuppTV/PolimerTV.m3u8
+    * https://raw.githubusercontent.com/amazeyourself/adaptive-streams/refs/heads/main/streams/in/ZMCL/ZeeTamilNews.m3u8
+    * https://rpn.bozztv.com/slrclive/slrc/slrclive/index.m3u8
+    * https://rtmp01.voaplus.com/hls/6x6ik312qk4grfxocfcv.m3u8
+    * https://segment.yuppcdn.net/110322/polimernews/playlist.m3u8
+    * https://segment.yuppcdn.net/140622/isaiaruvi/playlist.m3u8
+    * https://segment.yuppcdn.net/240122/kalaignartv/playlist.m3u8
+    * https://segment.yuppcdn.net/240122/news7/playlist.m3u8
+    * https://segment.yuppcdn.net/240122/puthiya/playlist.m3u8
+    * https://streams.tangotv.in/NEWS7TAMIL/ORIGIN/index.m3u8
+    * https://streams.tangotv.in/POLIMERNEWS/ORIGIN/index.m3u8
+    * https://streams.tangotv.in/PUTHIYATHALAIMURAI/ORIGIN/index.m3u8
+    * https://streams.tangotv.in/THANTHITV/ORIGIN/index.m3u8
+    * https://tv.hiruhost.com
+    * https://tvsen5.aynaott.com/TnMn5kZz8aLm/index.m3u8
+    * https://tvsen5.aynaott.com/willowhd/index.m3u8
+    * https://tvsen7.aynaott.com/rEBp38Ax/index.m3u8
+    * https://tvsen7.aynascope.net/Sports1/index.m3u8
+    * https://yuppnimresmum.akamaized.net/120723/smil:seithagal.smil/playlist.m3u8
+  Outputs (M3U):
+    > https://raw.githubusercontent.com/mohamedzakee/my-iptv/main/tv.m3u
+
+[AUTO-BOT] zwrt/IPTV (Updated: 2026-11-22, Stars: 203)
+  Scrapes from:
+    * http://adultiptv.net/chs.m3u
+    * https://raw.githubusercontent.com/YanG-1989/m3u/main/Adult.m3u
+    * https://raw.githubusercontent.com/fanmingming/live/main/tv/m3u/ipv6.m3u
+  Outputs (M3U):
+    > https://raw.githubusercontent.com/zwrt/IPTV/Files/Adult.m3u
+    > https://raw.githubusercontent.com/zwrt/IPTV/Files/CCTV.m3u
+    > https://raw.githubusercontent.com/zwrt/IPTV/Files/CNTV.m3u
+    > https://raw.githubusercontent.com/zwrt/IPTV/Files/IPTV.m3u
+
+[AUTO-BOT] jasonramg/iptv-epg (Updated: 2026-11-22, Stars: 6)
+  Scrapes from:
+    * https://9x.cdn.runn.tv/9XM/master.m3u8
+    * https://9x.cdn.runn.tv/9X_Jalwa/master.m3u8
+    * https://abpnews.cdn.runn.tv/2042871-b/abpnews/master.m3u8
+    * https://abpnews.cdn.runn.tv/2042872/majha/master.m3u8
+    * https://abpnews.cdn.runn.tv/2042873/ananda/master.m3u8
+    * https://abpnews.cdn.runn.tv/2042876/asmita/master.m3u8
+    * https://alltimemovies.cdn.runn.tv/penmusic/stream/altmov/playlist.m3u8
+    * https://amg01911-amg01911c2-amgplt0249.playout.now3.amagi.tv/playout/amg01911/amg01911c2/amgplt0249/amgplt0249.m3u8
+    * https://amg14122-amg14122c1-amgplt0249.playout.now3.amagi.tv/playout/amg14122/amg14122c1/amgplt0249/amgplt0249.m3u8
+    * https://amuzi-sports.cdn.runn.tv/amuzisports/stream/amzspt/playlist.m3u8
+    * https://animax.cdn.runn.tv/amg02159c9/hls.m3u8
+    * https://b4u-bhojpuri.cdn.runn.tv/master.m3u8
+    * https://b4u-kadak.cdn.runn.tv/playlist.m3u8
+    * https://b4u-movies.cdn.runn.tv/playlist.m3u8
+    * https://b4u-music.cdn.runn.tv/playlist.m3u8
+    * https://balajitelefilms-runntv.vgcdn.net/vglive-sk-864130/v1/019d675553f51ea540a815e5635b31/019d67562bdd1ea540a815e5635b34/playlist.m3u8
+    * https://cinshf.cdn.runn.tv/runntv/stream/p_cinshf/playlist.m3u8
+    * https://d3dtdt06tmqos6.cloudfront.net/scheduler/scheduleMaster/455.m3u8
+    * https://dicemedia.cdn.runn.tv/pocketaces/stream/dicmed/playlist.m3u8
+    * https://dnuk7lvye3m03.cloudfront.net/runntv/platform/channels/NEWNAT/Web/thumbnail/NEWS
+    * https://eros-blywdcnm.cdn.runn.tv/eros/stream/blywcm/playlist.m3u8
+    * https://eros-entrtnmnt.cdn.runn.tv/eros/stream/ersent/playlist.m3u8
+    * https://filtercopy.cdn.runn.tv/pocketaces/stream/fltrcopy/playlist.m3u8
+    * https://gtc.ottlive.co.in/gtcnews/index.m3u8
+    * https://gtc.ottlive.co.in/gtcpunjabi/index.m3u8
+    * https://gtc.ottlive.co.in/punjabshort/index.m3u8
+    * https://indiatv.cdn.runn.tv/v1/vglive-sk-274906/main.m3u8
+    * https://indiatv.cdn.runn.tv/v1/vglive-sk-385006/main.m3u8
+    * https://indiatv.cdn.runn.tv/v1/vglive-sk-479089/main.m3u8
+    * https://indiatv.cdn.runn.tv/v1/vglive-sk-912213/main.m3u8
+    * https://journy.cdn.runn.tv/amg02159c11/hls.m3u8
+    * https://kcm.cdn.runn.tv/amg02159c10/hls.m3u8
+    * https://loolookids.cdn.runn.tv/146-235-11653.m3u8
+    * https://mahua-khabar.cdn.runn.tv/mahuakhabarjio/index.m3u8
+    * https://mahua-play.cdn.runn.tv/mahuaplayjio/index.m3u8
+    * https://mrbeanus.cdn.runn.tv/master.m3u8
+    * https://n18syndication-runn-tv.akamaized.net/bpk-tv/CNN_News18_NW18_MOB/output01/index.m3u8
+    * https://n18syndication-runn-tv.akamaized.net/bpk-tv/News18_Bangla_NW18_MOB/output01/index.m3u8
+    * https://n18syndication-runn-tv.akamaized.net/bpk-tv/News18_India_NW18_MOB/output01/index.m3u8
+    * https://n18syndication-runn-tv.akamaized.net/bpk-tv/News18_Lokmat_NW18_MOB/output01/index.m3u8
+    * https://n18syndication-runn-tv.akamaized.net/bpk-tv/News18_MP_Chhattisgarh_NW18_MOB/output01/index.m3u8
+    * https://n18syndication-runn-tv.akamaized.net/bpk-tv/News18_Punjab_Haryana_HP_NW18_MOB/output01/index.m3u8
+    * https://n18syndication-runn-tv.akamaized.net/bpk-tv/News18_Tamil_Nadu_NW18_MOB/output01/index.m3u8
+    * https://n18syndication-runn-tv.akamaized.net/bpk-tv/News18_UP_Uttarakhand_NW18_MOB/output01/index.m3u8
+    * https://navbharat.cdn.runn.tv/master.m3u8
+    * https://news9.cdn.runn.tv/amg01106c3/hls.m3u8
+    * https://newsnation.cdn.runn.tv/national/master_nnna_runntv.m3u8
+    * https://newsnation.cdn.runn.tv/nnbrjh/master_nnbrjh_runntv.m3u8
+    * https://newsnation.cdn.runn.tv/nnmp/master_nnmp_runntv.m3u8
+    * https://newsnation.cdn.runn.tv/nnpunj/master_nnpunj_runntv.m3u8
+    * https://newsnation.cdn.runn.tv/nnup/master_nnup_runntv.m3u8
+    * https://nh-runntv-blyflx.cdn.runn.tv/nhstdz/stream/blyflx/playlist.m3u8
+    * https://nh-runntv-blygld.cdn.runn.tv/nhstdz/stream/blygld/playlist.m3u8
+    * https://nh-runntv-blyrag.cdn.runn.tv/nhstdz/stream/blyrag/playlist.m3u8
+    * https://nunutv.cdn.runn.tv/runntv/stream/p_nunutv/playlist.m3u8
+    * https://pitaaratv.cdn.runn.tv/ptnr-RUNNTV/title-Divya_Bhajan_NONSSAI/v1/vglive-sk-987805/playlist.m3u8
+    * https://pitaaratv.cdn.runn.tv/ptnr-RunnTV/title-DivyaTV/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/vglive-sk-906482/playlist.m3u8
+    * https://pitaaratv.cdn.runn.tv/ptnr-RunnTV/title-PitaaraTV_NonSSAI/v1/vglive-sk-326599/playlist.m3u8
+    * https://pitaaratv.cdn.runn.tv/ptnr-RunnTV/title-Pitaara_Comedy/v1/vglive-sk-217489/playlist.m3u8
+    * https://pktflm.cdn.runn.tv/runntv/stream/p_pktflm/playlist.m3u8
+    * https://prod-runn.cdn.runn.tv/runntv/stream/jagran/playlist.m3u8
+    * https://prod-runn.cdn.runn.tv/runntv/stream/p_supflm/playlist.m3u8
+    * https://runact.cdn.runn.tv/runntv/stream/p_runact/playlist.m3u8
+    * https://runntv-grngld.cdn.runn.tv/greengold/stream/grngld/playlist.m3u8
+    * https://runntv.kableone.com/hls/live/2111218/SagaHaryanvi/master.m3u8
+    * https://runntv.kableone.com/hls/live/2111218/SagaMusic/master.m3u8
+    * https://runntv.kableone.com/hls/live/2111218/SikhRatnavali/master.m3u8
+    * https://runntv.kableone.com/hls/live/2111218/YrfMusic/master.m3u8
+    * https://runshf.cdn.runn.tv/runntv/stream/p_runshf/playlist.m3u8
+    * https://runthr.cdn.runn.tv/runntv/stream/p_runthr/playlist.m3u8
+    * https://ruskmedia.cdn.runn.tv/ruskmedia/stream/alrght/playlist.m3u8
+    * https://smr-runntv-blywd.cdn.runn.tv/shemaroo/stream/smrbol/playlist.m3u8
+    * https://smr-runntv-flmgn.cdn.runn.tv/shemaroo/stream/smrfgn/playlist.m3u8
+    * https://streams2.sofast.tv/ptnr-runntv/title-CARTOON_TV/sofastplayout/3e3230ae-4664-4ba3-9ea7-15c06471d5ce_0_HLS/manifest.m3u8
+    * https://streams2.sofast.tv/ptnr-runntv/title-CricketGold/sofastplayout/CricketGold/manifest.m3u8
+    * https://streams2.sofast.tv/ptnr-runntv/title-DRIVE__SPEED/sofastplayout/2f833f43-9e48-4a6e-88a8-8d99c32eb898_0_HLS/manifest.m3u8
+    * https://streams2.sofast.tv/ptnr-runntv/title-FIGHT-TV-ENG/sofastplayout/2c1b92e0-9ef4-41b1-9713-ba53b562e94c_0_HLS/manifest.m3u8
+    * https://streams2.sofast.tv/ptnr-runntv/title-Goal_TV/sofastplayout/WiseM3U8_1/master.m3u8
+    * https://streams2.sofast.tv/ptnr-runntv/title-Hoop_TV/WiseM3U8_28/sofast/cleanhls/master.m3u8
+    * https://streams2.sofast.tv/ptnr-runntv/title-JUST_FOR_LAUGHS_GAGS/sofastplayout/4c727f82-d2ec-4a07-870c-49a6f22ee6f9_0_HLS/manifest.m3u8
+    * https://streams2.sofast.tv/ptnr-runntv/title-MMA/vglive-sk-462904/playlist.m3u8
+    * https://streams2.sofast.tv/ptnr-runntv/title-XTREM-SPORTS-ENG/sofastplayout/dd07c1bf-9b89-4e56-b819-224b2bbcd807_0_HLS/manifest.m3u8
+    * https://supflm-tamil.cdn.runn.tv/runntv/stream/suptam/playlist.m3u8
+    * https://supflm-telugu.cdn.runn.tv/runntv/stream/suptel/playlist.m3u8
+    * https://supflm.cdn.runn.tv/runntv/stream/p_supjio/playlist.m3u8
+    * https://tv9-bharatvarsh.cdn.runn.tv/amg01106c2/hls.m3u8
+    * https://tv9-marathi.cdn.runn.tv/amg01106c7/hls.m3u8
+    * https://tv9-telugu.cdn.runn.tv/amg01106c4/hls.m3u8
+
+[AUTO-BOT] doms9/iptv (Updated: 2026-11-22, Stars: 291)
+  Scrapes from:
+    * https://a.espncdn.com/combiner/i
+    * https://api
+    * https://damitv.st
+    * https://mainportal66.com
+    * https://streameast.cool
+  Outputs (M3U):
+    > https://raw.githubusercontent.com/doms9/iptv/default/M3U8/TV.m3u8
+    > https://raw.githubusercontent.com/doms9/iptv/default/M3U8/base.m3u8
+    > https://raw.githubusercontent.com/doms9/iptv/default/M3U8/events.m3u8
+    > https://raw.githubusercontent.com/doms9/iptv/default/M3U8/kodi.m3u8
+
+[AUTO-BOT] birdtwelve/bird-iptv (Updated: 2026-11-22, Stars: 9)
+  Scrapes from:
+    * https://api.cdn-live.tv/api/v1/events/sports
+    * https://embedhd.org/api-event.php
+    * https://istreameast.app
+  Outputs (M3U):
+    > https://raw.githubusercontent.com/birdtwelve/bird-iptv/main/M3U8/TV.m3u8
+    > https://raw.githubusercontent.com/birdtwelve/bird-iptv/main/M3U8/base.m3u8
+    > https://raw.githubusercontent.com/birdtwelve/bird-iptv/main/TiviOne%20Full.m3u
+    > https://raw.githubusercontent.com/birdtwelve/bird-iptv/main/european_radio.m3u
+    > https://raw.githubusercontent.com/birdtwelve/bird-iptv/main/world_radio.m3u
+
+[AUTO-BOT] KuchiSofts/vlc-redesign (Updated: 2026-11-22, Stars: 108)
+  Scrapes from:
+    * https://kuchisofts.github.io/vlc-redesign/tv/catalog.json
+  Outputs (M3U):
+    > https://raw.githubusercontent.com/KuchiSofts/vlc-redesign/main/extras/juxtopposed/fixtures/fuzz/m3u-extra.m3u
+    > https://raw.githubusercontent.com/KuchiSofts/vlc-redesign/main/extras/juxtopposed/fixtures/iptv-playlist.m3u
+
+[AUTO-BOT] Jimmyx96/JimmyIPTV (Updated: 2026-11-22, Stars: 0)
+  Outputs (M3U):
+    > https://raw.githubusercontent.com/Jimmyx96/JimmyIPTV/main/Jimmy.m3u
+    > https://raw.githubusercontent.com/Jimmyx96/JimmyIPTV/main/Jimmy_Smarters.m3u
+
+[AUTO-BOT] fyildirim-debug/M3uEditor (Updated: 2026-11-22, Stars: 13)
+
+[AUTO-BOT] Romaxa55/MegaV_Public (Updated: 2026-11-22, Stars: 109)
+
+[AUTO-BOT] jeanjofi/iptvjson (Updated: 2026-11-22, Stars: 0)
+  Scrapes from:
+    * http://103.140.254.2
+    * http://103.182.170.32
+    * http://103.229.254.25
+    * http://162.249.127.3/live/758811/854100/98895.ts
+    * http://217.20.112.199/natgeowild/index.m3u8
+    * http://ae325328.ucomist.net/iptv/Z3SWF9EL3YPX5N/6568/index.m3u8
+    * http://ae325328.ucomist.net/iptv/Z3SWF9EL3YPX5N/6569/index.m3u8
+    * http://ae325328.ucomist.net/iptv/Z3SWF9EL3YPX5N/6572/index.m3u8
+    * http://ae325328.ucomist.net/iptv/Z3SWF9EL3YPX5N/6578/index.m3u8
+    * http://ae325328.ucomist.net/iptv/Z3SWF9EL3YPX5N/6579/index.m3u8
+    * http://ae325328.ucomist.net/iptv/Z3SWF9EL3YPX5N/6626/index.m3u8
+    * http://ae325328.ucomist.net/iptv/Z3SWF9EL3YPX5N/6693/index.m3u8
+    * http://ae325328.ucomist.net/iptv/Z3SWF9EL3YPX5N/6698/index.m3u8
+    * http://ae325328.ucomist.net/iptv/Z3SWF9EL3YPX5N/6702/index.m3u8
+    * http://iptvcasomsapi.jprdigital.in/x-media/C0476/master.m3u8
+    * http://moul4tv.xyz/play/live.php
+    * http://olxi0fko.ukminlt.fun/iptv/HV7NY9RSQCHYZK/6653/index.m3u8
+    * http://tv.zapping.life
+    * https://amg01448-amg01448c15-samsung-in-3494.playouts.now.amagi.tv/ts-eu-w1-n2/playlist/amg01448-samsungindia-historychannelenglish-samsungin/playlist.m3u8
+    * https://binge-giotv.pages.dev/data/id.json
+    * https://cdn-3.pishow.tv/live/1123/master.m3u8
+    * https://cdn-3.pishow.tv/live/1530/master.m3u8
+    * https://cdn-7.pishow.tv/live/1129/master.m3u8
+    * https://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/62ea45010d0611000839868c/master.m3u8
+    * https://d2o8pibksxtln6.cloudfront.net/live/media/Sun_Music_HD/hls/Sun_Music_HD.m3u8
+    * https://d2o8pibksxtln6.cloudfront.net/live/media/Zee_Tamil_HD/hls/Zee_Tamil_HD.m3u8
+    * https://d2px1d6ssc60fw.cloudfront.net/SunTV/SunTV-HDR10-IN-index.m3u8
+    * https://da86m1sqpm3o0.cloudfront.net/28072023/smil:colorstamilhd11.smil/playlist.m3u8
+    * https://ddash74r36xqp.cloudfront.net/master_2000.m3u8
+    * https://futbollive.online/T-Sports/tracks-v1a1/mono.m3u8
+    * https://jiotvapi.cdn.jio.com/apis/v1.3/getepg/get
+    * https://jtvplusm3u.knvh02v9pi6dct.workers.dev/playlist.m3u
+    * https://mumbai-edge.smartplaytv.in/JayaPLus/index.m3u8
+    * https://mumt01.tangotv.in/KAIRALI/index.m3u8
+    * https://mumt04.tangotv.in/RAJMUSIXMALAYALAM/index.m3u8
+    * https://raw.githubusercontent.com/amazeyourself/tamil-local-iptv/main/channels-ml.m3u
+    * https://raw.githubusercontent.com/amazeyourself/tamil-local-iptv/main/channels.m3u
+    * https://royalstarindia.co.in/pularitv_hls/pularitv.m3u8
+    * https://segment.yuppcdn.net/140622/isaiaruvi/playlist.m3u8
+    * https://segment.yuppcdn.net/240122/kalaignartv/playlist.m3u8
+    * https://segment.yuppcdn.net/240122/siripoli/playlist.m3u8
+    * https://stream.galaxyott.live/live/utv/index.m3u8
+    * https://stream.logichost.in/NTV/live/chunklist_w1420234415.m3u8
+    * https://tata.jeanjofi.workers.dev/astro.m3u
+    * https://tata.jeanjofi.workers.dev/izzigo.m3u
+    * https://tata.jeanjofi.workers.dev/mumbai.m3u
+  Outputs (M3U):
+    > https://raw.githubusercontent.com/jeanjofi/iptvjson/main/jo.m3u
+
+[AUTO-BOT] yutao8/starred (Updated: 2026-11-22, Stars: 176)
+
+[AUTO-BOT] Mrbotrx/BD-OTT-PLAYLIST (Updated: 2026-11-22, Stars: 0)
+  Scrapes from:
+    * http://origin5.mediacdn.ru/live/kidstv/index.m3u8
+    * https://2-fss-2.streamhoster.com/pl_140/amlst:200914-1298290/playlist.m3u8
+    * https://247wlive.foxweather.com/stream/index.m3u8
+    * https://27c980761ff9437d929e64647afe183a.mediatailor.us-east-1.amazonaws.com/v1/master/44f73ba4d03e9607dcd9bebdcb8494d86964f1d8/RakutenTV-eu_TravelXP/playlist.m3u8
+    * https://3abn.bozztv.com/3abn2/Kids_live/smil:Kids_live.smil/playlist.m3u8
+    * https://4397879b.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWRlX0ZJRkFQbHVzR2VybWFuX0hMUw/playlist.m3u8
+    * https://5c7b683162943.streamlock.net/live/ngrp:sportsone_all/playlist.m3u8
+    * https://5dd3981940faa.streamlock.net
+    * https://a-cdn.klowdtv.com/live1/oan_720p/playlist.m3u8
+    * https://aenetworks-worldwartv-rakuten.amagi.tv/playlist.m3u8
+    * https://app.ncare.live/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcGVMZEJCTEFWeVN3PTOmdFsaWRtaW51aiPhnPTI2/ntvuk00332211.stream/playlist.m3u8
+    * https://autentic-adventure-earth-1-eu.rakuten.wurl.tv/playlist.m3u8
+    * https://byphdgllyk.gpcdn.net/hls/deeptotv/index.m3u8
+    * https://cdn-ue1-prod.tsv2.amagi.tv/linear/amg00684-accuweather-accuweather-plex/playlist.m3u8
+    * https://cdn.mycloudstream.io/hls/live/broadcast/nro19k2h/index.m3u8
+    * https://d3qs3d2rkhfqrt.cloudfront.net/out/v1/7ff57cc9046b4c188b51a0d506f36e7f/index_3.m3u8
+    * https://d7x8z4yuq42qn.cloudfront.net/index_7.m3u8
+    * https://dfhsahpa45kk2.cloudfront.net/scheduler/scheduleMaster/476.m3u8
+    * https://distro001-gb-hls1-prd.delivery.skycdp.com/easel_cdn/ngrp:weather_loop.stream_all/playlist.m3u8
+    * https://dyjmyiv3bp2ez.cloudfront.net/pub-iotv9banaen8yq/liveabr/playlist.m3u8
+    * https://feeds.intoday.in/hltapps/api/master.m3u8
+    * https://g4wlkwx8l23a-hls-live.5centscdn.com/HUM/271ddf829afeece44d8732757fba1a66.sdp/playlist_dvr.m3u8
+    * https://jukin-weatherspy-2-in.samsung.wurl.tv/playlist.m3u8
+    * https://kbtvpro.totalh.net/
+    * https://live-bangla.akamaized.net/liveabr/playlist.m3u8
+    * https://live-hls-apps-aje-fa.getaj.net/AJE/index.m3u8
+    * https://livecdn.live247stream.com/discoverpakistan/web/playlist.m3u8
+    * https://mediaserver.abnvideos.com/streams/abnurdu.m3u8
+    * https://moonbug-rokuus.amagi.tv/playlist.m3u8
+    * https://s.emisoras.tv
+    * https://streams2.sofast.tv/sofastplayout/WiseM3U8_1/master.m3u8
+    * https://streams2.sofast.tv/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/e0b81a5c-6ab5-48cd-aaa9-f82de4ab5bf9/manifest.m3u8
+    * https://streams2.sofast.tv/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/eea68b79-bfe2-451e-a227-d637a5b9548a/manifest.m3u8
+    * https://tvsen1.aynaott.com/bB3A5dyq/index.m3u8
+    * https://tvsen1.aynaott.com/shn6jGTk/index.m3u8
+    * https://tvsen3.aynaott.com/34fJSjZP/index.m3u8
+    * https://tvsen3.aynaott.com/7mm4pwCy/index.m3u8
+    * https://tvsen3.aynaott.com/EuEy5mBW/index.m3u8
+    * https://tvsen3.aynaott.com/P2hjvFHV/index.m3u8
+    * https://tvsen3.aynaott.com/TJcnZW3U/index.m3u8
+    * https://tvsen3.aynaott.com/Zht5VqBb/index.m3u8
+    * https://tvsen3.aynaott.com/dbbcY6NG/index.m3u8
+    * https://tvsen3.aynaott.com/jTqkTE8W/index.m3u8
+    * https://tvsen3.aynaott.com/m94BZDYb/index.m3u8
+    * https://tvsen3.aynaott.com/sFwCR6Fu/index.m3u8
+    * https://tvsen3.aynaott.com/u3NjUrny/index.m3u8
+    * https://tvsen3.aynaott.com/uYpFg3RV/index.m3u8
+    * https://tvsen3.aynaott.com/wpa56Uk3/index.m3u8
+    * https://tvsen3.aynaott.com/z24qLsqV/index.m3u8
+    * https://tvsen5.aynaott.com/P3y2URgG7LDe/index.m3u8
+    * https://tvsen5.aynaott.com/SyQuXz8sC3TB/index.m3u8
+    * https://tvsen5.aynaott.com/TnMn5kZz8/index.m3u8
+    * https://tvsen5.aynaott.com/asdfadsf/index.m3u8
+    * https://tvsen5.aynaott.com/ba47dHpDk3Se/index.m3u8
+    * https://tvsen5.aynaott.com/discoveryfamily/index.m3u8
+    * https://tvsen5.aynaott.com/kP9vX2mZ7qL5wN3t/index.m3u8
+    * https://tvsen5.aynaott.com/skynews/index.m3u8
+    * https://tvsen5.aynaott.com/tK2BNdfsdfsdf/index.m3u8
+    * https://tvsen5.aynaott.com/tgUzpPc9r6xw/index.m3u8
+    * https://tvsen5.aynaott.com/xV4jEKf3D9zc/index.m3u8
+    * https://tvsen6.aynaott.com/1d3uG9VCgrR9DRtWZM57/index.m3u8
+    * https://tvsen6.aynaott.com/39ee93nUbCCmm5LsyD4t/index.m3u8
+    * https://tvsen6.aynaott.com/3Cb2WLFz/index.m3u8
+    * https://tvsen6.aynaott.com/ABCxzdsdNews/index.m3u8
+    * https://tvsen6.aynaott.com/AkyX5dunzju4cpo26dr7/index.m3u8
+    * https://tvsen6.aynaott.com/EWDrV5QskgarZEUBb3pU/index.m3u8
+    * https://tvsen6.aynaott.com/Epm7WrFa/index.m3u8
+    * https://tvsen6.aynaott.com/FNHpYvGZ7FkCE10PwTHm/index.m3u8
+    * https://tvsen6.aynaott.com/KGdZEdA7qQ43dmPkgk1j/index.m3u8
+    * https://tvsen6.aynaott.com/LeUAm4F1iixYns3s3Non/index.m3u8
+    * https://tvsen6.aynaott.com/M2W2UR49dmeKbZnmdRzN/index.m3u8
+    * https://tvsen6.aynaott.com/MarqueeSportsNetwork/index.m3u8
+    * https://tvsen6.aynaott.com/N8Xbo5vdwVU6sF43RsW0/index.m3u8
+    * https://tvsen6.aynaott.com/Qq3s5WR2/index.m3u8
+    * https://tvsen6.aynaott.com/TaVfw58T/index.m3u8
+    * https://tvsen6.aynaott.com/TjGR1GcxKetHNVcMVxbq/index.m3u8
+    * https://tvsen6.aynaott.com/Wef2Vj67njeYGDqQNFB9/index.m3u8
+    * https://tvsen6.aynaott.com/XMpHaEf0ANBhv8w6NWR7/index.m3u8
+    * https://tvsen6.aynaott.com/YrVDF8gujkdh/index.m3u8
+    * https://tvsen6.aynaott.com/amc/index.m3u8
+    * https://tvsen6.aynaott.com/bloombergtv/index.m3u8
+    * https://tvsen6.aynaott.com/cdgr3tw6WoG7JyRnLbi0/index.m3u8
+    * https://tvsen6.aynaott.com/channel52/index.m3u8
+    * https://tvsen6.aynaott.com/cnbc/index.m3u8
+    * https://tvsen6.aynaott.com/cnn/index.m3u8
+    * https://tvsen6.aynaott.com/cp24/index.m3u8
+    * https://tvsen6.aynaott.com/da6WMXAk/index.m3u8
+    * https://tvsen6.aynaott.com/faGd3tuq/index.m3u8
+    * https://tvsen6.aynaott.com/fbgZV3X17hwWcyfZ4pdb/index.m3u8
+    * https://tvsen6.aynaott.com/fox5/index.m3u8
+    * https://tvsen6.aynaott.com/foxbusiness/index.m3u8
+    * https://tvsen6.aynaott.com/foxnews/index.m3u8
+    * https://tvsen6.aynaott.com/kajlsd57jnzxyo/index.m3u8
+    * https://tvsen6.aynaott.com/kolkatatv/index.m3u8
+    * https://tvsen6.aynaott.com/maasrangatv/index.m3u8
+    * https://tvsen6.aynaott.com/mtv/index.m3u8
+    * https://tvsen6.aynaott.com/nfl/index.m3u8
+    * https://tvsen6.aynaott.com/pF66Tkz0qFwP2aMMqHyt/index.m3u8
+    * https://tvsen6.aynaott.com/pKb5k6NnzxsKpWUs6E8M/index.m3u8
+    * https://tvsen6.aynaott.com/rELXiuUXqbgzPb06Npom/index.m3u8
+    * https://tvsen6.aynaott.com/ryFkXfd1a4CQ7mMdc820/index.m3u8
+    * https://tvsen6.aynaott.com/talkSPORT/index.m3u8
+    * https://tvsen6.aynaott.com/y0q9eFAuquAtvTxRzUHq/index.m3u8
+    * https://vods2.aynaott.com/gseriesDrama/index.m3u8
+    * https://vods2.aynaott.com/hindimovies/index.m3u8
+  Outputs (M3U):
+    > https://raw.githubusercontent.com/Mrbotrx/BD-OTT-PLAYLIST/main/india/India_vip.m3u
+    > https://raw.githubusercontent.com/Mrbotrx/BD-OTT-PLAYLIST/main/kb_go_playlist.m3u8
+    > https://raw.githubusercontent.com/Mrbotrx/BD-OTT-PLAYLIST/main/output/BD-KB-IT.m3u
+
+[AUTO-BOT] tv-bd1/bestiptvpro (Updated: 2026-11-22, Stars: 0)
+  Outputs (M3U):
+    > https://raw.githubusercontent.com/tv-bd1/bestiptvpro/main/All.m3u
+    > https://raw.githubusercontent.com/tv-bd1/bestiptvpro/main/FMRadio.m3u
+    > https://raw.githubusercontent.com/tv-bd1/bestiptvpro/main/Sports.m3u
+
 [REPO] mdislammondol160-del/Bangladesh-IPTV-Scraper (Updated: 2026-09-15, Stars: 0)
   Scrapes from:
     * http://tvsen7.aynascope.net/sspts1/index.m3u8
@@ -20002,10 +20621,6 @@ Total Bot M3U Playlists Saved: 754
 
 [REPO] ashik-maybe/bdix-ftp-server-tester (Updated: 2026-11-18, Stars: 1)
 
-[REPO] time2shine/Rokon-IPTV (Updated: 2026-11-21, Stars: 10)
-  Outputs (M3U):
-    > https://raw.githubusercontent.com/time2shine/Rokon-IPTV/main/playlist.m3u
-
 [REPO] KareemAmerr/Iptv (Updated: 2026-11-21, Stars: 0)
 
 [REPO] DobyMigs/neutv-cable (Updated: 2026-11-21, Stars: 0)
@@ -20039,10 +20654,6 @@ Total Bot M3U Playlists Saved: 754
     > https://raw.githubusercontent.com/kele551/iptv-shell/main/data/sample.m3u
 
 [REPO] ARHisham24/IPTV24-7 (Updated: 2026-11-21, Stars: 0)
-
-[REPO] wgq11/iptv (Updated: 2026-11-21, Stars: 3)
-  Outputs (M3U):
-    > https://raw.githubusercontent.com/wgq11/iptv/main/result.m3u
 
 [REPO] dzh0ni/iPTV-FREE-LIST (Updated: 2026-11-21, Stars: 259)
   Outputs (M3U):
@@ -20123,6 +20734,20 @@ Total Bot M3U Playlists Saved: 754
 [REPO] csev7n/xoilacz-iptv (Updated: 2026-11-21, Stars: 3)
   Outputs (M3U):
     > https://raw.githubusercontent.com/csev7n/xoilacz-iptv/main/playlist.m3u
+
+[REPO] time2shine/Rokon-IPTV (Updated: 2026-11-22, Stars: 10)
+  Outputs (M3U):
+    > https://raw.githubusercontent.com/time2shine/Rokon-IPTV/main/playlist.m3u
+
+[REPO] wgq11/iptv (Updated: 2026-11-22, Stars: 3)
+  Scrapes from:
+    * http://107.150.60.122/live/gxwshd.m3u8
+    * http://107.150.60.122/live/szwshd.m3u8
+    * http://43.152.224.209/qctv.fengshows.cn/live/0701phk72.flv
+    * http://43.152.224.209/qctv.fengshows.cn/live/0701pin72.flv
+    * http://iptv.4666888.xyz/iptv2A.php
+  Outputs (M3U):
+    > https://raw.githubusercontent.com/wgq11/iptv/main/result.m3u
 
 [REPO] rmia41735-commits/BDIX-Live-TV (Updated: 2026-11-22, Stars: 1)
   Scrapes from:
@@ -20589,3 +21214,64 @@ Total Bot M3U Playlists Saved: 754
     > https://raw.githubusercontent.com/RickLlamador/iptvchannel/main/.m3u_backups/alltvgh_metadata_20260930_021413.m3u
     > https://raw.githubusercontent.com/RickLlamador/iptvchannel/main/.m3u_backups/alltvgh_metadata_20260930_021550.m3u
     > https://raw.githubusercontent.com/RickLlamador/iptvchannel/main/.m3u_backups/alltvgh_metadata_20260930_021755.m3u
+
+[REPO] abrarpro/iptv.m3u (Updated: 2026-11-22, Stars: 0)
+  Outputs (M3U):
+    > https://raw.githubusercontent.com/abrarpro/iptv.m3u/main/Desi%20Channel.m3u8
+    > https://raw.githubusercontent.com/abrarpro/iptv.m3u/main/Ent10.m3u
+    > https://raw.githubusercontent.com/abrarpro/iptv.m3u/main/Indiatv.m3u
+    > https://raw.githubusercontent.com/abrarpro/iptv.m3u/main/banglahd.m3u
+    > https://raw.githubusercontent.com/abrarpro/iptv.m3u/main/bdtv.m3u
+    > https://raw.githubusercontent.com/abrarpro/iptv.m3u/main/bdtv.m3u8
+    > https://raw.githubusercontent.com/abrarpro/iptv.m3u/main/cartoon.m3u
+    > https://raw.githubusercontent.com/abrarpro/iptv.m3u/main/flexo.m3u8
+
+[REPO] ghoster-iptv/IPTV-SHASHKA (Updated: 2026-11-22, Stars: 0)
+  Outputs (M3U):
+    > https://raw.githubusercontent.com/ghoster-iptv/IPTV-SHASHKA/main/iptv_shashka.m3u
+
+[REPO] jamsluuuuu/iptv (Updated: 2026-11-22, Stars: 3)
+  Scrapes from:
+    * http://120.76.248.139/live/bfgd/4200000108.m3u8
+    * http://120.76.248.139/live/bfgd/4200000246.m3u8
+    * http://bp-resource-dfl.bestv.cn/155/3/video.m3u8
+    * http://jwplay.hebyun.com.cn/live/xtsrmtzs/1500k/tzwj_video.m3u8
+    * http://php.jdshipin.com/TVOD/iptv.php
+    * http://tencentplay.gztv.com/live/zonghes.m3u8
+    * https://cdn3.indevs.in/stream/live/aod/
+    * https://hami.gxdx.org/hami/1756.m3u8
+    * https://hami.gxdx.org/hami/1759.m3u8
+    * https://jwplay.hebyun.com.cn
+    * https://lightning-tracesport-samsungau.amagi.tv/playlist1080p.m3u8
+    * https://outlivecloud-cdn.ysp.cctv.cn/3927EE6D80C42B0DEE135C0EFDEFA00F2B71772E3380482269E3622B6092D308BA334DF528690D05F47ABF07D15257396AD4307A6F1C86BF593B9205A809F4A94C7B95B9E704CCEB3C1646EEFB22B37FD404D5191AA75F4F83D720F4FE48A60A66500079A8C4ADAF87C1E25399DF9876352EF746AEA18CA4258AE993147B7438704E2824E17408CBFE5DB5F577C3FCC8CFDC6D7214E91E4DA1B76083E80D200B/2027249003_dlna.m3u8
+    * https://outlivecloud-cdn.ysp.cctv.cn/4A8E657B7770E2B254DFF337B9460A7C9A9560BD68871D9D3B9209D2A72078F68BE51014A60616B5A8E101232840A3F804804DA3057AFF46082245814D7922092480725AD3CB7B1BDB4AFE80DC718151D0FFFA29692FBB7410DD6C555C1AAF4E2D6B385CB34996851C74EDE4BDE7A6737DFFE7CCD5C26FEBC0203B9F01B882A9AD2B681F1680ABD59AA69F16CB3A8D3D2758BD9394DDD6039835DEDD735DE233/2024054503.m3u8
+    * https://outlivecloud-cdn.ysp.cctv.cn/4ABDDCA41BEA007F3D3B35351E6D5DF4BF09279EA619C6C5FBAD68D6024DC7A970F76599FFBA9E5D7CDEDC7EC0DBE19812B428EE682ECC4F6AE2BDC4BF0D1218CE0A4F02043CAAF2810A4212371B37039DF6BC15C5D75D63E54D65D667CF8506EF4F5A0E1A54D5AC7779537CE8443B423E58006AED23EB2B0FD0DCA2F61B9C562EEECDC6A355A3962E96F11B3790D5286ACF6EC2169322BA5F107B3285D10142/2024068503.m3u8
+    * https://outlivecloud-cdn.ysp.cctv.cn/95B46411847C6F90F28C5CD4AD9B952BA134B1CCEB439C62214B2D8BFF45BEEB3462AD5F5D26B987E9E3644DF41DD51F733AABBC5A4C01027661375BEFAD584E4029E2C8B2A51A6FDDD2CF6B7CE794FE71C55DA3B6C573E75640E993D6A6C9139F898058A6E2E53BE80395E6127CE1ED532424C43B28428A8543A4B84877E63A1A48144EECCB400D5CD777C6D57C9FD4A852EA19CBCF4C70518F8738A056A939/2025560803.m3u8
+    * https://outlivecloud-cdn.ysp.cctv.cn/9E63857644BE130F486E6C4220CBFE0A05679CFC1F3F1769AFD93EC43C7716E18C5C2EC5984AA8696701567D2AB0539A9F8F019CD193375E7F2B4FE3CEF78E39F891CD8ADD1E073C62FF92D4C4E5D8ABEDA737B08ADCC68509847F1FE7BCBA364CDC9F2D14EF91AEB0641CEDAE02239B3ABC113926F5C0EC499D19FD7B567019E8346B829D504A29C418652B990A0B23E1A733F9252A96A80DA2B5B4BEA79CA4/2025560803.m3u8
+    * https://outlivecloud-cdn.ysp.cctv.cn/AB3CB97A32C533666941E91554D0D3A61361E75CCE8603A813FA2D61B2C17F8B1E0D92C1ABAAB745BEBDF794C31A8541469CBB2C71B1BF9B1B7049577D4D4D9CB47046FA82CFC4F58797943CB07B91CD984B686E5A1809CE1FFDED286F2FBC28EF37FB7EC9E63414E4A52259254E255B1C675E5A6A650314B7C93EB803C74A062ADEAC8E50562903D5EC2D2A2AD6A32E63C6BE12DCC4C8E3FF2CCB2F37CD6FE3/2024061703.m3u8
+    * https://tencentplay.gztv.com/live/zonghes.m3u8
+  Outputs (M3U):
+    > https://raw.githubusercontent.com/jamsluuuuu/iptv/main/china-hk-mo-tw-live.m3u
+
+[REPO] phamanhquan2001/IPTV (Updated: 2026-11-22, Stars: 4)
+  Outputs (M3U):
+    > https://raw.githubusercontent.com/phamanhquan2001/IPTV/main/Conflict%20Zone.m3u
+    > https://raw.githubusercontent.com/phamanhquan2001/IPTV/main/Japan%20Racing%20Live%20Broadcast.m3u
+    > https://raw.githubusercontent.com/phamanhquan2001/IPTV/main/Lottery%20Results%20Live.m3u
+    > https://raw.githubusercontent.com/phamanhquan2001/IPTV/main/On%20Site%20Stream%20and%20Live%20Event.m3u
+    > https://raw.githubusercontent.com/phamanhquan2001/IPTV/main/Radio.m3u
+    > https://raw.githubusercontent.com/phamanhquan2001/IPTV/main/eSports%20Live.m3u
+
+[REPO] Br1-music/br1-aether (Updated: 2026-11-22, Stars: 0)
+
+[REPO] Marcomedia17/SK-CZ-IPTV (Updated: 2026-11-22, Stars: 0)
+
+[REPO] jaganmohann246/IPTV_playlists (Updated: 2026-11-22, Stars: 0)
+  Outputs (M3U):
+    > https://raw.githubusercontent.com/jaganmohann246/IPTV_playlists/main/playlist.m3u8
+
+[REPO] incmve/iptv-proxyV2 (Updated: 2026-11-22, Stars: 0)
+
+[REPO] trahiebi/IPTV-eric (Updated: 2026-11-22, Stars: 1)
+  Outputs (M3U):
+    > https://raw.githubusercontent.com/trahiebi/IPTV-eric/main/erictrahie1986-.m3u
