@@ -1,11 +1,12 @@
 """
-All-in-One Direct (No-Proxy) Live TV IPTV Updater (BD + Indian + English Only + Strict Country & Macro Filter)
+All-in-One Direct (No-Proxy) Live TV IPTV Updater (Multi-Source Internet-Wide + BD/Indian/English Only)
 Features:
-- Keeps ONLY Bangladeshi, Indian (all regional languages), and English channels (drops International/foreign junk)
+- Collects from AynaOTT, JagoBD, GitHub, GitLab, Codeberg, Pastebin, Rentry, Telegraph,
+  Official FAST TV APIs (SamsungTVPlus, PlutoTV, Plex, Roku), and iptv-org JSON API + M3U feeds
+- Keeps ONLY Bangladeshi, Indian (all regional languages), and English channels
 - Strictly separates Bangladeshi ('Bangladesh') from Indian Bangla ('Bangla (India)' & 'Kolkata Movies')
-- Blocks foreign RTV/NTV/BTV/News24/GTV homonyms (e.g. RTV Noord, NTV Russia, BTV Indonesia, News24 Australia)
-- Blocks expired/soon-to-expire tokens, unresolved [DEVICE_ID]/[IFA] macro URLs, VOD/movies, radio, spam (>65 chars)
-- Strips leading channel numbers (e.g. '14.SOMOY TV' -> 'Somoy TV') for true duplicate removal in playlist_clean.m3u
+- Blocks foreign RTV/NTV/BTV/News24/GTV homonyms, expired tokens, unresolved macro URLs, VOD, radio, spam
+- Strips leading channel numbers (e.g. '14.SOMOY TV' -> 'Somoy TV') for true deduplication
 - Deep HLS segment verification (requires >= 5KB real video chunk)
 - Generates THREE outputs:
   1. 'playlist.m3u': All verified alive BD, Indian & English streams (with backups)
@@ -36,6 +37,15 @@ IPTV_BASE = "https://iptv-org.github.io/iptv"
 COUNTRY_SOURCES = [
     ("Bangladesh", f"{IPTV_BASE}/countries/bd.m3u"),
     ("India",      f"{IPTV_BASE}/countries/in.m3u"),
+]
+
+# Direct Official FAST TV & Open Community Feeds (Always fetched even without discovered_sources.json)
+DIRECT_GLOBAL_FEEDS = [
+    ("FAST-TV", "https://i.mjh.nz/SamsungTVPlus/all.m3u8"),
+    ("FAST-TV", "https://i.mjh.nz/PlutoTV/all.m3u8"),
+    ("FAST-TV", "https://i.mjh.nz/Plex/all.m3u8"),
+    ("FAST-TV", "https://i.mjh.nz/Roku/all.m3u8"),
+    ("OpenDir", "https://raw.githubusercontent.com/Free-TV/IPTV/master/playlist.m3u8"),
 ]
 
 COMBOS = [
@@ -164,6 +174,23 @@ def normalize_lang_code(raw_lang):
         if token in ISO_LANG_MAP:
             return ISO_LANG_MAP[token]
     return raw_lang.strip().lower()[:3]
+
+
+def detect_source_label(url, default_src="Web/Git"):
+    low = url.lower()
+    if "mjh.nz" in low:
+        return "FAST-TV"
+    if "gitlab.com" in low:
+        return "GitLab"
+    if "codeberg.org" in low:
+        return "Codeberg"
+    if "pastebin.com" in low or "rentry.co" in low or "telegra.ph" in low:
+        return "WebPaste"
+    if "gist.githubusercontent.com" in low:
+        return "GitHub-Gist"
+    if "github" in low:
+        return "GitHub"
+    return default_src
 
 
 def parse_m3u(text, source):
@@ -383,20 +410,22 @@ def scrape_jagobd():
     return res
 
 
-def scrape_discovered_sources():
-    if not DISCOVERED_FILE.exists():
-        log("[DiscoveredSources] discovered_sources.json paoa jay ni, skip kora holo")
-        return []
+def scrape_discovered_and_global_feeds():
+    """GitHub, GitLab, Codeberg, Pastebin, Rentry, Telegraph o FAST TV API theke scrape korbe"""
+    upstream_urls = [u for _, u in DIRECT_GLOBAL_FEEDS]
+    bot_playlists = []
 
-    try:
-        data = json.loads(DISCOVERED_FILE.read_text(encoding="utf-8"))
-    except Exception as e:
-        log(f"[DiscoveredSources] JSON read error: {e}")
-        return []
+    if DISCOVERED_FILE.exists():
+        try:
+            data = json.loads(DISCOVERED_FILE.read_text(encoding="utf-8"))
+            upstream_urls.extend(data.get("all_upstream_sources", []))
+            bot_playlists.extend(data.get("all_bot_playlists", []))
+        except Exception as e:
+            log(f"[DiscoveredSources] JSON read error: {e}")
 
-    upstream_urls = data.get("all_upstream_sources", [])
-    bot_playlists = data.get("all_bot_playlists", [])
-    log(f"[DiscoveredSources] {len(upstream_urls)} ti upstream source o {len(bot_playlists)} ti bot feed check kora hocche...")
+    upstream_urls = list(dict.fromkeys(upstream_urls))
+    bot_playlists = list(dict.fromkeys(bot_playlists))
+    log(f"[InternetSources] {len(upstream_urls)} ti upstream/FAST/paste source o {len(bot_playlists)} ti repo feed check kora hocche...")
 
     res = []
 
@@ -423,13 +452,14 @@ def scrape_discovered_sources():
             pass
         return None
 
-    def fetch_upstream(u):
+    def fetch_any_feed(u):
         out = []
+        src_label = detect_source_label(u)
         try:
-            txt = http_get(u, timeout=5, max_bytes=1_000_000)
+            txt = http_get(u, timeout=6, max_bytes=2_000_000)
             if "#EXTINF" in txt:
-                chs = parse_m3u(txt, "GitHub")
-                if len(chs) <= 3000:
+                chs = parse_m3u(txt, src_label)
+                if len(chs) <= 4500:
                     return chs
                 return []
             links = re.findall(r'[\'"](https?://[^\'"]+?\.m3u8[^\'"]*)[\'"]', txt)
@@ -443,35 +473,24 @@ def scrape_discovered_sources():
                         "tvg_id": "",
                         "group": "Others",
                         "lang": "",
-                        "source": "GitHub"
+                        "source": src_label
                     })
         except Exception:
             pass
         return out
 
-    def fetch_bot_pl(u):
-        try:
-            txt = http_get(u, timeout=6, max_bytes=1_500_000)
-            if "#EXTINF" in txt:
-                chs = parse_m3u(txt, "GitHub")
-                if len(chs) <= 3000:
-                    return chs
-        except Exception:
-            pass
-        return []
-
-    total_sources = len(upstream_urls) + len(bot_playlists)
+    all_urls = list(dict.fromkeys(upstream_urls + bot_playlists))
+    total_sources = len(all_urls)
     done_sources = 0
     with ThreadPoolExecutor(max_workers=120) as ex:
-        futs = [ex.submit(fetch_upstream, u) for u in upstream_urls] + \
-               [ex.submit(fetch_bot_pl, p) for p in bot_playlists]
+        futs = [ex.submit(fetch_any_feed, u) for u in all_urls]
         for f in as_completed(futs):
             res.extend(f.result())
             done_sources += 1
             if done_sources % 300 == 0 or done_sources == total_sources:
-                log(f"[DiscoveredSources] progress: {done_sources}/{total_sources} source checked | {len(res)} channel paoa gese")
+                log(f"[InternetSources] progress: {done_sources}/{total_sources} source checked | {len(res)} channel paoa gese")
 
-    log(f"[DiscoveredSources] mot {len(res)} ti candidate channel paoa gese")
+    log(f"[InternetSources] mot {len(res)} ti candidate channel paoa gese")
     return res
 
 
@@ -517,7 +536,7 @@ def scrape_iptv_org_base():
     def get(url):
         if url not in cache:
             try:
-                cache[url] = parse_m3u(http_get(url, timeout=15, max_bytes=2_000_000), "GitHub")
+                cache[url] = parse_m3u(http_get(url, timeout=15, max_bytes=2_000_000), "IPTV-org")
             except Exception as e:
                 log(f"[IPTV-org] fail {url}: {e}")
                 cache[url] = []
@@ -543,6 +562,25 @@ def scrape_iptv_org_base():
             clean_u = c["url"].split("|")[0]
             detected_lg = url_lang_map.get(clean_u, "ben" if group == "Bangladesh" else c.get("lang", ""))
             res.append({**c, "group": "Sports" if "sport" in c.get("group", "").lower() else group, "lang": detected_lg})
+
+    # Direct iptv-org JSON API (catches unindexed BD, IN, US, UK, CA, AU streams)
+    try:
+        streams_api = json.loads(http_get("https://iptv-org.github.io/api/streams.json", timeout=15, max_bytes=4_000_000))
+        for st in streams_api:
+            ch_id = st.get("channel") or ""
+            st_url = st.get("url") or ""
+            if st_url and any(ch_id.lower().endswith(ext) for ext in (".bd", ".in", ".us", ".uk", ".ca", ".au")):
+                res.append({
+                    "name": ch_id.split(".")[0],
+                    "url": st_url,
+                    "logo": "",
+                    "tvg_id": ch_id,
+                    "group": "Bangladesh" if ch_id.lower().endswith(".bd") else ("India" if ch_id.lower().endswith(".in") else "English Entertainment"),
+                    "lang": "ben" if ch_id.lower().endswith(".bd") else "",
+                    "source": "IPTV-org"
+                })
+    except Exception as e:
+        log(f"[IPTV-org JSON API] error: {e}")
 
     log(f"[IPTV-org] mot {len(res)} official channel load hoyeche")
     return res
@@ -744,7 +782,10 @@ def check_all(channels):
 
 # ------------------------------------------------------------------ original name filter, language grouping & dedupe
 NOISE = {"hd", "fhd", "sd", "uhd", "4k", "live", "official", "hevc", "h265", "h264"}
-SOURCE_RANK = {"AynaOTT": 0, "JagoBD": 1, "GitHub": 2}
+SOURCE_RANK = {
+    "AynaOTT": 0, "JagoBD": 1, "FAST-TV": 2, "IPTV-org": 3,
+    "GitHub": 4, "GitLab": 5, "Codeberg": 6, "GitHub-Gist": 7, "WebPaste": 8
+}
 
 VALID_SHORT_NAMES = {
     "bbc", "cnn", "ndtv", "mtv", "btv", "rtv", "ntv", "gtv", "atn", "dbc", "satv",
@@ -804,7 +845,6 @@ def is_garbage_channel_name(name):
 
 
 def norm(name):
-    # Shurur serial number (e.g. "14.SOMOY TV", "111.BTV") bad diye duplicate dhorbe
     n = re.sub(r"^\d+\s*\.\s*", "", name.lower())
     n = re.sub(r"[\(\[].*?[\)\]]", " ", n)
     n = re.sub(r"\b\d{3,4}p\b", " ", n)
@@ -824,11 +864,10 @@ def is_blocked_or_non_tv(c):
     url = c.get("url", "")
     t = f"{name} {group}".lower()
 
-    # Unresolved macro URLs (e.g. [DEVICE_ID], [IFA]) bad debe
     if any(m in url for m in ("[DEVICE_ID]", "[IFA]", "[APP_BUNDLE]", "[COUNTRY]")):
         return True
 
-    if c.get("source") == "GitHub" and EXPIRED_TOKEN_URL_RE.search(url):
+    if c.get("source") not in ("AynaOTT", "JagoBD", "FAST-TV") and EXPIRED_TOKEN_URL_RE.search(url):
         return True
 
     if any(re.search(rf"\b{re.escape(w)}\b", t) for w in BLOCK_WORDS):
@@ -915,7 +954,7 @@ PAY_ENT_CH_RE = re.compile(
 PAY_SPORTS_RE = re.compile(
     r"\b(star sports|sony ten|sony sports|ten sports|t sports|willow|ptv sports|eurosport|"
     r"bein sports|sky sports|bt sport|tnt sports|fox sports|espn|dazn|super sport|dd sports|sports 18|sports18|"
-    r"geo super|a sports|premier sports|arena sport|sport tv|nova sport|canal\+ sport)\b", re.I
+    r"geo super|a sports|premier sports|arena sport|sport tv|nova sport|canal\+ sport|fancode)\b", re.I
 )
 
 FOREIGN_COUNTRY_TAG_RE = re.compile(
@@ -1128,9 +1167,9 @@ def write_source_report(alive, clean_alive):
         by_domain[dom].append(entry)
 
     rep = [
-        f"=== IPTV Source & Channel Breakdown Report ({time.strftime('%Y-%m-%d %H:%M:%S UTC', time.gmtime())}) ===",
+        f"=== Internet-Wide IPTV Source & Channel Breakdown Report ({time.strftime('%Y-%m-%d %H:%M:%S UTC', time.gmtime())}) ===",
         f"Total Alive Streams: {len(alive)} | Clean Unique Channels: {len(clean_alive)}\n",
-        "--- 1. SUMMARY BY SOURCE ENGINE ---"
+        "--- 1. SUMMARY BY SOURCE PLATFORM / ENGINE ---"
     ]
     for src, ch_list in sorted(by_source.items(), key=lambda x: -len(x[1])):
         rep.append(f"  * {src}: {len(ch_list)} channels")
@@ -1160,7 +1199,7 @@ def main():
     scrapers = (
         ("AynaOTT", scrape_aynaott),
         ("JagoBD", scrape_jagobd),
-        ("DiscoveredSources", scrape_discovered_sources),
+        ("InternetSources", scrape_discovered_and_global_feeds),
         ("AdaptiveRepos", scrape_adaptive_repos),
         ("IPTV-org", scrape_iptv_org_base),
     )
@@ -1194,7 +1233,7 @@ def main():
         grp = classify_by_language_and_name(c)
         if grp not in ALLOWED_GROUPS:
             continue
-        if (c["source"] == "GitHub" and grp in ("Bangladesh", "Kolkata Movies", "Bangla Music")
+        if (c["source"] not in ("AynaOTT", "JagoBD") and grp in ("Bangladesh", "Kolkata Movies", "Bangla Music")
                 and any(h in c["url"].lower() for h in NOT_BANGLA_HOSTS)):
             continue
         c["group"] = grp
