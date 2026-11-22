@@ -1,12 +1,12 @@
 """
-All-in-One Direct (No-Proxy) Live TV IPTV Updater (BD + Indian + English Only + Strict Country Filter)
+All-in-One Direct (No-Proxy) Live TV IPTV Updater (BD + Indian + English Only + Strict Country & Macro Filter)
 Features:
 - Keeps ONLY Bangladeshi, Indian (all regional languages), and English channels (drops International/foreign junk)
 - Strictly separates Bangladeshi ('Bangladesh') from Indian Bangla ('Bangla (India)' & 'Kolkata Movies')
 - Blocks foreign RTV/NTV/BTV/News24/GTV homonyms (e.g. RTV Noord, NTV Russia, BTV Indonesia, News24 Australia)
-- Blocks expired/soon-to-expire tokens, VOD/movies, radio, spam (>65 chars), and gibberish/Amagi ID names
+- Blocks expired/soon-to-expire tokens, unresolved [DEVICE_ID]/[IFA] macro URLs, VOD/movies, radio, spam (>65 chars)
+- Strips leading channel numbers (e.g. '14.SOMOY TV' -> 'Somoy TV') for true duplicate removal in playlist_clean.m3u
 - Deep HLS segment verification (requires >= 5KB real video chunk)
-- Live token scrapers for AynaOTT & JagoBD + 'discovered_sources.json' + IPTV-org
 - Generates THREE outputs:
   1. 'playlist.m3u': All verified alive BD, Indian & English streams (with backups)
   2. 'playlist_clean.m3u': Duplicate-free, lowest ping (fastest response) 1 link per channel
@@ -804,7 +804,8 @@ def is_garbage_channel_name(name):
 
 
 def norm(name):
-    n = name.lower()
+    # Shurur serial number (e.g. "14.SOMOY TV", "111.BTV") bad diye duplicate dhorbe
+    n = re.sub(r"^\d+\s*\.\s*", "", name.lower())
     n = re.sub(r"[\(\[].*?[\)\]]", " ", n)
     n = re.sub(r"\b\d{3,4}p\b", " ", n)
     n = n.replace("television", "tv")
@@ -822,6 +823,10 @@ def is_blocked_or_non_tv(c):
     group = c.get("group", "")
     url = c.get("url", "")
     t = f"{name} {group}".lower()
+
+    # Unresolved macro URLs (e.g. [DEVICE_ID], [IFA]) bad debe
+    if any(m in url for m in ("[DEVICE_ID]", "[IFA]", "[APP_BUNDLE]", "[COUNTRY]")):
+        return True
 
     if c.get("source") == "GitHub" and EXPIRED_TOKEN_URL_RE.search(url):
         return True
@@ -913,7 +918,6 @@ PAY_SPORTS_RE = re.compile(
     r"geo super|a sports|premier sports|arena sport|sport tv|nova sport|canal\+ sport)\b", re.I
 )
 
-# বিদেশি দেশের চ্যানেল ব্লক করার প্যাটার্ন (যেমন: RTV Noord, NTV Russia, BTV Indonesia, News24 Australia)
 FOREIGN_COUNTRY_TAG_RE = re.compile(
     r"(\.(nl|rs|ru|tr|it|es|au|id|bg|gh|vn|ba|xk|al|cl|ec|cr|cm|ci|kh|mn|hu|at|ch|de|fr|br|pe|do)\b|"
     r"\b(netherlands|serbia|russia|turkiye|turkey|italy|spain|españa|australia|indonesia|bulgaria|"
@@ -925,7 +929,6 @@ FOREIGN_COUNTRY_TAG_RE = re.compile(
     re.I
 )
 
-# প্রকৃত বাংলাদেশি চ্যানেলসমূহ
 BD_ONLY_RE = re.compile(
     r"(\b(bangladesh|bangladeshi|sangsad|somoy|jamuna|ekattor|channel 24|dbc|independent|"
     r"atn bangla|atn news|atn islamic|atn music|news 24 bd|news24 tv|channel i|channel 9|channel s|"
@@ -939,7 +942,6 @@ BD_ONLY_RE = re.compile(
     re.I
 )
 
-# ভারতীয় বাংলা চ্যানেলসমূহ
 INDIA_BANGLA_RE = re.compile(
     r"\b(star jalsha|jalsha|zee bangla|sony aath|colors bangla|sun bangla|akas aath|akash aath|"
     r"sangeet bangla|dhoom music|rupashi bangla|ruposhi bangla|dd bangla|dd tripura|abp ananda|"
@@ -967,7 +969,6 @@ def classify_by_language_and_name(c):
     lgroup = group.lower()
     t = f"{lname} {lgroup}"
 
-    # 0. Foreign country homonyms block (e.g. RTV Noord, NTV Russia, BTV Indonesia, News24 Australia)
     if FOREIGN_COUNTRY_TAG_RE.search(f"{lname} {tvg_id.lower()}") and not BD_ONLY_RE.search(lname):
         return "DROP"
 
