@@ -39,6 +39,7 @@ jobs:
 
       - name: Discover GitHub Bots & Upstream Sources
         if: steps.timer.outputs.run_search == 'true'
+        continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.MY_GH_TOKEN }}
         run: python discover_sources.py
@@ -57,7 +58,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          for f in playlist.m3u playlist_clean.m3u discovered_sources.json bot_report.txt source_report.txt last_search.txt; do
+          for f in playlist.m3u playlist_clean.m3u discovered_sources.json bot_report.txt source_report.txt source_health.json last_search.txt; do
             [ -f "$f" ] && git add "$f"
           done
           if ! git diff --staged --quiet; then
