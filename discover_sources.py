@@ -3,9 +3,9 @@ Global Multi-Platform Live TV & IPTV Source Discovery Engine (BD, Indian & Engli
 Searches across:
 1. GitHub (Repositories + Topics + Code/M3U Signatures for BD, Indian & English streams)
 2. GitLab Public API (Projects + Public Snippets)
-3. Codeberg Public API (Repositories with 429 Circuit Breaker)
-4. GitHub Public Gists
-5. DuckDuckGo Web Search (Pastebin, Rentry, Telegraph, Bitbucket, HuggingFace, dpaste, Open Indexes)
+3. Codeberg Public API (Repositories with Adaptive Backoff & 429 Circuit Breaker)
+4. GitHub Public Gists (Targeted M3U/IPTV Gist Discovery)
+5. DuckDuckGo Lite Search (Pastebin, Rentry, Telegraph, Bitbucket, HuggingFace, dpaste, Open Indexes)
 6. Built-in Official FAST TV & Open Directory Feeds (SamsungTVPlus, PlutoTV, Plex, Roku, Stirr, LG, Vizio, Xumo, DistroTV, Free-TV, iptv-org)
 """
 import json, os, re, time
@@ -18,7 +18,7 @@ OUT_JSON = Path("discovered_sources.json")
 OUT_REPORT = Path("bot_report.txt")
 HEALTH_JSON = Path("source_health.json")
 
-UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/129.0.0.0 Safari/537.36"
+UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
 GH_HEADERS = {"User-Agent": UA, "Accept": "application/vnd.github+json"}
 if GITHUB_TOKEN:
     GH_HEADERS["Authorization"] = f"Bearer {GITHUB_TOKEN.strip()}"
@@ -106,7 +106,7 @@ BUILTIN_DIRECT_FEEDS = [
     "https://i.mjh.nz/Plex/all.m3u8",
     "https://i.mjh.nz/Roku/all.m3u8",
     "https://i.mjh.nz/Stirr/all.m3u8",
-    # ApsatTV Official Open FAST Feeds (LG, Vizio, Xumo, DistroTV, LocalNow, Tubi)
+    # ApsatTV Official Open FAST Feeds (LG, Vizio, Xumo, DistroTV, LocalNow, Tubi, Redbox)
     "https://www.apsattv.com/lg.m3u",
     "https://www.apsattv.com/vizio.m3u",
     "https://www.apsattv.com/xumo.m3u",
@@ -188,7 +188,7 @@ def is_valid_upstream_url(url, self_repo_prefix="", health_data=None):
 
 
 def fetch_json(url, headers=None, retries=2):
-    hdrs = headers or {"User-Agent": UA}
+    hdrs = headers or {"User-Agent": UA, "Accept": "application/json"}
     for attempt in range(retries + 1):
         try:
             req = urllib.request.Request(url, headers=hdrs)
@@ -204,8 +204,16 @@ def fetch_json(url, headers=None, retries=2):
     return {}
 
 
-def fetch_text(url, timeout=12):
-    req = urllib.request.Request(url, headers={"User-Agent": UA})
+def fetch_text(url, timeout=12, post_data=None):
+    hdrs = {
+        "User-Agent": UA,
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.9",
+    }
+    if post_data is not None:
+        hdrs["Content-Type"] = "application/x-www-form-urlencoded"
+        hdrs["Referer"] = "https://lite.duckduckgo.com/"
+    req = urllib.request.Request(url, data=post_data, headers=hdrs)
     with urllib.request.urlopen(req, timeout=timeout) as r:
         return r.read(1_000_000).decode("utf-8", errors="ignore")
 
@@ -333,93 +341,125 @@ def search_gitlab_and_codeberg():
     except Exception as e:
         log(f"[GitLab Snippets Error] {e}")
 
-    # Codeberg with 429 Circuit Breaker
-    cb_429_count = 0
-    for kw in ALT_GIT_KEYWORDS[:6]:
-        if cb_429_count >= 2:
-            log("[Codeberg] Rate limit threshold reached. Skipping remaining Codeberg queries.")
+    # Codeberg with Adaptive Backoff & Graceful Skip (avoids noisy 429 errors on shared CI IPs)
+    cb_headers = {
+        "User-Agent": "IPTV-Playlist-Aggregator/1.0 (+https://github.com)",
+        "Accept": "application/json"
+    }
+    cb_blocked = False
+    for idx, kw in enumerate(ALT_GIT_KEYWORDS[:4]):
+        if cb_blocked:
             break
-        time.sleep(12)
-        try:
-            cb_url = f"https://codeberg.org/api/v1/repos/search?q={urllib.parse.quote(kw)}&sort=updated&limit=20"
-            res = fetch_json(cb_url, retries=0)
-            cb_429_count = 0
-            for item in res.get("data", []):
-                fn = item.get("full_name")
-                branch = item.get("default_branch") or "main"
-                if fn:
-                    repo_key = f"codeberg:{fn}"
-                    extra_repos[repo_key] = {
-                        "repo": repo_key,
-                        "platform": "codeberg",
-                        "branch": branch,
-                        "updated": (item.get("updated_at") or "")[:10],
-                        "stars": item.get("stars_count", 0),
-                        "is_auto_bot": True,
-                        "playlists": [],
-                        "upstream_sources": [],
-                    }
-                    for fname in ("playlist.m3u", "playlist.m3u8", "index.m3u", "tv.m3u", "iptv.m3u", "live.m3u"):
-                        extra_playlists.add(f"https://codeberg.org/{fn}/raw/branch/{branch}/{fname}")
-        except urllib.error.HTTPError as e:
-            if e.code == 429:
-                cb_429_count += 1
-                log(f"[Codeberg Rate Limit 429] '{kw}' skipped ({cb_429_count}/2).")
-            else:
-                log(f"[Codeberg Search Error] {kw}: {e}")
-        except Exception as e:
-            log(f"[Codeberg Search Error] {kw}: {e}")
+        time.sleep(15 if idx == 0 else 20)
+        cb_url = f"https://codeberg.org/api/v1/repos/search?q={urllib.parse.quote(kw)}&sort=updated&limit=25"
+        for attempt in range(2):
+            try:
+                res = fetch_json(cb_url, headers=cb_headers, retries=0)
+                for item in res.get("data", []):
+                    fn = item.get("full_name")
+                    branch = item.get("default_branch") or "main"
+                    if fn:
+                        repo_key = f"codeberg:{fn}"
+                        extra_repos[repo_key] = {
+                            "repo": repo_key,
+                            "platform": "codeberg",
+                            "branch": branch,
+                            "updated": (item.get("updated_at") or "")[:10],
+                            "stars": item.get("stars_count", 0),
+                            "is_auto_bot": True,
+                            "playlists": [],
+                            "upstream_sources": [],
+                        }
+                        for fname in ("playlist.m3u", "playlist.m3u8", "index.m3u", "tv.m3u", "iptv.m3u", "live.m3u"):
+                            extra_playlists.add(f"https://codeberg.org/{fn}/raw/branch/{branch}/{fname}")
+                break
+            except urllib.error.HTTPError as e:
+                if e.code == 429:
+                    if attempt == 0:
+                        log(f"[Codeberg] 429 cooldown (45s) for '{kw}'...")
+                        time.sleep(45)
+                    else:
+                        log("[Codeberg] Shared IP rate-limited by Codeberg; skipping Codeberg for this run.")
+                        cb_blocked = True
+                        break
+                else:
+                    log(f"[Codeberg Info] {kw}: HTTP {e.code}")
+                    break
+            except Exception as e:
+                log(f"[Codeberg Info] {kw}: {e}")
+                break
 
     log(f"[GitLab & Codeberg] {len(extra_repos)} ti external repo o {len(extra_playlists)} ti candidate feed paoa gese.")
     return extra_repos, extra_playlists
 
 
 # ------------------------------------------------------------------ Engine 3: Public Gists, Pastes, Datasets & Open Web
+def normalize_web_discovered_url(decoded):
+    decoded = decoded.strip().rstrip(".,;'\")}]")
+    if not decoded.startswith("http"):
+        return None
+    if "pastebin.com/" in decoded and "/raw/" not in decoded:
+        paste_id = decoded.rstrip("/").split("/")[-1]
+        if len(paste_id) >= 6 and paste_id.isalnum():
+            return f"https://pastebin.com/raw/{paste_id}"
+    elif "rentry.co/" in decoded and not decoded.endswith("/raw"):
+        slug = decoded.rstrip("/").split("/")[-1]
+        if slug:
+            return f"https://rentry.co/{slug}/raw"
+    elif "dpaste.org/" in decoded and "/raw" not in decoded:
+        return decoded.rstrip("/") + "/raw"
+    elif "paste.ee/p/" in decoded:
+        return decoded.replace("/p/", "/r/")
+    elif "huggingface.co/datasets/" in decoded and "/blob/" in decoded:
+        return decoded.replace("/blob/", "/resolve/")
+    elif "bitbucket.org/" in decoded and "/src/" in decoded:
+        return decoded.replace("/src/", "/raw/")
+    elif "gist.github.com/" in decoded and "gist.githubusercontent.com" not in decoded:
+        parts = [p for p in urllib.parse.urlparse(decoded).path.split("/") if p]
+        if len(parts) >= 2:
+            return f"https://gist.githubusercontent.com/{parts[0]}/{parts[1]}/raw"
+    elif any(h in decoded for h in ("telegra.ph/", "gist.githubusercontent.com/", ".m3u", ".m3u8")):
+        return decoded
+    return None
+
+
 def search_web_pastes_and_gists():
     discovered_urls = set()
 
-    try:
-        gists = fetch_json("https://api.github.com/gists/public?per_page=100", GH_HEADERS)
-        if isinstance(gists, list):
-            for g in gists:
-                desc = (g.get("description") or "").lower()
-                files = g.get("files") or {}
-                for fname, fmeta in files.items():
-                    low_f = fname.lower()
-                    if low_f.endswith((".m3u", ".m3u8")) or any(k in f"{desc} {low_f}" for k in ("iptv", "m3u", "bangla", "hindi", "bdix", "live tv")):
-                        raw_u = fmeta.get("raw_url")
-                        if raw_u:
-                            discovered_urls.add(raw_u)
-    except Exception as e:
-        log(f"[Gist Feed Error] {e}")
+    # 1. Public GitHub Gists (multiple pages for better hit rate)
+    for page in (1, 2):
+        try:
+            gists = fetch_json(f"https://api.github.com/gists/public?per_page=100&page={page}", GH_HEADERS, retries=0)
+            if isinstance(gists, list):
+                for g in gists:
+                    desc = (g.get("description") or "").lower()
+                    files = g.get("files") or {}
+                    for fname, fmeta in files.items():
+                        low_f = fname.lower()
+                        if low_f.endswith((".m3u", ".m3u8")) or any(k in f"{desc} {low_f}" for k in ("iptv", "m3u", "bangla", "hindi", "bdix", "live tv")):
+                            raw_u = fmeta.get("raw_url")
+                            if raw_u:
+                                discovered_urls.add(raw_u)
+        except Exception as e:
+            log(f"[Gist Feed Info] page {page}: {e}")
+        time.sleep(1)
 
+    # 2. DuckDuckGo Lite Search (POST requests avoid HTML anti-bot empty responses)
     for dq in WEB_DORK_QUERIES:
         try:
-            ddg_url = f"https://html.duckduckgo.com/html/?q={urllib.parse.quote(dq)}"
-            html = fetch_text(ddg_url, timeout=12)
-            for raw_link in re.findall(r'uddg=([^&"\']+)', html):
+            post_bytes = urllib.parse.urlencode({"q": dq}).encode("utf-8")
+            html = fetch_text("https://lite.duckduckgo.com/lite/", timeout=15, post_data=post_bytes)
+            raw_links = re.findall(r'uddg=([^&"\']+)', html)
+            if not raw_links:
+                raw_links = re.findall(r'class=["\']result-link["\'][^>]*href=["\']([^"\']+)["\']', html, re.I)
+            for raw_link in raw_links:
                 decoded = urllib.parse.unquote(raw_link)
-                if "pastebin.com/" in decoded and "/raw/" not in decoded:
-                    paste_id = decoded.rstrip("/").split("/")[-1]
-                    if len(paste_id) >= 6:
-                        discovered_urls.add(f"https://pastebin.com/raw/{paste_id}")
-                elif "rentry.co/" in decoded:
-                    slug = decoded.rstrip("/").split("/")[-1]
-                    if slug:
-                        discovered_urls.add(f"https://rentry.co/{slug}/raw")
-                elif "dpaste.org/" in decoded and "/raw" not in decoded:
-                    discovered_urls.add(decoded.rstrip("/") + "/raw")
-                elif "paste.ee/p/" in decoded:
-                    discovered_urls.add(decoded.replace("/p/", "/r/"))
-                elif "huggingface.co/datasets/" in decoded and "/blob/" in decoded:
-                    discovered_urls.add(decoded.replace("/blob/", "/resolve/"))
-                elif "bitbucket.org/" in decoded and "/src/" in decoded:
-                    discovered_urls.add(decoded.replace("/src/", "/raw/"))
-                elif any(h in decoded for h in ("telegra.ph/", "gist.githubusercontent.com/", ".m3u", ".m3u8")):
-                    discovered_urls.add(decoded)
+                norm_u = normalize_web_discovered_url(decoded)
+                if norm_u:
+                    discovered_urls.add(norm_u)
         except Exception as e:
-            log(f"[Web Dork Error] {dq}: {e}")
-        time.sleep(3)
+            log(f"[Web Dork Info] {dq}: {e}")
+        time.sleep(4)
 
     log(f"[Web Pastes, Datasets & Gists] {len(discovered_urls)} ti global URL paoa gese.")
     return discovered_urls
