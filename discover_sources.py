@@ -3,7 +3,7 @@ Multi-Platform Internet-Wide Live TV & IPTV Source Discovery Engine
 Searches across:
 1. GitHub (Repositories + Code/M3U Signatures even without 'IPTV' in repo name)
 2. GitLab Public API (Projects matching IPTV, M3U8, BDIX, Bangla, Live TV signatures)
-3. Codeberg Public API (Repositories)
+3. Codeberg Public API (Repositories with 429 Circuit Breaker)
 4. GitHub Public Gists (Live stream & M3U gists)
 5. DuckDuckGo Web Search (Pastebin, Rentry, Telegraph, Open Web M3U8 indexes)
 6. Built-in Official FAST TV & Open Directory Feeds (SamsungTVPlus, PlutoTV, Plex, Roku, Free-TV, iptv-org)
@@ -16,6 +16,7 @@ from pathlib import Path
 GITHUB_TOKEN = "" or os.getenv("GITHUB_TOKEN")
 OUT_JSON = Path("discovered_sources.json")
 OUT_REPORT = Path("bot_report.txt")
+HEALTH_JSON = Path("source_health.json")
 
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/129.0.0.0 Safari/537.36"
 GH_HEADERS = {"User-Agent": UA, "Accept": "application/vnd.github+json"}
@@ -88,7 +89,10 @@ IGNORE_DOMAINS = (
     "github.com", "gitlab.com", "codeberg.org", "duckduckgo.com",
     "shields.io", "google.com", "w3.org", "schemas.xmlsoap.org",
     "json-schema.org", "opensource.org", "creativecommons.org",
-    "example.com", "localhost", "127.0.0.1", "api.github.com"
+    "example.com", "localhost", "127.0.0.1", "api.github.com",
+    "twitter.com", "x.com", "facebook.com", "youtube.com", "youtu.be",
+    "t.me", "telegram.me", "discord.gg", "discord.com", "linkedin.com",
+    "wikipedia.org", "stackoverflow.com", "reddit.com", "medium.com"
 )
 
 IGNORE_EXTENSIONS = (
@@ -103,7 +107,24 @@ def log(msg):
     print(msg, flush=True)
 
 
-def is_valid_upstream_url(url, self_repo_prefix=""):
+def load_health_data():
+    if not HEALTH_JSON.exists():
+        return {}
+    try:
+        return json.loads(HEALTH_JSON.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+
+
+def is_valid_upstream_url(url, self_repo_prefix="", health_data=None):
+    # If auto_update.py confirmed this source works, NEVER drop it
+    if health_data and url in health_data:
+        info = health_data[url]
+        if info.get("last_hits", 0) > 0:
+            return True
+        if info.get("fails", 0) >= 3 and url not in BUILTIN_DIRECT_FEEDS:
+            return False
+
     low_u = url.lower().split("?")[0].split("#")[0]
     if low_u.endswith(IGNORE_EXTENSIONS):
         return False
@@ -142,7 +163,7 @@ def fetch_text(url, timeout=12):
         return r.read(1_000_000).decode("utf-8", errors="ignore")
 
 
-def load_existing_data():
+def load_existing_data(health_data):
     if not OUT_JSON.exists():
         return {}, set(BUILTIN_DIRECT_FEEDS), set()
     try:
@@ -151,11 +172,20 @@ def load_existing_data():
         for b in old.get("bots", []):
             if "repo" in b:
                 prefix = f"raw.githubusercontent.com/{b['repo'].lower()}/"
-                b["upstream_sources"] = [u for u in b.get("upstream_sources", []) if is_valid_upstream_url(u, prefix)]
+                b["upstream_sources"] = [
+                    u for u in b.get("upstream_sources", [])
+                    if is_valid_upstream_url(u, prefix, health_data)
+                ]
                 old_bots[b["repo"]] = b
-        old_upstream = {u for u in old.get("all_upstream_sources", []) if is_valid_upstream_url(u)}
+        old_upstream = {
+            u for u in old.get("all_upstream_sources", [])
+            if is_valid_upstream_url(u, health_data=health_data)
+        }
         old_upstream.update(BUILTIN_DIRECT_FEEDS)
-        old_playlists = set(old.get("all_bot_playlists", []))
+        old_playlists = {
+            p for p in old.get("all_bot_playlists", [])
+            if health_data.get(p, {}).get("fails", 0) < 3 or health_data.get(p, {}).get("last_hits", 0) > 0
+        }
         log(f"Ager {len(old_bots)} ti repo o {len(old_upstream)} ti upstream source load holo.")
         return old_bots, old_upstream, old_playlists
     except Exception as e:
@@ -243,10 +273,16 @@ def search_gitlab_and_codeberg():
             log(f"[GitLab Search Error] {kw}: {e}")
         time.sleep(2)
 
+    cb_429_count = 0
     for kw in ALT_GIT_KEYWORDS[:6]:
+        if cb_429_count >= 2:
+            log("[Codeberg] Rate limit threshold reached. Skipping remaining Codeberg queries.")
+            break
+        time.sleep(12)
         try:
             cb_url = f"https://codeberg.org/api/v1/repos/search?q={urllib.parse.quote(kw)}&sort=updated&limit=20"
-            res = fetch_json(cb_url)
+            res = fetch_json(cb_url, retries=0)
+            cb_429_count = 0
             for item in res.get("data", []):
                 fn = item.get("full_name")
                 branch = item.get("default_branch") or "main"
@@ -264,9 +300,14 @@ def search_gitlab_and_codeberg():
                     }
                     for fname in ("playlist.m3u", "playlist.m3u8", "index.m3u", "tv.m3u", "iptv.m3u", "live.m3u"):
                         extra_playlists.add(f"https://codeberg.org/{fn}/raw/branch/{branch}/{fname}")
+        except urllib.error.HTTPError as e:
+            if e.code == 429:
+                cb_429_count += 1
+                log(f"[Codeberg Rate Limit 429] '{kw}' skipped ({cb_429_count}/2).")
+            else:
+                log(f"[Codeberg Search Error] {kw}: {e}")
         except Exception as e:
             log(f"[Codeberg Search Error] {kw}: {e}")
-        time.sleep(2)
 
     log(f"[GitLab & Codeberg] {len(extra_repos)} ti external repo o {len(extra_playlists)} ti candidate feed paoa gese.")
     return extra_repos, extra_playlists
@@ -319,7 +360,8 @@ def discover():
     if not GITHUB_TOKEN:
         log("[Warning] GITHUB_TOKEN set kora nai! Rate limit hote pare.")
 
-    merged_bots, merged_upstream, merged_playlists = load_existing_data()
+    health_data = load_health_data()
+    merged_bots, merged_upstream, merged_playlists = load_existing_data(health_data)
 
     gh_found = search_github()
     alt_repos, alt_playlists = search_gitlab_and_codeberg()
@@ -354,9 +396,8 @@ def discover():
                 if len(repo_info["playlists"]) < 8:
                     raw_pl = f"https://raw.githubusercontent.com/{repo}/{branch}/{urllib.parse.quote(path)}"
                     repo_info["playlists"].append(raw_pl)
-            elif lpath.endswith((".py", ".js", ".ts", ".sh", ".json", ".txt")) and f.get("size", 0) < 200000:
-                if lpath != "discovered_sources.json":
-                    script_paths.append(path)
+            elif lpath.endswith((".py", ".js", ".ts", ".sh")) and f.get("size", 0) < 150000:
+                script_paths.append(path)
 
         upstream = set()
         self_repo_prefix = f"raw.githubusercontent.com/{repo.lower()}/"
@@ -366,7 +407,7 @@ def discover():
                 code_txt = fetch_text(raw_code_url, timeout=10)
                 for found_url in URL_RE.findall(code_txt):
                     clean_u = found_url.rstrip(".,;'\")}]").split("?")[0]
-                    if is_valid_upstream_url(clean_u, self_repo_prefix):
+                    if is_valid_upstream_url(clean_u, self_repo_prefix, health_data):
                         upstream.add(clean_u)
             except Exception:
                 pass
@@ -387,7 +428,7 @@ def discover():
     all_bots_list = list(merged_bots.values())
     all_bots_list.sort(key=lambda x: (not x.get("is_auto_bot", False), x.get("updated", "")), reverse=False)
 
-    clean_merged_upstream = {u for u in merged_upstream if is_valid_upstream_url(u)}
+    clean_merged_upstream = {u for u in merged_upstream if is_valid_upstream_url(u, health_data=health_data)}
     for b in all_bots_list:
         clean_merged_upstream.update(b.get("upstream_sources", []))
         merged_playlists.update(b.get("playlists", []))
