@@ -1,17 +1,19 @@
 """
-All-in-One Direct (No-Proxy) Live TV IPTV Updater (BD + Indian + English Only)
+All-in-One Direct (No-Proxy) Live TV IPTV Updater (BD + Indian + English Only + Strict Country Filter)
 Features:
 - Keeps ONLY Bangladeshi, Indian (all regional languages), and English channels (drops International/foreign junk)
 - Strictly separates Bangladeshi ('Bangladesh') from Indian Bangla ('Bangla (India)' & 'Kolkata Movies')
-- Blocks expired/soon-to-expire tokens, VOD/movies, radio, and gibberish/Amagi ID names
+- Blocks foreign RTV/NTV/BTV/News24/GTV homonyms (e.g. RTV Noord, NTV Russia, BTV Indonesia, News24 Australia)
+- Blocks expired/soon-to-expire tokens, VOD/movies, radio, spam (>65 chars), and gibberish/Amagi ID names
 - Deep HLS segment verification (requires >= 5KB real video chunk)
 - Live token scrapers for AynaOTT & JagoBD + 'discovered_sources.json' + IPTV-org
-- Generates TWO playlists:
+- Generates THREE outputs:
   1. 'playlist.m3u': All verified alive BD, Indian & English streams (with backups)
   2. 'playlist_clean.m3u': Duplicate-free, lowest ping (fastest response) 1 link per channel
+  3. 'source_report.txt': Detailed breakdown of active channels per source engine & streaming domain
 """
 import json, os, re, socket, ssl, sys, time
-from collections import Counter
+from collections import Counter, defaultdict
 import urllib.error, urllib.parse, urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
@@ -21,6 +23,7 @@ socket.setdefaulttimeout(8)
 # ------------------------------------------------------------------ settings
 OUTPUT = Path("playlist.m3u")
 CLEAN_OUTPUT = Path("playlist_clean.m3u")
+SOURCE_REPORT = Path("source_report.txt")
 DISCOVERED_FILE = Path("discovered_sources.json")
 WORKERS = 150
 CHECK_TIMEOUT = 7
@@ -48,7 +51,6 @@ COMBOS = [
     ("Sports",                "sports",        None),
 ]
 
-# শুধুমাত্র অনুমোদিত বাংলাদেশি, ভারতীয় এবং ইংরেজি গ্রুপসমূহ (এর বাইরের সব চ্যানেল বাদ যাবে)
 ALLOWED_GROUPS = {
     "Bangladesh", "Bangla (India)", "Kolkata Movies", "Bangla Music",
     "Hindi Movies", "Hindi Music", "India",
@@ -762,7 +764,8 @@ GARBAGE_EXACT_RE = re.compile(
 
 
 def is_garbage_channel_name(name):
-    if not name:
+    """Spam (>65 chars), Amagi ID, numeric-only, technical junk, ba gibberish name bad debe"""
+    if not name or len(name.strip()) > 65:
         return True
     clean = re.sub(r"[\(\[].*?[\)\]]", " ", name).strip()
     clean = re.sub(r"\s+", " ", clean)
@@ -770,9 +773,7 @@ def is_garbage_channel_name(name):
         return True
 
     alnum_only = re.sub(r"[^a-zA-Z0-9\u0980-\u09ff]", "", clean)
-    if not alnum_only or alnum_only.isdigit():
-        return True
-    if len(alnum_only) < 2:
+    if not alnum_only or alnum_only.isdigit() or len(alnum_only) < 2:
         return True
 
     low_clean = clean.lower()
@@ -852,7 +853,6 @@ HINDI_RE = re.compile(
     r"wow cinema|abzy|pitara|popkorn|housefull|dil se)\b", re.I
 )
 
-# শুধুমাত্র ভারতীয় আঞ্চলিক ভাষা (Urdu/Arabic বাদ দেওয়া হয়েছে)
 REGIONAL_LANG_PATTERNS = [
     ("Tamil",     re.compile(r"\b(tamil|star vijay|vijay tv|sun tv|kalaignar|jaya tv|raj tv|polimer|puthiya thalaimurai|thanthi|zee tamil|colors tamil|ktv|adithya|isaiaruvi|sun music|sun news|sri sankara)\b", re.I)),
     ("Telugu",    re.compile(r"\b(telugu|star maa|maa tv|maa movies|maa music|maa gold|etv telugu|etv plus|etv cinema|gemini|zee telugu|ntv telugu|tv9 telugu|sakshi|abn|v6 news|10tv|hmtv|t news)\b", re.I)),
@@ -893,7 +893,7 @@ ENGLISH_MOVIE_CH_RE = re.compile(
 ENGLISH_ENT_CH_RE = re.compile(
     r"\b(star world|colors infinity|comedy central|fox life|fox crime|fox news|fox business|fx|fxx|tlc|"
     r"discovery|national geographic|nat geo|animal planet|history|travel xp|bbc|cnn|cnbc|bloomberg|"
-    r"al jazeera|dw|france 24|france24|nhk|cgtn|trt world|euronews|arirang|kbs world|cna|channel news asia|"
+    r"al jazeera|dw|france 24|france24|france news 24|nhk|cgtn|trt world|euronews|arirang|kbs world|cna|channel news asia|"
     r"cbs|nbc|abc|fox|itv|channel 4|channel 5|e4|more4|voa|voice of america|"
     r"sky one|sky witness|sky atlantic|sky news|sky arts|bravo|lifetime|hgtv|food network|mtv|vh1|"
     r"nickelodeon|nick jr|nicktoons|cartoon network|boomerang|disney|pbs|a&e|tnt|tbs|usa network|cw|"
@@ -913,35 +913,63 @@ PAY_SPORTS_RE = re.compile(
     r"geo super|a sports|premier sports|arena sport|sport tv|nova sport|canal\+ sport)\b", re.I
 )
 
-# শুধুমাত্র প্রকৃত বাংলাদেশি চ্যানেলগুলোর তালিকা
+# বিদেশি দেশের চ্যানেল ব্লক করার প্যাটার্ন (যেমন: RTV Noord, NTV Russia, BTV Indonesia, News24 Australia)
+FOREIGN_COUNTRY_TAG_RE = re.compile(
+    r"(\.(nl|rs|ru|tr|it|es|au|id|bg|gh|vn|ba|xk|al|cl|ec|cr|cm|ci|kh|mn|hu|at|ch|de|fr|br|pe|do)\b|"
+    r"\b(netherlands|serbia|russia|turkiye|turkey|italy|spain|españa|australia|indonesia|bulgaria|"
+    r"ghana|vietnam|bosnia|kosovo|albania|chile|ecuador|costa rica|cameroon|ivory coast|cambodia|"
+    r"mongolia|hungary|austria|switzerland|brazil|peru|dominican|san antonio|nashua|santa maria|"
+    r"lompoc|east bridgewater|toscana|utrecht|noord|drenthe|rijnmond|oost|maastricht|meppel|"
+    r"purmerend|veluwezoom|westerwolde|zulthe|dordrecht|manilva|malaga|calima|balkanweb|rai news|"
+    r"bắc ninh|nghệ an|gia lai|silverbird)\b)",
+    re.I
+)
+
+# প্রকৃত বাংলাদেশি চ্যানেলসমূহ
 BD_ONLY_RE = re.compile(
-    r"\b(btv|bangladesh television|sangsad|somoy|jamuna|ekattor|channel 24|dbc|independent|"
-    r"atn bangla|atn news|atn islamic|atn music|news 24|news24|channel i|channel 9|channel s|"
-    r"ntv|rtv|banglavision|maasranga|deepto|boishakhi|desh tv|nagorik|gtv|gazi tv|asian tv|"
-    r"sa tv|satv|mohona|my tv|mytv|bijoy|ananda tv|nexus|t sports|duronto|gaan bangla|"
-    r"ekhon|global tv|green tv|bangla tv|bangla vision|spice tv|muktijoddho|diganta|islamic tv|"
-    r"madani channel bangla|peace tv bangla|somoy news|jamuna tv|ekattor tv|independent tv|"
-    r"bangladesh|bangladeshi|\bbd\b)\b", re.I
+    r"(\b(bangladesh|bangladeshi|sangsad|somoy|jamuna|ekattor|channel 24|dbc|independent|"
+    r"atn bangla|atn news|atn islamic|atn music|news 24 bd|news24 tv|channel i|channel 9|channel s|"
+    r"banglavision|bangla vision|maasranga|deepto|boishakhi|desh tv|desh bangla|deshe bideshe|"
+    r"deshi tv|nagorik|gazi tv|g tv|asian tv|sa tv|satv|mohona|my tv|mytv|bijoy|ananda tv|anando tv|"
+    r"nexus|t sports|duronto|gaan bangla|ekhon tv|global tv|green tv|bangla tv|spice tv|diganta|"
+    r"islamic tv|madani channel bangla|madani ch\. bangla|peace tv bangla|ekushey|ekushe|etv ekushey|"
+    r"enter tv|matribhumi|me tv|movie bangla|rajdhani tv|ja tv|jago news|nan tv|probashi tv|"
+    r"jonmobhumi|doyel tv|cb24|ayna tv|ash tv|shikor tv|thikana tv|vision 24|news 21 bangla|news 21 hd)\b|"
+    r"^(?:\d+\s*\.\s*)?(btv|btv news|btv ctg|btv chattogram|rtv|rtv hd|ntv|ntv hd|ntv europe|gtv|gtv hd|news 24|news 24 hd|news24)$)",
+    re.I
 )
 
 # ভারতীয় বাংলা চ্যানেলসমূহ
 INDIA_BANGLA_RE = re.compile(
     r"\b(star jalsha|jalsha|zee bangla|sony aath|colors bangla|sun bangla|akas aath|akash aath|"
-    r"sangeet bangla|dhoom music|rupashi bangla|dd bangla|abp ananda|star ananda|news18 bangla|etv bangla|"
-    r"zee 24 ghanta|24 ghanta|republic bangla|tv9 bangla|calcutta news|kolkata tv|r plus|rplus|"
-    r"cn tv|calcutta television|tara muzik|tara newz|bangla time|onkar news|high news|sadhu bangla|"
-    r"khabor 365|bangla jagao|nkh bangla|ctvn|akd plus|bflix bangla|khoj khobor|newstime bangla|"
-    r"prime news bangla|amar bangla|bangla plus|bangla express|kolkata|calcutta|west bengal)\b", re.I
+    r"sangeet bangla|dhoom music|rupashi bangla|ruposhi bangla|dd bangla|dd tripura|abp ananda|"
+    r"star ananda|news18 bangla|news 18 bangla|etv bangla|zee 24 ghanta|24 ghanta|republic bangla|"
+    r"r bangla|tv9 bangla|calcutta news|kolkata tv|r plus|rplus|cn tv|tara muzik|tara newz|tara tv|"
+    r"bangla time|onkar news|high news|sadhu bangla|khabor 365|bangla jagao|bangla jago|nkh bangla|"
+    r"ctvn|akd plus|bflix bangla|khoj khobor|newstime bangla|prime news bangla|amar bangla|aamar bangla|"
+    r"bangla plus|bangla express|kolkata|calcutta|west bengal|sananda|baraza indian bangla|"
+    r"indian bangla|orange bangla|enter 10 bangla|enterr 10 bangla|enterr10 bangla|enteer ten bangla|"
+    r"khushboo bangla|mon bangla|news live bangla|nick bangla|nk tv bangla|raatdin bangla|"
+    r"rongeen tv|salam bangla|snb cinema|sonar bangla|sonic bangla|u bangla|uphar bangla|"
+    r"zb bhakti|zb cartoon|zb music|zb cinema|zodiak tv|jtbs classic|bhi channel|globe tv|"
+    r"headlines tripura|friends tv|ananda barta|ananda livetv|ak bangla|b prime bangla|ekhonkolkata)\b",
+    re.I
 )
 
 
 def classify_by_language_and_name(c):
-    """Bangladeshi, Indian o English channel alada korbe; onno sob channel 'DROP' return korbe"""
+    """Bangladeshi, Indian o English channel alada korbe; foreign/International channel 'DROP' korbe"""
     name = c["name"]
     group = c.get("group", "")
+    tvg_id = c.get("tvg_id", "")
+    url = c.get("url", "")
     lname = name.lower()
     lgroup = group.lower()
     t = f"{lname} {lgroup}"
+
+    # 0. Foreign country homonyms block (e.g. RTV Noord, NTV Russia, BTV Indonesia, News24 Australia)
+    if FOREIGN_COUNTRY_TAG_RE.search(f"{lname} {tvg_id.lower()}") and not BD_ONLY_RE.search(lname):
+        return "DROP"
 
     detected_lang = c.get("stream_lang") or c.get("lang") or ""
     music = bool(re.search(r"\b(music|song|songs|gaan|mtv|vevo|hits|zing|sangeet|muzik|dhoom|9xm|9x)\b", lname))
@@ -958,7 +986,7 @@ def classify_by_language_and_name(c):
             or (detected_lang == "ben" and re.search(r"\b(india|indian|west bengal|kolkata)\b", lgroup))):
         return "Bangla Music" if music else "Bangla (India)"
 
-    # 3. Specific Movie & English Entertainment channels (AynaOTT/JagoBD theke eleo English e jabe)
+    # 3. Specific Movie & English Entertainment channels
     if HINDI_MOVIE_CH_RE.search(lname):
         return "Hindi Movies"
     if ENGLISH_MOVIE_CH_RE.search(lname):
@@ -985,7 +1013,14 @@ def classify_by_language_and_name(c):
         return "English Entertainment"
 
     # 6. Strictly Bangladeshi Channels -> 'Bangladesh', other non-BD Bangla -> 'Bangla (India)'
-    if BD_ONLY_RE.search(lname) or re.search(r"\bbangladesh\b", lgroup):
+    if (BD_ONLY_RE.search(lname)
+            or ".bd" in tvg_id.lower()
+            or "aynaott.com" in url.lower()
+            or "jagobd.com" in url.lower()
+            or "gpcdn.net" in url.lower()
+            or re.search(r"\bbangladesh\b", lgroup)):
+        if INDIA_BANGLA_RE.search(lname):
+            return "Bangla Music" if music else "Bangla (India)"
         if music:
             return "Bangla Music"
         return "Bangladesh"
@@ -1017,10 +1052,9 @@ def classify_by_language_and_name(c):
             return "English Movies"
         return "English Entertainment"
 
-    if group in ALLOWED_GROUPS:
+    if group in ALLOWED_GROUPS and group != "Bangladesh":
         return group
 
-    # International ba onno kono bhashar channel bad deya hobe
     return "DROP"
 
 
@@ -1080,6 +1114,45 @@ def write_playlist(channels, target_path=OUTPUT):
     target_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
+def write_source_report(alive, clean_alive):
+    by_source = defaultdict(list)
+    by_domain = defaultdict(list)
+
+    for c in alive:
+        src = c.get("source", "Unknown")
+        clean_u = c["url"].split("|")[0].strip()
+        dom = urllib.parse.urlparse(clean_u).netloc.lower() or "unknown"
+        entry = f"{c['name']} [{c['group']}] ({int(c.get('latency', 0) * 1000)}ms)"
+        by_source[src].append(entry)
+        by_domain[dom].append(entry)
+
+    rep = [
+        f"=== IPTV Source & Channel Breakdown Report ({time.strftime('%Y-%m-%d %H:%M:%S UTC', time.gmtime())}) ===",
+        f"Total Alive Streams: {len(alive)} | Clean Unique Channels: {len(clean_alive)}\n",
+        "--- 1. SUMMARY BY SOURCE ENGINE ---"
+    ]
+    for src, ch_list in sorted(by_source.items(), key=lambda x: -len(x[1])):
+        rep.append(f"  * {src}: {len(ch_list)} channels")
+
+    rep.append("\n--- 2. TOP STREAMING SERVERS / DOMAINS ---")
+    for dom, ch_list in sorted(by_domain.items(), key=lambda x: -len(x[1]))[:40]:
+        rep.append(f"  * {dom}: {len(ch_list)} channels")
+
+    rep.append("\n--- 3. CHANNEL LIST BY SOURCE ENGINE ---")
+    for src, ch_list in sorted(by_source.items(), key=lambda x: -len(x[1])):
+        rep.append(f"\n[{src}] ({len(ch_list)} channels):")
+        for item in sorted(set(ch_list)):
+            rep.append(f"  - {item}")
+
+    rep.append("\n--- 4. CHANNEL LIST BY SERVER / DOMAIN (TOP 25) ---")
+    for dom, ch_list in sorted(by_domain.items(), key=lambda x: -len(x[1]))[:25]:
+        rep.append(f"\n[{dom}] ({len(ch_list)} channels):")
+        for item in sorted(set(ch_list)):
+            rep.append(f"  - {item}")
+
+    SOURCE_REPORT.write_text("\n".join(rep) + "\n", encoding="utf-8")
+
+
 def main():
     start_time = time.time()
     pool = []
@@ -1104,7 +1177,6 @@ def main():
         if any(b in c["url"] for b in BLOCK_URLS):
             continue
 
-        # Stream check er agei pre-filter kore International/foreign channel bad dile check aro 2x fast hobe
         pre_grp = classify_by_language_and_name(c)
         if pre_grp == "DROP" and c["source"] not in ("AynaOTT", "JagoBD"):
             continue
@@ -1164,8 +1236,11 @@ def main():
     )
     write_playlist(clean_alive, CLEAN_OUTPUT)
 
+    # 3. Save detailed Source & Domain breakdown report
+    write_source_report(alive, clean_alive)
+
     elapsed = int(time.time() - start_time)
-    log(f"{OUTPUT} e {len(alive)} ta channel ebong {CLEAN_OUTPUT} e {len(clean_alive)} ta duplicate-free fastest ping channel save hoise (Total time: {elapsed // 60}m {elapsed % 60}s)")
+    log(f"{OUTPUT} e {len(alive)} ta channel, {CLEAN_OUTPUT} e {len(clean_alive)} ta clean channel ebong {SOURCE_REPORT} save hoise (Total time: {elapsed // 60}m {elapsed % 60}s)")
     return 0
 
 
