@@ -57,7 +57,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          for f in playlist.m3u playlist_clean.m3u discovered_sources.json bot_report.txt last_search.txt; do
+          for f in playlist.m3u playlist_clean.m3u discovered_sources.json bot_report.txt source_report.txt last_search.txt; do
             [ -f "$f" ] && git add "$f"
           done
           if ! git diff --staged --quiet; then
