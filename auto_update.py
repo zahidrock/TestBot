@@ -8,10 +8,12 @@ Features:
 - Blocks foreign RTV/NTV/BTV/News24/GTV homonyms, expired tokens, unresolved macro URLs, VOD, radio, spam
 - Strips leading channel numbers (e.g. '14.SOMOY TV' -> 'Somoy TV') for true deduplication
 - Deep HLS segment verification (requires >= 5KB real video chunk)
-- Generates THREE outputs:
+- Tracks upstream source health ('source_health.json') to protect working feeds & prune dead ones
+- Generates THREE outputs + health tracking:
   1. 'playlist.m3u': All verified alive BD, Indian & English streams (with backups)
   2. 'playlist_clean.m3u': Duplicate-free, lowest ping (fastest response) 1 link per channel
   3. 'source_report.txt': Detailed breakdown of active channels per source engine & streaming domain
+  4. 'source_health.json': Real-time health feedback for discover_sources.py
 """
 import json, os, re, socket, ssl, sys, time
 from collections import Counter, defaultdict
@@ -26,6 +28,7 @@ OUTPUT = Path("playlist.m3u")
 CLEAN_OUTPUT = Path("playlist_clean.m3u")
 SOURCE_REPORT = Path("source_report.txt")
 DISCOVERED_FILE = Path("discovered_sources.json")
+HEALTH_FILE = Path("source_health.json")
 WORKERS = 150
 CHECK_TIMEOUT = 7
 MAX_LINKS_PER_CHANNEL = None
@@ -410,7 +413,7 @@ def scrape_jagobd():
     return res
 
 
-def scrape_discovered_and_global_feeds():
+def scrape_discovered_and_global_feeds(checked_feed_urls):
     """GitHub, GitLab, Codeberg, Pastebin, Rentry, Telegraph o FAST TV API theke scrape korbe"""
     upstream_urls = [u for _, u in DIRECT_GLOBAL_FEEDS]
     bot_playlists = []
@@ -460,6 +463,8 @@ def scrape_discovered_and_global_feeds():
             if "#EXTINF" in txt:
                 chs = parse_m3u(txt, src_label)
                 if len(chs) <= 4500:
+                    for ch in chs:
+                        ch["feed_url"] = u
                     return chs
                 return []
             links = re.findall(r'[\'"](https?://[^\'"]+?\.m3u8[^\'"]*)[\'"]', txt)
@@ -473,13 +478,15 @@ def scrape_discovered_and_global_feeds():
                         "tvg_id": "",
                         "group": "Others",
                         "lang": "",
-                        "source": src_label
+                        "source": src_label,
+                        "feed_url": u
                     })
         except Exception:
             pass
         return out
 
     all_urls = list(dict.fromkeys(upstream_urls + bot_playlists))
+    checked_feed_urls.extend(all_urls)
     total_sources = len(all_urls)
     done_sources = 0
     with ThreadPoolExecutor(max_workers=120) as ex:
@@ -1115,6 +1122,37 @@ def dedupe_by_name(chs, limit):
     return [c for c in chs if id(c) in kept]
 
 
+# ------------------------------------------------------------------ source health updater
+def update_source_health(checked_feed_urls, all_candidate_items):
+    """Updates source_health.json so discover_sources.py keeps all working feeds and prunes dead ones."""
+    if not checked_feed_urls:
+        return
+    try:
+        health_data = json.loads(HEALTH_FILE.read_text(encoding="utf-8")) if HEALTH_FILE.exists() else {}
+    except Exception:
+        health_data = {}
+
+    alive_hits_by_feed = Counter()
+    for c in all_candidate_items:
+        f_url = c.get("feed_url")
+        if f_url and c.get("alive") and c.get("group") in ALLOWED_GROUPS:
+            alive_hits_by_feed[f_url] += 1
+
+    working_count, failing_count = 0, 0
+    for f_url in set(checked_feed_urls):
+        hits = alive_hits_by_feed.get(f_url, 0)
+        if hits > 0:
+            health_data[f_url] = {"fails": 0, "last_hits": hits}
+            working_count += 1
+        else:
+            prev_fails = health_data.get(f_url, {}).get("fails", 0)
+            health_data[f_url] = {"fails": prev_fails + 1, "last_hits": 0}
+            failing_count += 1
+
+    HEALTH_FILE.write_text(json.dumps(health_data, indent=2), encoding="utf-8")
+    log(f"[SourceHealth] {HEALTH_FILE} updated: {working_count} working feeds protected, {failing_count} zero-hit feeds tracked.")
+
+
 # ------------------------------------------------------------------ output
 def write_playlist(channels, target_path=OUTPUT):
     def q(s):
@@ -1196,10 +1234,11 @@ def write_source_report(alive, clean_alive):
 def main():
     start_time = time.time()
     pool = []
+    checked_feed_urls = []
     scrapers = (
         ("AynaOTT", scrape_aynaott),
         ("JagoBD", scrape_jagobd),
-        ("InternetSources", scrape_discovered_and_global_feeds),
+        ("InternetSources", lambda: scrape_discovered_and_global_feeds(checked_feed_urls)),
         ("AdaptiveRepos", scrape_adaptive_repos),
         ("IPTV-org", scrape_iptv_org_base),
     )
@@ -1238,6 +1277,9 @@ def main():
             continue
         c["group"] = grp
         alive.append(c)
+
+    # Save source health feedback before safety exit check
+    update_source_health(checked_feed_urls, alive)
 
     log(f"Alive (BD + Indian + English only): {len(alive)} / {len(items)}")
 
