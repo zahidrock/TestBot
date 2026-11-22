@@ -1,14 +1,15 @@
 """
 Global Multi-Platform Live TV & IPTV Source Discovery Engine (BD, Indian & English Focused)
-Searches across:
-1. GitHub (Repositories + Topics + Code/M3U Signatures for BD, Indian & English streams)
-2. GitLab Public API (Projects + Public Snippets)
-3. Codeberg Public API (Repositories with Adaptive Backoff & 429 Circuit Breaker)
-4. GitHub Public Gists (Targeted M3U/IPTV Gist Discovery)
-5. DuckDuckGo Lite Search (Pastebin, Rentry, Telegraph, Bitbucket, HuggingFace, dpaste, Open Indexes)
-6. Built-in Official FAST TV & Open Directory Feeds (SamsungTVPlus, PlutoTV, Plex, Roku, Stirr, LG, Vizio, Xumo, DistroTV, Free-TV, iptv-org)
+Features:
+- Searches GitHub (Repos + Topics + Code Signatures), GitLab (Projects + Snippets), Codeberg,
+  GitHub Gists, DuckDuckGo Lite (Pastebin, Rentry, Telegraph, Bitbucket, HuggingFace, dpaste),
+  and Built-in Official FAST TV & Open Directory Feeds
+- Active Pool vs. Sleeping Pool architecture:
+  1. Never permanently deletes sources; failing sources move to 'sleeping_sources.json'
+  2. Event-based recovery: Immediately wakes up sources if their GitHub/GitLab repo pushes a new update
+  3. Daily Canary Probe: Tests a rotating batch of 600 sleeping sources every 24h and revives any that come back online
 """
-import json, os, re, time
+import json, os, random, re, ssl, time
 import urllib.error, urllib.parse, urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
@@ -17,13 +18,20 @@ GITHUB_TOKEN = "" or os.getenv("GITHUB_TOKEN")
 OUT_JSON = Path("discovered_sources.json")
 OUT_REPORT = Path("bot_report.txt")
 HEALTH_JSON = Path("source_health.json")
+SLEEPING_JSON = Path("sleeping_sources.json")
+
+CANARY_BATCH_SIZE = 600  # Number of sleeping sources probed daily for revival
+
+SSL_CTX = ssl.create_default_context()
+SSL_CTX.check_hostname = False
+SSL_CTX.verify_mode = ssl.CERT_NONE
 
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
 GH_HEADERS = {"User-Agent": UA, "Accept": "application/vnd.github+json"}
 if GITHUB_TOKEN:
     GH_HEADERS["Authorization"] = f"Bearer {GITHUB_TOKEN.strip()}"
 
-# 1. GitHub Repository & Topic Queries (Worldwide BD, Indian & English IPTV)
+# 1. GitHub Repository & Topic Queries
 BOT_SEARCH_QUERIES = [
     "iptv pushed:>2026-06-01",
     "m3u8 playlist pushed:>2026-06-01",
@@ -46,7 +54,7 @@ BOT_SEARCH_QUERIES = [
     "topic:indian-tv",
 ]
 
-# 2. Content & Code Signatures ('IPTV' naam na thakleo vetorer stream signature dekhe khujbe)
+# 2. Content & Code Signatures
 CODE_SIGNATURE_QUERIES = [
     '"cron:" "m3u" path:.github/workflows',
     '"cron:" "m3u8" path:.github/workflows',
@@ -98,15 +106,13 @@ WEB_DORK_QUERIES = [
     'intitle:"index of" "tv.m3u8"',
 ]
 
-# 5. Built-in Official FAST TV & Global Open Directory Feeds (Always Included)
+# 5. Built-in Official FAST TV & Global Open Directory Feeds (Always Active)
 BUILTIN_DIRECT_FEEDS = [
-    # Matt Huisman Official FAST TV Feeds
     "https://i.mjh.nz/SamsungTVPlus/all.m3u8",
     "https://i.mjh.nz/PlutoTV/all.m3u8",
     "https://i.mjh.nz/Plex/all.m3u8",
     "https://i.mjh.nz/Roku/all.m3u8",
     "https://i.mjh.nz/Stirr/all.m3u8",
-    # ApsatTV Official Open FAST Feeds (LG, Vizio, Xumo, DistroTV, LocalNow, Tubi, Redbox)
     "https://www.apsattv.com/lg.m3u",
     "https://www.apsattv.com/vizio.m3u",
     "https://www.apsattv.com/xumo.m3u",
@@ -114,7 +120,6 @@ BUILTIN_DIRECT_FEEDS = [
     "https://www.apsattv.com/localnow.m3u",
     "https://www.apsattv.com/tubi.m3u",
     "https://www.apsattv.com/redbox.m3u",
-    # iptv-org Official Country & Master Feeds (BD, IN & Major English Countries)
     "https://iptv-org.github.io/iptv/countries/bd.m3u",
     "https://iptv-org.github.io/iptv/countries/in.m3u",
     "https://iptv-org.github.io/iptv/countries/us.m3u",
@@ -123,7 +128,6 @@ BUILTIN_DIRECT_FEEDS = [
     "https://iptv-org.github.io/iptv/countries/au.m3u",
     "https://iptv-org.github.io/iptv/countries/nz.m3u",
     "https://iptv-org.github.io/iptv/countries/sg.m3u",
-    # Free-TV Official Curated Master Feed
     "https://raw.githubusercontent.com/Free-TV/IPTV/master/playlist.m3u8",
 ]
 
@@ -151,26 +155,16 @@ def log(msg):
     print(msg, flush=True)
 
 
-def load_health_data():
-    if not HEALTH_JSON.exists():
-        return {}
+def load_json_safe(path, default):
+    if not path.exists():
+        return default
     try:
-        return json.loads(HEALTH_JSON.read_text(encoding="utf-8"))
+        return json.loads(path.read_text(encoding="utf-8"))
     except Exception:
-        return {}
+        return default
 
 
-def is_valid_upstream_url(url, self_repo_prefix="", health_data=None):
-    if url in BUILTIN_DIRECT_FEEDS:
-        return True
-    # Protect any source that produced working BD/Indian/English channels
-    if health_data and url in health_data:
-        info = health_data[url]
-        if info.get("last_hits", 0) > 0:
-            return True
-        if info.get("fails", 0) >= 3:
-            return False
-
+def is_syntactically_valid_url(url, self_repo_prefix=""):
     low_u = url.lower().split("?")[0].split("#")[0]
     if low_u.endswith(IGNORE_EXTENSIONS):
         return False
@@ -178,6 +172,8 @@ def is_valid_upstream_url(url, self_repo_prefix="", health_data=None):
         return False
     if any(d in low_u for d in IGNORE_DOMAINS):
         return False
+    if url in BUILTIN_DIRECT_FEEDS:
+        return True
     if any(k in low_u for k in (
         "api", "live", "tv", "stream", "m3u", "cdn", "103.", "portal", "play",
         "iptv", "mjh.nz", "apsattv.com", "gist.githubusercontent", "pastebin.com/raw",
@@ -192,7 +188,7 @@ def fetch_json(url, headers=None, retries=2):
     for attempt in range(retries + 1):
         try:
             req = urllib.request.Request(url, headers=hdrs)
-            with urllib.request.urlopen(req, timeout=20) as r:
+            with urllib.request.urlopen(req, timeout=20, context=SSL_CTX) as r:
                 return json.loads(r.read().decode("utf-8", errors="ignore"))
         except urllib.error.HTTPError as e:
             if e.code in (429, 403) and attempt < retries:
@@ -214,38 +210,55 @@ def fetch_text(url, timeout=12, post_data=None):
         hdrs["Content-Type"] = "application/x-www-form-urlencoded"
         hdrs["Referer"] = "https://lite.duckduckgo.com/"
     req = urllib.request.Request(url, data=post_data, headers=hdrs)
-    with urllib.request.urlopen(req, timeout=timeout) as r:
+    with urllib.request.urlopen(req, timeout=timeout, context=SSL_CTX) as r:
         return r.read(1_000_000).decode("utf-8", errors="ignore")
 
 
-def load_existing_data(health_data):
-    if not OUT_JSON.exists():
-        return {}, set(BUILTIN_DIRECT_FEEDS), set()
+def canary_probe_url(url):
+    """Lightweight 4s probe to check if a sleeping source came back alive."""
     try:
-        old = json.loads(OUT_JSON.read_text(encoding="utf-8"))
-        old_bots = {}
-        for b in old.get("bots", []):
-            if "repo" in b:
-                prefix = f"raw.githubusercontent.com/{b['repo'].lower()}/"
-                b["upstream_sources"] = [
-                    u for u in b.get("upstream_sources", [])
-                    if is_valid_upstream_url(u, prefix, health_data)
-                ]
-                old_bots[b["repo"]] = b
-        old_upstream = {
-            u for u in old.get("all_upstream_sources", [])
-            if is_valid_upstream_url(u, health_data=health_data)
-        }
-        old_upstream.update(BUILTIN_DIRECT_FEEDS)
-        old_playlists = {
-            p for p in old.get("all_bot_playlists", [])
-            if health_data.get(p, {}).get("fails", 0) < 3 or health_data.get(p, {}).get("last_hits", 0) > 0
-        }
-        log(f"Ager {len(old_bots)} ti repo o {len(old_upstream)} ti upstream source load holo.")
-        return old_bots, old_upstream, old_playlists
-    except Exception as e:
-        log(f"[Warning] Purono JSON pora jay ni: {e}")
-        return {}, set(BUILTIN_DIRECT_FEEDS), set()
+        req = urllib.request.Request(url, headers={"User-Agent": UA})
+        with urllib.request.urlopen(req, timeout=4, context=SSL_CTX) as r:
+            if r.status not in (200, 206):
+                return False
+            sample = r.read(4096).decode("utf-8", errors="ignore")
+            return "#EXTINF" in sample or ".m3u8" in sample.lower()
+    except Exception:
+        return False
+
+
+def revive_sleeping_sources(sleeping_set, health_data):
+    """Probes a rotating batch of sleeping sources daily and wakes up any that are alive again."""
+    if not sleeping_set:
+        return set()
+    candidates = list(sleeping_set)
+    batch = random.sample(candidates, min(CANARY_BATCH_SIZE, len(candidates)))
+    revived = set()
+    with ThreadPoolExecutor(max_workers=60) as ex:
+        fut_map = {ex.submit(canary_probe_url, u): u for u in batch}
+        for f in as_completed(fut_map):
+            u = fut_map[f]
+            if f.result():
+                revived.add(u)
+                health_data[u] = {"fails": 0, "last_hits": 1, "revived_at": time.strftime("%Y-%m-%d")}
+    if revived:
+        log(f"[CanaryRevival] Sleeping pool theke {len(revived)}/{len(batch)} ti source abar active hoyeche!")
+    return revived
+
+
+def load_existing_data():
+    old = load_json_safe(OUT_JSON, {})
+    old_bots = {}
+    for b in old.get("bots", []):
+        if "repo" in b:
+            prefix = f"raw.githubusercontent.com/{b['repo'].lower()}/"
+            b["upstream_sources"] = [u for u in b.get("upstream_sources", []) if is_syntactically_valid_url(u, prefix)]
+            old_bots[b["repo"]] = b
+    old_upstream = {u for u in old.get("all_upstream_sources", []) if is_syntactically_valid_url(u)}
+    old_upstream.update(BUILTIN_DIRECT_FEEDS)
+    old_playlists = set(old.get("all_bot_playlists", []))
+    log(f"Ager {len(old_bots)} ti repo o {len(old_upstream)} ti active upstream source load holo.")
+    return old_bots, old_upstream, old_playlists
 
 
 # ------------------------------------------------------------------ Engine 1: GitHub
@@ -297,7 +310,7 @@ def search_github():
     return found
 
 
-# ------------------------------------------------------------------ Engine 2: GitLab (Projects + Snippets) & Codeberg
+# ------------------------------------------------------------------ Engine 2: GitLab & Codeberg
 def search_gitlab_and_codeberg():
     extra_playlists = set()
     extra_repos = {}
@@ -328,7 +341,6 @@ def search_gitlab_and_codeberg():
             log(f"[GitLab Search Error] {kw}: {e}")
         time.sleep(2)
 
-    # GitLab Public Snippets
     try:
         snippets = fetch_json("https://gitlab.com/api/v4/snippets/public?per_page=100", retries=0)
         if isinstance(snippets, list):
@@ -341,7 +353,6 @@ def search_gitlab_and_codeberg():
     except Exception as e:
         log(f"[GitLab Snippets Error] {e}")
 
-    # Codeberg with Adaptive Backoff & Graceful Skip (avoids noisy 429 errors on shared CI IPs)
     cb_headers = {
         "User-Agent": "IPTV-Playlist-Aggregator/1.0 (+https://github.com)",
         "Accept": "application/json"
@@ -379,14 +390,12 @@ def search_gitlab_and_codeberg():
                         log(f"[Codeberg] 429 cooldown (45s) for '{kw}'...")
                         time.sleep(45)
                     else:
-                        log("[Codeberg] Shared IP rate-limited by Codeberg; skipping Codeberg for this run.")
+                        log("[Codeberg] Shared IP rate-limited; skipping Codeberg for this run.")
                         cb_blocked = True
                         break
                 else:
-                    log(f"[Codeberg Info] {kw}: HTTP {e.code}")
                     break
-            except Exception as e:
-                log(f"[Codeberg Info] {kw}: {e}")
+            except Exception:
                 break
 
     log(f"[GitLab & Codeberg] {len(extra_repos)} ti external repo o {len(extra_playlists)} ti candidate feed paoa gese.")
@@ -426,7 +435,6 @@ def normalize_web_discovered_url(decoded):
 def search_web_pastes_and_gists():
     discovered_urls = set()
 
-    # 1. Public GitHub Gists (multiple pages for better hit rate)
     for page in (1, 2):
         try:
             gists = fetch_json(f"https://api.github.com/gists/public?per_page=100&page={page}", GH_HEADERS, retries=0)
@@ -444,7 +452,6 @@ def search_web_pastes_and_gists():
             log(f"[Gist Feed Info] page {page}: {e}")
         time.sleep(1)
 
-    # 2. DuckDuckGo Lite Search (POST requests avoid HTML anti-bot empty responses)
     for dq in WEB_DORK_QUERIES:
         try:
             post_bytes = urllib.parse.urlencode({"q": dq}).encode("utf-8")
@@ -469,12 +476,32 @@ def discover():
     if not GITHUB_TOKEN:
         log("[Warning] GITHUB_TOKEN set kora nai! Rate limit hote pare.")
 
-    health_data = load_health_data()
-    merged_bots, merged_upstream, merged_playlists = load_existing_data(health_data)
+    health_data = load_json_safe(HEALTH_JSON, {})
+    sleeping_data = load_json_safe(SLEEPING_JSON, {})
+    sleeping_set = set(sleeping_data.get("sleeping_urls", []))
 
+    merged_bots, merged_upstream, merged_playlists = load_existing_data()
+
+    # 1. Event-based revival: If a repo pushed a new update since last check, immediately wake its URLs!
     gh_found = search_github()
     alt_repos, alt_playlists = search_gitlab_and_codeberg()
     web_paste_urls = search_web_pastes_and_gists()
+
+    repo_updated_revivals = 0
+    for repo_key, new_info in {**gh_found, **alt_repos}.items():
+        old_info = merged_bots.get(repo_key)
+        if old_info and new_info.get("updated") and new_info["updated"] > old_info.get("updated", ""):
+            for u in old_info.get("playlists", []) + old_info.get("upstream_sources", []):
+                if u in sleeping_set:
+                    sleeping_set.remove(u)
+                    health_data[u] = {"fails": 0, "last_hits": 1, "revived_by": "repo_push"}
+                    repo_updated_revivals += 1
+    if repo_updated_revivals:
+        log(f"[EventRevival] Repo update dekhe {repo_updated_revivals} ti sleeping source sathe sathe active kora holo!")
+
+    # 2. Daily Canary Probe on Sleeping Pool
+    revived_by_probe = revive_sleeping_sources(sleeping_set, health_data)
+    sleeping_set -= revived_by_probe
 
     merged_playlists.update(alt_playlists)
     merged_upstream.update(web_paste_urls)
@@ -516,7 +543,7 @@ def discover():
                 code_txt = fetch_text(raw_code_url, timeout=10)
                 for found_url in URL_RE.findall(code_txt):
                     clean_u = found_url.rstrip(".,;'\")}]").split("?")[0]
-                    if is_valid_upstream_url(clean_u, self_repo_prefix, health_data):
+                    if is_syntactically_valid_url(clean_u, self_repo_prefix):
                         upstream.add(clean_u)
             except Exception:
                 pass
@@ -537,17 +564,48 @@ def discover():
     all_bots_list = list(merged_bots.values())
     all_bots_list.sort(key=lambda x: (not x.get("is_auto_bot", False), x.get("updated", "")), reverse=False)
 
-    clean_merged_upstream = {u for u in merged_upstream if is_valid_upstream_url(u, health_data=health_data)}
+    candidate_upstream = {u for u in merged_upstream if is_syntactically_valid_url(u)}
     for b in all_bots_list:
-        clean_merged_upstream.update(b.get("upstream_sources", []))
+        candidate_upstream.update(b.get("upstream_sources", []))
         merged_playlists.update(b.get("playlists", []))
 
-    all_upstream_urls = sorted(clean_merged_upstream)
-    all_bot_playlists = sorted(merged_playlists)
+    # Partition into Active Pool vs. Sleeping Pool based on health_data
+    active_upstream = set(BUILTIN_DIRECT_FEEDS)
+    active_playlists = set()
+
+    for u in candidate_upstream:
+        if u in BUILTIN_DIRECT_FEEDS:
+            continue
+        h = health_data.get(u, {})
+        if h.get("last_hits", 0) > 0 or h.get("fails", 0) < 2:
+            active_upstream.add(u)
+            sleeping_set.discard(u)
+        else:
+            sleeping_set.add(u)
+
+    for p in merged_playlists:
+        h = health_data.get(p, {})
+        if h.get("last_hits", 0) > 0 or h.get("fails", 0) < 2:
+            active_playlists.add(p)
+            sleeping_set.discard(p)
+        else:
+            sleeping_set.add(p)
+
+    # Save updated health & sleeping pool
+    HEALTH_JSON.write_text(json.dumps(health_data, indent=2), encoding="utf-8")
+    SLEEPING_JSON.write_text(json.dumps({
+        "updated_at": time.strftime("%Y-%m-%d %H:%M:%S UTC", time.gmtime()),
+        "total_sleeping": len(sleeping_set),
+        "sleeping_urls": sorted(sleeping_set)
+    }, indent=2), encoding="utf-8")
+
+    all_upstream_urls = sorted(active_upstream)
+    all_bot_playlists = sorted(active_playlists)
 
     result_data = {
         "generated_at": time.strftime("%Y-%m-%d %H:%M:%S UTC", time.gmtime()),
         "total_bots_found": len(all_bots_list),
+        "total_sleeping_sources": len(sleeping_set),
         "bots": all_bots_list,
         "all_upstream_sources": all_upstream_urls,
         "all_bot_playlists": all_bot_playlists,
@@ -556,10 +614,11 @@ def discover():
 
     report_lines = [
         f"=== Global Multi-Source IPTV Discovery Report ({result_data['generated_at']}) ===",
-        f"Total Repositories Saved (GitHub + GitLab + Codeberg): {len(all_bots_list)}",
-        f"Total Unique Upstream Scraping Sources & Pastes Saved: {len(all_upstream_urls)}",
-        f"Total Direct M3U Feeds Saved: {len(all_bot_playlists)}\n",
-        "--- 1. UPSTREAM WEBSITES / APIS / PASTES ---"
+        f"Total Repositories Tracked (GitHub + GitLab + Codeberg): {len(all_bots_list)}",
+        f"Active Upstream Scraping Sources & Pastes: {len(all_upstream_urls)}",
+        f"Active Direct M3U Feeds: {len(all_bot_playlists)}",
+        f"Sleeping Pool (Auto-Probed Daily for Revival): {len(sleeping_set)}\n",
+        "--- 1. ACTIVE UPSTREAM WEBSITES / APIS / PASTES ---"
     ]
     for u in all_upstream_urls:
         report_lines.append(f"  - {u}")
@@ -579,7 +638,7 @@ def discover():
                 report_lines.append(f"    > {pl}")
 
     OUT_REPORT.write_text("\n".join(report_lines) + "\n", encoding="utf-8")
-    log(f"Done! Total: {len(all_bots_list)} repos, {len(all_upstream_urls)} upstream/paste sources, {len(all_bot_playlists)} M3U feeds saved.")
+    log(f"Done! Active: {len(all_upstream_urls)} upstream + {len(all_bot_playlists)} M3U feeds | Sleeping: {len(sleeping_set)} sources.")
 
 
 if __name__ == "__main__":
