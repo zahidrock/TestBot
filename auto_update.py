@@ -1,11 +1,12 @@
 """
-All-in-One Direct (No-Proxy) Global Live TV IPTV Updater (BD / Bangla & Hindi India / English / Informative / Sports)
+All-in-One Direct (No-Proxy) Global Live TV IPTV Updater (BD / Bangla & Hindi India / English / Informative / Kids & Animation / Sports)
 Features:
 - Collects from AynaOTT, JagoBD, GitHub, GitLab, Codeberg, Bitbucket, HuggingFace, Pastebin, Rentry, Telegraph,
   Official FAST TV APIs (SamsungTVPlus, PlutoTV, Plex, Roku, Stirr, LG, Vizio, Xumo, DistroTV, LocalNow, Tubi, Redbox),
-  and iptv-org JSON API + Country M3U feeds (BD, IN, US, UK, CA, AU, NZ, SG)
-- Keeps ONLY Bangladeshi, Indian (Bangla & Hindi ONLY), English, Informative & Sports
-- Blocks URL-as-name spam, foreign homonyms (.ug/.gp/.ee/.tr/.pe/.es/.fr/.id/.pk), & non-target regional channels
+  and iptv-org JSON API + Country & Category M3U feeds (including official 'kids' and 'animation' feeds)
+- Dedicated 'Kids & Animation' group for Bangla, Hindi & English cartoons/anime (Cartoon Network, Pogo, Nick, Sony Yay, Disney, Duronto TV, Rongeen TV, Animax, etc.)
+- Dedicated 'Informative' group for Discovery, History, Animal Planet, Nat Geo, Sony BBC Earth, Travelxp, Science & Wildlife channels
+- Keeps ONLY Bangladeshi, Indian (Bangla & Hindi ONLY), English, Informative, Kids & Animation & Sports
 - Deep HLS segment verification (requires >= 5KB real video chunk) + Dead-host fast skip cache
 - Active Pool vs. Sleeping Pool sync ('source_health.json' & 'sleeping_sources.json')
 - Canonical Channel Alias Normalization + Auto-Logo Enrichment for a 100% duplicate-free 'playlist_clean.m3u'
@@ -69,6 +70,8 @@ COMBOS = [
     ("Informative",           "documentary",   None),
     ("Informative",           "science",       None),
     ("Informative",           "education",     None),
+    ("Kids & Animation",      "kids",          None),
+    ("Kids & Animation",      "animation",     None),
     ("Hindi Music",           "music",         "hin"),
     ("English Music",         "music",         "eng"),
     ("Bangla Music",          "music",         "ben"),
@@ -78,7 +81,7 @@ COMBOS = [
 ALLOWED_GROUPS = {
     "Bangladesh", "Bangla (India)", "Kolkata Movies", "Bangla Music",
     "Hindi Movies", "Hindi Music", "India",
-    "Informative",
+    "Informative", "Kids & Animation",
     "English Movies", "English Entertainment", "English Music",
     "Sports"
 }
@@ -86,7 +89,7 @@ ALLOWED_GROUPS = {
 GROUP_ORDER = [
     "Bangladesh", "Bangla (India)", "Kolkata Movies", "Bangla Music",
     "Hindi Movies", "Hindi Music", "India",
-    "Informative",
+    "Informative", "Kids & Animation",
     "English Movies", "English Entertainment", "English Music",
     "Sports"
 ]
@@ -196,7 +199,8 @@ DROP_SUBSTRING_KEYWORDS = (
     "antena", "prima", "ocko", "paprika", "telestar", "realitatea", "spektrum",
     "stara", "starkefrauen", "handystar", "abai", "republica", "utv.iq", "utvrussian",
     "film+", "passionbollywood", "bollywoodclassic", "classic", "nusantara",
-    "espanol", "español", "espanhol", "curiosidade", "ultratumba", "caraibes", "caraïbes"
+    "espanol", "español", "espanhol", "curiosidade", "ultratumba", "caraibes", "caraïbes",
+    "schwammkopf", "magisch", "classico", "clássico"
 )
 
 # Dead-host fast skip cache
@@ -497,7 +501,6 @@ def scrape_jagobd():
 
 
 def scrape_discovered_and_global_feeds(checked_feed_urls):
-    """Fetches from Active Pool (discovered_sources.json + DIRECT_GLOBAL_FEEDS)"""
     upstream_urls = [u for _, u in DIRECT_GLOBAL_FEEDS]
     bot_playlists = []
 
@@ -986,6 +989,13 @@ CANONICAL_ALIASES = {
     "cgtndocumentary": "cgtndocumentary",
     "dwnews": "dw",
     "aljazeera": "aljazeera",
+    "duronto": "durontotv",
+    "durontotv": "durontotv",
+    "rongeen": "rongeentv",
+    "rongeentv": "rongeentv",
+    "cartoonnetwork": "cartoonnetwork",
+    "sonyyay": "sonyyay",
+    "nickjr": "nickjr",
 }
 
 VALID_SHORT_NAMES = {
@@ -1010,7 +1020,6 @@ def is_garbage_channel_name(name):
     if not name or len(name.strip()) > 65:
         return True
     s = name.strip()
-    # Reject URLs pasted as channel names (e.g. '#https://akash.sm-monirul.top/...')
     if "http://" in s.lower() or "https://" in s.lower() or ".m3u8" in s.lower() or ".stream" in s.lower():
         return True
     clean = re.sub(r"[\(\[].*?[\)\]]", " ", s).strip()
@@ -1101,7 +1110,7 @@ BANGLA_RE = re.compile(r"\b(bangla|bengali|bengal|bangladesh|bangladeshi|jalsha|
 
 HINDI_RE = re.compile(
     r"\b(hindi|bollywood|star plus|star bharat|star utsav|star gold|sony sab|sab tv|sony tv|sony entertainment|"
-    r"sony pal|sony max|sony pix|sony wah|sony yay|colors|colors tv|colors rishtey|colors cineplex|"
+    r"sony pal|sony max|sony pix|sony wah|colors|colors tv|colors rishtey|colors cineplex|"
     r"zee tv|zee anmol|zee cinema|zee classic|zee action|zee bollywood|zee news|zee hindustan|zee zing|zee zest|zee cafe|"
     r"zee business|zee salaam|&tv|and tv|and pictures|&pictures|and priv|&priv|dangal|ishara|shemaroo|big magic|bindass|"
     r"aaj tak|abp news|abp ganga|ndtv|india tv|news18|republic bharat|republic tv|tv9|dd national|dd news|dd bharati|"
@@ -1112,12 +1121,27 @@ HINDI_RE = re.compile(
     r"wow cinema|abzy|pitara|popkorn|housefull|dil se|dhinchaak|bharat samachar|sadhna prime|tehelka tv|khushboo|yrf music)\b", re.I
 )
 
+# Dedicated Kids & Animation Channels (Bangla, Hindi & English)
+KIDS_ANIMATION_RE = re.compile(
+    r"\b(cartoon|cartoons|animation|anime|animax|crunchyroll|retrocrush|hidive|toon|toons|toonami|"
+    r"cartoon network|cn hd|pogo|sony yay|hungama|super hungama|marvel hq|disney|disney channel|disney xd|disney jr|disney junior|"
+    r"nickelodeon|nick|nick jr|nickjr|nicktoons|nick bangla|nick rewind|teen nick|"
+    r"boomerang|baby tv|babytv|babyfirst|baby first|pbs kids|cbbc|cbeebies|pop tv|tiny pop|kix|"
+    r"duronto|duronto tv|rongeen|rongeen tv|zb cartoon|discovery kids|"
+    r"moonbug|moonbug kids|3abn kids|kids|kidz|junior|children|"
+    r"spongebob|sonic the hedgehog|mario vs sonic|beyblade|pokemon|pokémon|doraemon|shinchan|motu patlu|"
+    r"chhota bheem|green gold tv|gubbare|maha cartoon|sonic nickelodeon|tom and jerry|looney tunes|"
+    r"peppa pig|paw patrol|blue's clues|blues clues|blaze and the monster|totally turtles|tmnt|ninja turtles|"
+    r"icarly|power rangers|transformers|he-man|scooby|flintstones|jetsons|garfield|smurfs|ben 10)\b",
+    re.I
+)
+
 INFORMATIVE_RE = re.compile(
-    r"\b(discovery|discovery channel|discovery science|discovery turbo|discovery world|discovery kids|discovery\+|\bds\b|"
+    r"\b(discovery|discovery channel|discovery science|discovery turbo|discovery world|discovery\+|\bds\b|"
     r"animal planet|national geographic|national giography|nat geo|natgeo|nat geo wild|nat geo people|nat geo adventure|"
     r"history tv|history channel|history 18|history18|history tv18|sony bbc earth|bbc earth|bbc knowledge|"
     r"travel xp|travelxp|travel channel|fyi tv18|fyi tv|investigation discovery|id channel|science channel|"
-    r"smithsonian|curiosity|curiositystream|love nature|wild earth|wildearth|sky nature|pbs|pbs kids|"
+    r"smithsonian|curiosity|curiositystream|love nature|wild earth|wildearth|sky nature|pbs|"
     r"nasa tv|esa tv|dw documentary|cgtn documentary|cgtndocumentary|epic tv|epic channel|documentary|docubay|planete\+|"
     r"crime \+ investigation|crime and investigation|bio channel|biography|h2 channel|military history|stingray naturescape)\b",
     re.I
@@ -1142,16 +1166,14 @@ ENGLISH_ENT_CH_RE = re.compile(
     r"bbc|cnn|cnbc|bloomberg|al jazeera|aljazeera|dw|dwnews|france 24|france24|france news 24|nhk|cgtn|trt world|euronews|"
     r"arirang|kbs world|cna|channel news asia|cbs|nbc|abc|fox|itv|channel 4|channel 5|e4|more4|voa|voice of america|"
     r"sky one|sky witness|sky atlantic|sky news|sky arts|bravo|lifetime|hgtv|food network|mtv|vh1|"
-    r"nickelodeon|nick jr|nickjr|nicktoons|cartoon network|boomerang|disney|a&e|tnt|tbs|usa network|cw|"
-    r"msnbc|hln|trutv|vice|dave|gold uk|alibi|drama uk|yesterday uk|eden uk|quest uk|really uk|pick tv|challenge tv|"
-    r"axs|axs tv|pix 11|pix11|laff tv|theq|un web tv|moonbug kids|3abn kids|sonic the hedgehog)\b", re.I
+    r"a&e|tnt|tbs|usa network|cw|msnbc|hln|trutv|vice|dave|gold uk|alibi|drama uk|yesterday uk|eden uk|quest uk|really uk|pick tv|challenge tv|"
+    r"axs|axs tv|pix 11|pix11|laff tv|theq|un web tv)\b", re.I
 )
 
 PAY_ENT_CH_RE = re.compile(
     r"\b(star plus|star bharat|star utsav|star jalsha|colors|rishtey|sony entertainment|sony tv|set hd|set india|"
-    r"sony sab|sab tv|sony pal|sony aath|sony yay|zee tv|zee anmol|zee bangla|zee news|zee hindustan|"
-    r"zee zing|zee zest|zee business|zee salaam|&tv|and tv|dangal|ishara|shemaroo|big magic|bindass|"
-    r"disney|hungama|nick|nickelodeon|sonic|cartoon network|pogo|marvel hq)\b", re.I
+    r"sony sab|sab tv|sony pal|sony aath|zee tv|zee anmol|zee bangla|zee news|zee hindustan|"
+    r"zee zing|zee zest|zee business|zee salaam|&tv|and tv|dangal|ishara|shemaroo|big magic|bindass)\b", re.I
 )
 PAY_SPORTS_RE = re.compile(
     r"\b(star sports|sony ten|sony sports|ten sports|t sports|willow|willo tv|ptv sports|eurosport|"
@@ -1189,7 +1211,7 @@ BD_ONLY_RE = re.compile(
     r"atn bangla|atn news|atn islamic|atn music|news 24 bd|news24 tv|channel i|channel 9|channel s|channel 1 news|channel 52|"
     r"banglavision|bangla vision|maasranga|deepto|boishakhi|desh tv|desh bangla|deshe bideshe|"
     r"deshi tv|nagorik|gazi tv|g tv|asian tv|sa tv|satv|mohona|my tv|mytv|bijoy|ananda tv|anando tv|anandabarta|"
-    r"nexus|t sports|duronto|gaan bangla|ekhon tv|global tv|green tv|bangla tv|spice tv|diganta|"
+    r"nexus|t sports|gaan bangla|ekhon tv|global tv|green tv|bangla tv|spice tv|diganta|"
     r"islamic tv|madani channel bangla|madani ch\. bangla|peace tv bangla|ekushey|ekushe|etv ekushey|"
     r"enter tv|matribhumi|me tv|movie bangla|rajdhani tv|ja tv|jago news|nan tv|probashi tv|"
     r"jonmobhumi|doyel tv|cb24|ayna tv|ash tv|shikor tv|thikana tv|vision 24|news 21 bangla|news 21 hd|"
@@ -1208,16 +1230,16 @@ INDIA_BANGLA_RE = re.compile(
     r"ctvn|akd plus|bflix bangla|khoj khobor|newstime bangla|prime news bangla|"
     r"bangla plus|bangla express|kolkata|calcutta|west bengal|sananda|baraza indian bangla|"
     r"indian bangla|orange bangla|enter 10 bangla|enterr 10 bangla|enterr10 bangla|enteer ten bangla|enter10 bangla|"
-    r"khushboo bangla|khusbo bangla|mon bangla|news live bangla|nick bangla|nk tv bangla|raatdin bangla|"
-    r"rongeen tv|salam bangla|snb cinema|sonar bangla|sonic bangla|u bangla|uphar bangla|upohar bangla|"
-    r"zb bhakti|zb cartoon|zb music|zb cinema|zodiak tv|jtbs classic|bhi channel|globe tv|"
+    r"khushboo bangla|khusbo bangla|mon bangla|news live bangla|nk tv bangla|raatdin bangla|"
+    r"salam bangla|snb cinema|sonar bangla|sonic bangla|u bangla|uphar bangla|upohar bangla|"
+    r"zb bhakti|zb music|zb cinema|zodiak tv|jtbs classic|bhi channel|globe tv|"
     r"headlines tripura|friends tv|ananda barta|ananda livetv|ak bangla|ekhonkolkata|jhankar tv|sristi tv|stv bangla|channel vision|deen tv|deentv)\b",
     re.I
 )
 
 
 def classify_by_language_and_name(c):
-    """Bangladeshi, Indian (Bangla & Hindi ONLY), Informative, Sports o English channel alada korbe; baki sob 'DROP'"""
+    """Bangladeshi, Indian (Bangla & Hindi ONLY), Informative, Kids & Animation, Sports o English channel alada korbe; baki sob 'DROP'"""
     name = c["name"]
     group = c.get("group", "")
     tvg_id = c.get("tvg_id", "")
@@ -1250,24 +1272,30 @@ def classify_by_language_and_name(c):
     if PAY_SPORTS_RE.search(t) or re.search(r"\b(sport|sports|cricket|football|soccer)\b", clean_lname):
         return "Sports"
 
-    # 3. Informative / Documentary / Science / Wildlife / History
+    # 3. Kids & Animation (Bangla, Hindi & English cartoons/anime)
+    if (KIDS_ANIMATION_RE.search(clean_lname)
+            or group == "Kids & Animation"
+            or re.search(r"\b(kids|cartoon|animation|anime)\b", lgroup)):
+        return "Kids & Animation"
+
+    # 4. Informative / Documentary / Science / Wildlife / History
     if INFORMATIVE_RE.search(clean_lname) or re.search(r"\b(documentary|science|wildlife|nature|history)\b", lgroup):
         return "Informative"
 
-    # 4. Kolkata Movies & Bangla (India)
+    # 5. Kolkata Movies & Bangla (India)
     if KOLKATA_RE.search(clean_lname):
         return "Kolkata Movies"
     if (INDIA_BANGLA_RE.search(clean_lname) or "kolkata" in clean_lname or "calcutta" in clean_lname
             or (detected_lang == "ben" and re.search(r"\b(india|indian|west bengal|kolkata)\b", lgroup))):
         return "Bangla Music" if music else "Bangla (India)"
 
-    # 5. Hindi Movies & Hindi Music
+    # 6. Hindi Movies & Hindi Music
     if HINDI_MOVIE_CH_RE.search(clean_lname):
         return "Hindi Movies"
     if (detected_lang == "hin" or HINDI_RE.search(clean_lname)) and music:
         return "Hindi Music"
 
-    # 6. English Movies & English Entertainment
+    # 7. English Movies & English Entertainment
     if ENGLISH_MOVIE_CH_RE.search(clean_lname):
         return "English Movies"
     if ENGLISH_ENT_CH_RE.search(clean_lname) and detected_lang != "ben":
@@ -1282,7 +1310,7 @@ def classify_by_language_and_name(c):
             return "English Movies"
         return "English Entertainment"
 
-    # 7. Hindi / India General Entertainment & News
+    # 8. Hindi / India General Entertainment & News
     if (detected_lang == "hin"
             or HINDI_RE.search(clean_lname)
             or PAY_ENT_CH_RE.search(clean_lname)
@@ -1294,7 +1322,7 @@ def classify_by_language_and_name(c):
             return "Hindi Movies"
         return "India"
 
-    # 8. Strictly Bangladeshi Channels -> 'Bangladesh'
+    # 9. Strictly Bangladeshi Channels -> 'Bangladesh'
     if (BD_ONLY_RE.search(clean_lname)
             or ".bd" in ltvg
             or "jagobd.com" in lurl
@@ -1314,7 +1342,7 @@ def classify_by_language_and_name(c):
             return "Bangla Music"
         return "Bangla (India)"
 
-    # 9. English keyword fallback
+    # 10. English keyword fallback
     if re.search(r"\b(english|hollywood|usa|uk|british|american)\b", t):
         if music:
             return "English Music"
@@ -1500,7 +1528,7 @@ def main():
 
         seen.add(raw)
         items.append(c)
-    log(f"Total unique BD/Bangla-Hindi/English/Informative candidate: {len(items)}")
+    log(f"Total unique BD/Bangla-Hindi/English/Informative/Kids candidate: {len(items)}")
 
     check_all(items)
     alive_raw = [c for c in items if c.get("alive")]
@@ -1525,7 +1553,6 @@ def main():
         log(f"[SAFETY] Alive ({len(alive)}) ager playlist ({prev}) er theke onek kom. Overwrite kora holo na.")
         return 1
 
-    # Build Logo & Clean-Name enrichment lookup from channels that have valid logos
     best_logo_map = {}
     for c in sorted(alive, key=lambda x: SOURCE_RANK.get(x["source"], 9)):
         ckey = norm(c["name"])
@@ -1536,7 +1563,7 @@ def main():
 
     for c in alive:
         ckey = norm(c["name"])
-        if (not c.get("logo") or not c.get("logo").startswith("http")) and ckey in best_logo_map:
+        if (not c.get("logo") or not c["logo"].startswith("http")) and ckey in best_logo_map:
             c["logo"] = best_logo_map[ckey]
 
     if MAX_LINKS_PER_CHANNEL:
