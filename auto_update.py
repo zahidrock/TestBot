@@ -4,12 +4,11 @@ Features:
 - Collects from AynaOTT, JagoBD, GitHub, GitLab, Codeberg, Bitbucket, HuggingFace, Pastebin, Rentry, Telegraph,
   Official FAST TV APIs (SamsungTVPlus, PlutoTV, Plex, Roku, Stirr, LG, Vizio, Xumo, DistroTV, LocalNow, Tubi, Redbox),
   and iptv-org JSON API + Country M3U feeds (BD, IN, US, UK, CA, AU, NZ, SG)
-- Keeps ONLY Bangladeshi, Indian (Bangla & Hindi ONLY; drops Tamil/Telugu/Punjabi/other regional), English, Informative & Sports
-- Dedicated 'Informative' group for Discovery, History, Animal Planet, Nat Geo, Sony BBC Earth, Travelxp, Science & Wildlife channels
-- Strictly separates Bangladeshi ('Bangladesh') from Indian Bangla ('Bangla (India)' & 'Kolkata Movies')
-- Blocks foreign RTV/NTV/BTV/News24/GTV homonyms, expired tokens, unresolved macro URLs, VOD, radio, spam
+- Keeps ONLY Bangladeshi, Indian (Bangla & Hindi ONLY), English, Informative & Sports
+- Strictly classifies AynaOTT/JagoBD multi-language channels into their proper groups (English, Sports, Informative, Hindi, Bangla)
+- Blocks foreign homonyms (.lt/.ec/.at/.br/.mn/.pe/.do/.cm/.id/.us/.pk) & non-target languages (ara/urd/nep/spa/ces/etc.)
 - Deep HLS segment verification (requires >= 5KB real video chunk) + Dead-host fast skip cache
-- Active Pool vs. Sleeping Pool sync ('source_health.json' & 'sleeping_sources.json') so dead feeds sleep and revive automatically when back online
+- Active Pool vs. Sleeping Pool sync ('source_health.json' & 'sleeping_sources.json')
 - Generates outputs:
   1. 'playlist.m3u': All verified alive streams (with backups)
   2. 'playlist_clean.m3u': Duplicate-free, lowest ping (fastest response) 1 link per channel
@@ -49,7 +48,6 @@ COUNTRY_SOURCES = [
     ("English Entertainment", f"{IPTV_BASE}/countries/sg.m3u"),
 ]
 
-# Direct Official Global FAST TV & Open Community Feeds (Always fetched)
 DIRECT_GLOBAL_FEEDS = [
     ("FAST-TV", "https://i.mjh.nz/SamsungTVPlus/all.m3u8"),
     ("FAST-TV", "https://i.mjh.nz/PlutoTV/all.m3u8"),
@@ -100,6 +98,7 @@ GROUP_ORDER = [
 BLOCK_URLS = [
     "amg13643-amg13643c1-amgplt0016",
     "amgplt",
+    "bitcdn-kronehit.bitmovin.com",
 ]
 
 NOT_BANGLA_HOSTS = ["amagi.tv"]
@@ -132,7 +131,7 @@ M3U8_AUDIO_LANG_RE = re.compile(r'#EXT-X-MEDIA:[^\n]*TYPE=AUDIO[^\n]*LANGUAGE="(
 XTREAM_NUM_RE = re.compile(r"^(https?://[^/]+(?:/live)?/[^/]+/[^/]+/\d+)(?:\.ts)?$", re.I)
 
 ISO_LANG_MAP = {
-    "ben": "ben", "bn": "ben", "bengali": "ben", "bangla": "ben",
+    "ben": "ben", "bn": "ben", "bengali": "ben", "bangla": "ben", "ban": "ben",
     "hin": "hin", "hi": "hin", "hindi": "hin",
     "eng": "eng", "en": "eng", "english": "eng",
     "tam": "tam", "ta": "tam", "tamil": "tam",
@@ -147,21 +146,36 @@ ISO_LANG_MAP = {
     "urd": "urd", "ur": "urd", "urdu": "urd",
     "ara": "ara", "ar": "ara", "arabic": "ara",
     "bho": "bho", "bhojpuri": "bho",
+    "nep": "nep", "ne": "nep", "nepali": "nep",
+    "spa": "spa", "es": "spa", "spanish": "spa",
+    "ces": "ces", "cs": "ces", "czech": "ces",
+    "chi": "chi", "zh": "chi", "chinese": "chi",
+    "heb": "heb", "he": "heb", "hebrew": "heb",
+    "por": "por", "pt": "por", "portuguese": "por",
+    "rus": "rus", "ru": "rus", "russian": "rus",
+    "fra": "fra", "fr": "fra", "french": "fra",
 }
 
-DROP_INDIAN_LANG_CODES = {"tam", "tel", "mal", "kan", "mar", "pan", "guj", "ori", "asm", "bho"}
+# Strictly DROP non-target languages (Indian regional + foreign languages)
+DROP_LANG_CODES = {
+    "tam", "tel", "mal", "kan", "mar", "pan", "guj", "ori", "asm", "bho",
+    "urd", "ara", "nep", "spa", "ces", "chi", "heb", "por", "rus", "fra"
+}
 
-DROP_REGIONAL_RE = re.compile(
+DROP_REGIONAL_AND_FOREIGN_RE = re.compile(
     r"\b(tamil|star vijay|vijay tv|sun tv|kalaignar|jaya tv|raj tv|polimer|puthiya thalaimurai|thanthi|zee tamil|colors tamil|ktv|adithya|isaiaruvi|sun music|sun news|sri sankara|"
     r"telugu|star maa|maa tv|maa movies|maa music|maa gold|etv telugu|etv plus|etv cinema|gemini|zee telugu|ntv telugu|tv9 telugu|sakshi|abn|v6 news|10tv|hmtv|t news|"
     r"malayalam|asianet|surya tv|surya movies|surya music|mazhavil|manorama|kairali|flowers tv|zee keralam|amrita|media one|twentyfour|mathrubhumi|reporter tv|janam tv|"
     r"kannada|star suvarna|udaya|zee kannada|colors kannada|tv9 kannada|public tv|suvarna news|power tv|kasthuri|raj news kannada|"
     r"marathi|star pravah|zee marathi|zee talkies|zee yuva|colors marathi|sony marathi|abp majha|lokshahi|saam tv|fakt marathi|tv9 marathi|news18 lokmat|"
-    r"punjabi|ptc punjabi|ptc chak de|ptc news|zee punjabi|pitaara|mh one|chardikla|brit asia|akaal|sangat|"
-    r"gujarati|colors gujarati|tv9 gujarati|abp asmita|sandesh news|vtv gujarati|gstv|news18 gujarati|"
+    r"punjabi|ptc punjabi|ptc chak de|ptc news|ptc music|zee punjabi|pitaara|mh one|chardikla|brit asia|akaal|sangat|5aab|movie punjab|"
+    r"gujarati|colors gujarati|tv9 gujarati|abp asmita|sandesh news|vtv gujarati|gstv|news18 gujarati|aastha gujarati|"
     r"odia|oriya|tarang|zee sarthak|star kirano|otv|kanak news|kalinga tv|prameya|mbc tv odia|alankar|"
     r"assamese|rengoni|rang tv|jonack|prag news|dy 365|pratidin time|news live assam|ramdhenu|"
-    r"bhojpuri|bhojpuri cinema|dabangg|filamchi bhojpuri|zee ganga|big ganga|haryanvi|rajasthani)\b",
+    r"bhojpuri|bhojopuri|bhojpuri cinema|dabangg|filamchi bhojpuri|zee ganga|big ganga|haryanvi|rajasthani|"
+    r"aastha tamil|aastha telugu|aastha kannada|gurbani|amrit gurbani|"
+    r"al quran|al sunnah|makkah|makka|madina|medina|arabic|hum tv|hum masala|hum sitaray|ary digital|ary news|geo tv|geo news|ptv|discover pakistan|discoverpakistan|"
+    r"sony one hits|retro music tv)\b",
     re.I
 )
 
@@ -194,13 +208,15 @@ def http_get(url, headers=None, timeout=6, max_bytes=1_500_000):
 
 
 # ------------------------------------------------------------------ URL converter & m3u parse
-def convert_to_hls_url(url):
+def clean_stream_url(url):
     if not url:
-        return url
+        return ""
+    # Strip garbage #fb:... or #tawfique-iptv fragments
+    url = url.split("#")[0].strip()
     if "output=ts" in url.lower():
-        return re.sub(r"output=ts", "output=m3u8", url, flags=re.I)
+        url = re.sub(r"output=ts", "output=m3u8", url, flags=re.I)
     if "output=mpegts" in url.lower():
-        return re.sub(r"output=mpegts", "output=m3u8", url, flags=re.I)
+        url = re.sub(r"output=mpegts", "output=m3u8", url, flags=re.I)
     base_part = url.split("?")[0]
     m = XTREAM_NUM_RE.match(base_part)
     if m:
@@ -265,16 +281,20 @@ def parse_m3u(text, source):
         elif line.startswith("#EXTVLCOPT:"):
             opt = line.split(":", 1)[1].strip()
             if opt.lower().startswith("http-user-agent="):
-                vlc_ua = opt.split("=", 1)[1].strip()
+                val = opt.split("=", 1)[1].strip()
+                val = re.sub(r"^#EXTVLCOPT:http-user-agent=", "", val, flags=re.I)
+                vlc_ua = val
             elif opt.lower().startswith("http-referrer="):
-                vlc_ref = opt.split("=", 1)[1].strip()
+                val = opt.split("=", 1)[1].strip()
+                val = re.sub(r"^#EXTVLCOPT:http-referrer=", "", val, flags=re.I)
+                vlc_ref = val
         elif meta and not line.startswith("#"):
             if re.match(r"^https?://", line):
                 if "|" in line:
                     u_part, h_part = line.split("|", 1)
-                    line = f"{convert_to_hls_url(u_part.strip())}|{h_part}"
+                    line = f"{clean_stream_url(u_part)}|{h_part.split('#')[0].strip()}"
                 else:
-                    line = convert_to_hls_url(line)
+                    line = clean_stream_url(line)
                     if vlc_ua or vlc_ref:
                         parts = []
                         if vlc_ua:
@@ -333,7 +353,7 @@ def scrape_aynaott():
             if url:
                 return {
                     "name": title,
-                    "url": url,
+                    "url": clean_stream_url(url),
                     "logo": logo,
                     "tvg_id": f"aynaott-{slug}",
                     "group": "Others",
@@ -357,6 +377,7 @@ def scrape_aynaott():
 def format_jagobd_url(raw):
     if not raw:
         return ""
+    raw = raw.split("#")[0].strip()
     if raw.startswith("//"):
         raw = "https:" + raw
     try:
@@ -529,7 +550,7 @@ def scrape_discovered_and_global_feeds(checked_feed_urls):
                 if ch_name:
                     out.append({
                         "name": ch_name,
-                        "url": convert_to_hls_url(lk),
+                        "url": clean_stream_url(lk),
                         "logo": "",
                         "tvg_id": "",
                         "group": "Others",
@@ -635,7 +656,7 @@ def scrape_iptv_org_base():
             if st_url and any(ch_id.lower().endswith(ext) for ext in (".bd", ".in", ".us", ".uk", ".ca", ".au", ".nz", ".sg", ".ie")):
                 res.append({
                     "name": ch_id.split(".")[0],
-                    "url": st_url,
+                    "url": clean_stream_url(st_url),
                     "logo": "",
                     "tvg_id": ch_id,
                     "group": "Bangladesh" if ch_id.lower().endswith(".bd") else ("India" if ch_id.lower().endswith(".in") else "English Entertainment"),
@@ -655,7 +676,7 @@ def detect_m3u8_audio_lang(m3u8_text):
     if not langs:
         return ""
     normed = [normalize_lang_code(lg) for lg in langs if lg.strip()]
-    for pref in ("ben", "hin", "eng", "tam", "tel", "mal", "kan", "mar", "pan", "guj", "ori", "asm"):
+    for pref in ("ben", "hin", "eng"):
         if pref in normed:
             return pref
     return normed[0] if normed else ""
@@ -866,11 +887,12 @@ VALID_SHORT_NAMES = {
     "hbo", "axn", "tlc", "fx", "fxx", "wb", "cbs", "nbc", "abc", "itv", "ptv", "ary",
     "geo", "dd", "wion", "cnbc", "espn", "tnt", "tbs", "amc", "vtv", "otv", "ktv",
     "mh1", "9xm", "e24", "b4u", "tv9", "tv5", "sky", "fox", "pbs", "hln", "cw", "id",
-    "osn", "mbc", "dw", "nhk", "cgtn", "rt", "trt", "tcm", "mgm", "mnx", "vh1", "zing"
+    "osn", "mbc", "dw", "nhk", "cgtn", "rt", "trt", "tcm", "mgm", "mnx", "vh1", "zing",
+    "axs", "etv"
 }
 
 GARBAGE_EXACT_RE = re.compile(
-    r"^(unknown|untitled|no\s*name|none|null|test|testing|demo|sample|offline|error|"
+    r"^(unknown|untitled|no\s*name|none|null|test|testing|test\s*live\s*tv|demo|sample|offline|error|"
     r"live|stream|live\s*stream|tv|channel|ch|server|link|backup|main|default|"
     r"index|playlist|master|chunklist|mono|tracks|video|audio|hd|fhd|sd|uhd|4k|"
     r"720p|1080p|480p|360p|hls|m3u8|ts|mp4)(\s*[-_#]?\s*\d+)?$",
@@ -938,7 +960,7 @@ def is_blocked_or_non_tv(c):
     url = c.get("url", "")
     t = f"{name} {group}".lower()
 
-    if any(m in url for m in ("[DEVICE_ID]", "[IFA]", "[APP_BUNDLE]", "[COUNTRY]")):
+    if any(m in url for m in ("[DEVICE_ID]", "[IFA]", "[APP_BUNDLE]", "[COUNTRY]", "{PSID}", "{APP_DOMAIN}")):
         return True
 
     if c.get("source") not in ("AynaOTT", "JagoBD", "FAST-TV") and EXPIRED_TOKEN_URL_RE.search(url):
@@ -958,26 +980,28 @@ def is_blocked_or_non_tv(c):
 
 
 BANGLA_RE = re.compile(r"\b(bangla|bengali|bengal|bangladesh|bangladeshi|jalsha|aath|ananda|kolkata|calcutta|ghanta|ebela|sangeet bangla)\b", re.I)
+
 HINDI_RE = re.compile(
     r"\b(hindi|bollywood|star plus|star bharat|star utsav|star gold|sony sab|sab tv|sony tv|sony entertainment|"
     r"sony pal|sony max|sony pix|sony wah|sony yay|colors|colors tv|colors rishtey|colors cineplex|"
     r"zee tv|zee anmol|zee cinema|zee classic|zee action|zee bollywood|zee news|zee hindustan|zee zing|zee zest|zee cafe|"
     r"zee business|zee salaam|&tv|and tv|and pictures|&pictures|and priv|&priv|dangal|ishara|shemaroo|big magic|bindass|"
     r"aaj tak|abp news|abp ganga|ndtv|india tv|news18|republic bharat|republic tv|tv9|dd national|dd news|dd bharati|"
-    r"dd kisan|dd retro|dd india|sanskar|aastha|sadhna|b4u|mtv india|9xm|9x jalwa|9x tashan|zing|utv|"
+    r"dd kisan|dd retro|dd india|sanskar|aastha|sadhna|b4u|mtv india|9xm|9x jalwa|9x tashan|9x jhakaas|zing|utv|"
     r"filamchi|goldmines|manoranjan|cineplex|news nation|india news|good news today|bharat 24|tez|zoom tv|mastiii|"
     r"movie plus|enter10|bflix|e24|times now|mirror now|et now|wion|india today|cnbc awaaz|cnbc tv18|zee bihar|"
     r"zee rajasthan|zee mp|zee up|news24 india|sudarshan|jansatta|shubh tv|dhamaal|maha movie|"
-    r"wow cinema|abzy|pitara|popkorn|housefull|dil se)\b", re.I
+    r"wow cinema|abzy|pitara|popkorn|housefull|dil se|dhinchaak|bharat samachar|sadhna prime|tehelka tv|khushboo|yrf music)\b", re.I
 )
 
+# Informative / Documentary / Science / Wildlife / History / Travel
 INFORMATIVE_RE = re.compile(
     r"\b(discovery|discovery channel|discovery science|discovery turbo|discovery world|discovery kids|discovery\+|\bds\b|"
-    r"animal planet|national geographic|nat geo|natgeo|nat geo wild|nat geo people|nat geo adventure|"
+    r"animal planet|national geographic|national giography|nat geo|natgeo|nat geo wild|nat geo people|nat geo adventure|"
     r"history tv|history channel|history 18|history18|sony bbc earth|bbc earth|bbc knowledge|"
-    r"travel xp|travelxp|fyi tv18|fyi tv|investigation discovery|id channel|science channel|"
-    r"smithsonian|curiosity|curiositystream|love nature|wild earth|wildearth|pbs|pbs kids|"
-    r"nasa tv|esa tv|dw documentary|epic tv|epic channel|documentary|docubay|planete\+|"
+    r"travel xp|travelxp|travel channel|fyi tv18|fyi tv|investigation discovery|id channel|science channel|"
+    r"smithsonian|curiosity|curiositystream|love nature|wild earth|wildearth|sky nature|pbs|pbs kids|"
+    r"nasa tv|esa tv|dw documentary|cgtn documentary|cgtndocumentary|epic tv|epic channel|documentary|docubay|planete\+|"
     r"crime \+ investigation|crime and investigation|bio channel|biography|h2 channel|military history)\b",
     re.I
 )
@@ -987,8 +1011,9 @@ KOLKATA_RE = re.compile(r"\b(jalsha movies|zee bangla cinema|colors bangla cinem
 
 HINDI_MOVIE_CH_RE = re.compile(
     r"\b(star gold|sony max|sony wah|zee cinema|zee classic|zee action|zee bollywood|zee anmol cinema|"
-    r"colors cineplex|and pictures|&pictures|utv movies|utv action|b4u movies|b4u kadak|"
-    r"filamchi|goldmines|manoranjan|enter10|bflix|movie plus|maha movie|wow cinema|abzy movies|housefull movies)\b", re.I
+    r"colors cineplex|and pictures|&pictures|utv movies|utv action|b4u movies|b4u movie|b4u kadak|"
+    r"filamchi|goldmines|gold mines|manoranjan|enter10|bflix|movie plus|maha movie|wow cinema|abzy movies|"
+    r"housefull movies|bollywood old|hindi movie classic|all time movies|public movies|roja movies|shubh cinema|the movie club)\b", re.I
 )
 ENGLISH_MOVIE_CH_RE = re.compile(
     r"\b(star movies|hbo|sony pix|zee cafe|and priv|&priv|movies now|mnx|mn\+|romedy now|axn|wb|warner bros|"
@@ -997,11 +1022,12 @@ ENGLISH_MOVIE_CH_RE = re.compile(
 )
 ENGLISH_ENT_CH_RE = re.compile(
     r"\b(star world|colors infinity|comedy central|fox life|fox crime|fox news|fox business|fx|fxx|tlc|"
-    r"bbc|cnn|cnbc|bloomberg|al jazeera|dw|france 24|france24|france news 24|nhk|cgtn|trt world|euronews|"
+    r"bbc|cnn|cnbc|bloomberg|al jazeera|aljazeera|dw|dwnews|france 24|france24|france news 24|nhk|cgtn|trt world|euronews|"
     r"arirang|kbs world|cna|channel news asia|cbs|nbc|abc|fox|itv|channel 4|channel 5|e4|more4|voa|voice of america|"
     r"sky one|sky witness|sky atlantic|sky news|sky arts|bravo|lifetime|hgtv|food network|mtv|vh1|"
-    r"nickelodeon|nick jr|nicktoons|cartoon network|boomerang|disney|a&e|tnt|tbs|usa network|cw|"
-    r"msnbc|hln|trutv|vice|dave|gold uk|alibi|drama uk|yesterday uk|eden uk|quest uk|really uk|pick tv|challenge tv)\b", re.I
+    r"nickelodeon|nick jr|nickjr|nicktoons|cartoon network|boomerang|disney|a&e|tnt|tbs|usa network|cw|"
+    r"msnbc|hln|trutv|vice|dave|gold uk|alibi|drama uk|yesterday uk|eden uk|quest uk|really uk|pick tv|challenge tv|"
+    r"axs|axs tv|pix 11|pix11|laff tv|theq|un web tv|moonbug kids|sonic the hedgehog)\b", re.I
 )
 
 PAY_ENT_CH_RE = re.compile(
@@ -1011,48 +1037,60 @@ PAY_ENT_CH_RE = re.compile(
     r"disney|hungama|nick|nickelodeon|sonic|cartoon network|pogo|marvel hq)\b", re.I
 )
 PAY_SPORTS_RE = re.compile(
-    r"\b(star sports|sony ten|sony sports|ten sports|t sports|willow|ptv sports|eurosport|"
-    r"bein sports|sky sports|bt sport|tnt sports|fox sports|espn|dazn|super sport|dd sports|sports 18|sports18|"
-    r"geo super|a sports|premier sports|arena sport|sport tv|nova sport|canal\+ sport|fancode)\b", re.I
+    r"\b(star sports|sony ten|sony sports|ten sports|t sports|willow|willo tv|ptv sports|eurosport|"
+    r"bein sports|beinsports|sky sports|bt sport|tnt sports|fox sports|espn|dazn|super sport|dd sports|sports 18|sports18|"
+    r"geo super|a sports|premier sports|arena sport|sport tv|nova sport|canal\+ sport|fancode|"
+    r"nfl network|golfchannel|golf channel|psl \+ ipl)\b", re.I
 )
 
 FOREIGN_COUNTRY_TAG_RE = re.compile(
-    r"(\.(nl|rs|ru|tr|it|es|au|id|bg|gh|vn|ba|xk|al|cl|ec|cr|cm|ci|kh|mn|hu|at|ch|de|fr|br|pe|do)\b|"
+    r"(\.(nl|rs|ru|tr|it|es|au|id|bg|gh|vn|ba|xk|al|cl|ec|cr|cm|ci|kh|mn|hu|at|ch|de|fr|br|pe|do|lt|pk)\b|"
     r"\b(netherlands|serbia|russia|turkiye|turkey|italy|spain|españa|australia|indonesia|bulgaria|"
     r"ghana|vietnam|bosnia|kosovo|albania|chile|ecuador|costa rica|cameroon|ivory coast|cambodia|"
     r"mongolia|hungary|austria|switzerland|brazil|peru|dominican|san antonio|nashua|santa maria|"
     r"lompoc|east bridgewater|toscana|utrecht|noord|drenthe|rijnmond|oost|maastricht|meppel|"
     r"purmerend|veluwezoom|westerwolde|zulthe|dordrecht|manilva|malaga|calima|balkanweb|rai news|"
-    r"bắc ninh|nghệ an|gia lai|silverbird)\b)",
+    r"bắc ninh|nghệ an|gia lai|silverbird|united kingdom|united states)\b)",
     re.I
 )
 
+# Foreign domains that host homonyms like BTV, RTV, NTV, News24, Global TV
+FOREIGN_HOMONYM_DOMAINS = (
+    "btnrwanda.com", "balkanweb.com", "ecuaradiotv.net", "rtv-ooe.at",
+    "rtv.co.id", "dens.tv", "skygo.mn", "bitel.com.pe", "msinteractiva.com",
+    "swagit.com", "telvue.com", "dogus.daioncdn.net", "nossatv", "43.252.18.195",
+    "connectiktv.ddns.net", "mediawork.cz", "mediatailor.us-west-2.amazonaws.com",
+    "skynewsau-live-premium.akamaized.net", "pishow.tv/ott/live/253", "ottlive.co.in/news24"
+)
+
 BD_ONLY_RE = re.compile(
-    r"(\b(bangladesh|bangladeshi|sangsad|somoy|jamuna|ekattor|channel 24|dbc|independent|"
-    r"atn bangla|atn news|atn islamic|atn music|news 24 bd|news24 tv|channel i|channel 9|channel s|"
+    r"(\b(bangladesh|bangladeshi|sangsad|shangshad|somoy|jamuna|ekattor|channel 24|dbc|independent|"
+    r"atn bangla|atn news|atn islamic|atn music|news 24 bd|news24 tv|channel i|channel 9|channel s|channel 1 news|channel 52|"
     r"banglavision|bangla vision|maasranga|deepto|boishakhi|desh tv|desh bangla|deshe bideshe|"
-    r"deshi tv|nagorik|gazi tv|g tv|asian tv|sa tv|satv|mohona|my tv|mytv|bijoy|ananda tv|anando tv|"
+    r"deshi tv|nagorik|gazi tv|g tv|asian tv|sa tv|satv|mohona|my tv|mytv|bijoy|ananda tv|anando tv|anandabarta|"
     r"nexus|t sports|duronto|gaan bangla|ekhon tv|global tv|green tv|bangla tv|spice tv|diganta|"
     r"islamic tv|madani channel bangla|madani ch\. bangla|peace tv bangla|ekushey|ekushe|etv ekushey|"
     r"enter tv|matribhumi|me tv|movie bangla|rajdhani tv|ja tv|jago news|nan tv|probashi tv|"
-    r"jonmobhumi|doyel tv|cb24|ayna tv|ash tv|shikor tv|thikana tv|vision 24|news 21 bangla|news 21 hd)\b|"
-    r"^(?:\d+\s*\.\s*)?(btv|btv news|btv ctg|btv chattogram|rtv|rtv hd|ntv|ntv hd|ntv europe|gtv|gtv hd|news 24|news 24 hd|news24)$)",
+    r"jonmobhumi|doyel tv|cb24|ayna tv|ash tv|shikor tv|thikana tv|vision 24|news 21 bangla|news 21 hd|"
+    r"banglar kontho|biswa bangla|biswabangla|বিশ্ব বাংলা|azan tv|b prime bangla|bprimebangla|nrb tv|"
+    r"star news|time television|ranacable|music bangla|musicbangla)\b|"
+    r"^(?:\d+\s*\.\s*)?(btv|btv news|btv ctg|btv chattogram|btv chattrogram|rtv|rtv hd|ntv|ntv hd|ntv europe|gtv|gtv hd|news 24|news 24 hd|news24|etv)$)",
     re.I
 )
 
 INDIA_BANGLA_RE = re.compile(
-    r"\b(star jalsha|jalsha|zee bangla|sony aath|colors bangla|sun bangla|akas aath|akash aath|"
-    r"sangeet bangla|dhoom music|rupashi bangla|ruposhi bangla|dd bangla|dd tripura|abp ananda|"
+    r"\b(star jalsha|jalsha|zee bangla|sony aath|colors bangla|sun bangla|akas aath|akash aath|aakaash aath|akash ahtt|"
+    r"sangeet bangla|dhoom music|rupashi bangla|ruposhi bangla|rupasi bangla|dd bangla|dd tripura|abp ananda|"
     r"star ananda|news18 bangla|news 18 bangla|etv bangla|zee 24 ghanta|24 ghanta|republic bangla|"
     r"r bangla|tv9 bangla|calcutta news|kolkata tv|r plus|rplus|cn tv|tara muzik|tara newz|tara tv|"
     r"bangla time|onkar news|high news|sadhu bangla|khabor 365|bangla jagao|bangla jago|nkh bangla|"
     r"ctvn|akd plus|bflix bangla|khoj khobor|newstime bangla|prime news bangla|amar bangla|aamar bangla|"
     r"bangla plus|bangla express|kolkata|calcutta|west bengal|sananda|baraza indian bangla|"
-    r"indian bangla|orange bangla|enter 10 bangla|enterr 10 bangla|enterr10 bangla|enteer ten bangla|"
-    r"khushboo bangla|mon bangla|news live bangla|nick bangla|nk tv bangla|raatdin bangla|"
-    r"rongeen tv|salam bangla|snb cinema|sonar bangla|sonic bangla|u bangla|uphar bangla|"
+    r"indian bangla|orange bangla|enter 10 bangla|enterr 10 bangla|enterr10 bangla|enteer ten bangla|enter10 bangla|"
+    r"khushboo bangla|khusbo bangla|mon bangla|news live bangla|nick bangla|nk tv bangla|raatdin bangla|"
+    r"rongeen tv|salam bangla|snb cinema|sonar bangla|sonic bangla|u bangla|uphar bangla|upohar bangla|"
     r"zb bhakti|zb cartoon|zb music|zb cinema|zodiak tv|jtbs classic|bhi channel|globe tv|"
-    r"headlines tripura|friends tv|ananda barta|ananda livetv|ak bangla|b prime bangla|ekhonkolkata)\b",
+    r"headlines tripura|friends tv|ananda barta|ananda livetv|ak bangla|ekhonkolkata|jhankar tv|sristi tv|stv bangla|channel vision)\b",
     re.I
 )
 
@@ -1065,87 +1103,97 @@ def classify_by_language_and_name(c):
     url = c.get("url", "")
     lname = name.lower()
     lgroup = group.lower()
+    lurl = url.lower()
+    ltvg = tvg_id.lower()
     t = f"{lname} {lgroup}"
 
-    if FOREIGN_COUNTRY_TAG_RE.search(f"{lname} {tvg_id.lower()}") and not BD_ONLY_RE.search(lname):
+    # 1. Block known foreign homonym servers & non-BD country suffixes
+    if any(dom in lurl for dom in FOREIGN_HOMONYM_DOMAINS):
+        return "DROP"
+    if FOREIGN_COUNTRY_TAG_RE.search(f"{lname} {ltvg}") and not any(x in ltvg for x in (".bd", "aynaott", "jagobd")):
         return "DROP"
 
     detected_lang = c.get("stream_lang") or c.get("lang") or ""
-
-    if detected_lang in DROP_INDIAN_LANG_CODES:
+    if detected_lang in DROP_LANG_CODES:
         return "DROP"
-    if DROP_REGIONAL_RE.search(t) and not BD_ONLY_RE.search(lname):
+    if DROP_REGIONAL_AND_FOREIGN_RE.search(t):
         return "DROP"
 
-    music = bool(re.search(r"\b(music|song|songs|gaan|mtv|vevo|hits|zing|sangeet|muzik|dhoom|9xm|9x)\b", lname))
-    movie_ch = bool(re.search(r"\b(movies?\s*(tv|channel|hd|plus|now|action|gold|club)?|cinema\s*(tv|hd)?|flix\s*tv)\b", lname))
+    # Strip leading serial numbers for exact matching (e.g. '146.RTV' -> 'rtv')
+    clean_lname = re.sub(r"^\d+\s*\.\s*", "", lname).strip()
+    music = bool(re.search(r"\b(music|song|songs|gaan|mtv|vevo|hits|zing|sangeet|muzik|dhoom|9xm|9x)\b", clean_lname))
+    movie_ch = bool(re.search(r"\b(movies?\s*(tv|channel|hd|plus|now|action|gold|club)?|cinema\s*(tv|hd)?|flix\s*tv)\b", clean_lname))
 
-    # 1. Sports always first
-    if PAY_SPORTS_RE.search(t) or re.search(r"\b(sport|sports|cricket|football|soccer)\b", lname):
+    # 2. Sports ALWAYS checked first (catches NFL, Golfchannel, beIN, Willow from AynaOTT too)
+    if PAY_SPORTS_RE.search(t) or re.search(r"\b(sport|sports|cricket|football|soccer)\b", clean_lname):
         return "Sports"
 
-    # 2. Informative / Documentary / Science / Wildlife / History
-    if INFORMATIVE_RE.search(lname) or re.search(r"\b(documentary|science|wildlife|nature|history)\b", lgroup):
+    # 3. Informative / Documentary / Science / Wildlife / History (catches Nat Geo, Sky Nature, Travelxp, CGTN Doc)
+    if INFORMATIVE_RE.search(clean_lname) or re.search(r"\b(documentary|science|wildlife|nature|history)\b", lgroup):
         return "Informative"
 
-    # 3. Specific Bangla (India) & Kolkata Movies
-    if KOLKATA_RE.search(lname):
+    # 4. Kolkata Movies & Bangla (India) — checked BEFORE Bangladesh so AynaOTT's Aakaash Aath / Enter 10 Bangla go here!
+    if KOLKATA_RE.search(clean_lname):
         return "Kolkata Movies"
-    if (INDIA_BANGLA_RE.search(lname) or "kolkata" in lname or "calcutta" in lname
+    if (INDIA_BANGLA_RE.search(clean_lname) or "kolkata" in clean_lname or "calcutta" in clean_lname
             or (detected_lang == "ben" and re.search(r"\b(india|indian|west bengal|kolkata)\b", lgroup))):
         return "Bangla Music" if music else "Bangla (India)"
 
-    # 4. Specific Movie & English Entertainment channels
-    if HINDI_MOVIE_CH_RE.search(lname):
+    # 5. Hindi Movies & Hindi Music — checked BEFORE Bangladesh so AynaOTT's Hindi channels go here!
+    if HINDI_MOVIE_CH_RE.search(clean_lname):
         return "Hindi Movies"
-    if ENGLISH_MOVIE_CH_RE.search(lname):
+    if (detected_lang == "hin" or HINDI_RE.search(clean_lname)) and music:
+        return "Hindi Music"
+
+    # 6. English Movies & English Entertainment — checked BEFORE Bangladesh so AynaOTT's AXS, Nick Jr, Moonbug, PIX11 go here!
+    if ENGLISH_MOVIE_CH_RE.search(clean_lname):
         return "English Movies"
-    if ENGLISH_ENT_CH_RE.search(lname) and detected_lang != "ben":
+    if ENGLISH_ENT_CH_RE.search(clean_lname) and detected_lang != "ben":
         return "English Music" if music else "English Entertainment"
 
-    # 5. Strictly English Language streams or English/US/UK group/country tags
     if (detected_lang == "eng"
             or re.search(r"\b(english|usa|uk|united states|united kingdom|canada|australia|hollywood)\b", lgroup)
-            or re.search(r"(\(|\[|\b)(us|usa|uk|ca|au)(\)|\]|\b)", lname)) and not BD_ONLY_RE.search(lname) and not BANGLA_RE.search(lname):
+            or re.search(r"(\(|\[|\b)(us|usa|uk|ca|au)(\)|\]|\b)", clean_lname)) and not BD_ONLY_RE.search(clean_lname) and not BANGLA_RE.search(clean_lname):
         if music:
             return "English Music"
         if movie_ch:
             return "English Movies"
         return "English Entertainment"
 
-    # 6. Strictly Bangladeshi Channels -> 'Bangladesh', other non-BD Bangla -> 'Bangla (India)'
-    if (BD_ONLY_RE.search(lname)
-            or ".bd" in tvg_id.lower()
-            or "aynaott.com" in url.lower()
-            or "jagobd.com" in url.lower()
-            or "gpcdn.net" in url.lower()
-            or re.search(r"\bbangladesh\b", lgroup)):
-        if INDIA_BANGLA_RE.search(lname):
-            return "Bangla Music" if music else "Bangla (India)"
-        if music:
-            return "Bangla Music"
-        return "Bangladesh"
-
-    if detected_lang == "ben" or BANGLA_RE.search(lname):
-        if HINDI_RE.search(lname) and not BANGLA_RE.search(lname) and detected_lang != "ben":
-            return "Hindi Movies" if movie_ch else ("Hindi Music" if music else "India")
-        if music:
-            return "Bangla Music"
-        return "Bangla (India)"
-
-    # 7. Hindi / India
+    # 7. Hindi / India General Entertainment & News — checked BEFORE AynaOTT/JagoBD generic URL fallback!
     if (detected_lang == "hin"
-            or HINDI_RE.search(lname)
-            or PAY_ENT_CH_RE.search(lname)
+            or HINDI_RE.search(clean_lname)
+            or PAY_ENT_CH_RE.search(clean_lname)
             or re.search(r"\b(india|indian|hindi|bollywood)\b", lgroup)
-            or re.search(r"(\(|\[)(in|ind|india)(\)|\])", lname)):
-        if "zing" in lname or music:
+            or re.search(r"(\(|\[)(in|ind|india)(\)|\])", clean_lname)):
+        if "zing" in clean_lname or music:
             return "Hindi Music"
         if movie_ch:
             return "Hindi Movies"
         return "India"
 
-    # 8. English keyword fallback
+    # 8. Strictly Bangladeshi Channels -> 'Bangladesh'
+    if (BD_ONLY_RE.search(clean_lname)
+            or ".bd" in ltvg
+            or "jagobd.com" in lurl
+            or "gpcdn.net" in lurl
+            or re.search(r"\bbangladesh\b", lgroup)):
+        if music:
+            return "Bangla Music"
+        return "Bangladesh"
+
+    # Remaining AynaOTT channels that weren't English/Hindi/Sports/Informative/Kolkata
+    if "aynaott.com" in lurl:
+        if music:
+            return "Bangla Music"
+        return "Bangladesh"
+
+    if detected_lang == "ben" or BANGLA_RE.search(clean_lname):
+        if music:
+            return "Bangla Music"
+        return "Bangla (India)"
+
+    # 9. English keyword fallback
     if re.search(r"\b(english|hollywood|usa|uk|british|american)\b", t):
         if music:
             return "English Music"
@@ -1235,7 +1283,7 @@ def write_playlist(channels, target_path=OUTPUT):
 
         if "|" in raw_url:
             clean_url, extra = raw_url.split("|", 1)
-            clean_url = clean_url.strip()
+            clean_url = clean_url.split("#")[0].strip()
             for part in extra.split("&"):
                 if "=" in part:
                     k, v = part.split("=", 1)
@@ -1244,7 +1292,7 @@ def write_playlist(channels, target_path=OUTPUT):
                     elif k.strip().lower() == "user-agent":
                         ua = v.strip()
         else:
-            clean_url = raw_url.strip()
+            clean_url = raw_url.split("#")[0].strip()
 
         if "jagobd.com" in clean_url and not ref:
             ref = "https://www.jagobd.com/"
@@ -1327,7 +1375,7 @@ def main():
             continue
 
         pre_grp = classify_by_language_and_name(c)
-        if pre_grp == "DROP" and c["source"] not in ("AynaOTT", "JagoBD"):
+        if pre_grp == "DROP":
             continue
 
         seen.add(raw)
