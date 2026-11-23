@@ -4,15 +4,12 @@ Features:
 - Collects from AynaOTT, JagoBD, GitHub, GitLab, Codeberg, Bitbucket, HuggingFace, Pastebin, Rentry, Telegraph,
   Official FAST TV APIs (SamsungTVPlus, PlutoTV, Plex, Roku, Stirr, LG, Vizio, Xumo, DistroTV, LocalNow, Tubi, Redbox),
   and iptv-org JSON API + Country M3U feeds (BD, IN, US, UK, CA, AU, NZ, SG)
-- Keeps ONLY Bangladeshi, Indian (Bangla & Hindi ONLY), English, Informative & Sports
-- Strictly classifies AynaOTT/JagoBD multi-language channels into their proper groups (English, Sports, Informative, Hindi, Bangla)
-- Blocks foreign homonyms (.lt/.ec/.at/.br/.mn/.pe/.do/.cm/.id/.us/.pk) & non-target languages (ara/urd/nep/spa/ces/etc.)
+- Keeps ONLY Bangladeshi, Indian (Bangla & Hindi ONLY; strictly drops all Tamil/Telugu/Malayalam/Kannada/Marathi/Punjabi/Gujarati/Odia/Assamese), English, Informative & Sports
+- Strictly classifies AynaOTT/JagoBD multi-language channels into their proper groups
+- Blocks foreign homonyms & mislabeled European/Arabic/Pakistani channels
 - Deep HLS segment verification (requires >= 5KB real video chunk) + Dead-host fast skip cache
 - Active Pool vs. Sleeping Pool sync ('source_health.json' & 'sleeping_sources.json')
-- Generates outputs:
-  1. 'playlist.m3u': All verified alive streams (with backups)
-  2. 'playlist_clean.m3u': Duplicate-free, lowest ping (fastest response) 1 link per channel
-  3. 'source_report.txt': Detailed breakdown of active channels per source engine & streaming domain
+- Canonical Channel Alias Normalization + Auto-Logo Enrichment for a 100% duplicate-free 'playlist_clean.m3u'
 """
 import json, os, re, socket, ssl, sys, threading, time
 from collections import Counter, defaultdict
@@ -143,6 +140,7 @@ ISO_LANG_MAP = {
     "guj": "guj", "gu": "guj", "gujarati": "guj",
     "ori": "ori", "or": "ori", "odia": "ori", "oriya": "ori",
     "asm": "asm", "as": "asm", "assamese": "asm",
+    "kok": "kok", "konkani": "kok",
     "urd": "urd", "ur": "urd", "urdu": "urd",
     "ara": "ara", "ar": "ara", "arabic": "ara",
     "bho": "bho", "bhojpuri": "bho",
@@ -156,27 +154,45 @@ ISO_LANG_MAP = {
     "fra": "fra", "fr": "fra", "french": "fra",
 }
 
-# Strictly DROP non-target languages (Indian regional + foreign languages)
 DROP_LANG_CODES = {
-    "tam", "tel", "mal", "kan", "mar", "pan", "guj", "ori", "asm", "bho",
+    "tam", "tel", "mal", "kan", "mar", "pan", "guj", "ori", "asm", "bho", "kok",
     "urd", "ara", "nep", "spa", "ces", "chi", "heb", "por", "rus", "fra"
 }
 
-DROP_REGIONAL_AND_FOREIGN_RE = re.compile(
-    r"\b(tamil|star vijay|vijay tv|sun tv|kalaignar|jaya tv|raj tv|polimer|puthiya thalaimurai|thanthi|zee tamil|colors tamil|ktv|adithya|isaiaruvi|sun music|sun news|sri sankara|"
-    r"telugu|star maa|maa tv|maa movies|maa music|maa gold|etv telugu|etv plus|etv cinema|gemini|zee telugu|ntv telugu|tv9 telugu|sakshi|abn|v6 news|10tv|hmtv|t news|"
-    r"malayalam|asianet|surya tv|surya movies|surya music|mazhavil|manorama|kairali|flowers tv|zee keralam|amrita|media one|twentyfour|mathrubhumi|reporter tv|janam tv|"
-    r"kannada|star suvarna|udaya|zee kannada|colors kannada|tv9 kannada|public tv|suvarna news|power tv|kasthuri|raj news kannada|"
-    r"marathi|star pravah|zee marathi|zee talkies|zee yuva|colors marathi|sony marathi|abp majha|lokshahi|saam tv|fakt marathi|tv9 marathi|news18 lokmat|"
-    r"punjabi|ptc punjabi|ptc chak de|ptc news|ptc music|zee punjabi|pitaara|mh one|chardikla|brit asia|akaal|sangat|5aab|movie punjab|"
-    r"gujarati|colors gujarati|tv9 gujarati|abp asmita|sandesh news|vtv gujarati|gstv|news18 gujarati|aastha gujarati|"
-    r"odia|oriya|tarang|zee sarthak|star kirano|otv|kanak news|kalinga tv|prameya|mbc tv odia|alankar|"
-    r"assamese|rengoni|rang tv|jonack|prag news|dy 365|pratidin time|news live assam|ramdhenu|"
-    r"bhojpuri|bhojopuri|bhojpuri cinema|dabangg|filamchi bhojpuri|zee ganga|big ganga|haryanvi|rajasthani|"
-    r"aastha tamil|aastha telugu|aastha kannada|gurbani|amrit gurbani|"
-    r"al quran|al sunnah|makkah|makka|madina|medina|arabic|hum tv|hum masala|hum sitaray|ary digital|ary news|geo tv|geo news|ptv|discover pakistan|discoverpakistan|"
-    r"sony one hits|retro music tv)\b",
-    re.I
+# Catches regional Indian channels EVEN WITHOUT word boundaries (e.g. 'ETVTelugu', 'ZeeTamil', 'AsianetMovies', 'PTCPunjabi')
+DROP_SUBSTRING_KEYWORDS = (
+    "tamil", "telugu", "telegu", "malayalam", "malyalam", "kannada", "kanda", "marathi",
+    "punjabi", "punjab", "gujarati", "gujrati", "odia", "oriya", "assamese", "assam",
+    "bhojpuri", "bhojopuri", "haryanvi", "rajasthani", "konkani", "gurbani", "gurbaani",
+    "asianet", "kalaignar", "puthiya", "thanthi", "polimer", "jaya", "rajtv", "rajmusix",
+    "rajnews", "suriya", "sunmusic", "sunnews", "ktv", "adithya", "isaiaruvi", "murasu",
+    "makkal", "vaanavil", "peppers", "vendhar", "thalaa", "puyugam", "puthuyugam",
+    "sathiyam", "nambikkai", "aaseervatham", "arputhar", "madha", "meialai", "thendral",
+    "vasanth", "win tv", "captain tv", "imayam", "megatv", "moon tv", "moontv",
+    "starmaa", "maatv", "etvtelugu", "etvandhra", "etvtelangana", "etvplus", "etvcinema",
+    "etvlife", "etvabhiruchi", "etvbharat", "gemini", "sakshi", "abnandhra", "v6news",
+    "10tv", "hmtv", "tnews", "ntvtelugu", "tv5news", "cvrnews", "mahaa", "prime9",
+    "studiov", "visssa", "vissatv", "bhagyam", "chhayachitram", "pmc", "mojtv", "mojotv",
+    "mazhavil", "manorama", "mathrubhumi", "kairali", "flowers", "amrita", "twentyfour",
+    "reportertv", "janamtv", "kaumudy", "jeevan", "safari", "harvest", "powervision",
+    "pulari", "realnews", "swantham", "victers", "kappa", "jaihind", "shalom", "goodness",
+    "udaya", "suvarna", "kasthuri", "publictv", "siri", "ashwaveega", "namma", "ayush",
+    "sadvidya", "sarala", "dheeran", "mnadu",
+    "pravah", "lokmat", "abpmajha", "saam", "fakt", "pudhari", "jaimaharashtra",
+    "zee24taas", "topnews", "sahyadri", "awaazindia",
+    "ptc", "chardikla", "pitaara", "mh1", "mhone", "akaal", "sangat", "5aab", "baallee",
+    "balle", "dukhnivaran", "nanaksar", "namdhari", "rozana", "dailypost", "apnapunjab",
+    "sada tv", "sadatv", "sanja", "sanjha", "ragni", "saang", "gtc", "livingindia",
+    "sandesh", "abpasmita", "vtv", "gstv", "mantavya", "newscapital", "tv13", "zee24kalak",
+    "tarang", "sarthak", "kirano", "otv", "kanak", "kalinga", "prameya", "alankar",
+    "nandighosha", "argus", "prarthana", "mbctv", "baiscope", "onepaschima",
+    "rengoni", "jonack", "prag", "dy365", "pratidin", "ramdhenu", "hornbill",
+    "quran", "sunnah", "makkah", "makka", "madina", "medina", "arabic",
+    "humtv", "hummasala", "humsitaray", "arydigital", "arynews", "geotv", "geonews",
+    "discoverpakistan", "dunyanews", "8xm", "mbcbollywood", "urdu",
+    "antena", "prima", "ocko", "paprika", "telestar", "realitatea", "spektrum",
+    "stara", "starkefrauen", "handystar", "abai", "republica", "utv.iq", "utvrussian",
+    "film+", "passionbollywood", "bollywoodclassic", "classic"
 )
 
 # Dead-host fast skip cache
@@ -211,7 +227,6 @@ def http_get(url, headers=None, timeout=6, max_bytes=1_500_000):
 def clean_stream_url(url):
     if not url:
         return ""
-    # Strip garbage #fb:... or #tawfique-iptv fragments
     url = url.split("#")[0].strip()
     if "output=ts" in url.lower():
         url = re.sub(r"output=ts", "output=m3u8", url, flags=re.I)
@@ -874,12 +889,99 @@ def check_all(channels):
     log("Dead/Invalid er karon: " + ", ".join(f"{k}: {v}" for k, v in dead.most_common(8)))
 
 
-# ------------------------------------------------------------------ original name filter, language grouping & dedupe
-NOISE = {"hd", "fhd", "sd", "uhd", "4k", "live", "official", "hevc", "h265", "h264"}
+# ------------------------------------------------------------------ canonical name normalization & deduplication
+NOISE = {
+    "hd", "fhd", "sd", "uhd", "4k", "live", "official", "hevc", "h265", "h264",
+    "bd", "in", "ind", "india", "bangladesh", "bangladeshi", "uk", "us", "usa", "ca", "canada",
+    "ch", "channel", "tv", "television", "news", "network", "digital", "plus"
+}
+
 SOURCE_RANK = {
     "AynaOTT": 0, "JagoBD": 1, "FAST-TV": 2, "IPTV-org": 3,
     "GitHub": 4, "GitLab": 5, "Codeberg": 6, "Bitbucket": 7, "HuggingFace": 8,
     "GitHub-Gist": 9, "WebPaste": 10, "OpenDir": 11
+}
+
+CANONICAL_ALIASES = {
+    "aakaashaath": "akashaath",
+    "akashahtt": "akashaath",
+    "akashaath": "akashaath",
+    "gazitv": "gtv",
+    "gtv": "gtv",
+    "satv": "satv",
+    "btvctg": "btvchattogram",
+    "btvchattrogram": "btvchattogram",
+    "btvchattogram": "btvchattogram",
+    "btvshangshad": "sangsadbangladesh",
+    "sangsadbangladesh": "sangsadbangladesh",
+    "ekushe": "ekusheytv",
+    "ekusheetv": "ekusheytv",
+    "ekusheytv": "ekusheytv",
+    "ekusheyetv": "ekusheytv",
+    "ekusheytv1": "ekusheytv",
+    "somoy": "somoytv",
+    "somoytv": "somoytv",
+    "jamuna": "jamunatv",
+    "jamunatv": "jamunatv",
+    "ekattor": "ekattortv",
+    "ekattortv": "ekattortv",
+    "maasranga": "maasrangatv",
+    "maasrangatv": "maasrangatv",
+    "deepto": "deeptotv",
+    "deeptotv": "deeptotv",
+    "boishakhi": "boishakhitv",
+    "boishakhitv": "boishakhitv",
+    "desh": "deshtv",
+    "deshtv": "deshtv",
+    "bijoy": "bijoytv",
+    "bijoytv": "bijoytv",
+    "mohona": "mohonatv",
+    "mohonatv": "mohonatv",
+    "nagorik": "nagoriktv",
+    "nagoriktv": "nagoriktv",
+    "ananda": "anandatv",
+    "anandatv": "anandatv",
+    "ekhon": "ekhontv",
+    "ekhontv": "ekhontv",
+    "global": "globaltv",
+    "globaltv": "globaltv",
+    "banglavision": "banglavision",
+    "ntveurope": "ntveurope",
+    "atnbanglauk": "atnbanglauk",
+    "channelsuk": "channelsuk",
+    "biswabangla24": "biswabangla24",
+    "বিশ্ববাংলা২৪": "biswabangla24",
+    "abpananda": "abpananda",
+    "zeebangla": "zeebangla",
+    "starjalsha": "starjalsha",
+    "colorsbangla": "colorsbangla",
+    "sunbangla": "sunbangla",
+    "sonyaath": "sonyaath",
+    "news18bangla": "news18bangla",
+    "tv9bangla": "tv9bangla",
+    "zee24ghanta": "zee24ghanta",
+    "kolkatatv": "kolkatatv",
+    "calcuttanews": "calcuttanews",
+    "enter10bangla": "enter10bangla",
+    "enterr10bangla": "enter10bangla",
+    "enteertenbangla": "enter10bangla",
+    "rupashibangla": "rupashibangla",
+    "ruposhibangla": "rupashibangla",
+    "rupasibangla": "rupashibangla",
+    "khushboobangla": "khushboobangla",
+    "khusbobangla": "khushboobangla",
+    "b4umovie": "b4umovies",
+    "b4umovies": "b4umovies",
+    "goldminesmovie": "goldminesmovies",
+    "goldminesmovies": "goldminesmovies",
+    "nationalgiography": "nationalgeographic",
+    "nationalgeographic": "nationalgeographic",
+    "natgeo": "nationalgeographic",
+    "travelxp": "travelchannel",
+    "travelchannel": "travelchannel",
+    "cgtndocumentary": "cgtndocumentary",
+    "dwnews": "dw",
+    "aljazeera": "aljazeera",
 }
 
 VALID_SHORT_NAMES = {
@@ -901,7 +1003,6 @@ GARBAGE_EXACT_RE = re.compile(
 
 
 def is_garbage_channel_name(name):
-    """Spam (>65 chars), Amagi ID, numeric-only, technical junk, ba gibberish name bad debe"""
     if not name or len(name.strip()) > 65:
         return True
     clean = re.sub(r"[\(\[].*?[\)\]]", " ", name).strip()
@@ -941,12 +1042,21 @@ def is_garbage_channel_name(name):
 
 
 def norm(name):
-    n = re.sub(r"^\d+\s*\.\s*", "", name.lower())
-    n = re.sub(r"[\(\[].*?[\)\]]", " ", n)
+    n = name.lower().strip()
+    n = re.sub(r"^\d+\s*[.\-_|:]\s*", "", n)
+    n = re.sub(r"[_#]\d+$", "", n)
+    n = re.sub(r"\s*-\s*\d+$", "", n)
+    n = re.sub(r"[\(\[【].*?[\)\]】]", " ", n)
     n = re.sub(r"\b\d{3,4}p\b", " ", n)
+    n = re.sub(r"\b24x7\b", " ", n)
     n = n.replace("television", "tv")
-    n = re.sub(r"[^a-z0-9\u0980-\u09ff]+", " ", n)
-    return "".join(t for t in n.split() if t not in NOISE)
+    n = re.sub(r"[^a-z0-9\u0980-\u09ff\u09e6-\u09ef]+", " ", n)
+
+    tokens = [t for t in n.split() if t not in NOISE]
+    if not tokens:
+        tokens = [t for t in n.split() if t not in {"hd", "fhd", "sd", "uhd", "4k", "live"}]
+    raw_key = "".join(tokens) or re.sub(r"[^a-z0-9\u0980-\u09ff]+", "", name.lower())
+    return CANONICAL_ALIASES.get(raw_key, raw_key)
 
 
 def is_blocked_or_non_tv(c):
@@ -994,7 +1104,6 @@ HINDI_RE = re.compile(
     r"wow cinema|abzy|pitara|popkorn|housefull|dil se|dhinchaak|bharat samachar|sadhna prime|tehelka tv|khushboo|yrf music)\b", re.I
 )
 
-# Informative / Documentary / Science / Wildlife / History / Travel
 INFORMATIVE_RE = re.compile(
     r"\b(discovery|discovery channel|discovery science|discovery turbo|discovery world|discovery kids|discovery\+|\bds\b|"
     r"animal planet|national geographic|national giography|nat geo|natgeo|nat geo wild|nat geo people|nat geo adventure|"
@@ -1027,7 +1136,7 @@ ENGLISH_ENT_CH_RE = re.compile(
     r"sky one|sky witness|sky atlantic|sky news|sky arts|bravo|lifetime|hgtv|food network|mtv|vh1|"
     r"nickelodeon|nick jr|nickjr|nicktoons|cartoon network|boomerang|disney|a&e|tnt|tbs|usa network|cw|"
     r"msnbc|hln|trutv|vice|dave|gold uk|alibi|drama uk|yesterday uk|eden uk|quest uk|really uk|pick tv|challenge tv|"
-    r"axs|axs tv|pix 11|pix11|laff tv|theq|un web tv|moonbug kids|sonic the hedgehog)\b", re.I
+    r"axs|axs tv|pix 11|pix11|laff tv|theq|un web tv|moonbug kids|3abn kids|sonic the hedgehog)\b", re.I
 )
 
 PAY_ENT_CH_RE = re.compile(
@@ -1044,23 +1153,25 @@ PAY_SPORTS_RE = re.compile(
 )
 
 FOREIGN_COUNTRY_TAG_RE = re.compile(
-    r"(\.(nl|rs|ru|tr|it|es|au|id|bg|gh|vn|ba|xk|al|cl|ec|cr|cm|ci|kh|mn|hu|at|ch|de|fr|br|pe|do|lt|pk)\b|"
-    r"\b(netherlands|serbia|russia|turkiye|turkey|italy|spain|españa|australia|indonesia|bulgaria|"
+    r"(\.(nl|rs|ru|tr|it|es|au|id|bg|gh|vn|ba|xk|al|cl|ec|cr|cm|ci|kh|mn|hu|at|ch|de|fr|br|pe|do|lt|pk|ro|cz|sk|pl|iq|ir|uz|kz|gr|fi)\b|"
+    r"\b(netherlands|serbia|russia|russian|turkiye|turkey|italy|spain|españa|australia|indonesia|bulgaria|"
     r"ghana|vietnam|bosnia|kosovo|albania|chile|ecuador|costa rica|cameroon|ivory coast|cambodia|"
     r"mongolia|hungary|austria|switzerland|brazil|peru|dominican|san antonio|nashua|santa maria|"
     r"lompoc|east bridgewater|toscana|utrecht|noord|drenthe|rijnmond|oost|maastricht|meppel|"
     r"purmerend|veluwezoom|westerwolde|zulthe|dordrecht|manilva|malaga|calima|balkanweb|rai news|"
-    r"bắc ninh|nghệ an|gia lai|silverbird|united kingdom|united states)\b)",
+    r"bắc ninh|nghệ an|gia lai|silverbird|united kingdom|united states|czech republic|slovakia|colombia|finland|latin america|german|iraq|san clemente|andes)\b)",
     re.I
 )
 
-# Foreign domains that host homonyms like BTV, RTV, NTV, News24, Global TV
 FOREIGN_HOMONYM_DOMAINS = (
     "btnrwanda.com", "balkanweb.com", "ecuaradiotv.net", "rtv-ooe.at",
     "rtv.co.id", "dens.tv", "skygo.mn", "bitel.com.pe", "msinteractiva.com",
     "swagit.com", "telvue.com", "dogus.daioncdn.net", "nossatv", "43.252.18.195",
     "connectiktv.ddns.net", "mediawork.cz", "mediatailor.us-west-2.amazonaws.com",
-    "skynewsau-live-premium.akamaized.net", "pishow.tv/ott/live/253", "ottlive.co.in/news24"
+    "skynewsau-live-premium.akamaized.net", "pishow.tv/ott/live/253", "ottlive.co.in/news24",
+    "antenaplay.ro", "polar.cz", "tennet.ro", "cra.cz", "realitatea.net", "rtve.es",
+    "rutube.ru", "tustreaming.cl", "tvkaista.net", "staratv.id", "telewebion.ir",
+    "cinerama.uz", "desdeparaguay.net", "voxtvhd.com.br", "edgenextcdn.net", "mjunoon.tv"
 )
 
 BD_ONLY_RE = re.compile(
@@ -1090,7 +1201,7 @@ INDIA_BANGLA_RE = re.compile(
     r"khushboo bangla|khusbo bangla|mon bangla|news live bangla|nick bangla|nk tv bangla|raatdin bangla|"
     r"rongeen tv|salam bangla|snb cinema|sonar bangla|sonic bangla|u bangla|uphar bangla|upohar bangla|"
     r"zb bhakti|zb cartoon|zb music|zb cinema|zodiak tv|jtbs classic|bhi channel|globe tv|"
-    r"headlines tripura|friends tv|ananda barta|ananda livetv|ak bangla|ekhonkolkata|jhankar tv|sristi tv|stv bangla|channel vision)\b",
+    r"headlines tripura|friends tv|ananda barta|ananda livetv|ak bangla|ekhonkolkata|jhankar tv|sristi tv|stv bangla|channel vision|amardigital)\b",
     re.I
 )
 
@@ -1116,36 +1227,38 @@ def classify_by_language_and_name(c):
     detected_lang = c.get("stream_lang") or c.get("lang") or ""
     if detected_lang in DROP_LANG_CODES:
         return "DROP"
-    if DROP_REGIONAL_AND_FOREIGN_RE.search(t):
+
+    # Substring check blocks regional Indian channels even without spaces (e.g. 'ETVTelugu', 'ZeeTamil', 'PTCPunjabi')
+    compact_text = re.sub(r"[^a-z0-9]", "", f"{lname}{ltvg}")
+    if any(kw in lname or kw in compact_text for kw in DROP_SUBSTRING_KEYWORDS):
         return "DROP"
 
-    # Strip leading serial numbers for exact matching (e.g. '146.RTV' -> 'rtv')
     clean_lname = re.sub(r"^\d+\s*\.\s*", "", lname).strip()
     music = bool(re.search(r"\b(music|song|songs|gaan|mtv|vevo|hits|zing|sangeet|muzik|dhoom|9xm|9x)\b", clean_lname))
     movie_ch = bool(re.search(r"\b(movies?\s*(tv|channel|hd|plus|now|action|gold|club)?|cinema\s*(tv|hd)?|flix\s*tv)\b", clean_lname))
 
-    # 2. Sports ALWAYS checked first (catches NFL, Golfchannel, beIN, Willow from AynaOTT too)
+    # 2. Sports ALWAYS checked first
     if PAY_SPORTS_RE.search(t) or re.search(r"\b(sport|sports|cricket|football|soccer)\b", clean_lname):
         return "Sports"
 
-    # 3. Informative / Documentary / Science / Wildlife / History (catches Nat Geo, Sky Nature, Travelxp, CGTN Doc)
+    # 3. Informative / Documentary / Science / Wildlife / History
     if INFORMATIVE_RE.search(clean_lname) or re.search(r"\b(documentary|science|wildlife|nature|history)\b", lgroup):
         return "Informative"
 
-    # 4. Kolkata Movies & Bangla (India) — checked BEFORE Bangladesh so AynaOTT's Aakaash Aath / Enter 10 Bangla go here!
+    # 4. Kolkata Movies & Bangla (India)
     if KOLKATA_RE.search(clean_lname):
         return "Kolkata Movies"
     if (INDIA_BANGLA_RE.search(clean_lname) or "kolkata" in clean_lname or "calcutta" in clean_lname
             or (detected_lang == "ben" and re.search(r"\b(india|indian|west bengal|kolkata)\b", lgroup))):
         return "Bangla Music" if music else "Bangla (India)"
 
-    # 5. Hindi Movies & Hindi Music — checked BEFORE Bangladesh so AynaOTT's Hindi channels go here!
+    # 5. Hindi Movies & Hindi Music
     if HINDI_MOVIE_CH_RE.search(clean_lname):
         return "Hindi Movies"
     if (detected_lang == "hin" or HINDI_RE.search(clean_lname)) and music:
         return "Hindi Music"
 
-    # 6. English Movies & English Entertainment — checked BEFORE Bangladesh so AynaOTT's AXS, Nick Jr, Moonbug, PIX11 go here!
+    # 6. English Movies & English Entertainment
     if ENGLISH_MOVIE_CH_RE.search(clean_lname):
         return "English Movies"
     if ENGLISH_ENT_CH_RE.search(clean_lname) and detected_lang != "ben":
@@ -1160,7 +1273,7 @@ def classify_by_language_and_name(c):
             return "English Movies"
         return "English Entertainment"
 
-    # 7. Hindi / India General Entertainment & News — checked BEFORE AynaOTT/JagoBD generic URL fallback!
+    # 7. Hindi / India General Entertainment & News
     if (detected_lang == "hin"
             or HINDI_RE.search(clean_lname)
             or PAY_ENT_CH_RE.search(clean_lname)
@@ -1182,7 +1295,6 @@ def classify_by_language_and_name(c):
             return "Bangla Music"
         return "Bangladesh"
 
-    # Remaining AynaOTT channels that weren't English/Hindi/Sports/Informative/Kolkata
     if "aynaott.com" in lurl:
         if music:
             return "Bangla Music"
@@ -1217,7 +1329,7 @@ def dedupe_by_name(chs, limit):
 
     kept, count = set(), {}
     for c in sorted(chs, key=rank):
-        key = norm(c["name"]) or c["name"].lower()
+        key = (c["group"], norm(c["name"]) or c["name"].lower())
         if count.get(key, 0) < limit:
             count[key] = count.get(key, 0) + 1
             kept.add(id(c))
@@ -1226,7 +1338,6 @@ def dedupe_by_name(chs, limit):
 
 # ------------------------------------------------------------------ source health & sleeping pool sync
 def update_source_health(checked_feed_urls, all_candidate_items):
-    """Updates source_health.json and moves repeated zero-hit feeds to sleeping_sources.json."""
     if not checked_feed_urls:
         return
     try:
@@ -1405,6 +1516,20 @@ def main():
         log(f"[SAFETY] Alive ({len(alive)}) ager playlist ({prev}) er theke onek kom. Overwrite kora holo na.")
         return 1
 
+    # Build Logo & Clean-Name enrichment lookup from channels that have valid logos
+    best_logo_map = {}
+    for c in sorted(alive, key=lambda x: SOURCE_RANK.get(x["source"], 9)):
+        ckey = norm(c["name"])
+        logo = c.get("logo", "").strip()
+        if ckey and logo and logo.startswith("http") and "default-logo" not in logo and "noimage" not in logo:
+            if ckey not in best_logo_map:
+                best_logo_map[ckey] = logo
+
+    for c in alive:
+        ckey = norm(c["name"])
+        if (not c.get("logo") or not c["logo"].startswith("http")) and ckey in best_logo_map:
+            c["logo"] = best_logo_map[ckey]
+
     if MAX_LINKS_PER_CHANNEL:
         before = len(alive)
         alive = dedupe_by_name(alive, MAX_LINKS_PER_CHANNEL)
@@ -1421,12 +1546,21 @@ def main():
     # 1. Save full playlist (with backup links)
     write_playlist(alive, OUTPUT)
 
-    # 2. Save duplicate-free & lowest ping (fastest) playlist
+    # 2. Save truly duplicate-free & lowest ping (fastest) playlist
     best_by_channel = {}
     for c in alive:
-        key = norm(c["name"]) or c["name"].lower()
-        if key not in best_by_channel or c.get("latency", 99) < best_by_channel[key].get("latency", 99):
-            best_by_channel[key] = c
+        ckey = (c["group"], norm(c["name"]) or c["name"].lower())
+        if ckey not in best_by_channel:
+            best_by_channel[ckey] = c
+        else:
+            prev_c = best_by_channel[ckey]
+            # Prefer working HTTPS + lower latency
+            prev_score = (0 if prev_c["url"].startswith("https://") else 1, prev_c.get("latency", 99))
+            curr_score = (0 if c["url"].startswith("https://") else 1, c.get("latency", 99))
+            if curr_score < prev_score:
+                if not c.get("logo") and prev_c.get("logo"):
+                    c["logo"] = prev_c["logo"]
+                best_by_channel[ckey] = c
 
     clean_alive = sorted(
         best_by_channel.values(),
