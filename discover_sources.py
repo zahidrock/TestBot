@@ -1,12 +1,11 @@
 """
-Global Multi-Platform Live TV & IPTV Source Discovery Engine (BD, Indian, English, Informative, Sports & Kids/Animation Focused)
-Searches across:
-1. GitHub (Repositories + Topics + Code/M3U Signatures including Kids, Cartoon & Anime streams)
-2. GitLab Public API (Open Project Search)
-3. Codeberg Public API (Instant Fail-Fast on CI shared IP 429)
-4. GitHub Public Gists (Targeted M3U/IPTV Gist Discovery)
-5. DuckDuckGo Lite Search (Pastebin, Rentry, Telegraph, Bitbucket, HuggingFace, dpaste, Open Indexes)
-6. Built-in Official FAST TV & Open Directory Feeds (SamsungTVPlus, PlutoTV, Plex, Roku, Stirr, LG, Vizio, Xumo, DistroTV, LocalNow, Tubi, Redbox, Free-TV, iptv-org)
+Global Multi-Platform Live TV & IPTV Source Discovery Engine (BD, Indian, English, Informative, Kids & Animation, Sports)
+Features:
+- Extracts upstream sources, APIs, portals & M3U feeds directly from BD priority repos (BDIX-IPTV, Mrgify-BDIX-IPTV, Rokon-IPTV, Free-BD-IPTV, SM-IPTV, etc.)
+- Searches GitHub (Repos + Topics + Code Signatures), GitLab (Projects), Codeberg (Instant Fail-Fast),
+  GitHub Gists, DuckDuckGo Lite (Pastebin, Rentry, Telegraph, Bitbucket, HuggingFace, dpaste),
+  and Built-in Official FAST TV & Open Directory Feeds
+- Active Pool vs. Sleeping Pool architecture with Repo Update Event Revival & Daily Canary Probe
 """
 import json, os, random, re, ssl, time
 import urllib.error, urllib.parse, urllib.request
@@ -20,6 +19,17 @@ HEALTH_JSON = Path("source_health.json")
 SLEEPING_JSON = Path("sleeping_sources.json")
 
 CANARY_BATCH_SIZE = 600
+
+# Dedicated BD / Bangla IPTV repositories whose upstream sources & feeds we always harvest
+BD_PRIORITY_REPOS = [
+    "saeidrahmanbd/BDIX-IPTV",
+    "abusaeeidx/Mrgify-BDIX-IPTV",
+    "time2shine/Rokon-IPTV",
+    "dhrubonai/Free-BD-IPTV",
+    "Zaman-Topu/Ip-tv-Collection",
+    "Shadmanislam/bdiptv",
+    "sm-monirulislam/SM-IPTV",
+]
 
 SSL_CTX = ssl.create_default_context()
 SSL_CTX.check_hostname = False
@@ -189,7 +199,8 @@ def is_syntactically_valid_url(url, self_repo_prefix=""):
     if any(k in low_u for k in (
         "api", "live", "tv", "stream", "m3u", "cdn", "103.", "portal", "play",
         "iptv", "mjh.nz", "apsattv.com", "gist.githubusercontent", "pastebin.com/raw",
-        "rentry.co", "telegra.ph", "dpaste.org", "paste.ee", "huggingface.co", "bitbucket.org"
+        "rentry.co", "telegra.ph", "dpaste.org", "paste.ee", "huggingface.co", "bitbucket.org",
+        "bdix", "bangla", "jagobd", "aynaott", "workers.dev", "pages.dev"
     )):
         return True
     return False
@@ -271,9 +282,33 @@ def load_existing_data():
     return old_bots, old_upstream, old_playlists
 
 
-# ------------------------------------------------------------------ Engine 1: GitHub
-def search_github():
+# ------------------------------------------------------------------ Engine 1: GitHub + BD Priority Repos
+def fetch_bd_priority_repos():
+    """Directly fetches metadata & all upstream sources/feeds from known BD IPTV repos."""
     found = {}
+    for fn in BD_PRIORITY_REPOS:
+        try:
+            item = fetch_json(f"https://api.github.com/repos/{fn}", GH_HEADERS, retries=1)
+            if item.get("full_name"):
+                found[item["full_name"]] = {
+                    "repo": item["full_name"],
+                    "platform": "github",
+                    "branch": item.get("default_branch", "main"),
+                    "updated": (item.get("pushed_at") or "")[:10],
+                    "stars": item.get("stargazers_count", 0),
+                    "is_auto_bot": True,
+                    "playlists": [],
+                    "upstream_sources": [],
+                }
+        except Exception:
+            pass
+        time.sleep(1)
+    log(f"[BD-PriorityRepos] {len(found)} ti BD IPTV repo directly loaded.")
+    return found
+
+
+def search_github():
+    found = fetch_bd_priority_repos()
     for q in BOT_SEARCH_QUERIES:
         try:
             url = f"https://api.github.com/search/repositories?q={urllib.parse.quote(q)}&sort=updated&per_page=30"
@@ -492,6 +527,7 @@ def discover():
     def analyze_github_repo(repo_info):
         repo = repo_info["repo"]
         branch = repo_info["branch"]
+        is_bd_repo = repo.lower() in {r.lower() for r in BD_PRIORITY_REPOS}
         try:
             tree_url = f"https://api.github.com/repos/{repo}/git/trees/{branch}?recursive=1"
             tree = fetch_json(tree_url, GH_HEADERS).get("tree", [])
@@ -499,6 +535,9 @@ def discover():
             return repo_info
 
         script_paths = []
+        max_pl = 25 if is_bd_repo else 12
+        max_scripts = 25 if is_bd_repo else 12
+
         for f in tree:
             if f.get("type") != "blob":
                 continue
@@ -508,16 +547,16 @@ def discover():
                 repo_info["is_auto_bot"] = True
                 if f.get("size", 0) < 100000:
                     script_paths.append(path)
-            elif lpath.endswith((".m3u", ".m3u8")) and f.get("size", 0) > 400:
-                if len(repo_info["playlists"]) < 12:
+            elif lpath.endswith((".m3u", ".m3u8")) and f.get("size", 0) > 200:
+                if len(repo_info["playlists"]) < max_pl:
                     raw_pl = f"https://raw.githubusercontent.com/{repo}/{branch}/{urllib.parse.quote(path)}"
                     repo_info["playlists"].append(raw_pl)
-            elif lpath.endswith((".py", ".js", ".ts", ".sh")) and f.get("size", 0) < 150000:
+            elif lpath.endswith((".py", ".js", ".ts", ".sh", ".json", ".txt")) and f.get("size", 0) < 300000:
                 script_paths.append(path)
 
         upstream = set()
         self_repo_prefix = f"raw.githubusercontent.com/{repo.lower()}/"
-        for sp in script_paths[:12]:
+        for sp in script_paths[:max_scripts]:
             raw_code_url = f"https://raw.githubusercontent.com/{repo}/{branch}/{urllib.parse.quote(sp)}"
             try:
                 code_txt = fetch_text(raw_code_url, timeout=10)
