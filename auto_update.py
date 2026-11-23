@@ -1,15 +1,13 @@
 """
-All-in-One Direct (No-Proxy) Global Live TV IPTV Updater (BD / Bangla & Hindi India / English / Informative / Kids & Animation / Sports)
+All-in-One Direct (No-Proxy) Global Live TV IPTV Updater
 Features:
+- Official Channel Name & Logo Enrichment from 'iptv-org/api/channels.json' + AynaOTT Catalog (no manual name editing needed)
 - Collects from AynaOTT, JagoBD, GitHub, GitLab, Codeberg, Bitbucket, HuggingFace, Pastebin, Rentry, Telegraph,
-  Official FAST TV APIs (SamsungTVPlus, PlutoTV, Plex, Roku, Stirr, LG, Vizio, Xumo, DistroTV, LocalNow, Tubi, Redbox),
-  and iptv-org JSON API + Country & Category M3U feeds (including official 'kids' and 'animation' feeds)
-- Dedicated 'Kids & Animation' group for Bangla, Hindi & English cartoons/anime (Cartoon Network, Pogo, Nick, Sony Yay, Disney, Duronto TV, Rongeen TV, Animax, etc.)
-- Dedicated 'Informative' group for Discovery, History, Animal Planet, Nat Geo, Sony BBC Earth, Travelxp, Science & Wildlife channels
-- Keeps ONLY Bangladeshi, Indian (Bangla & Hindi ONLY), English, Informative, Kids & Animation & Sports
+  Official FAST TV APIs, and iptv-org JSON API + Country & Category M3U feeds
+- Dedicated 'Kids & Animation' & 'Informative' groups alongside BD, Bangla/Hindi India, English & Sports
 - Deep HLS segment verification (requires >= 5KB real video chunk) + Dead-host fast skip cache
 - Active Pool vs. Sleeping Pool sync ('source_health.json' & 'sleeping_sources.json')
-- Canonical Channel Alias Normalization + Auto-Logo Enrichment for a 100% duplicate-free 'playlist_clean.m3u'
+- Generates 100% duplicate-free 'playlist_clean.m3u' with original official names & logos
 """
 import json, os, re, socket, ssl, sys, threading, time
 from collections import Counter, defaultdict
@@ -203,7 +201,6 @@ DROP_SUBSTRING_KEYWORDS = (
     "schwammkopf", "magisch", "classico", "clássico"
 )
 
-# Dead-host fast skip cache
 DEAD_HOSTS = set()
 DEAD_HOST_LOCK = threading.Lock()
 HOST_FAIL_COUNTS = Counter()
@@ -229,6 +226,59 @@ def http_get(url, headers=None, timeout=6, max_bytes=1_500_000):
     req = urllib.request.Request(url, headers=headers or HEADERS)
     with urllib.request.urlopen(req, timeout=timeout, context=SSL_CTX) as r:
         return r.read(max_bytes).decode("utf-8", errors="ignore")
+
+
+# ------------------------------------------------------------------ Official Channel Metadata Fetcher (Original Names & Logos)
+def fetch_official_channel_metadata():
+    """Fetches official channel names & logos from iptv-org/api/channels.json so names don't need manual editing."""
+    id_to_meta = {}
+    key_to_meta = {}
+    try:
+        raw = http_get("https://iptv-org.github.io/api/channels.json", timeout=20, max_bytes=15_000_000)
+        channels = json.loads(raw)
+        for ch in channels:
+            cid = (ch.get("id") or "").strip()
+            cname = (ch.get("name") or "").strip()
+            clogo = (ch.get("logo") or "").strip()
+            country = (ch.get("country") or "").upper()
+            if not cid or not cname:
+                continue
+            meta = {"name": cname, "logo": clogo}
+            id_to_meta[cid.lower()] = meta
+            id_to_meta[cid.split("@")[0].lower()] = meta
+            if country in ("BD", "IN", "US", "GB", "CA", "AU", "NZ", "SG"):
+                ckey = norm(cname)
+                if ckey and ckey not in key_to_meta:
+                    key_to_meta[ckey] = meta
+        log(f"[OfficialDB] iptv-org channels.json theke {len(id_to_meta)} ti official channel metadata load hoyeche.")
+    except Exception as e:
+        log(f"[OfficialDB] channels.json fetch info: {e}")
+    return id_to_meta, key_to_meta
+
+
+def clean_display_name(raw_name):
+    """Automatically strips serial prefixes, resolution/geo tags, trailing IDs & country prefixes without manual edits."""
+    if not raw_name:
+        return "Unknown"
+    s = raw_name.strip()
+    # Remove leading serial numbers (e.g. '111.SANGSAD BANGLADESH' -> 'SANGSAD BANGLADESH', '208 Travelxp' -> 'Travelxp')
+    s = re.sub(r"^\d+\s*[.\-_|:]\s*", "", s)
+    s = re.sub(r"^\d{1,3}\s+(?=[A-Za-z])", "", s)
+    # Remove category/country prefixes like 'IN | ', 'MU | ', 'NEWS | ', '【孟加拉国】', 'DEU★'
+    s = re.sub(r"^(?:[A-Z]{2,5}\s*\|\s*|【[^】]+】\s*|[A-Z]{2,3}★\s*)", "", s)
+    # Remove trailing underscore/hash IDs like '_12', '_427', '#1'
+    s = re.sub(r"[_#]\d+$", "", s)
+    # Remove trailing bracketed tags like '(576p)', '(720p)', '(1080p)', '[Geo-blocked]', '(India)', '(jago bd)', '[SamsungTVPlus]', '(🇮🇳)'
+    s = re.sub(r"\s*[\(\[](?:\d{3,4}[pi]|geo-?blocked|not\s*24/7|india|bangladesh|jago\s*bd|samsungtvplus|adaptive|multi-?lang|backup\s*\d*|opc\.\d+|nacional|[^a-zA-Z0-9]+)[\)\]]", "", s, flags=re.I)
+    # Remove flag emojis & symbol tags
+    s = re.sub(r"[\U0001F1E6-\U0001F1FFⓈ]+", "", s)
+    s = re.sub(r"\s+", " ", s).strip(" -_|:")
+    # Fix ALL-CAPS names to clean Title Case while preserving acronyms (TV, HD, BBC, CNN, ATN, RTV, NTV, BTV, GTV, DBC, SATV, etc.)
+    if s.isupper() and len(s) > 4:
+        s = s.title()
+        for acr in ("Tv", "Hd", "Bbc", "Cnn", "Atn", "Rtv", "Ntv", "Btv", "Gtv", "Dbc", "Satv", "Hbo", "Axn", "Tlc", "Mtv", "Ndtv", "Abp", "Zee", "Pbs", "Nasa", "Espn", "Nfl", "Ufc", "Wwe"):
+            s = re.sub(rf"\b{acr}\b", acr.upper(), s)
+    return s or raw_name.strip()
 
 
 # ------------------------------------------------------------------ URL converter & m3u parse
@@ -1121,7 +1171,6 @@ HINDI_RE = re.compile(
     r"wow cinema|abzy|pitara|popkorn|housefull|dil se|dhinchaak|bharat samachar|sadhna prime|tehelka tv|khushboo|yrf music)\b", re.I
 )
 
-# Dedicated Kids & Animation Channels (Bangla, Hindi & English)
 KIDS_ANIMATION_RE = re.compile(
     r"\b(cartoon|cartoons|animation|anime|animax|crunchyroll|retrocrush|hidive|toon|toons|toonami|"
     r"cartoon network|cn hd|pogo|sony yay|hungama|super hungama|marvel hq|disney|disney channel|disney xd|disney jr|disney junior|"
@@ -1239,7 +1288,6 @@ INDIA_BANGLA_RE = re.compile(
 
 
 def classify_by_language_and_name(c):
-    """Bangladeshi, Indian (Bangla & Hindi ONLY), Informative, Kids & Animation, Sports o English channel alada korbe; baki sob 'DROP'"""
     name = c["name"]
     group = c.get("group", "")
     tvg_id = c.get("tvg_id", "")
@@ -1250,7 +1298,6 @@ def classify_by_language_and_name(c):
     ltvg = tvg_id.lower()
     t = f"{lname} {lgroup}"
 
-    # 1. Block known foreign homonym servers & non-BD country suffixes
     if any(dom in lurl for dom in FOREIGN_HOMONYM_DOMAINS):
         return "DROP"
     if FOREIGN_COUNTRY_TAG_RE.search(f"{lname} {ltvg}") and not any(x in ltvg for x in (".bd", "aynaott", "jagobd")):
@@ -1501,6 +1548,8 @@ def main():
     start_time = time.time()
     pool = []
     checked_feed_urls = []
+    id_to_meta, key_to_meta = fetch_official_channel_metadata()
+
     scrapers = (
         ("AynaOTT", scrape_aynaott),
         ("JagoBD", scrape_jagobd),
@@ -1553,9 +1602,14 @@ def main():
         log(f"[SAFETY] Alive ({len(alive)}) ager playlist ({prev}) er theke onek kom. Overwrite kora holo na.")
         return 1
 
-    best_logo_map = {}
+    # Enrich original names & logos from official iptv-org database + AynaOTT catalog
+    best_logo_map = dict((k, v["logo"]) for k, v in key_to_meta.items() if v.get("logo"))
+    best_name_map = dict((k, v["name"]) for k, v in key_to_meta.items() if v.get("name"))
+
     for c in sorted(alive, key=lambda x: SOURCE_RANK.get(x["source"], 9)):
         ckey = norm(c["name"])
+        if c["source"] == "AynaOTT" and ckey:
+            best_name_map[ckey] = clean_display_name(c["name"])
         logo = c.get("logo", "").strip()
         if ckey and logo and logo.startswith("http") and "default-logo" not in logo and "noimage" not in logo:
             if ckey not in best_logo_map:
@@ -1563,8 +1617,27 @@ def main():
 
     for c in alive:
         ckey = norm(c["name"])
-        if (not c.get("logo") or not c["logo"].startswith("http")) and ckey in best_logo_map:
-            c["logo"] = best_logo_map[ckey]
+        tid = (c.get("tvg_id") or "").lower().strip()
+        tid_base = tid.split("@")[0]
+
+        # 1. Assign official original name if matched in iptv-org channels.json or AynaOTT
+        if tid in id_to_meta:
+            c["name"] = id_to_meta[tid]["name"]
+        elif tid_base in id_to_meta:
+            c["name"] = id_to_meta[tid_base]["name"]
+        elif ckey in best_name_map:
+            c["name"] = best_name_map[ckey]
+        else:
+            c["name"] = clean_display_name(c["name"])
+
+        # 2. Assign official logo if missing
+        if not c.get("logo") or not c["logo"].startswith("http"):
+            if tid in id_to_meta and id_to_meta[tid].get("logo"):
+                c["logo"] = id_to_meta[tid]["logo"]
+            elif tid_base in id_to_meta and id_to_meta[tid_base].get("logo"):
+                c["logo"] = id_to_meta[tid_base]["logo"]
+            elif ckey in best_logo_map:
+                c["logo"] = best_logo_map[ckey]
 
     if MAX_LINKS_PER_CHANNEL:
         before = len(alive)
