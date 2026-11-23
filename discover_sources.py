@@ -1,13 +1,12 @@
 """
 Global Multi-Platform Live TV & IPTV Source Discovery Engine (BD, Indian & English Focused)
-Features:
-- Searches GitHub (Repos + Topics + Code Signatures), GitLab (Projects + Snippets), Codeberg,
-  GitHub Gists, DuckDuckGo Lite (Pastebin, Rentry, Telegraph, Bitbucket, HuggingFace, dpaste),
-  and Built-in Official FAST TV & Open Directory Feeds
-- Active Pool vs. Sleeping Pool architecture:
-  1. Never permanently deletes sources; failing sources move to 'sleeping_sources.json'
-  2. Event-based recovery: Immediately wakes up sources if their GitHub/GitLab repo pushes a new update
-  3. Daily Canary Probe: Tests a rotating batch of 600 sleeping sources every 24h and revives any that come back online
+Searches across:
+1. GitHub (Repositories + Topics + Code/M3U Signatures for BD, Indian & English streams)
+2. GitLab Public API (Open Project Search without unauthenticated 401 snippet calls)
+3. Codeberg Public API (Instant Fail-Fast on CI shared IP 429 without 45s cooldown delays)
+4. GitHub Public Gists (Targeted M3U/IPTV Gist Discovery)
+5. DuckDuckGo Lite Search (Pastebin, Rentry, Telegraph, Bitbucket, HuggingFace, dpaste, Open Indexes)
+6. Built-in Official FAST TV & Open Directory Feeds (SamsungTVPlus, PlutoTV, Plex, Roku, Stirr, LG, Vizio, Xumo, DistroTV, LocalNow, Tubi, Redbox, Free-TV, iptv-org)
 """
 import json, os, random, re, ssl, time
 import urllib.error, urllib.parse, urllib.request
@@ -315,10 +314,11 @@ def search_gitlab_and_codeberg():
     extra_playlists = set()
     extra_repos = {}
 
+    # 1. GitLab Public Projects API (Works without auth token; /snippets/public removed as GitLab deprecated unauthenticated access)
     for kw in ALT_GIT_KEYWORDS:
         try:
-            gl_url = f"https://gitlab.com/api/v4/projects?search={urllib.parse.quote(kw)}&order_by=last_activity_at&per_page=25"
-            projects = fetch_json(gl_url)
+            gl_url = f"https://gitlab.com/api/v4/projects?search={urllib.parse.quote(kw)}&order_by=last_activity_at&per_page=30"
+            projects = fetch_json(gl_url, retries=1)
             if isinstance(projects, list):
                 for p in projects:
                     path_ns = p.get("path_with_namespace")
@@ -341,62 +341,36 @@ def search_gitlab_and_codeberg():
             log(f"[GitLab Search Error] {kw}: {e}")
         time.sleep(2)
 
-    try:
-        snippets = fetch_json("https://gitlab.com/api/v4/snippets/public?per_page=100", retries=0)
-        if isinstance(snippets, list):
-            for sn in snippets:
-                title = (sn.get("title") or "").lower()
-                fname = (sn.get("file_name") or "").lower()
-                raw_u = sn.get("raw_url")
-                if raw_u and (fname.endswith((".m3u", ".m3u8")) or any(k in f"{title} {fname}" for k in ("iptv", "m3u", "bangla", "hindi", "bdix", "tv"))):
-                    extra_playlists.add(raw_u)
-    except Exception as e:
-        log(f"[GitLab Snippets Error] {e}")
-
+    # 2. Codeberg Public API (Instant Fail-Fast if CI shared IP is rate-limited; zero 45s wait)
     cb_headers = {
         "User-Agent": "IPTV-Playlist-Aggregator/1.0 (+https://github.com)",
         "Accept": "application/json"
     }
-    cb_blocked = False
-    for idx, kw in enumerate(ALT_GIT_KEYWORDS[:4]):
-        if cb_blocked:
-            break
-        time.sleep(15 if idx == 0 else 20)
+    for kw in ALT_GIT_KEYWORDS[:3]:
+        time.sleep(3)
         cb_url = f"https://codeberg.org/api/v1/repos/search?q={urllib.parse.quote(kw)}&sort=updated&limit=25"
-        for attempt in range(2):
-            try:
-                res = fetch_json(cb_url, headers=cb_headers, retries=0)
-                for item in res.get("data", []):
-                    fn = item.get("full_name")
-                    branch = item.get("default_branch") or "main"
-                    if fn:
-                        repo_key = f"codeberg:{fn}"
-                        extra_repos[repo_key] = {
-                            "repo": repo_key,
-                            "platform": "codeberg",
-                            "branch": branch,
-                            "updated": (item.get("updated_at") or "")[:10],
-                            "stars": item.get("stars_count", 0),
-                            "is_auto_bot": True,
-                            "playlists": [],
-                            "upstream_sources": [],
-                        }
-                        for fname in ("playlist.m3u", "playlist.m3u8", "index.m3u", "tv.m3u", "iptv.m3u", "live.m3u"):
-                            extra_playlists.add(f"https://codeberg.org/{fn}/raw/branch/{branch}/{fname}")
-                break
-            except urllib.error.HTTPError as e:
-                if e.code == 429:
-                    if attempt == 0:
-                        log(f"[Codeberg] 429 cooldown (45s) for '{kw}'...")
-                        time.sleep(45)
-                    else:
-                        log("[Codeberg] Shared IP rate-limited; skipping Codeberg for this run.")
-                        cb_blocked = True
-                        break
-                else:
-                    break
-            except Exception:
-                break
+        try:
+            res = fetch_json(cb_url, headers=cb_headers, retries=0)
+            for item in res.get("data", []):
+                fn = item.get("full_name")
+                branch = item.get("default_branch") or "main"
+                if fn:
+                    repo_key = f"codeberg:{fn}"
+                    extra_repos[repo_key] = {
+                        "repo": repo_key,
+                        "platform": "codeberg",
+                        "branch": branch,
+                        "updated": (item.get("updated_at") or "")[:10],
+                        "stars": item.get("stars_count", 0),
+                        "is_auto_bot": True,
+                        "playlists": [],
+                        "upstream_sources": [],
+                    }
+                    for fname in ("playlist.m3u", "playlist.m3u8", "index.m3u", "tv.m3u", "iptv.m3u", "live.m3u"):
+                        extra_playlists.add(f"https://codeberg.org/{fn}/raw/branch/{branch}/{fname}")
+        except Exception:
+            # Silently skip Codeberg when shared CI IP hits rate limit
+            break
 
     log(f"[GitLab & Codeberg] {len(extra_repos)} ti external repo o {len(extra_playlists)} ti candidate feed paoa gese.")
     return extra_repos, extra_playlists
