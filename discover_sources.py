@@ -1,9 +1,9 @@
 """
-Global Multi-Platform Live TV & IPTV Source Discovery Engine (BD, Indian & English Focused)
+Global Multi-Platform Live TV & IPTV Source Discovery Engine (BD, Indian, English, Informative, Sports & Kids/Animation Focused)
 Searches across:
-1. GitHub (Repositories + Topics + Code/M3U Signatures for BD, Indian & English streams)
-2. GitLab Public API (Open Project Search without unauthenticated 401 snippet calls)
-3. Codeberg Public API (Instant Fail-Fast on CI shared IP 429 without 45s cooldown delays)
+1. GitHub (Repositories + Topics + Code/M3U Signatures including Kids, Cartoon & Anime streams)
+2. GitLab Public API (Open Project Search)
+3. Codeberg Public API (Instant Fail-Fast on CI shared IP 429)
 4. GitHub Public Gists (Targeted M3U/IPTV Gist Discovery)
 5. DuckDuckGo Lite Search (Pastebin, Rentry, Telegraph, Bitbucket, HuggingFace, dpaste, Open Indexes)
 6. Built-in Official FAST TV & Open Directory Feeds (SamsungTVPlus, PlutoTV, Plex, Roku, Stirr, LG, Vizio, Xumo, DistroTV, LocalNow, Tubi, Redbox, Free-TV, iptv-org)
@@ -19,7 +19,7 @@ OUT_REPORT = Path("bot_report.txt")
 HEALTH_JSON = Path("source_health.json")
 SLEEPING_JSON = Path("sleeping_sources.json")
 
-CANARY_BATCH_SIZE = 600  # Number of sleeping sources probed daily for revival
+CANARY_BATCH_SIZE = 600
 
 SSL_CTX = ssl.create_default_context()
 SSL_CTX.check_hostname = False
@@ -44,6 +44,9 @@ BOT_SEARCH_QUERIES = [
     "usa uk tv m3u8",
     "fancode m3u8",
     "sports iptv m3u8",
+    "cartoon m3u8",
+    "kids tv m3u8",
+    "anime m3u8",
     "samsungtvplus m3u8",
     "plutotv m3u8",
     "topic:iptv",
@@ -51,6 +54,8 @@ BOT_SEARCH_QUERIES = [
     "topic:m3u",
     "topic:bangla-tv",
     "topic:indian-tv",
+    "topic:cartoon",
+    "topic:anime",
 ]
 
 # 2. Content & Code Signatures
@@ -65,6 +70,10 @@ CODE_SIGNATURE_QUERIES = [
     '"#EXTINF" "Aaj Tak" extension:m3u',
     '"#EXTINF" "Star Plus" extension:m3u8',
     '"#EXTINF" "BBC News" extension:m3u',
+    '"#EXTINF" "Cartoon Network" extension:m3u',
+    '"#EXTINF" "Nickelodeon" extension:m3u8',
+    '"#EXTINF" "Sony Yay" extension:m3u',
+    '"#EXTINF" "Disney Channel" extension:m3u',
     '"#EXTINF" "aynaott" extension:py',
     '"#EXTINF" "jagobd" extension:py',
     '"gpcdn.net" extension:m3u',
@@ -80,7 +89,8 @@ CODE_SIGNATURE_QUERIES = [
 # 3. GitLab & Codeberg Search Keywords
 ALT_GIT_KEYWORDS = [
     "iptv", "m3u8", "m3u", "bdix", "bangla-tv", "live-tv",
-    "star-jalsha", "somoy-tv", "indian-tv", "hindi-tv", "sports-tv", "fast-tv"
+    "star-jalsha", "somoy-tv", "indian-tv", "hindi-tv", "sports-tv", "fast-tv",
+    "cartoon", "kids-tv", "anime"
 ]
 
 # 4. Global Web Paste, Datasets & Open Index Dorks
@@ -88,6 +98,7 @@ WEB_DORK_QUERIES = [
     'site:pastebin.com "#EXTINF" "Somoy"',
     'site:pastebin.com "#EXTINF" "Star Jalsha"',
     'site:pastebin.com "#EXTINF" "Hindi"',
+    'site:pastebin.com "#EXTINF" "Cartoon Network"',
     'site:pastebin.com "#EXTINF" "m3u8"',
     'site:rentry.co "#EXTINF" "m3u8"',
     'site:telegra.ph "#EXTINF" "m3u8"',
@@ -97,7 +108,7 @@ WEB_DORK_QUERIES = [
     'site:huggingface.co/datasets "m3u8" "iptv"',
     'site:gist.github.com "#EXTINF" "Bangla"',
     'site:gist.github.com "#EXTINF" "Hindi"',
-    'site:gist.github.com "#EXTINF" "English"',
+    'site:gist.github.com "#EXTINF" "Cartoon"',
     'site:gist.github.com "#EXTINF" "m3u8"',
     '"#EXTINF:-1" "gpcdn.net"',
     '"#EXTINF:-1" "app24.jagobd.com.bd"',
@@ -127,6 +138,8 @@ BUILTIN_DIRECT_FEEDS = [
     "https://iptv-org.github.io/iptv/countries/au.m3u",
     "https://iptv-org.github.io/iptv/countries/nz.m3u",
     "https://iptv-org.github.io/iptv/countries/sg.m3u",
+    "https://iptv-org.github.io/iptv/categories/kids.m3u",
+    "https://iptv-org.github.io/iptv/categories/animation.m3u",
     "https://raw.githubusercontent.com/Free-TV/IPTV/master/playlist.m3u8",
 ]
 
@@ -214,7 +227,6 @@ def fetch_text(url, timeout=12, post_data=None):
 
 
 def canary_probe_url(url):
-    """Lightweight 4s probe to check if a sleeping source came back alive."""
     try:
         req = urllib.request.Request(url, headers={"User-Agent": UA})
         with urllib.request.urlopen(req, timeout=4, context=SSL_CTX) as r:
@@ -227,7 +239,6 @@ def canary_probe_url(url):
 
 
 def revive_sleeping_sources(sleeping_set, health_data):
-    """Probes a rotating batch of sleeping sources daily and wakes up any that are alive again."""
     if not sleeping_set:
         return set()
     candidates = list(sleeping_set)
@@ -314,7 +325,6 @@ def search_gitlab_and_codeberg():
     extra_playlists = set()
     extra_repos = {}
 
-    # 1. GitLab Public Projects API (Works without auth token; /snippets/public removed as GitLab deprecated unauthenticated access)
     for kw in ALT_GIT_KEYWORDS:
         try:
             gl_url = f"https://gitlab.com/api/v4/projects?search={urllib.parse.quote(kw)}&order_by=last_activity_at&per_page=30"
@@ -335,13 +345,12 @@ def search_gitlab_and_codeberg():
                             "playlists": [],
                             "upstream_sources": [],
                         }
-                        for fname in ("playlist.m3u", "playlist.m3u8", "index.m3u", "index.m3u8", "iptv.m3u", "tv.m3u", "bangla.m3u", "india.m3u", "live.m3u"):
+                        for fname in ("playlist.m3u", "playlist.m3u8", "index.m3u", "index.m3u8", "iptv.m3u", "tv.m3u", "bangla.m3u", "india.m3u", "live.m3u", "kids.m3u", "cartoon.m3u"):
                             extra_playlists.add(f"https://gitlab.com/{path_ns}/-/raw/{branch}/{fname}")
         except Exception as e:
             log(f"[GitLab Search Error] {kw}: {e}")
         time.sleep(2)
 
-    # 2. Codeberg Public API (Instant Fail-Fast if CI shared IP is rate-limited; zero 45s wait)
     cb_headers = {
         "User-Agent": "IPTV-Playlist-Aggregator/1.0 (+https://github.com)",
         "Accept": "application/json"
@@ -369,7 +378,6 @@ def search_gitlab_and_codeberg():
                     for fname in ("playlist.m3u", "playlist.m3u8", "index.m3u", "tv.m3u", "iptv.m3u", "live.m3u"):
                         extra_playlists.add(f"https://codeberg.org/{fn}/raw/branch/{branch}/{fname}")
         except Exception:
-            # Silently skip Codeberg when shared CI IP hits rate limit
             break
 
     log(f"[GitLab & Codeberg] {len(extra_repos)} ti external repo o {len(extra_playlists)} ti candidate feed paoa gese.")
@@ -418,7 +426,7 @@ def search_web_pastes_and_gists():
                     files = g.get("files") or {}
                     for fname, fmeta in files.items():
                         low_f = fname.lower()
-                        if low_f.endswith((".m3u", ".m3u8")) or any(k in f"{desc} {low_f}" for k in ("iptv", "m3u", "bangla", "hindi", "bdix", "live tv")):
+                        if low_f.endswith((".m3u", ".m3u8")) or any(k in f"{desc} {low_f}" for k in ("iptv", "m3u", "bangla", "hindi", "bdix", "live tv", "cartoon", "kids")):
                             raw_u = fmeta.get("raw_url")
                             if raw_u:
                                 discovered_urls.add(raw_u)
@@ -456,7 +464,6 @@ def discover():
 
     merged_bots, merged_upstream, merged_playlists = load_existing_data()
 
-    # 1. Event-based revival: If a repo pushed a new update since last check, immediately wake its URLs!
     gh_found = search_github()
     alt_repos, alt_playlists = search_gitlab_and_codeberg()
     web_paste_urls = search_web_pastes_and_gists()
@@ -473,7 +480,6 @@ def discover():
     if repo_updated_revivals:
         log(f"[EventRevival] Repo update dekhe {repo_updated_revivals} ti sleeping source sathe sathe active kora holo!")
 
-    # 2. Daily Canary Probe on Sleeping Pool
     revived_by_probe = revive_sleeping_sources(sleeping_set, health_data)
     sleeping_set -= revived_by_probe
 
@@ -543,7 +549,6 @@ def discover():
         candidate_upstream.update(b.get("upstream_sources", []))
         merged_playlists.update(b.get("playlists", []))
 
-    # Partition into Active Pool vs. Sleeping Pool based on health_data
     active_upstream = set(BUILTIN_DIRECT_FEEDS)
     active_playlists = set()
 
@@ -565,7 +570,6 @@ def discover():
         else:
             sleeping_set.add(p)
 
-    # Save updated health & sleeping pool
     HEALTH_JSON.write_text(json.dumps(health_data, indent=2), encoding="utf-8")
     SLEEPING_JSON.write_text(json.dumps({
         "updated_at": time.strftime("%Y-%m-%d %H:%M:%S UTC", time.gmtime()),
