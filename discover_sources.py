@@ -1,7 +1,8 @@
 """
 Global Multi-Platform Live TV & IPTV Source Discovery Engine (BD, Indian, English, Informative, Kids & Animation, Sports)
 Features:
-- Extracts upstream sources, APIs, portals & M3U feeds directly from BD priority repos (BDIX-IPTV, Mrgify-BDIX-IPTV, Rokon-IPTV, Free-BD-IPTV, SM-IPTV, etc.)
+- Harvests upstream sources, portals, endpoints & feeds from BD priority repos and discovered bots/scripts
+- Broadens code/script/config URL extraction to capture live streaming APIs, portals & M3U8/M3U endpoints
 - Searches GitHub (Repos + Topics + Code Signatures), GitLab (Projects), Codeberg (Instant Fail-Fast),
   GitHub Gists, DuckDuckGo Lite (Pastebin, Rentry, Telegraph, Bitbucket, HuggingFace, dpaste),
   and Built-in Official FAST TV & Open Directory Feeds
@@ -20,7 +21,6 @@ SLEEPING_JSON = Path("sleeping_sources.json")
 
 CANARY_BATCH_SIZE = 600
 
-# Dedicated BD / Bangla IPTV repositories whose upstream sources & feeds we always harvest
 BD_PRIORITY_REPOS = [
     "saeidrahmanbd/BDIX-IPTV",
     "abusaeeidx/Mrgify-BDIX-IPTV",
@@ -68,7 +68,7 @@ BOT_SEARCH_QUERIES = [
     "topic:anime",
 ]
 
-# 2. Content & Code Signatures
+# 2. Content & Code Signatures (Captures scripts/APIs harvesting live streams)
 CODE_SIGNATURE_QUERIES = [
     '"cron:" "m3u" path:.github/workflows',
     '"cron:" "m3u8" path:.github/workflows',
@@ -86,6 +86,8 @@ CODE_SIGNATURE_QUERIES = [
     '"#EXTINF" "Disney Channel" extension:m3u',
     '"#EXTINF" "aynaott" extension:py',
     '"#EXTINF" "jagobd" extension:py',
+    '"#EXTINF" "m3u8" extension:py',
+    '"#EXTINF" "m3u8" extension:js',
     '"gpcdn.net" extension:m3u',
     '"gpcdn.net" extension:m3u8',
     '"app24.jagobd.com.bd" extension:m3u',
@@ -172,6 +174,16 @@ IGNORE_EXTENSIONS = (
     ".zip", ".tar", ".gz", ".rar", ".7z", ".pdf", ".md", ".exe", ".apk"
 )
 
+CAPTURE_URL_HINTS = (
+    "/api/", "api.", "/live", "live.", "/stream", "stream.", ".m3u", ".m3u8",
+    "/cdn", "cdn.", "/portal", "portal.", "/play", "play.", "iptv",
+    "mjh.nz", "apsattv.com", "gist.githubusercontent", "pastebin.com/raw",
+    "rentry.co", "telegra.ph", "dpaste.org", "paste.ee", "huggingface.co",
+    "bitbucket.org", "bdix", "bangla", "jagobd", "aynaott", "workers.dev",
+    "pages.dev", "gpcdn.net", "ncare.live", "tangotv.in", "amagi.tv", "akamaized.net",
+    "cloudfront.net", "wurl.com", "pluto.tv", "samsungtv.plus"
+)
+
 
 def log(msg):
     print(msg, flush=True)
@@ -196,12 +208,7 @@ def is_syntactically_valid_url(url, self_repo_prefix=""):
         return False
     if url in BUILTIN_DIRECT_FEEDS:
         return True
-    if any(k in low_u for k in (
-        "api", "live", "tv", "stream", "m3u", "cdn", "103.", "portal", "play",
-        "iptv", "mjh.nz", "apsattv.com", "gist.githubusercontent", "pastebin.com/raw",
-        "rentry.co", "telegra.ph", "dpaste.org", "paste.ee", "huggingface.co", "bitbucket.org",
-        "bdix", "bangla", "jagobd", "aynaott", "workers.dev", "pages.dev"
-    )):
+    if any(k in low_u for k in CAPTURE_URL_HINTS):
         return True
     return False
 
@@ -284,7 +291,6 @@ def load_existing_data():
 
 # ------------------------------------------------------------------ Engine 1: GitHub + BD Priority Repos
 def fetch_bd_priority_repos():
-    """Directly fetches metadata & all upstream sources/feeds from known BD IPTV repos."""
     found = {}
     for fn in BD_PRIORITY_REPOS:
         try:
@@ -535,8 +541,8 @@ def discover():
             return repo_info
 
         script_paths = []
-        max_pl = 25 if is_bd_repo else 12
-        max_scripts = 25 if is_bd_repo else 12
+        max_pl = 30 if is_bd_repo else 12
+        max_scripts = 30 if is_bd_repo else 14
 
         for f in tree:
             if f.get("type") != "blob":
@@ -545,13 +551,13 @@ def discover():
             lpath = path.lower()
             if ".github/workflows/" in lpath:
                 repo_info["is_auto_bot"] = True
-                if f.get("size", 0) < 100000:
+                if f.get("size", 0) < 120000:
                     script_paths.append(path)
             elif lpath.endswith((".m3u", ".m3u8")) and f.get("size", 0) > 200:
                 if len(repo_info["playlists"]) < max_pl:
                     raw_pl = f"https://raw.githubusercontent.com/{repo}/{branch}/{urllib.parse.quote(path)}"
                     repo_info["playlists"].append(raw_pl)
-            elif lpath.endswith((".py", ".js", ".ts", ".sh", ".json", ".txt")) and f.get("size", 0) < 300000:
+            elif lpath.endswith((".py", ".js", ".ts", ".sh", ".json", ".txt", ".yml", ".yaml")) and f.get("size", 0) < 400000:
                 script_paths.append(path)
 
         upstream = set()
