@@ -2,10 +2,11 @@
 All-in-One Direct (No-Proxy) Global Live TV IPTV Updater
 Features:
 - Official Channel Name & Logo Enrichment from 'iptv-org/api/channels.json' + AynaOTT Catalog
+- Blocks random hash/slug stream IDs (like '1d3uG9VCgrR9DRtWZM57', '39ee93nUbCCmm5LsyD4t') & '#EXTVLCOPT' strings from becoming channel names
 - Collects from AynaOTT, JagoBD, GitHub, GitLab, Codeberg, Bitbucket, HuggingFace, Pastebin, Rentry, Telegraph,
   Official FAST TV APIs, and iptv-org JSON API + Country & Category M3U feeds
 - Dedicated 'Kids & Animation' & 'Informative' groups alongside BD, Bangla/Hindi India, English & Sports
-- Fast multi-threaded HLS verification + Dead-host fast skip cache so large runs never hit 35m timeout
+- Fast multi-threaded HLS verification + Dead-host fast skip cache
 - Active Pool vs. Sleeping Pool sync ('source_health.json' & 'sleeping_sources.json')
 """
 import json, os, re, socket, ssl, sys, threading, time
@@ -230,7 +231,7 @@ def http_get(url, headers=None, timeout=6, max_bytes=1_500_000):
 # ------------------------------------------------------------------ Official Channel Metadata Fetcher
 def fetch_official_channel_metadata():
     id_to_meta = {}
-    key_to_meta = {}
+    logo_by_key = {}
     try:
         raw = http_get("https://iptv-org.github.io/api/channels.json", timeout=15, max_bytes=15_000_000)
         channels = json.loads(raw)
@@ -244,20 +245,41 @@ def fetch_official_channel_metadata():
             meta = {"name": cname, "logo": clogo}
             id_to_meta[cid.lower()] = meta
             id_to_meta[cid.split("@")[0].lower()] = meta
-            if country in ("BD", "IN", "US", "GB", "CA", "AU", "NZ", "SG"):
+            if country in ("BD", "IN", "US", "GB", "CA", "AU", "NZ", "SG") and clogo:
                 ckey = norm(cname)
-                if ckey and ckey not in key_to_meta:
-                    key_to_meta[ckey] = meta
+                if ckey and ckey not in logo_by_key:
+                    logo_by_key[ckey] = clogo
         log(f"[OfficialDB] iptv-org channels.json theke {len(id_to_meta)} ti official channel metadata load hoyeche.")
     except Exception as e:
         log(f"[OfficialDB] channels.json fetch info: {e}")
-    return id_to_meta, key_to_meta
+    return id_to_meta, logo_by_key
+
+
+def looks_like_random_id(token_str):
+    """Detects random hash/token stream slugs like '1d3uG9VCgrR9DRtWZM57' or '39ee93nUbCCmm5LsyD4t'."""
+    s = re.sub(r"\s+", "", token_str or "")
+    if len(s) < 9:
+        return False
+    # Mixed case with digits and almost no spaces/vowels -> random stream ID
+    has_digit = any(c.isdigit() for c in s)
+    has_upper = any(c.isupper() for c in s)
+    has_lower = any(c.islower() for c in s)
+    if has_digit and has_upper and has_lower and len(s) >= 10:
+        return True
+    # Long alphanumeric string with low vowel ratio
+    if s.isalnum() and len(s) >= 12:
+        vowels = sum(1 for c in s.lower() if c in "aeiou")
+        if vowels <= 2:
+            return True
+    return False
 
 
 def clean_display_name(raw_name):
     if not raw_name:
         return "Unknown"
     s = raw_name.strip()
+    if "#extvlcopt" in s.lower() or "http-user-agent" in s.lower() or "http-referrer" in s.lower():
+        return "Unknown"
     s = re.sub(r"^\d+\s*[.\-_|:]\s*", "", s)
     s = re.sub(r"^\d{1,3}\s+(?=[A-Za-z])", "", s)
     s = re.sub(r"^(?:[A-Z]{2,5}\s*\|\s*|【[^】]+】\s*|[A-Z]{2,3}★\s*)", "", s)
@@ -265,11 +287,13 @@ def clean_display_name(raw_name):
     s = re.sub(r"\s*[\(\[](?:\d{3,4}[pi]|geo-?blocked|not\s*24/7|india|bangladesh|jago\s*bd|samsungtvplus|adaptive|multi-?lang|backup\s*\d*|opc\.\d+|nacional|[^a-zA-Z0-9]+)[\)\]]", "", s, flags=re.I)
     s = re.sub(r"[\U0001F1E6-\U0001F1FFⓈ]+", "", s)
     s = re.sub(r"\s+", " ", s).strip(" -_|:")
+    if looks_like_random_id(s):
+        return "Unknown"
     if s.isupper() and len(s) > 4:
         s = s.title()
         for acr in ("Tv", "Hd", "Bbc", "Cnn", "Atn", "Rtv", "Ntv", "Btv", "Gtv", "Dbc", "Satv", "Hbo", "Axn", "Tlc", "Mtv", "Ndtv", "Abp", "Zee", "Pbs", "Nasa", "Espn", "Nfl", "Ufc", "Wwe"):
             s = re.sub(rf"\b{acr}\b", acr.upper(), s)
-    return s or raw_name.strip()
+    return s or "Unknown"
 
 
 # ------------------------------------------------------------------ URL converter & m3u parse
@@ -330,10 +354,13 @@ def parse_m3u(text, source):
             def attr(k):
                 m = re.search(rf'{k}="([^"]*)"', line, re.I)
                 return m.group(1).strip() if m else ""
-            name = line.rsplit(",", 1)[-1].strip() if "," in line else attr("tvg-name")
+            raw_title = line.rsplit(",", 1)[-1].strip() if "," in line else ""
+            if raw_title.startswith("#EXT"):
+                raw_title = ""
+            name = raw_title or attr("tvg-name") or "Unknown"
             raw_lang = attr("tvg-language") or attr("language")
             meta = {
-                "name": name or attr("tvg-name") or "Unknown",
+                "name": name,
                 "tvg_id": attr("tvg-id"),
                 "logo": attr("tvg-logo"),
                 "group": attr("group-title") or "Others",
@@ -586,10 +613,12 @@ def scrape_discovered_and_global_feeds(checked_feed_urls):
                 low = p.lower()
                 if low in skip_words or low.isdigit():
                     continue
+                if looks_like_random_id(p):
+                    continue
                 clean = re.sub(r"\.m3u8?$", "", p, flags=re.I)
                 clean = re.sub(r"([a-z])([A-Z])", r"\1 \2", clean)
                 clean = re.sub(r"[-_]+", " ", clean).strip()
-                if len(clean) >= 3 and not clean.isdigit():
+                if len(clean) >= 3 and not clean.isdigit() and not looks_like_random_id(clean):
                     return clean.title()
         except Exception:
             pass
@@ -1071,11 +1100,15 @@ def is_garbage_channel_name(name):
     if not name or len(name.strip()) > 65:
         return True
     s = name.strip()
-    if "http://" in s.lower() or "https://" in s.lower() or ".m3u8" in s.lower() or ".stream" in s.lower():
+    low_s = s.lower()
+    if any(bad in low_s for bad in ("http://", "https://", ".m3u8", ".stream", "#extvlcopt", "http-user-agent", "http-referrer", "user-agent=")):
         return True
+    if looks_like_random_id(s):
+        return True
+
     clean = re.sub(r"[\(\[].*?[\)\]]", " ", s).strip()
     clean = re.sub(r"\s+", " ", clean)
-    if not clean:
+    if not clean or looks_like_random_id(clean):
         return True
 
     alnum_only = re.sub(r"[^a-zA-Z0-9\u0980-\u09ff]", "", clean)
@@ -1540,7 +1573,7 @@ def main():
     start_time = time.time()
     pool = []
     checked_feed_urls = []
-    id_to_meta, key_to_meta = fetch_official_channel_metadata()
+    id_to_meta, logo_by_key = fetch_official_channel_metadata()
 
     scrapers = (
         ("AynaOTT", scrape_aynaott),
@@ -1594,13 +1627,9 @@ def main():
         log(f"[SAFETY] Alive ({len(alive)}) ager playlist ({prev}) er theke onek kom. Overwrite kora holo na.")
         return 1
 
-    best_logo_map = dict((k, v["logo"]) for k, v in key_to_meta.items() if v.get("logo"))
-    best_name_map = dict((k, v["name"]) for k, v in key_to_meta.items() if v.get("name"))
-
+    best_logo_map = dict(logo_by_key)
     for c in sorted(alive, key=lambda x: SOURCE_RANK.get(x["source"], 9)):
         ckey = norm(c["name"])
-        if c["source"] == "AynaOTT" and ckey:
-            best_name_map[ckey] = clean_display_name(c["name"])
         logo = c.get("logo", "").strip()
         if ckey and logo and logo.startswith("http") and "default-logo" not in logo and "noimage" not in logo:
             if ckey not in best_logo_map:
@@ -1611,12 +1640,11 @@ def main():
         tid = (c.get("tvg_id") or "").lower().strip()
         tid_base = tid.split("@")[0]
 
+        # Only override name from channels.json when exact tvg-id matches (avoids false name swaps)
         if tid in id_to_meta:
             c["name"] = id_to_meta[tid]["name"]
         elif tid_base in id_to_meta:
             c["name"] = id_to_meta[tid_base]["name"]
-        elif ckey in best_name_map:
-            c["name"] = best_name_map[ckey]
         else:
             c["name"] = clean_display_name(c["name"])
 
@@ -1627,6 +1655,9 @@ def main():
                 c["logo"] = id_to_meta[tid_base]["logo"]
             elif ckey in best_logo_map:
                 c["logo"] = best_logo_map[ckey]
+
+    # Final safety guard after name enrichment
+    alive = [c for c in alive if not is_garbage_channel_name(c["name"])]
 
     if MAX_LINKS_PER_CHANNEL:
         before = len(alive)
