@@ -11,7 +11,7 @@ permissions:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 60
 
     steps:
       - name: Checkout repository
@@ -31,7 +31,6 @@ jobs:
             LAST=$(cat last_search.txt | tr -d '[:space:]')
           fi
           DIFF=$((NOW - LAST))
-          # 23 ghonta (82800 sec) par hole ba manual run korle search cholbe
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "$DIFF" -ge 82800 ]; then
             echo "run_search=true" >> $GITHUB_OUTPUT
           else
