@@ -2,9 +2,7 @@
 All-in-One Direct (No-Proxy) Global Live TV IPTV Updater
 Features:
 - Official Channel Name & Logo Enrichment from 'iptv-org/api/channels.json' + AynaOTT Catalog
-- Blocks random hash/slug stream IDs (like '1d3uG9VCgrR9DRtWZM57', '39ee93nUbCCmm5LsyD4t') & '#EXTVLCOPT' strings from becoming channel names
-- Collects from AynaOTT, JagoBD, GitHub, GitLab, Codeberg, Bitbucket, HuggingFace, Pastebin, Rentry, Telegraph,
-  Official FAST TV APIs, and iptv-org JSON API + Country & Category M3U feeds
+- Balanced filtering so valid channels are not over-dropped while blocking garbage/foreign homonyms
 - Dedicated 'Kids & Animation' & 'Informative' groups alongside BD, Bangla/Hindi India, English & Sports
 - Fast multi-threaded HLS verification + Dead-host fast skip cache
 - Active Pool vs. Sleeping Pool sync ('source_health.json' & 'sleeping_sources.json')
@@ -153,11 +151,14 @@ ISO_LANG_MAP = {
     "rus": "rus", "ru": "rus", "russian": "rus",
     "fra": "fra", "fr": "fra", "french": "fra",
     "deu": "deu", "de": "deu", "german": "deu",
+    "tha": "tha", "th": "tha", "thai": "tha",
+    "pol": "pol", "pl": "pol", "polish": "pol",
 }
 
 DROP_LANG_CODES = {
     "tam", "tel", "mal", "kan", "mar", "pan", "guj", "ori", "asm", "bho", "kok",
-    "urd", "ara", "nep", "spa", "ces", "chi", "heb", "por", "rus", "fra", "deu"
+    "urd", "ara", "nep", "spa", "ces", "chi", "heb", "por", "rus", "fra", "deu",
+    "tha", "pol"
 }
 
 DROP_SUBSTRING_KEYWORDS = (
@@ -196,9 +197,12 @@ DROP_SUBSTRING_KEYWORDS = (
     "discoverpakistan", "discoverpikstan", "dunyanews", "8xm", "mbcbollywood", "urdu",
     "antena", "prima", "ocko", "paprika", "telestar", "realitatea", "spektrum",
     "stara", "starkefrauen", "handystar", "abai", "republica", "utv.iq", "utvrussian",
-    "film+", "passionbollywood", "bollywoodclassic", "classic", "nusantara",
+    "film+", "passionbollywood", "bollywoodclassic", "nusantara",
     "espanol", "español", "espanhol", "curiosidade", "ultratumba", "caraibes", "caraïbes",
-    "schwammkopf", "magisch", "classico", "clássico"
+    "schwammkopf", "magisch", "classico", "clássico",
+    "afarin", "amou yazid", "pronto socorro", "quebrando o tabu", "tv investigação",
+    "naturaleza salvaje", "méxico travel", "thai pbs", "poland", "iran independent",
+    "omroep zeeland"
 )
 
 DEAD_HOSTS = set()
@@ -256,20 +260,19 @@ def fetch_official_channel_metadata():
 
 
 def looks_like_random_id(token_str):
-    """Detects random hash/token stream slugs like '1d3uG9VCgrR9DRtWZM57' or '39ee93nUbCCmm5LsyD4t'."""
+    """Detects clearly random hash/token stream slugs like '1d3uG9VCgrR9DRtWZM57' or '39ee93nUbCCmm5LsyD4t'."""
     s = re.sub(r"\s+", "", token_str or "")
     if len(s) < 9:
         return False
-    # Mixed case with digits and almost no spaces/vowels -> random stream ID
     has_digit = any(c.isdigit() for c in s)
     has_upper = any(c.isupper() for c in s)
     has_lower = any(c.islower() for c in s)
-    if has_digit and has_upper and has_lower and len(s) >= 10:
+    if has_digit and has_upper and has_lower and len(s) >= 9:
         return True
-    # Long alphanumeric string with low vowel ratio
-    if s.isalnum() and len(s) >= 12:
+    orig_no_space = (token_str or "").strip()
+    if " " not in orig_no_space and len(s) >= 10:
         vowels = sum(1 for c in s.lower() if c in "aeiou")
-        if vowels <= 2:
+        if vowels <= 1:
             return True
     return False
 
@@ -285,7 +288,7 @@ def clean_display_name(raw_name):
     s = re.sub(r"^(?:[A-Z]{2,5}\s*\|\s*|【[^】]+】\s*|[A-Z]{2,3}★\s*)", "", s)
     s = re.sub(r"[_#]\d+$", "", s)
     s = re.sub(r"\s*[\(\[](?:\d{3,4}[pi]|geo-?blocked|not\s*24/7|india|bangladesh|jago\s*bd|samsungtvplus|adaptive|multi-?lang|backup\s*\d*|opc\.\d+|nacional|[^a-zA-Z0-9]+)[\)\]]", "", s, flags=re.I)
-    s = re.sub(r"[\U0001F1E6-\U0001F1FFⓈ]+", "", s)
+    s = re.sub(r"[\U0001F1E6-\U0001F1FFⓈⒼ✅]+", "", s)
     s = re.sub(r"\s+", " ", s).strip(" -_|:")
     if looks_like_random_id(s):
         return "Unknown"
@@ -300,7 +303,8 @@ def clean_display_name(raw_name):
 def clean_stream_url(url):
     if not url:
         return ""
-    url = url.split("#")[0].strip()
+    url = url.replace("\\u0026", "&").replace("\\/", "/")
+    url = url.split("#")[0].strip().rstrip("\\").strip()
     if "output=ts" in url.lower():
         url = re.sub(r"output=ts", "output=m3u8", url, flags=re.I)
     if "output=mpegts" in url.lower():
@@ -311,6 +315,13 @@ def clean_stream_url(url):
         qs = ("?" + url.split("?", 1)[1]) if "?" in url else ""
         return f"{m.group(1)}.m3u8{qs}"
     return url
+
+
+def clean_tvg_id(raw_id):
+    tid = (raw_id or "").strip()
+    if not tid or tid.isdigit() or len(tid) <= 2:
+        return ""
+    return tid
 
 
 def normalize_lang_code(raw_lang):
@@ -361,7 +372,7 @@ def parse_m3u(text, source):
             raw_lang = attr("tvg-language") or attr("language")
             meta = {
                 "name": name,
-                "tvg_id": attr("tvg-id"),
+                "tvg_id": clean_tvg_id(attr("tvg-id")),
                 "logo": attr("tvg-logo"),
                 "group": attr("group-title") or "Others",
                 "lang": normalize_lang_code(raw_lang),
@@ -634,7 +645,7 @@ def scrape_discovered_and_global_feeds(checked_feed_urls):
             txt = http_get(u, timeout=4, max_bytes=2_000_000)
             if "#EXTINF" in txt:
                 chs = parse_m3u(txt, src_label)
-                if len(chs) <= 4000:
+                if len(chs) <= 4500:
                     for ch in chs:
                         ch["feed_url"] = u
                     return chs
@@ -729,7 +740,7 @@ def scrape_iptv_org_base():
         return cache[url]
 
     url_lang_map = {}
-    for lg in ("ben", "hin", "eng", "tam", "tel", "mal", "kan", "mar", "pan", "guj", "ori", "asm"):
+    for lg in ("ben", "hin", "eng", "tam", "tel", "mal", "kan", "mar", "pan", "guj", "ori", "asm", "tha", "pol"):
         for c in get(f"{IPTV_BASE}/languages/{lg}.m3u"):
             url_lang_map[c["url"].split("|")[0]] = lg
 
@@ -760,7 +771,7 @@ def scrape_iptv_org_base():
                     "name": ch_id.split(".")[0],
                     "url": clean_stream_url(st_url),
                     "logo": "",
-                    "tvg_id": ch_id,
+                    "tvg_id": clean_tvg_id(ch_id),
                     "group": "Bangladesh" if ch_id.lower().endswith(".bd") else ("India" if ch_id.lower().endswith(".in") else "English Entertainment"),
                     "lang": "ben" if ch_id.lower().endswith(".bd") else ("eng" if not ch_id.lower().endswith(".in") else ""),
                     "source": "IPTV-org"
@@ -850,13 +861,15 @@ def check_stream(raw_url, timeout=CHECK_TIMEOUT):
     base, url, custom_ua = dict(HEADERS), raw_url, False
     if "|" in raw_url:
         url, extra = raw_url.split("|", 1)
-        url = url.strip()
+        url = clean_stream_url(url.strip())
         for part in extra.split("&"):
             if "=" in part:
                 k, v = part.split("=", 1)
                 base[k.strip()] = v.strip()
                 if k.strip().lower() == "user-agent":
                     custom_ua = True
+    else:
+        url = clean_stream_url(raw_url)
 
     host = urllib.parse.urlparse(url).netloc.lower()
     if host in DEAD_HOSTS:
@@ -1084,7 +1097,7 @@ VALID_SHORT_NAMES = {
     "geo", "dd", "wion", "cnbc", "espn", "tnt", "tbs", "amc", "vtv", "otv", "ktv",
     "mh1", "9xm", "e24", "b4u", "tv9", "tv5", "sky", "fox", "pbs", "hln", "cw", "id",
     "osn", "mbc", "dw", "nhk", "cgtn", "rt", "trt", "tcm", "mgm", "mnx", "vh1", "zing",
-    "axs", "etv"
+    "axs", "etv", "eet"
 }
 
 GARBAGE_EXACT_RE = re.compile(
@@ -1131,13 +1144,6 @@ def is_garbage_channel_name(name):
     letters = len(alnum_only) - digits
     if letters == 0 or (digits >= 4 and digits > letters):
         return True
-
-    has_bengali = bool(re.search(r"[\u0980-\u09ff]", clean))
-    if not has_bengali:
-        words = [w for w in re.findall(r"[a-zA-Z]+", clean) if len(w) >= 3]
-        if words and all(not re.search(r"[aeiouyAEIOUY]", w) for w in words):
-            if any(len(w) >= 5 for w in words) or (len(words) == 1 and words[0].lower() not in VALID_SHORT_NAMES):
-                return True
 
     return False
 
@@ -1266,13 +1272,13 @@ PAY_SPORTS_RE = re.compile(
 )
 
 FOREIGN_COUNTRY_TAG_RE = re.compile(
-    r"(\.(nl|rs|ru|tr|it|es|au|id|bg|gh|vn|ba|xk|al|cl|ec|cr|cm|ci|kh|mn|hu|at|ch|de|fr|br|pe|do|lt|pk|ro|cz|sk|pl|iq|ir|uz|kz|gr|fi|ug|gp|ee|kr|hn|ar|kw|sd)\b|"
+    r"(\.(nl|rs|ru|tr|it|es|au|id|bg|gh|vn|ba|xk|al|cl|ec|cr|cm|ci|kh|mn|hu|at|ch|de|fr|br|pe|do|lt|pk|ro|cz|sk|pl|iq|ir|uz|kz|gr|fi|ug|gp|ee|kr|hn|ar|kw|sd|th|er|bo|pt)\b|"
     r"\b(netherlands|serbia|russia|russian|turkiye|turkey|italy|spain|españa|australia|indonesia|bulgaria|"
     r"ghana|vietnam|bosnia|kosovo|albania|chile|ecuador|costa rica|cameroon|ivory coast|cambodia|"
-    r"mongolia|hungary|austria|switzerland|brazil|peru|dominican|san antonio|nashua|santa maria|"
+    r"mongolia|hungary|austria|switzerland|brazil|brasil|peru|dominican|san antonio|nashua|santa maria|"
     r"lompoc|east bridgewater|toscana|utrecht|noord|drenthe|rijnmond|oost|maastricht|meppel|"
     r"purmerend|veluwezoom|westerwolde|zulthe|dordrecht|manilva|malaga|calima|balkanweb|rai news|"
-    r"bắc ninh|nghệ an|gia lai|silverbird|united kingdom|united states|czech republic|slovakia|colombia|finland|latin america|german|iraq|san clemente|andes|nacional)\b)",
+    r"bắc ninh|nghệ an|gia lai|silverbird|united kingdom|united states|czech republic|slovakia|colombia|finland|latin america|german|iraq|san clemente|andes|nacional|zeeland)\b)",
     re.I
 )
 
@@ -1286,7 +1292,9 @@ FOREIGN_HOMONYM_DOMAINS = (
     "rutube.ru", "tustreaming.cl", "tvkaista.net", "staratv.id", "telewebion.ir",
     "cinerama.uz", "desdeparaguay.net", "voxtvhd.com.br", "edgenextcdn.net", "mjunoon.tv",
     "tvradiozap.eu", "zettawiseroutes.com", "sb.err.ee", "artidijitalmedya.com",
-    "181.224.255.210", "181.224.200.5", "yuppcdn.net/110322/channel24"
+    "181.224.255.210", "181.224.200.5", "yuppcdn.net/110322/channel24",
+    "elitelatrade.com", "fawanews.sc", "193.47.62.41", "thaipbs", "byteark.com",
+    "thaimomo.com", "acessaradios.com.br", "enhdtv.com", "powertvkannada.com"
 )
 
 BD_ONLY_RE = re.compile(
@@ -1503,7 +1511,7 @@ def write_playlist(channels, target_path=OUTPUT):
 
         if "|" in raw_url:
             clean_url, extra = raw_url.split("|", 1)
-            clean_url = clean_url.split("#")[0].strip()
+            clean_url = clean_stream_url(clean_url)
             for part in extra.split("&"):
                 if "=" in part:
                     k, v = part.split("=", 1)
@@ -1512,15 +1520,16 @@ def write_playlist(channels, target_path=OUTPUT):
                     elif k.strip().lower() == "user-agent":
                         ua = v.strip()
         else:
-            clean_url = raw_url.split("#")[0].strip()
+            clean_url = clean_stream_url(raw_url)
 
         if "jagobd.com" in clean_url and not ref:
             ref = "https://www.jagobd.com/"
         elif "aynaott.com" in clean_url and not ref:
             ref = "https://web.aynaott.com/"
 
+        tvg_id = clean_tvg_id(c.get("tvg_id", ""))
         lang_attr = f' tvg-language="{q(c.get("stream_lang") or c.get("lang") or "")}"' if (c.get("stream_lang") or c.get("lang")) else ""
-        lines.append(f'#EXTINF:-1 tvg-id="{q(c.get("tvg_id", ""))}" tvg-name="{q(c["name"])}" '
+        lines.append(f'#EXTINF:-1 tvg-id="{q(tvg_id)}" tvg-name="{q(c["name"])}" '
                      f'tvg-logo="{q(c.get("logo", ""))}"{lang_attr} group-title="{q(c["group"])}",{c["name"]}')
         if ua:
             lines.append(f"#EXTVLCOPT:http-user-agent={ua}")
@@ -1590,7 +1599,7 @@ def main():
 
     seen, items = set(), []
     for c in pool:
-        raw = c["url"].split("|")[0].strip()
+        raw = clean_stream_url(c["url"].split("|")[0].strip())
         if not raw or raw in seen or is_blocked_or_non_tv(c):
             continue
         if any(b in c["url"] for b in BLOCK_URLS):
@@ -1637,10 +1646,9 @@ def main():
 
     for c in alive:
         ckey = norm(c["name"])
-        tid = (c.get("tvg_id") or "").lower().strip()
+        tid = clean_tvg_id(c.get("tvg_id", "")).lower()
         tid_base = tid.split("@")[0]
 
-        # Only override name from channels.json when exact tvg-id matches (avoids false name swaps)
         if tid in id_to_meta:
             c["name"] = id_to_meta[tid]["name"]
         elif tid_base in id_to_meta:
@@ -1656,7 +1664,6 @@ def main():
             elif ckey in best_logo_map:
                 c["logo"] = best_logo_map[ckey]
 
-    # Final safety guard after name enrichment
     alive = [c for c in alive if not is_garbage_channel_name(c["name"])]
 
     if MAX_LINKS_PER_CHANNEL:
