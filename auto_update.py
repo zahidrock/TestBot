@@ -1,13 +1,12 @@
 """
 All-in-One Direct (No-Proxy) Global Live TV IPTV Updater
 Features:
-- Official Channel Name & Logo Enrichment from 'iptv-org/api/channels.json' + AynaOTT Catalog (no manual name editing needed)
+- Official Channel Name & Logo Enrichment from 'iptv-org/api/channels.json' + AynaOTT Catalog
 - Collects from AynaOTT, JagoBD, GitHub, GitLab, Codeberg, Bitbucket, HuggingFace, Pastebin, Rentry, Telegraph,
   Official FAST TV APIs, and iptv-org JSON API + Country & Category M3U feeds
 - Dedicated 'Kids & Animation' & 'Informative' groups alongside BD, Bangla/Hindi India, English & Sports
-- Deep HLS segment verification (requires >= 5KB real video chunk) + Dead-host fast skip cache
+- Fast multi-threaded HLS verification + Dead-host fast skip cache so large runs never hit 35m timeout
 - Active Pool vs. Sleeping Pool sync ('source_health.json' & 'sleeping_sources.json')
-- Generates 100% duplicate-free 'playlist_clean.m3u' with original official names & logos
 """
 import json, os, re, socket, ssl, sys, threading, time
 from collections import Counter, defaultdict
@@ -15,7 +14,7 @@ import urllib.error, urllib.parse, urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
-socket.setdefaulttimeout(8)
+socket.setdefaulttimeout(6)
 
 # ------------------------------------------------------------------ settings
 OUTPUT = Path("playlist.m3u")
@@ -24,8 +23,8 @@ SOURCE_REPORT = Path("source_report.txt")
 DISCOVERED_FILE = Path("discovered_sources.json")
 HEALTH_FILE = Path("source_health.json")
 SLEEPING_FILE = Path("sleeping_sources.json")
-WORKERS = 160
-CHECK_TIMEOUT = 6
+WORKERS = 220
+CHECK_TIMEOUT = 4
 MAX_LINKS_PER_CHANNEL = None
 MIN_KEEP_RATIO = 0.1
 
@@ -228,13 +227,12 @@ def http_get(url, headers=None, timeout=6, max_bytes=1_500_000):
         return r.read(max_bytes).decode("utf-8", errors="ignore")
 
 
-# ------------------------------------------------------------------ Official Channel Metadata Fetcher (Original Names & Logos)
+# ------------------------------------------------------------------ Official Channel Metadata Fetcher
 def fetch_official_channel_metadata():
-    """Fetches official channel names & logos from iptv-org/api/channels.json so names don't need manual editing."""
     id_to_meta = {}
     key_to_meta = {}
     try:
-        raw = http_get("https://iptv-org.github.io/api/channels.json", timeout=20, max_bytes=15_000_000)
+        raw = http_get("https://iptv-org.github.io/api/channels.json", timeout=15, max_bytes=15_000_000)
         channels = json.loads(raw)
         for ch in channels:
             cid = (ch.get("id") or "").strip()
@@ -257,23 +255,16 @@ def fetch_official_channel_metadata():
 
 
 def clean_display_name(raw_name):
-    """Automatically strips serial prefixes, resolution/geo tags, trailing IDs & country prefixes without manual edits."""
     if not raw_name:
         return "Unknown"
     s = raw_name.strip()
-    # Remove leading serial numbers (e.g. '111.SANGSAD BANGLADESH' -> 'SANGSAD BANGLADESH', '208 Travelxp' -> 'Travelxp')
     s = re.sub(r"^\d+\s*[.\-_|:]\s*", "", s)
     s = re.sub(r"^\d{1,3}\s+(?=[A-Za-z])", "", s)
-    # Remove category/country prefixes like 'IN | ', 'MU | ', 'NEWS | ', '【孟加拉国】', 'DEU★'
     s = re.sub(r"^(?:[A-Z]{2,5}\s*\|\s*|【[^】]+】\s*|[A-Z]{2,3}★\s*)", "", s)
-    # Remove trailing underscore/hash IDs like '_12', '_427', '#1'
     s = re.sub(r"[_#]\d+$", "", s)
-    # Remove trailing bracketed tags like '(576p)', '(720p)', '(1080p)', '[Geo-blocked]', '(India)', '(jago bd)', '[SamsungTVPlus]', '(🇮🇳)'
     s = re.sub(r"\s*[\(\[](?:\d{3,4}[pi]|geo-?blocked|not\s*24/7|india|bangladesh|jago\s*bd|samsungtvplus|adaptive|multi-?lang|backup\s*\d*|opc\.\d+|nacional|[^a-zA-Z0-9]+)[\)\]]", "", s, flags=re.I)
-    # Remove flag emojis & symbol tags
     s = re.sub(r"[\U0001F1E6-\U0001F1FFⓈ]+", "", s)
     s = re.sub(r"\s+", " ", s).strip(" -_|:")
-    # Fix ALL-CAPS names to clean Title Case while preserving acronyms (TV, HD, BBC, CNN, ATN, RTV, NTV, BTV, GTV, DBC, SATV, etc.)
     if s.isupper() and len(s) > 4:
         s = s.title()
         for acr in ("Tv", "Hd", "Bbc", "Cnn", "Atn", "Rtv", "Ntv", "Btv", "Gtv", "Dbc", "Satv", "Hbo", "Axn", "Tlc", "Mtv", "Ndtv", "Abp", "Zee", "Pbs", "Nasa", "Espn", "Nfl", "Ufc", "Wwe"):
@@ -395,7 +386,7 @@ def scrape_aynaott():
     for page in range(1, 20):
         try:
             data = json.loads(http_get(f"{base}/api/v5/catalog/contents?type=live-tvs&per_page=100&page={page}",
-                                       headers=h, timeout=12))
+                                       headers=h, timeout=10))
         except Exception as e:
             log(f"[AynaOTT] catalog page {page}: {e}")
             break
@@ -418,7 +409,7 @@ def scrape_aynaott():
         if logo and not logo.startswith("http"):
             logo = base + logo
         try:
-            d = json.loads(http_get(f"{base}/api/v5/browse/live-tvs/{slug}", headers=h, timeout=8))
+            d = json.loads(http_get(f"{base}/api/v5/browse/live-tvs/{slug}", headers=h, timeout=6))
             rec = d.get("record", d)
             so = rec.get("stream", {})
             url = so.get("url", "") if isinstance(so, dict) else ""
@@ -472,7 +463,7 @@ def format_jagobd_url(raw):
 def scrape_jagobd():
     cands = []
     try:
-        html = http_get("https://www.jagobd.com/", timeout=12)
+        html = http_get("https://www.jagobd.com/", timeout=10)
         skip = ['/category', '/tag', '/contact', '/about', '/privacy', '/page', '/wp-', '/feed',
                 '/disclaimer', 'dmca', 'terms', 'advertise', 'copyright']
         seen = set()
@@ -503,7 +494,7 @@ def scrape_jagobd():
 
     def resolve(c):
         try:
-            page = http_get(c["url"], timeout=8)
+            page = http_get(c["url"], timeout=6)
             embed = None
             for ifr in re.findall(r'<iframe[^>]+src=[\'"]([^\'"]+)[\'"]', page, re.I):
                 if "embed.php" in ifr or "jagobd.com" in ifr:
@@ -516,7 +507,7 @@ def scrape_jagobd():
             else:
                 if embed.startswith("//"):
                     embed = "https:" + embed
-                eh = http_get(embed, headers={"User-Agent": UA, "Referer": c["url"]}, timeout=8)
+                eh = http_get(embed, headers={"User-Agent": UA, "Referer": c["url"]}, timeout=6)
                 for _fn, arr in re.findall(
                         r'function\s+(\w+)\(\)\s*\{\s*return\(\[([^\]]+)\]\.join\([\'"][\'"]\)', eh):
                     val = "".join(x.strip().strip("'\"") for x in arr.split(",")).replace(r"\/", "/")
@@ -607,11 +598,14 @@ def scrape_discovered_and_global_feeds(checked_feed_urls):
     def fetch_any_feed(u):
         out = []
         src_label = detect_source_label(u)
+        host = urllib.parse.urlparse(u).netloc.lower()
+        if host in DEAD_HOSTS:
+            return []
         try:
-            txt = http_get(u, timeout=5, max_bytes=2_500_000)
+            txt = http_get(u, timeout=4, max_bytes=2_000_000)
             if "#EXTINF" in txt:
                 chs = parse_m3u(txt, src_label)
-                if len(chs) <= 5000:
+                if len(chs) <= 4000:
                     for ch in chs:
                         ch["feed_url"] = u
                     return chs
@@ -630,6 +624,13 @@ def scrape_discovered_and_global_feeds(checked_feed_urls):
                         "source": src_label,
                         "feed_url": u
                     })
+        except urllib.error.URLError as e:
+            msg = str(e.reason).lower()
+            if "name or service not known" in msg or "errno -2" in msg or "errno 111" in msg:
+                with DEAD_HOST_LOCK:
+                    HOST_FAIL_COUNTS[host] += 1
+                    if HOST_FAIL_COUNTS[host] >= 2:
+                        DEAD_HOSTS.add(host)
         except Exception:
             pass
         return out
@@ -638,7 +639,7 @@ def scrape_discovered_and_global_feeds(checked_feed_urls):
     checked_feed_urls.extend(all_urls)
     total_sources = len(all_urls)
     done_sources = 0
-    with ThreadPoolExecutor(max_workers=140) as ex:
+    with ThreadPoolExecutor(max_workers=160) as ex:
         futs = [ex.submit(fetch_any_feed, u) for u in all_urls]
         for f in as_completed(futs):
             res.extend(f.result())
@@ -662,7 +663,7 @@ def scrape_adaptive_repos():
     for owner, repo, branch in adaptive_repos:
         try:
             tree_url = f"https://api.github.com/repos/{owner}/{repo}/git/trees/{branch}?recursive=1"
-            data = json.loads(http_get(tree_url, headers=h, timeout=12))
+            data = json.loads(http_get(tree_url, headers=h, timeout=10))
             count = 0
             for item in data.get("tree", []):
                 path = item.get("path", "")
@@ -692,7 +693,7 @@ def scrape_iptv_org_base():
     def get(url):
         if url not in cache:
             try:
-                cache[url] = parse_m3u(http_get(url, timeout=15, max_bytes=3_000_000), "IPTV-org")
+                cache[url] = parse_m3u(http_get(url, timeout=12, max_bytes=3_000_000), "IPTV-org")
             except Exception as e:
                 log(f"[IPTV-org] fail {url}: {e}")
                 cache[url] = []
@@ -721,7 +722,7 @@ def scrape_iptv_org_base():
             res.append({**c, "group": "Sports" if "sport" in c.get("group", "").lower() else group, "lang": detected_lg})
 
     try:
-        streams_api = json.loads(http_get("https://iptv-org.github.io/api/streams.json", timeout=20, max_bytes=15_000_000))
+        streams_api = json.loads(http_get("https://iptv-org.github.io/api/streams.json", timeout=15, max_bytes=15_000_000))
         for st in streams_api:
             ch_id = st.get("channel") or ""
             st_url = st.get("url") or ""
@@ -754,7 +755,7 @@ def detect_m3u8_audio_lang(m3u8_text):
     return normed[0] if normed else ""
 
 
-def check_hls_key(m3u8_text, base_url, headers, timeout=4):
+def check_hls_key(m3u8_text, base_url, headers, timeout=3):
     low = m3u8_text.lower()
     if "#ext-x-key" not in low or "method=none" in low:
         return True
@@ -770,15 +771,15 @@ def check_hls_key(m3u8_text, base_url, headers, timeout=4):
         return False
 
 
-def verify_deep_hls(m3u8_text, base_url, headers, timeout=5):
-    if not check_hls_key(m3u8_text, base_url, headers, timeout=4):
+def verify_deep_hls(m3u8_text, base_url, headers, timeout=3.5):
+    if not check_hls_key(m3u8_text, base_url, headers, timeout=2.5):
         return False
 
     lines = [ln.strip() for ln in m3u8_text.splitlines() if ln.strip() and not ln.strip().startswith("#")]
     if not lines:
         return False
 
-    for candidate in lines[:3]:
+    for candidate in lines[:2]:
         target_url = urllib.parse.urljoin(base_url, candidate)
         if VOD_EXT_RE.search(target_url):
             continue
@@ -795,7 +796,7 @@ def verify_deep_hls(m3u8_text, base_url, headers, timeout=5):
                     continue
                 if "#extm3u" in low:
                     sub_text = chunk.decode("utf-8", errors="ignore")
-                    if not check_hls_key(sub_text, target_url, headers, timeout=4):
+                    if not check_hls_key(sub_text, target_url, headers, timeout=2.5):
                         continue
                     sub_lines = [ln.strip() for ln in sub_text.splitlines()
                                  if ln.strip() and not ln.strip().startswith("#")]
@@ -890,7 +891,7 @@ def check_stream(raw_url, timeout=CHECK_TIMEOUT):
 
                 if "#extm3u" in low:
                     if any(tag in low for tag in ("#ext-x-stream-inf", "#extinf", "#ext-x-targetduration")):
-                        if verify_deep_hls(text_body, final_url, headers, timeout=5):
+                        if verify_deep_hls(text_body, final_url, headers, timeout=3.5):
                             stream_lang = detect_m3u8_audio_lang(text_body)
                             return True, lat, "ok", ua, stream_lang
                         return False, 0, "dead/corrupt HLS segment", ua, ""
@@ -1315,34 +1316,28 @@ def classify_by_language_and_name(c):
     music = bool(re.search(r"\b(music|song|songs|gaan|mtv|vevo|hits|zing|sangeet|muzik|dhoom|9xm|9x)\b", clean_lname))
     movie_ch = bool(re.search(r"\b(movies?\s*(tv|channel|hd|plus|now|action|gold|club)?|cinema\s*(tv|hd)?|flix\s*tv)\b", clean_lname))
 
-    # 2. Sports ALWAYS checked first
     if PAY_SPORTS_RE.search(t) or re.search(r"\b(sport|sports|cricket|football|soccer)\b", clean_lname):
         return "Sports"
 
-    # 3. Kids & Animation (Bangla, Hindi & English cartoons/anime)
     if (KIDS_ANIMATION_RE.search(clean_lname)
             or group == "Kids & Animation"
             or re.search(r"\b(kids|cartoon|animation|anime)\b", lgroup)):
         return "Kids & Animation"
 
-    # 4. Informative / Documentary / Science / Wildlife / History
     if INFORMATIVE_RE.search(clean_lname) or re.search(r"\b(documentary|science|wildlife|nature|history)\b", lgroup):
         return "Informative"
 
-    # 5. Kolkata Movies & Bangla (India)
     if KOLKATA_RE.search(clean_lname):
         return "Kolkata Movies"
     if (INDIA_BANGLA_RE.search(clean_lname) or "kolkata" in clean_lname or "calcutta" in clean_lname
             or (detected_lang == "ben" and re.search(r"\b(india|indian|west bengal|kolkata)\b", lgroup))):
         return "Bangla Music" if music else "Bangla (India)"
 
-    # 6. Hindi Movies & Hindi Music
     if HINDI_MOVIE_CH_RE.search(clean_lname):
         return "Hindi Movies"
     if (detected_lang == "hin" or HINDI_RE.search(clean_lname)) and music:
         return "Hindi Music"
 
-    # 7. English Movies & English Entertainment
     if ENGLISH_MOVIE_CH_RE.search(clean_lname):
         return "English Movies"
     if ENGLISH_ENT_CH_RE.search(clean_lname) and detected_lang != "ben":
@@ -1357,7 +1352,6 @@ def classify_by_language_and_name(c):
             return "English Movies"
         return "English Entertainment"
 
-    # 8. Hindi / India General Entertainment & News
     if (detected_lang == "hin"
             or HINDI_RE.search(clean_lname)
             or PAY_ENT_CH_RE.search(clean_lname)
@@ -1369,7 +1363,6 @@ def classify_by_language_and_name(c):
             return "Hindi Movies"
         return "India"
 
-    # 9. Strictly Bangladeshi Channels -> 'Bangladesh'
     if (BD_ONLY_RE.search(clean_lname)
             or ".bd" in ltvg
             or "jagobd.com" in lurl
@@ -1389,7 +1382,6 @@ def classify_by_language_and_name(c):
             return "Bangla Music"
         return "Bangla (India)"
 
-    # 10. English keyword fallback
     if re.search(r"\b(english|hollywood|usa|uk|british|american)\b", t):
         if music:
             return "English Music"
@@ -1602,7 +1594,6 @@ def main():
         log(f"[SAFETY] Alive ({len(alive)}) ager playlist ({prev}) er theke onek kom. Overwrite kora holo na.")
         return 1
 
-    # Enrich original names & logos from official iptv-org database + AynaOTT catalog
     best_logo_map = dict((k, v["logo"]) for k, v in key_to_meta.items() if v.get("logo"))
     best_name_map = dict((k, v["name"]) for k, v in key_to_meta.items() if v.get("name"))
 
@@ -1620,7 +1611,6 @@ def main():
         tid = (c.get("tvg_id") or "").lower().strip()
         tid_base = tid.split("@")[0]
 
-        # 1. Assign official original name if matched in iptv-org channels.json or AynaOTT
         if tid in id_to_meta:
             c["name"] = id_to_meta[tid]["name"]
         elif tid_base in id_to_meta:
@@ -1630,7 +1620,6 @@ def main():
         else:
             c["name"] = clean_display_name(c["name"])
 
-        # 2. Assign official logo if missing
         if not c.get("logo") or not c["logo"].startswith("http"):
             if tid in id_to_meta and id_to_meta[tid].get("logo"):
                 c["logo"] = id_to_meta[tid]["logo"]
