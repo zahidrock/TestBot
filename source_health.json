@@ -477,7 +477,7 @@
   },
   "https://raw.githubusercontent.com/bugsfreeweb/LiveTVCollector/main/BugsfreeStreams/Output/StreamLinks-BD.m3u": {
     "fails": 0,
-    "last_hits": 98
+    "last_hits": 91
   },
   "https://iptv-org.github.io/iptv/countries/bz.m3u": {
     "fails": 2,
@@ -1073,7 +1073,7 @@
   },
   "https://raw.githubusercontent.com/v0ltax/iptv-latam-arg/main/plutotv_world.m3u": {
     "fails": 0,
-    "last_hits": 1
+    "last_hits": 3
   },
   "https://v6.gh-proxy.org/https://raw.githubusercontent.com/tv189ymail/2023/main/99-master/18": {
     "fails": 2,
@@ -1424,8 +1424,8 @@
     "last_hits": 0
   },
   "https://raw.githubusercontent.com/rezwanahmedratul/random/main/iptv/filtered_partial.m3u8": {
-    "fails": 0,
-    "last_hits": 1
+    "fails": 1,
+    "last_hits": 0
   },
   "https://raw.githubusercontent.com/v0ltax/iptv-latam-arg/main/sync-m3u/FSTV24.m3u8": {
     "fails": 2,
@@ -1653,7 +1653,7 @@
   },
   "https://raw.githubusercontent.com/IMAN-Py/open-tv-atlas/main/categories/documentary.m3u": {
     "fails": 0,
-    "last_hits": 34
+    "last_hits": 45
   },
   "http://gslbmgsplive.miguvideo.com/envivo_v/2018/SD/cctv/doc/1000/index.m3u8": {
     "fails": 2,
@@ -2501,7 +2501,7 @@
   },
   "https://raw.githubusercontent.com/devxhasu/my-iptv-playlist/main/playlists/kids.m3u": {
     "fails": 0,
-    "last_hits": 6
+    "last_hits": 8
   },
   "http://hwltc.tv.cdn.zj.chinamobile.com/PLTV/88888888/224/3221228314/01.m3u8": {
     "fails": 2,
@@ -3093,7 +3093,7 @@
   },
   "https://raw.githubusercontent.com/ahmedstore75/Iptvbdlive/refs/heads/main/mixiptvchannel.m3u": {
     "fails": 0,
-    "last_hits": 43
+    "last_hits": 66
   },
   "https://streams.tangotv.in/THANTHITV/ORIGIN/index.m3u8": {
     "fails": 2,
@@ -3597,7 +3597,7 @@
   },
   "https://raw.githubusercontent.com/robinhossainraaj/rorax-iptv-database/main/playlist/Global_Sports_Hub_2026_fixed.m3u8": {
     "fails": 0,
-    "last_hits": 4
+    "last_hits": 5
   },
   "http://103.140.254.2": {
     "fails": 2,
@@ -4317,7 +4317,7 @@
   },
   "https://raw.githubusercontent.com/iqbal8846/sports-iptv/main/output/sports_all.m3u": {
     "fails": 0,
-    "last_hits": 32
+    "last_hits": 13
   },
   "https://origin.stvacdn.spectrum.com/LIVE/5157/bpk-tv/24385/drm/manifest.mpd": {
     "fails": 2,
@@ -4405,7 +4405,7 @@
   },
   "https://iptvmate.net/files/freeiptv/ZZ_PLAYLIST_ALL_TV.m3u": {
     "fails": 0,
-    "last_hits": 354
+    "last_hits": 141
   },
   "https://vespertv.app/#install": {
     "fails": 2,
@@ -5601,7 +5601,7 @@
   },
   "https://raw.githubusercontent.com/starottbdofficial/premium/main/starott%20premium.m3u": {
     "fails": 0,
-    "last_hits": 17
+    "last_hits": 19
   },
   "https://list.iptvcat.com/my_list/s/92e9347a867fe27720448b8f4edbf912.m3u8": {
     "fails": 2,
@@ -5833,7 +5833,7 @@
   },
   "https://raw.githubusercontent.com/vmclash78-create/IPTV/main/canais/canais.m3u": {
     "fails": 0,
-    "last_hits": 35
+    "last_hits": 36
   },
   "https://raw.githubusercontent.com/ilxp/iptv/main/ipv4.m3u": {
     "fails": 2,
@@ -6565,7 +6565,7 @@
   },
   "https://raw.githubusercontent.com/Sunstar16/MagisTV-AS-A-m3u-PLAYLIST/main/MagisTV%2B.m3u": {
     "fails": 0,
-    "last_hits": 115
+    "last_hits": 120
   },
   "https://www.gdtv.cn/tvChannelDetail/100": {
     "fails": 2,
@@ -6701,7 +6701,7 @@
   },
   "https://raw.githubusercontent.com/danielpress135-netizen/DankoTV/main/dankoTV.m3u": {
     "fails": 0,
-    "last_hits": 79
+    "last_hits": 77
   },
   "https://www.mbomovie.com/api.php/provide/vod/at/xml/": {
     "fails": 2,
@@ -7213,7 +7213,7 @@
   },
   "https://raw.githubusercontent.com/IMAN-Py/open-tv-atlas/main/categories/business.m3u": {
     "fails": 0,
-    "last_hits": 27
+    "last_hits": 39
   },
   "https://5bf7b725107e5.streamlock.net/bungotv/bungotv/chunklist_w1429108522.m3u8": {
     "fails": 2,
@@ -7453,7 +7453,7 @@
   },
   "https://raw.githubusercontent.com/Mrbotrx/BDXI_KB/main/playlists/BDXI.m3u8": {
     "fails": 0,
-    "last_hits": 3
+    "last_hits": 66
   },
   "https://vip.dytt-cinema.com/20250806/29245_53d7f154/index.m3u8": {
     "fails": 2,
@@ -7722,7 +7722,7 @@
   },
   "https://raw.githubusercontent.com/mdsirome/LiveTV/main/pt-test.m3u": {
     "fails": 0,
-    "last_hits": 6
+    "last_hits": 4
   },
   "https://vip.dytt-cinema.com/20250801/28816_fc5bbeb3/index.m3u8": {
     "fails": 2,
@@ -8210,7 +8210,7 @@
   },
   "https://raw.githubusercontent.com/abrarpro/iptv.m3u/main/bdtv.m3u": {
     "fails": 0,
-    "last_hits": 69
+    "last_hits": 166
   },
   "https://iptv-org.github.io/iptv/countries/ba.m3u": {
     "fails": 2,
@@ -8326,7 +8326,7 @@
   },
   "https://raw.githubusercontent.com/abusaeeidx/IPTV-Scraper-Zilla/main/SamsungTVPlus-All.m3u": {
     "fails": 0,
-    "last_hits": 216
+    "last_hits": 212
   },
   "http://223.110.245.165/ott.js.chinamobile.com/PLTV/3/224/3221225945/index.m3u8": {
     "fails": 2,
@@ -8629,8 +8629,8 @@
     "last_hits": 0
   },
   "https://iptv-org.github.io/iptv/countries/int.m3u": {
-    "fails": 1,
-    "last_hits": 0
+    "fails": 0,
+    "last_hits": 3
   },
   "https://stream.ottplus.bd/live/sony_max_sd_abr/live/sony_max_sd_720/chunks.m3u8": {
     "fails": 2,
@@ -8906,7 +8906,7 @@
   },
   "https://raw.githubusercontent.com/iptv-org/iptv/master/streams/us.m3u": {
     "fails": 0,
-    "last_hits": 4
+    "last_hits": 7
   },
   "https://origin.stvacdn.spectrum.com/LIVE/5232/bpk-tv/00406/drm/manifest.mpd": {
     "fails": 2,
@@ -9669,8 +9669,8 @@
     "last_hits": 0
   },
   "https://raw.githubusercontent.com/birdtwelve/bird-iptv/main/M3U8/TV.m3u8": {
-    "fails": 0,
-    "last_hits": 1
+    "fails": 1,
+    "last_hits": 0
   },
   "https://gitlab.com/bestnetworkprovider2026/guide-iptv-francophone-3211/-/raw/main/playlist.m3u": {
     "fails": 2,
@@ -9882,7 +9882,7 @@
   },
   "https://raw.githubusercontent.com/samaratul/nanna-iptv/main/bucket_public_working.m3u8": {
     "fails": 0,
-    "last_hits": 37
+    "last_hits": 36
   },
   "https://api.themoviedb.org/3/search/movie": {
     "fails": 2,
@@ -9978,7 +9978,7 @@
   },
   "https://raw.githubusercontent.com/CeresLabX/us-tv/main/custom_playlist.m3u": {
     "fails": 0,
-    "last_hits": 23
+    "last_hits": 8
   },
   "https://static.jagobd.com.bd/c3VydmVyX8RpbEU9Mi8xNy8yMFDEEHGcfRgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcEdsEfeDeKiNkVN3PTOmdFseWRtaW51aiPhnPTI2/ruposhibangla.stream/playlist.m3u8": {
     "fails": 2,
@@ -10013,7 +10013,7 @@
     "last_hits": 0
   },
   "https://www.apsattv.com/vizio.m3u": {
-    "fails": 9,
+    "fails": 10,
     "last_hits": 0
   },
   "https://tvs1.aynaott.com/SadhnaPrimeNews/index.m3u8": {
@@ -10358,7 +10358,7 @@
   },
   "https://iptv.devforge.qzz.io/playlist/playlist.m3u": {
     "fails": 0,
-    "last_hits": 83
+    "last_hits": 45
   },
   "https://gitlab.com/LumoraPlayer/Lumora/-/raw/main/index.m3u": {
     "fails": 2,
@@ -10814,7 +10814,7 @@
   },
   "https://raw.githubusercontent.com/devxhasu/my-iptv-playlist/main/playlists/movies.m3u": {
     "fails": 0,
-    "last_hits": 5
+    "last_hits": 4
   },
   "https://tvs1.aynaott.com/9X_Tashan/index.m3u8": {
     "fails": 2,
@@ -11162,7 +11162,7 @@
   },
   "https://raw.githubusercontent.com/365tv/365tv.github.io/main/playlist.m3u": {
     "fails": 0,
-    "last_hits": 3
+    "last_hits": 6
   },
   "https://v.cdnlz20.com/20241121/20997_722b7258/index.m3u8": {
     "fails": 2,
@@ -11197,7 +11197,7 @@
     "last_hits": 0
   },
   "https://i.mjh.nz/SamsungTVPlus/all.m3u8": {
-    "fails": 9,
+    "fails": 10,
     "last_hits": 0
   },
   "http://ottrrs.hl.chinamobile.com/PLTV/88888888/224/3221226310/index.m3u8$": {
@@ -11457,7 +11457,7 @@
     "last_hits": 0
   },
   "https://raw.githubusercontent.com/turgutozaldemirel-source/Turgut-IPTV/main/Turgut_auto.m3u": {
-    "fails": 1,
+    "fails": 2,
     "last_hits": 0
   },
   "https://multi-playlist-zmp3.zadn.vn/9tPzLPYORS8/zhls/playback-realtime/a07d79b945fcaca2f5ed/index.m3u8": {
@@ -11829,8 +11829,8 @@
     "last_hits": 0
   },
   "https://raw.githubusercontent.com/Nayonmazumder/saltsyncTV/main/output.m3u8": {
-    "fails": 0,
-    "last_hits": 1
+    "fails": 1,
+    "last_hits": 0
   },
   "https://live-stream.skynewsarabia.com/c-vertical-channel/vertical-stream/index.m3u8": {
     "fails": 2,
@@ -11930,7 +11930,7 @@
   },
   "https://raw.githubusercontent.com/Mrbotrx/Tvbox_KB/main/output/bd_fifa.m3u8": {
     "fails": 0,
-    "last_hits": 6
+    "last_hits": 9
   },
   "https://cakhia-tv.onl": {
     "fails": 2,
@@ -12854,11 +12854,11 @@
   },
   "https://raw.githubusercontent.com/Mrbotrx/BDXI_KB/main/playlists/Bangladesh.m3u8": {
     "fails": 0,
-    "last_hits": 1
+    "last_hits": 2
   },
   "https://raw.githubusercontent.com/doronvodka-del/-Israel-Live-TV-/main/Israel_Live_TV_Doron.m3u": {
     "fails": 0,
-    "last_hits": 3
+    "last_hits": 4
   },
   "https://tvs1.aynaott.com/bbcnews/index.m3u8": {
     "fails": 2,
@@ -14013,7 +14013,7 @@
     "last_hits": 0
   },
   "https://i.mjh.nz/PlutoTV/all.m3u8": {
-    "fails": 9,
+    "fails": 10,
     "last_hits": 0
   },
   "https://list.iptvcat.com/my_list/s/967e3b9f27af4ba319a0a36ef881af75.m3u8": {
@@ -14038,7 +14038,7 @@
   },
   "https://raw.githubusercontent.com/maybetv/jojo/main/Clarity.m3u": {
     "fails": 0,
-    "last_hits": 33
+    "last_hits": 34
   },
   "https://ghfast.top/raw.githubusercontent.com/yoursmile66/TVBox/refs/heads/main/live.txt": {
     "fails": 2,
@@ -14449,7 +14449,7 @@
     "last_hits": 0
   },
   "https://raw.githubusercontent.com/PAANMILE/1000-iptv/main/1000tv.m3u": {
-    "fails": 1,
+    "fails": 2,
     "last_hits": 0
   },
   "http://35848.hlsplay.aodianyun.com/guangdianyun_35848/tv_channel_350.m3u8": {
@@ -15718,7 +15718,7 @@
     "last_hits": 0
   },
   "https://raw.githubusercontent.com/iptv-org/iptv/master/streams/bd.m3u": {
-    "fails": 1,
+    "fails": 2,
     "last_hits": 0
   },
   "https://gitlab.com/video.s/rebels-vs-crusaders-live-tv-21-april-2023-us-au-2849-3-8/-/raw/main/iptv.m3u": {
@@ -15727,7 +15727,7 @@
   },
   "https://raw.githubusercontent.com/dzh0ni/iPTV-FREE-LIST/master/iPTV-Free-List_TV.m3u": {
     "fails": 0,
-    "last_hits": 8
+    "last_hits": 7
   },
   "https://cdnimg.spectrum.net/imageserver/guide/58452": {
     "fails": 2,
@@ -16107,7 +16107,7 @@
   },
   "https://raw.githubusercontent.com/Hasibfy37/Iptv/main/Iptv_m3u_2023_updated_bd.m3u": {
     "fails": 0,
-    "last_hits": 1
+    "last_hits": 6
   },
   "http://hwltc.tv.cdn.zj.chinamobile.com/PLTV/88888888/224/3221228494/01.m3u8": {
     "fails": 2,
@@ -16182,8 +16182,8 @@
     "last_hits": 0
   },
   "https://iptv-org.github.io/iptv/categories/documentary.m3u": {
-    "fails": 0,
-    "last_hits": 2
+    "fails": 1,
+    "last_hits": 0
   },
   "https://2-fss-1.streamhoster.com/pl_122/202676-1357858-1/playlist.m3u8": {
     "fails": 2,
@@ -16306,7 +16306,7 @@
     "last_hits": 0
   },
   "https://www.apsattv.com/xumo.m3u": {
-    "fails": 9,
+    "fails": 10,
     "last_hits": 0
   },
   "https://raw.githubusercontent.com/aria-tv/aria/main/aria%2B/Arab%20World.m3u": {
@@ -16738,8 +16738,8 @@
     "last_hits": 0
   },
   "https://iptv-org.github.io/iptv/categories/religious.m3u": {
-    "fails": 0,
-    "last_hits": 1
+    "fails": 1,
+    "last_hits": 0
   },
   "https://raw.githubusercontent.com/vogana/jiedian/main/cctvTV.m3u": {
     "fails": 2,
@@ -17078,8 +17078,8 @@
     "last_hits": 0
   },
   "https://raw.githubusercontent.com/channeliptv0/IPTV/main/IPTVOld.m3u": {
-    "fails": 0,
-    "last_hits": 1
+    "fails": 1,
+    "last_hits": 0
   },
   "https://iptv-org.github.io/iptv/countries/az.m3u": {
     "fails": 2,
@@ -17570,7 +17570,7 @@
     "last_hits": 0
   },
   "https://raw.githubusercontent.com/softbdteam/BDIX-IPTV/main/BDIX%20IPTV%205.m3u8": {
-    "fails": 1,
+    "fails": 2,
     "last_hits": 0
   },
   "https://raw.githubusercontent.com/dickens0904/crab-tv-live/main/merged.m3u": {
@@ -17615,7 +17615,7 @@
   },
   "https://raw.githubusercontent.com/IMAN-Py/open-tv-atlas/main/categories/comedy.m3u": {
     "fails": 0,
-    "last_hits": 47
+    "last_hits": 48
   },
   "https://yzzy.play-cdn8.com/20220710/3617_a3bbd11d/index.m3u8": {
     "fails": 2,
@@ -17623,7 +17623,7 @@
   },
   "https://raw.githubusercontent.com/sowahsun/My-Books/main/kl_lives.m3u": {
     "fails": 0,
-    "last_hits": 11
+    "last_hits": 12
   },
   "https://sony.dongobd247.workers.dev/stream.m3u8": {
     "fails": 2,
@@ -17735,7 +17735,7 @@
   },
   "https://raw.githubusercontent.com/danielpress135-netizen/DankoTV/main/dankoTV.christian.m3u": {
     "fails": 0,
-    "last_hits": 12
+    "last_hits": 13
   },
   "https://cdnimg.spectrum.net/imageserver/guide/60951": {
     "fails": 2,
@@ -20143,7 +20143,7 @@
   },
   "https://raw.githubusercontent.com/alvaldes/free-tv/main/free.m3u": {
     "fails": 0,
-    "last_hits": 10
+    "last_hits": 11
   },
   "https://raw.githubusercontent.com/m3u-iptv/live/main/streams/B4UMovies.m3u8": {
     "fails": 2,
@@ -20686,7 +20686,7 @@
     "last_hits": 0
   },
   "https://i.mjh.nz/Roku/all.m3u8": {
-    "fails": 9,
+    "fails": 10,
     "last_hits": 0
   },
   "https://mumt07.tangotv.in/zHjX9OFlDDSPORTS/index.m3u8": {
@@ -21411,7 +21411,7 @@
   },
   "https://raw.githubusercontent.com/niaoda/IPTV/main/IPTV.m3u": {
     "fails": 0,
-    "last_hits": 1
+    "last_hits": 2
   },
   "https://iptv-org.github.io/iptv/subdivisions/mx-agu.m3u": {
     "fails": 2,
@@ -21463,7 +21463,7 @@
   },
   "https://lytvs.top/py/custom_lives.m3u": {
     "fails": 0,
-    "last_hits": 2
+    "last_hits": 1
   },
   "https://tvs2.aynaott.com/B4U_Movies_India/index.m3u8": {
     "fails": 2,
@@ -21611,7 +21611,7 @@
   },
   "https://raw.githubusercontent.com/RhqAB/TV/main/Home.m3u8": {
     "fails": 0,
-    "last_hits": 20
+    "last_hits": 25
   },
   "http://caiji.nxflv.com/api.php/provide/vod/": {
     "fails": 2,
@@ -22451,7 +22451,7 @@
   },
   "https://raw.githubusercontent.com/ahmedstore75/Bdixplaylist/main/playlist.m3u": {
     "fails": 0,
-    "last_hits": 59
+    "last_hits": 53
   },
   "https://iptv-org.github.io/iptv/countries/sg.m3u": {
     "fails": 2,
@@ -22699,7 +22699,7 @@
   },
   "https://raw.githubusercontent.com/abusaeeidx/IPTV-Scraper-Zilla/main/Plex-All.m3u": {
     "fails": 0,
-    "last_hits": 219
+    "last_hits": 186
   },
   "https://raw.githubusercontent.com/profekadi/iptv/main/colombia.m3u": {
     "fails": 2,
@@ -22826,8 +22826,8 @@
     "last_hits": 0
   },
   "https://raw.githubusercontent.com/stablesports711-hue/stable-sports-iptv/main/STABLE-SPORTS%20TV.m3u": {
-    "fails": 1,
-    "last_hits": 0
+    "fails": 0,
+    "last_hits": 1
   },
   "http://ott.js.chinamobile.com/PLTV/3/224/3221227597/index.m3u8": {
     "fails": 2,
@@ -23019,7 +23019,7 @@
   },
   "https://raw.githubusercontent.com/nexonic-technologies/nexonic-iptv/main/playlists/categories/culture.m3u": {
     "fails": 0,
-    "last_hits": 83
+    "last_hits": 85
   },
   "https://cdn-globecast.akamaized.net/live/eds/sharjah_tv/hls_roku/index.m3u8": {
     "fails": 2,
@@ -23127,7 +23127,7 @@
   },
   "https://raw.githubusercontent.com/devxhasu/my-iptv-playlist/main/playlists/live-sports.m3u": {
     "fails": 0,
-    "last_hits": 15
+    "last_hits": 4
   },
   "https://tvs1.aynaott.com/travelxp/index.m3u8": {
     "fails": 2,
@@ -23175,7 +23175,7 @@
   },
   "https://raw.githubusercontent.com/kaige-cai/live/main/live.m3u": {
     "fails": 0,
-    "last_hits": 2
+    "last_hits": 1
   },
   "https://tvs1.aynaott.com/bz/rtv/index.m3u8": {
     "fails": 2,
@@ -23311,7 +23311,7 @@
   },
   "https://iptv-org.github.io/api/streams.json": {
     "fails": 0,
-    "last_hits": 93
+    "last_hits": 49
   },
   "https://tvs1.aynaott.com/mtv/index.m3u8": {
     "fails": 2,
@@ -23919,7 +23919,7 @@
   },
   "https://raw.githubusercontent.com/Mrbotrx/BD-OTT-PLAYLIST/main/kb_go_playlist.m3u8": {
     "fails": 0,
-    "last_hits": 6
+    "last_hits": 7
   },
   "https://tshift.fptplay.net/dvr/vtv9_1500.stream/chunks_dvr_range-$": {
     "fails": 2,
@@ -24231,7 +24231,7 @@
   },
   "https://raw.githubusercontent.com/IMAN-Py/open-tv-atlas/main/categories/animation.m3u": {
     "fails": 0,
-    "last_hits": 11
+    "last_hits": 12
   },
   "https://raw.githubusercontent.com/mahabubur016823/Drm/main/asam.m3u": {
     "fails": 2,
@@ -24299,7 +24299,7 @@
   },
   "https://raw.githubusercontent.com/doms9/iptv/refs/heads/default/M3U8/TV.m3u8": {
     "fails": 0,
-    "last_hits": 46
+    "last_hits": 53
   },
   "http://112.25.48.68/live/program/live/hxjchd/4000000/mnf.m3u8": {
     "fails": 2,
@@ -24619,7 +24619,7 @@
   },
   "https://raw.githubusercontent.com/lokmancu/IPTV-BDIX/main/Favorite_TV_Channels_EPG.m3u": {
     "fails": 0,
-    "last_hits": 3
+    "last_hits": 2
   },
   "https://vip.lz-cdn8.com/20220726/20006_c2c79548/index.m3u8": {
     "fails": 2,
@@ -24774,8 +24774,8 @@
     "last_hits": 0
   },
   "https://raw.githubusercontent.com/iptv-org/iptv/master/streams/in.m3u": {
-    "fails": 1,
-    "last_hits": 0
+    "fails": 0,
+    "last_hits": 2
   },
   "https://agit.ai/fenwe/TVBox/raw/branch/master/sub/4K": {
     "fails": 2,
@@ -25707,7 +25707,7 @@
   },
   "https://raw.githubusercontent.com/m3u-iptv/live/main/index.m3u": {
     "fails": 0,
-    "last_hits": 159
+    "last_hits": 193
   },
   "https://list.iptvcat.com/my_list/s/04a0b519446eb9d3483c91a7df9f0a5b.m3u8": {
     "fails": 2,
@@ -25867,7 +25867,7 @@
   },
   "https://raw.githubusercontent.com/slawa99-prog/sv-iptv/main/expansion-candidates.m3u": {
     "fails": 0,
-    "last_hits": 3
+    "last_hits": 2
   },
   "https://www.jagobd.com/cb24tv": {
     "fails": 2,
@@ -26167,7 +26167,7 @@
   },
   "https://raw.githubusercontent.com/piko8666/IPTV/main/IPTV.m3u": {
     "fails": 0,
-    "last_hits": 5
+    "last_hits": 6
   },
   "https://caiji.naichaapi.com/inc/apijson_vod.php": {
     "fails": 2,
@@ -26207,7 +26207,7 @@
   },
   "https://raw.githubusercontent.com/ShamimHossainOfficial/IPTV/master/BDIX-IPTV.m3u8": {
     "fails": 0,
-    "last_hits": 12
+    "last_hits": 11
   },
   "https://v.cdnlz20.com/20241121/21008_82c743e0/index.m3u8": {
     "fails": 2,
@@ -26391,7 +26391,7 @@
   },
   "https://raw.githubusercontent.com/everylive/Live-Dish/main/Test.m3u": {
     "fails": 0,
-    "last_hits": 2
+    "last_hits": 12
   },
   "https://iptv-org.github.io/iptv/subdivisions/es-ga.m3u": {
     "fails": 2,
@@ -26794,7 +26794,7 @@
     "last_hits": 0
   },
   "https://list.iptvcat.com/my_list/s/e371d732f32a08a3b9243130834b1c32.m3u8": {
-    "fails": 1,
+    "fails": 2,
     "last_hits": 0
   },
   "https://tvsilo.vip/app/cache.php": {
@@ -26843,7 +26843,7 @@
   },
   "https://raw.githubusercontent.com/tianli1680/iptv/main/tv.m3u": {
     "fails": 0,
-    "last_hits": 3
+    "last_hits": 4
   },
   "https://iptv-org.github.io/iptv/subdivisions/ec-l.m3u": {
     "fails": 2,
@@ -27279,7 +27279,7 @@
   },
   "https://raw.githubusercontent.com/sksobuj240/Live-TV-BOX/main/alltv.m3u8": {
     "fails": 0,
-    "last_hits": 2
+    "last_hits": 3
   },
   "https://pandown.pro/tvbox/tvbox.json": {
     "fails": 2,
@@ -27407,7 +27407,7 @@
   },
   "https://raw.githubusercontent.com/musfikur-rahman/iptv/main/india_online.m3u": {
     "fails": 0,
-    "last_hits": 1
+    "last_hits": 4
   },
   "https://raw.githubusercontent.com/hououinkami/AppleTV/main/Source/Gather.m3u": {
     "fails": 2,
@@ -28051,7 +28051,7 @@
   },
   "https://raw.githubusercontent.com/abusaeeidx/IPTV-Scraper-Zilla/main/BD.m3u": {
     "fails": 0,
-    "last_hits": 19
+    "last_hits": 33
   },
   "https://m3u8.tiankongapi.com/api.php/provide/vod/": {
     "fails": 2,
@@ -28303,7 +28303,7 @@
   },
   "https://raw.githubusercontent.com/aria-tv/aria/main/aria%2B.m3u": {
     "fails": 0,
-    "last_hits": 25
+    "last_hits": 23
   },
   "https://gitlab.com/Beniwal20/YukkiMusicBot/-/raw/master/live.m3u": {
     "fails": 2,
@@ -28330,7 +28330,7 @@
     "last_hits": 0
   },
   "https://raw.githubusercontent.com/Mrbotrx/BDXI_KB/main/KBC/KBC_playlist_IN.m3u": {
-    "fails": 1,
+    "fails": 2,
     "last_hits": 0
   },
   "https://list.iptvcat.com/my_list/s/3873951e04d57478d85e5dfa60d252ac.m3u8": {
@@ -28538,8 +28538,8 @@
     "last_hits": 0
   },
   "https://iptv-org.github.io/iptv/countries/bd.m3u": {
-    "fails": 0,
-    "last_hits": 3
+    "fails": 1,
+    "last_hits": 0
   },
   "https://iptv-org.github.io/iptv/subdivisions/do-25.m3u": {
     "fails": 2,
@@ -28979,7 +28979,7 @@
   },
   "https://raw.githubusercontent.com/tvbd/m3uplayer/refs/heads/main/m3u/xniptv.m3u": {
     "fails": 0,
-    "last_hits": 3
+    "last_hits": 36
   },
   "https://gcinemahls.wns.live/hls/stream.m3u8": {
     "fails": 2,
@@ -29299,7 +29299,7 @@
   },
   "https://iptv.devforge.qzz.io/playlist/beta.m3u": {
     "fails": 0,
-    "last_hits": 3
+    "last_hits": 173
   },
   "https://raw.githubusercontent.com/towerstreet/IPTV-TVBOX/main/IPTV.m3u": {
     "fails": 2,
@@ -29563,7 +29563,7 @@
   },
   "https://raw.githubusercontent.com/imdhiru/bloginstall-iptv/main/bloginstall-iptv.m3u": {
     "fails": 0,
-    "last_hits": 1
+    "last_hits": 5
   },
   "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/chitue/dongliTV/main/api.json": {
     "fails": 2,
@@ -31371,7 +31371,7 @@
   },
   "https://raw.githubusercontent.com/BuddyChewChew/app-m3u-generator/refs/heads/main/playlists/tubi_all.m3u": {
     "fails": 0,
-    "last_hits": 30
+    "last_hits": 29
   },
   "https://iptv-org.github.io/iptv/countries/bl.m3u": {
     "fails": 2,
@@ -31447,7 +31447,7 @@
   },
   "https://raw.githubusercontent.com/mdarif2743/Cmcl-digital-mpd/refs/heads/main/README.m3u": {
     "fails": 0,
-    "last_hits": 35
+    "last_hits": 67
   },
   "http://go.bkpcp.top/mg/cctv9": {
     "fails": 2,
@@ -31571,7 +31571,7 @@
   },
   "https://raw.githubusercontent.com/dsisefat/dsi/main/Sefat.m3u": {
     "fails": 0,
-    "last_hits": 9
+    "last_hits": 11
   },
   "https://mag03.tvx.prd.tv.odido.nl/.../3221241521.mpd": {
     "fails": 2,
@@ -31591,7 +31591,7 @@
   },
   "https://raw.githubusercontent.com/DuckKota/iptv/main/config/discovered.m3u": {
     "fails": 0,
-    "last_hits": 43
+    "last_hits": 51
   },
   "https://v6.gh-proxy.org/https://raw.githubusercontent.com/Newtxin/tvbox/main/fuli3.json": {
     "fails": 2,
@@ -31943,7 +31943,7 @@
   },
   "https://raw.githubusercontent.com/ArathAmavizcaIA/Arath-TV/main/IPTV.m3u": {
     "fails": 0,
-    "last_hits": 2
+    "last_hits": 3
   },
   "https://api.themoviedb.org/3/": {
     "fails": 2,
@@ -32251,7 +32251,7 @@
   },
   "https://raw.githubusercontent.com/samaratul/nanna-iptv/main/playlist_working.m3u8": {
     "fails": 0,
-    "last_hits": 4
+    "last_hits": 5
   },
   "https://v6.gh-proxy.org/https://raw.githubusercontent.com/maoystv/000/master/CR.m3u8": {
     "fails": 2,
@@ -32719,7 +32719,7 @@
   },
   "https://raw.githubusercontent.com/CeresLabX/us-tv/main/playlist.backup.m3u": {
     "fails": 0,
-    "last_hits": 31
+    "last_hits": 95
   },
   "https://raw.githubusercontent.com/sjnhnp/adblock/main/filtered_http_only_valid.m3u": {
     "fails": 2,
@@ -32847,7 +32847,7 @@
   },
   "https://m3u.work/qKChzP8.m3u": {
     "fails": 0,
-    "last_hits": 19
+    "last_hits": 18
   },
   "https://web.aynaott.com/live-tvs/goal-tv": {
     "fails": 2,
@@ -32879,7 +32879,7 @@
   },
   "https://raw.githubusercontent.com/Free-TV/IPTV/master/playlist.m3u8": {
     "fails": 0,
-    "last_hits": 55
+    "last_hits": 32
   },
   "https://iptv-org.github.io/iptv/countries/hk.m3u": {
     "fails": 2,
@@ -32943,7 +32943,7 @@
   },
   "https://raw.githubusercontent.com/danielpress135-netizen/DankoTV/main/dankoTV.free.m3u": {
     "fails": 0,
-    "last_hits": 17
+    "last_hits": 14
   },
   "https://live.douyin.com/87324405858": {
     "fails": 2,
@@ -33559,7 +33559,7 @@
   },
   "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/suxuang/myIPTV/refs/heads/main/ipv4.m3u": {
     "fails": 0,
-    "last_hits": 6
+    "last_hits": 3
   },
   "https://list.iptvcat.com/my_list/s/5b02326939b855f05851ecc929567e27.m3u8": {
     "fails": 2,
@@ -33786,8 +33786,8 @@
     "last_hits": 0
   },
   "https://iptv-org.github.io/iptv/countries/cz.m3u": {
-    "fails": 0,
-    "last_hits": 1
+    "fails": 1,
+    "last_hits": 0
   },
   "https://gitlab.com/allsport.s/arsenal-vs-southampton-live-tv21-april-2023-us-au-uk-2849-9-7/-/raw/main/tv.m3u": {
     "fails": 2,
@@ -33903,7 +33903,7 @@
   },
   "https://raw.githubusercontent.com/nexonic-technologies/nexonic-iptv/main/playlists/categories/general.m3u": {
     "fails": 0,
-    "last_hits": 60
+    "last_hits": 59
   },
   "https://iptv-org.github.io/iptv/countries/wf.m3u": {
     "fails": 2,
@@ -34003,7 +34003,7 @@
   },
   "https://raw.githubusercontent.com/Asadullah4-web/Ui-play-list.m3u/main/Ip%20tv.m3u": {
     "fails": 0,
-    "last_hits": 1
+    "last_hits": 3
   },
   "https://tvsen6.aynaott.com/amc/index.m3u8": {
     "fails": 2,
@@ -34119,7 +34119,7 @@
   },
   "https://raw.githubusercontent.com/devxhasu/my-iptv-playlist/main/playlists/news.m3u": {
     "fails": 0,
-    "last_hits": 11
+    "last_hits": 17
   },
   "https://akdnetwork.co.in/live/cnnew/index.m3u8": {
     "fails": 2,
@@ -34430,8 +34430,8 @@
     "last_hits": 0
   },
   "https://tata.jeanjofi.workers.dev/mumbai.m3u": {
-    "fails": 1,
-    "last_hits": 0
+    "fails": 0,
+    "last_hits": 1
   },
   "http://183.207.249.11/PLTV/3/224/3221225536/index.m3u8": {
     "fails": 2,
@@ -34675,7 +34675,7 @@
   },
   "https://raw.githubusercontent.com/MohammadKobirShah/AynaOTT-M3U/main/output/aynaott_live.m3u": {
     "fails": 0,
-    "last_hits": 2
+    "last_hits": 4
   },
   "https://m3u8.apiyhzy.com/api.php/provide/vod/": {
     "fails": 2,
@@ -35231,7 +35231,7 @@
   },
   "https://raw.githubusercontent.com/gom3u/GoM3U-URL/main/simplex.m3u": {
     "fails": 0,
-    "last_hits": 8
+    "last_hits": 7
   },
   "http://dy.809394.xyz/api.php/iptv/vod/": {
     "fails": 2,
@@ -35378,8 +35378,8 @@
     "last_hits": 0
   },
   "https://raw.githubusercontent.com/Bornze/EPG-testing/main/playlist.m3u": {
-    "fails": 0,
-    "last_hits": 2
+    "fails": 1,
+    "last_hits": 0
   },
   "https://v6.gh-proxy.org/https://raw.githubusercontent.com/s14685/tv/main/xc.json": {
     "fails": 2,
@@ -35455,7 +35455,7 @@
   },
   "https://raw.githubusercontent.com/abrarpro/iptv.m3u/main/bdtv.m3u8": {
     "fails": 0,
-    "last_hits": 14
+    "last_hits": 4
   },
   "http://qihu.tv/api.php/provide/vod/": {
     "fails": 2,
@@ -35683,7 +35683,7 @@
   },
   "https://raw.githubusercontent.com/IMAN-Py/open-tv-atlas/main/categories/culture.m3u": {
     "fails": 0,
-    "last_hits": 22
+    "last_hits": 33
   },
   "https://raw.githubusercontent.com/jia070310/lemonTV/main/iptv-fe.m3u": {
     "fails": 2,
@@ -35703,7 +35703,7 @@
   },
   "https://raw.githubusercontent.com/Bornze/EPG-testing/main/Playlist/MYTV2.m3u8": {
     "fails": 0,
-    "last_hits": 7
+    "last_hits": 1
   },
   "https://try.gitea.io/xcxc8/mytv/raw/branch/main/99": {
     "fails": 2,
@@ -36027,7 +36027,7 @@
   },
   "https://raw.githubusercontent.com/saeidrahmanbd/BDIX-IPTV/main/International-Playlist.m3u": {
     "fails": 0,
-    "last_hits": 429
+    "last_hits": 108
   },
   "https://v6.gh-proxy.org/https://raw.githubusercontent.com/guxiangbin/tvbox2/main/dalazhi-18.txt": {
     "fails": 2,
@@ -36283,7 +36283,7 @@
   },
   "https://raw.githubusercontent.com/dhasap/dhanytv/main/dhanytv.m3u": {
     "fails": 0,
-    "last_hits": 12
+    "last_hits": 21
   },
   "https://owrcovcrpy.gpcdn.net/bpk-tv/1722/output/1722.m3u8": {
     "fails": 2,
@@ -37051,7 +37051,7 @@
   },
   "https://raw.githubusercontent.com/PRENDLYMADAPAKER/ANG-KALAT-MO/main/NZMIPTVPREMIUM.m3u": {
     "fails": 0,
-    "last_hits": 165
+    "last_hits": 123
   },
   "https://amg01269-amg01269c1-distrotv-us-5379.playouts.now.amagi.tv/playlist/amg01269-willowtvfast-willowplus-distrotvus/playlist.m3u8": {
     "fails": 2,
@@ -37183,7 +37183,7 @@
   },
   "https://iptv-org.github.io/iptv/categories/sports.m3u": {
     "fails": 0,
-    "last_hits": 2
+    "last_hits": 1
   },
   "https://dp.fqplayer.com/dplayer/": {
     "fails": 2,
@@ -37271,7 +37271,7 @@
   },
   "https://raw.githubusercontent.com/amazeyourself/tamil-local-iptv/main/channels.m3u": {
     "fails": 0,
-    "last_hits": 9
+    "last_hits": 5
   },
   "http://hw-m-l.cztv.com/channels/lantian/channel004/1080p.m3u8": {
     "fails": 2,
@@ -37314,8 +37314,8 @@
     "last_hits": 0
   },
   "https://raw.githubusercontent.com/Bornze/EPG-testing/main/Playlist/MyTV.m3u8": {
-    "fails": 1,
-    "last_hits": 0
+    "fails": 0,
+    "last_hits": 14
   },
   "https://raw.githubusercontent.com/m3u-iptv/live/main/streams/DisneyJR.m3u8": {
     "fails": 2,
@@ -37623,7 +37623,7 @@
   },
   "https://cdn.gh-proxy.org/https://raw.githubusercontent.com/vamoschuck/TV/main/M3U": {
     "fails": 0,
-    "last_hits": 7
+    "last_hits": 3
   },
   "https://stream.ottplus.bd/live/euro_sports_hd_abr/live/euro_sports_hd/chunks.m3u8": {
     "fails": 2,
@@ -37743,7 +37743,7 @@
   },
   "https://raw.githubusercontent.com/IMAN-Py/open-tv-atlas/main/categories/cooking.m3u": {
     "fails": 0,
-    "last_hits": 25
+    "last_hits": 27
   },
   "https://tvsen3.aynaott.com/EJagkNL2/index.m3u8": {
     "fails": 2,
@@ -37862,8 +37862,8 @@
     "last_hits": 0
   },
   "https://iptv-org.github.io/iptv/categories/movies.m3u": {
-    "fails": 0,
-    "last_hits": 1
+    "fails": 1,
+    "last_hits": 0
   },
   "http://223.110.245.143/ott.js.chinamobile.com/PLTV/3/224/3221227040/index.m3u8": {
     "fails": 2,
@@ -38694,7 +38694,7 @@
     "last_hits": 0
   },
   "https://i.mjh.nz/Plex/all.m3u8": {
-    "fails": 9,
+    "fails": 10,
     "last_hits": 0
   },
   "https://iptv-org.github.io/iptv/subdivisions/do-01.m3u": {
@@ -40402,12 +40402,12 @@
     "last_hits": 0
   },
   "https://raw.githubusercontent.com/Mrbotrx/BDXI_KB/main/playlists/India.m3u8": {
-    "fails": 0,
-    "last_hits": 22
+    "fails": 1,
+    "last_hits": 0
   },
   "https://raw.githubusercontent.com/KaneenApp/NeuroSources/main/ARAB-TV.m3u": {
     "fails": 0,
-    "last_hits": 3
+    "last_hits": 2
   },
   "https://raw.githubusercontent.com/Sonaton11/M3/main/Indian.m3u": {
     "fails": 2,
@@ -40480,7 +40480,7 @@
   },
   "https://raw.githubusercontent.com/mehedihasan01880230-art/netscopetv/main/my_playlist1.1.m3u": {
     "fails": 0,
-    "last_hits": 3
+    "last_hits": 4
   },
   "https://h5cul1yar48um3t.wcetv.com/hls/gdtv.m3u8": {
     "fails": 2,
@@ -40852,7 +40852,7 @@
   },
   "https://iptv-org.github.io/iptv/countries/us.m3u": {
     "fails": 0,
-    "last_hits": 2
+    "last_hits": 1
   },
   "https://tv-trtworld.medya.trt.com.tr/master_1080.m3u8": {
     "fails": 2,
@@ -41364,7 +41364,7 @@
     "last_hits": 0
   },
   "https://www.apsattv.com/lg.m3u": {
-    "fails": 9,
+    "fails": 10,
     "last_hits": 0
   },
   "https://shd-gcp-live.edgenextcdn.net/live/bitmovin-wanasah/13e82ea6232fa647c43b26e8a41f173d/index.m3u8": {
@@ -41521,7 +41521,7 @@
   },
   "https://raw.githubusercontent.com/mdsirome/LiveTV/main/SiromeBD.m3u": {
     "fails": 0,
-    "last_hits": 3
+    "last_hits": 4
   },
   "https://raw.githubusercontent.com/ALittleAnt4161/m3u8/main/VIPA.m3u8": {
     "fails": 2,
@@ -41565,7 +41565,7 @@
   },
   "https://raw.githubusercontent.com/Monjil404/livetv/refs/heads/main/pro": {
     "fails": 0,
-    "last_hits": 69
+    "last_hits": 13
   },
   "https://iptv-org.github.io/iptv/languages/ben.m3u": {
     "fails": 2,
@@ -41809,7 +41809,7 @@
   },
   "https://raw.githubusercontent.com/Sonaton11/M3/main/Surzotv.m3u8": {
     "fails": 0,
-    "last_hits": 75
+    "last_hits": 52
   },
   "http://183.207.248.71/gitv/live1/G_HEILONGJIANG/G_HEILONGJIANG": {
     "fails": 2,
@@ -42077,7 +42077,7 @@
   },
   "https://raw.githubusercontent.com/everylive/Live-Dish/main/playlist.m3u": {
     "fails": 0,
-    "last_hits": 7
+    "last_hits": 8
   },
   "https://api.ppv.to/api/streams": {
     "fails": 2,
@@ -42101,7 +42101,7 @@
   },
   "https://raw.githubusercontent.com/DEvmIb/famelack-channels-m3u/main/m3u/al.m3u": {
     "fails": 0,
-    "last_hits": 1
+    "last_hits": 2
   },
   "http://livepull-tcyzb.sztv.com.cn/4KBack.m3u8": {
     "fails": 2,
@@ -42493,7 +42493,7 @@
   },
   "https://raw.githubusercontent.com/Mrbotrx/BDXI_KB/main/KBC/KBC_playlist.m3u": {
     "fails": 0,
-    "last_hits": 18
+    "last_hits": 9
   },
   "https://raw.githubusercontent.com/fanmingming/live/main/radio/m3u/fm.m3u": {
     "fails": 2,
@@ -42977,7 +42977,7 @@
   },
   "https://raw.githubusercontent.com/Quincunx33/Ip-tv/main/iptv-master/server3.m3u": {
     "fails": 0,
-    "last_hits": 7
+    "last_hits": 18
   },
   "https://live.kwikmotion.com/sharjahtvquranlive/shqurantv.smil/playlist.m3u8": {
     "fails": 2,
@@ -43089,7 +43089,7 @@
   },
   "https://raw.githubusercontent.com/DEvmIb/famelack-channels-m3u/main/m3u/_dach.m3u": {
     "fails": 0,
-    "last_hits": 1
+    "last_hits": 2
   },
   "https://yzzy.play-cdn8.com/20220710/3605_42b84d10/index.m3u8": {
     "fails": 2,
@@ -43682,7 +43682,7 @@
   },
   "https://raw.githubusercontent.com/IMAN-Py/open-tv-atlas/main/categories/classic.m3u": {
     "fails": 0,
-    "last_hits": 11
+    "last_hits": 18
   },
   "https://streams.sofast.tv/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/anyaott4_sofast/3d21d9ee-e2b7-49f7-93da-7d459f89e083_0_HLS/manifest.m3u8": {
     "fails": 2,
@@ -43766,7 +43766,7 @@
   },
   "https://raw.githubusercontent.com/IMAN-Py/open-tv-atlas/main/categories/auto.m3u": {
     "fails": 0,
-    "last_hits": 15
+    "last_hits": 20
   },
   "https://gitlab.com/fafryd1125/winfast-TV2100/-/raw/master/bangla.m3u": {
     "fails": 2,
@@ -43786,7 +43786,7 @@
   },
   "https://raw.githubusercontent.com/bugsfreeweb/LiveTVCollector/main/LiveTV/Bangladesh/LiveTV.m3u": {
     "fails": 0,
-    "last_hits": 437
+    "last_hits": 391
   },
   "https://iptv-org.github.io/iptv/subdivisions/us-ri.m3u": {
     "fails": 2,
@@ -44002,7 +44002,7 @@
   },
   "https://raw.githubusercontent.com/razuahammad55/live-tv-hub/main/1.m3u": {
     "fails": 0,
-    "last_hits": 20
+    "last_hits": 21
   },
   "https://site.web.api.espn.com/apis/search/v2": {
     "fails": 2,
@@ -44061,23 +44061,23 @@
     "last_hits": 0
   },
   "https://www.apsattv.com/tubi.m3u": {
-    "fails": 8,
+    "fails": 9,
     "last_hits": 0
   },
   "https://www.apsattv.com/redbox.m3u": {
-    "fails": 8,
+    "fails": 9,
     "last_hits": 0
   },
   "https://www.apsattv.com/distrotv.m3u": {
-    "fails": 8,
+    "fails": 9,
     "last_hits": 0
   },
   "https://www.apsattv.com/localnow.m3u": {
-    "fails": 8,
+    "fails": 9,
     "last_hits": 0
   },
   "https://i.mjh.nz/Stirr/all.m3u8": {
-    "fails": 8,
+    "fails": 9,
     "last_hits": 0
   },
   "https://gitlab.com/ufc190rc/brisbaneanik/-/raw/main/iptv.m3u": {
@@ -44218,7 +44218,7 @@
   },
   "https://raw.githubusercontent.com/Alplox/json-teles/main/m3u-playlists/in.m3u": {
     "fails": 0,
-    "last_hits": 5
+    "last_hits": 7
   },
   "https://example.test/live/master.m3u8": {
     "fails": 2,
@@ -44226,7 +44226,7 @@
   },
   "https://raw.githubusercontent.com/EricBoudreault/XMLTV-Tools-VB.NET/main/Playlists/IPTV_Misc.m3u": {
     "fails": 0,
-    "last_hits": 2
+    "last_hits": 3
   },
   "https://raw.githubusercontent.com/eklins/FDTV/main/tv/xxx%20Japan%201.m3u": {
     "fails": 2,
@@ -44286,7 +44286,7 @@
   },
   "https://raw.githubusercontent.com/IMAN-Py/open-tv-atlas/main/categories/family.m3u": {
     "fails": 0,
-    "last_hits": 17
+    "last_hits": 18
   },
   "https://gitlab.com/FermataRest/m3u8-stream-downloader-browser-extension/-/raw/main/india.m3u": {
     "fails": 2,
@@ -44313,8 +44313,8 @@
     "last_hits": 0
   },
   "https://raw.githubusercontent.com/amazeyourself/m3u/main/ashokadigital.m3u": {
-    "fails": 0,
-    "last_hits": 1
+    "fails": 1,
+    "last_hits": 0
   },
   "https://gitlab.com/bestnetworkprovider2026/guide-iptv-francophone-8144/-/raw/main/playlist.m3u8": {
     "fails": 2,
@@ -44326,7 +44326,7 @@
   },
   "https://raw.githubusercontent.com/shahriyarsojibhasan/SHAHRIYAR-LIVE-TV/main/WINDOWS%20APPS/NativeApp/SHAHRIYAR-LIVE-TV.m3u": {
     "fails": 0,
-    "last_hits": 1
+    "last_hits": 2
   },
   "https://nomawnoijl.gpcdn.net/akash/astrocricket/playlist.m3u8": {
     "fails": 2,
@@ -44334,7 +44334,7 @@
   },
   "https://raw.githubusercontent.com/DEvmIb/famelack-channels-m3u/main/m3u/au.m3u": {
     "fails": 0,
-    "last_hits": 5
+    "last_hits": 18
   },
   "https://gitlab.com/LumoraPlayer/Lumora/-/raw/main/india.m3u": {
     "fails": 2,
@@ -44426,7 +44426,7 @@
   },
   "https://raw.githubusercontent.com/sm-monirulislam/SM-IPTV/main/new_isp.m3u": {
     "fails": 0,
-    "last_hits": 19
+    "last_hits": 18
   },
   "https://raw.githubusercontent.com/simon-lzw/iptv-scraper/main/output/countries/BG.m3u": {
     "fails": 2,
@@ -44678,7 +44678,7 @@
   },
   "https://raw.githubusercontent.com/safayatul-islam/IPTV/main/draft.m3u": {
     "fails": 0,
-    "last_hits": 10
+    "last_hits": 2
   },
   "https://raw.githubusercontent.com/Diljan707/sony-hls/main/smart_jio.m3u": {
     "fails": 2,
@@ -44782,7 +44782,7 @@
   },
   "https://raw.githubusercontent.com/masumbill/bdiptv/main/index.m3u": {
     "fails": 0,
-    "last_hits": 3
+    "last_hits": 4
   },
   "https://gitlab.com/bestnetworkprovider2026/guide-iptv-francophone-8144/-/raw/main/tv.m3u": {
     "fails": 2,
@@ -44842,7 +44842,7 @@
   },
   "https://raw.githubusercontent.com/marufmoinuddin/iptv/main/tv.m3u": {
     "fails": 0,
-    "last_hits": 10
+    "last_hits": 12
   },
   "https://raw.githubusercontent.com/levi-45/iptvstream/main/Amerika_MEXICO_PLUTO.m3u": {
     "fails": 2,
@@ -44926,7 +44926,7 @@
   },
   "https://raw.githubusercontent.com/TributeLLC/205522/main/Canada.m3u": {
     "fails": 0,
-    "last_hits": 6
+    "last_hits": 7
   },
   "https://raw.githubusercontent.com/Youssefrajeh/IPTV/main/playlists/popular-travel-iptv.m3u": {
     "fails": 2,
@@ -45338,7 +45338,7 @@
   },
   "https://raw.githubusercontent.com/ahan443/FAST-IPTV/main/0.m3u": {
     "fails": 0,
-    "last_hits": 2
+    "last_hits": 1
   },
   "https://raw.githubusercontent.com/iptv-org/iptv/master/streams/af.m3u": {
     "fails": 2,
@@ -45386,7 +45386,7 @@
   },
   "https://raw.githubusercontent.com/IMAN-Py/open-tv-atlas/main/categories/education.m3u": {
     "fails": 0,
-    "last_hits": 11
+    "last_hits": 17
   },
   "https://raw.githubusercontent.com/Alan08Xb/IPTV-sources/main/output/all.m3u": {
     "fails": 2,
@@ -45582,7 +45582,7 @@
   },
   "https://raw.githubusercontent.com/PrattoySaha/IPTV/main/Prattoy.m3u8": {
     "fails": 0,
-    "last_hits": 3
+    "last_hits": 4
   },
   "https://owrcovcrpy.gpcdn.net/bpk-tv/1714/output/index.m3u8": {
     "fails": 2,
@@ -45898,7 +45898,7 @@
   },
   "https://raw.githubusercontent.com/ahan443/FAST-IPTV/main/03-10-26_Link-1%20%281%29.m3u": {
     "fails": 0,
-    "last_hits": 11
+    "last_hits": 6
   },
   "https://olidigital.space/olitv-epg.php": {
     "fails": 2,
@@ -45994,7 +45994,7 @@
   },
   "https://raw.githubusercontent.com/nexonic-technologies/nexonic-iptv/main/playlists/categories/movies.m3u": {
     "fails": 0,
-    "last_hits": 2
+    "last_hits": 3
   },
   "https://raw.githubusercontent.com/IamJony/IPTVListaLibre/main/co_canales.m3u": {
     "fails": 2,
@@ -46162,7 +46162,7 @@
   },
   "https://raw.githubusercontent.com/IMAN-Py/open-tv-atlas/main/categories/general.m3u": {
     "fails": 0,
-    "last_hits": 144
+    "last_hits": 163
   },
   "https://raw.githubusercontent.com/pk3011/Youtube-to-M3u8/main/channels/adom_tv.m3u8": {
     "fails": 2,
@@ -46206,7 +46206,7 @@
   },
   "https://raw.githubusercontent.com/shahriyarsojibhasan/SHAHRIYAR-LIVE-TV/main/SHAHRIYAR-LIVE-TV-APP.m3u": {
     "fails": 0,
-    "last_hits": 11
+    "last_hits": 12
   },
   "https://gist.githubusercontent.com/Asan469/cfad1b950e06931af0d9b6f33615eaff/raw/1fc10f29f5638e14f8a9172b9ee4334f1ed1e1a2/motogp_only.m3u": {
     "fails": 2,
@@ -46270,7 +46270,7 @@
   },
   "https://raw.githubusercontent.com/LITUATUI/M3UPT/main/M3U/M3UPT.m3u": {
     "fails": 0,
-    "last_hits": 6
+    "last_hits": 7
   },
   "https://gitlab.com/ifexiststrue/iptvlistasm3u/-/raw/main/live.m3u": {
     "fails": 2,
@@ -46314,7 +46314,7 @@
   },
   "https://raw.githubusercontent.com/ahan443/FAST-IPTV/main/14-10-26_2%20%281%29.m3u": {
     "fails": 0,
-    "last_hits": 11
+    "last_hits": 23
   },
   "https://gitlab.com/iptv-group7693241/index.country.m3u/-/raw/main/index.m3u": {
     "fails": 2,
@@ -46358,7 +46358,7 @@
   },
   "https://raw.githubusercontent.com/bugsfreeweb/LiveTVCollector/main/BugsfreeStreams/Output/StreamLinks-PT.m3u": {
     "fails": 0,
-    "last_hits": 11
+    "last_hits": 10
   },
   "https://nomawnoijl.gpcdn.net/akash/sports18/playlist.m3u8": {
     "fails": 2,
@@ -46378,7 +46378,7 @@
   },
   "https://raw.githubusercontent.com/IMAN-Py/open-tv-atlas/main/categories/entertainment.m3u": {
     "fails": 0,
-    "last_hits": 126
+    "last_hits": 177
   },
   "https://raw.githubusercontent.com/myfriendqaz/LiveTVCollector/main/BugsfreeStreams/Output/StreamLinks-TH.m3u": {
     "fails": 2,
@@ -46406,7 +46406,7 @@
   },
   "https://raw.githubusercontent.com/TheShadhin/ShadhinTV/main/TV%20Network-594.m3u": {
     "fails": 0,
-    "last_hits": 17
+    "last_hits": 21
   },
   "https://huyaimg.msstatic.com/cdnimage/game/": {
     "fails": 2,
@@ -46426,7 +46426,7 @@
   },
   "https://raw.githubusercontent.com/Hawaiine/Oasisic-IPTV/main/output/live_more.m3u": {
     "fails": 0,
-    "last_hits": 5
+    "last_hits": 8
   },
   "https://raw.githubusercontent.com/sm-monirulislam/SM-IPTV/main/mac_playlist.m3u": {
     "fails": 2,
@@ -46534,7 +46534,7 @@
   },
   "https://raw.githubusercontent.com/devxhasu/my-iptv-playlist/main/public.m3u": {
     "fails": 0,
-    "last_hits": 1
+    "last_hits": 4
   },
   "https://gitlab.com/iptv-streaming-guide-group1/iptv-evening-trials-canada/-/raw/main/bangla.m3u": {
     "fails": 2,
@@ -46674,7 +46674,7 @@
   },
   "https://raw.githubusercontent.com/eklins/FDTV/main/tv/tv%20USA.m3u": {
     "fails": 0,
-    "last_hits": 8
+    "last_hits": 7
   },
   "https://example.test/index.m3u8": {
     "fails": 2,
@@ -46686,7 +46686,7 @@
   },
   "https://raw.githubusercontent.com/Shahnewaz-saadi/IPTV/main/All%20IPTV.m3u": {
     "fails": 0,
-    "last_hits": 27
+    "last_hits": 14
   },
   "https://raw.githubusercontent.com/rdc1793/canaisiptv/main/listasmarttv.m3u": {
     "fails": 2,
@@ -46774,7 +46774,7 @@
   },
   "https://raw.githubusercontent.com/Alan08Xb/IPTV-sources/main/output/category_%E7%BA%AA%E5%BD%95%E7%89%87.m3u": {
     "fails": 0,
-    "last_hits": 1
+    "last_hits": 2
   },
   "https://gitlab.com/emonbhuiyan/bdix-openwrt/-/raw/main/india.m3u": {
     "fails": 2,
@@ -46858,7 +46858,7 @@
   },
   "https://raw.githubusercontent.com/KaneenApp/NeuroSources/main/DOooCS.m3u": {
     "fails": 0,
-    "last_hits": 21
+    "last_hits": 23
   },
   "https://raw.githubusercontent.com/channeliptv0/IPTV/main/Master/jiotvplus.m3u.m3u8": {
     "fails": 2,
@@ -46882,7 +46882,7 @@
   },
   "https://raw.githubusercontent.com/Mojib-Rsm/iptv/main/football.m3u": {
     "fails": 0,
-    "last_hits": 5
+    "last_hits": 8
   },
   "https://raw.githubusercontent.com/8figalltimepro/special-train/main/autoq.m3u": {
     "fails": 2,
@@ -46898,11 +46898,11 @@
   },
   "https://raw.githubusercontent.com/8figalltimepro/special-train/main/Freecatv-08.m3u8": {
     "fails": 0,
-    "last_hits": 5
+    "last_hits": 7
   },
   "https://raw.githubusercontent.com/8figalltimepro/special-train/main/Freecatv-45.m3u8": {
     "fails": 0,
-    "last_hits": 3
+    "last_hits": 2
   },
   "https://gitlab.com/rhridoy136/bdixservers.m3u/-/raw/main/india.m3u": {
     "fails": 2,
@@ -46942,7 +46942,7 @@
   },
   "https://raw.githubusercontent.com/masumbill/bdiptv/main/mix.m3u": {
     "fails": 0,
-    "last_hits": 11
+    "last_hits": 14
   },
   "https://raw.githubusercontent.com/cihan53/chyz-iptv/main/FR/index.m3u": {
     "fails": 2,
@@ -47098,7 +47098,7 @@
   },
   "https://raw.githubusercontent.com/ahan443/FAST-IPTV/main/11-10-26_Link-1.m3u": {
     "fails": 0,
-    "last_hits": 16
+    "last_hits": 34
   },
   "https://video-auth6.iol.pt/live_tvi_internacional/live_tvi_internacional/playlist.m3u8": {
     "fails": 2,
@@ -47198,7 +47198,7 @@
   },
   "https://raw.githubusercontent.com/devxhasu/my-iptv-playlist/main/playlists/sports.m3u": {
     "fails": 0,
-    "last_hits": 1
+    "last_hits": 16
   },
   "https://raw.githubusercontent.com/fraudiay79/strm/main/platforms/links/fi/jim.m3u8": {
     "fails": 2,
@@ -47290,7 +47290,7 @@
   },
   "https://raw.githubusercontent.com/TheShadhin/ShadhinTV/main/tv.m3u": {
     "fails": 0,
-    "last_hits": 6
+    "last_hits": 8
   },
   "https://www.fctv33.com": {
     "fails": 2,
@@ -47306,7 +47306,7 @@
   },
   "https://raw.githubusercontent.com/8figalltimepro/special-train/main/Freecatv-56.m3u8": {
     "fails": 0,
-    "last_hits": 2
+    "last_hits": 5
   },
   "https://epg.cyta.com.cy/api/mediacatalog/fetchChannels": {
     "fails": 2,
@@ -47350,7 +47350,7 @@
   },
   "https://raw.githubusercontent.com/pan8664716/MultiLive/main/output/twitch_live.m3u": {
     "fails": 0,
-    "last_hits": 3
+    "last_hits": 1
   },
   "https://raw.githubusercontent.com/TributeLLC/205522/main/Belgique.fr.m3u": {
     "fails": 2,
@@ -47526,7 +47526,7 @@
   },
   "https://raw.githubusercontent.com/nexonic-technologies/nexonic-iptv/main/playlists/categories/legislative.m3u": {
     "fails": 0,
-    "last_hits": 24
+    "last_hits": 23
   },
   "https://raw.githubusercontent.com/interlark/123tv-tvguide/master": {
     "fails": 2,
@@ -47906,7 +47906,7 @@
   },
   "https://raw.githubusercontent.com/JMigue85/IPTV-SV/refs/heads/main/IPTVSV.m3u": {
     "fails": 0,
-    "last_hits": 68
+    "last_hits": 71
   },
   "https://gitlab.com/boo231285/iptv-occasional-viewing-uk/-/raw/main/index.m3u": {
     "fails": 2,
@@ -47993,8 +47993,8 @@
     "last_hits": 0
   },
   "https://raw.githubusercontent.com/ahan443/FAST-IPTV/main/04-10-26_Link-2%20%281%29.m3u": {
-    "fails": 0,
-    "last_hits": 2
+    "fails": 1,
+    "last_hits": 0
   },
   "https://gitlab.com/ma-tcha/easystream/-/raw/main/india.m3u": {
     "fails": 2,
@@ -48074,7 +48074,7 @@
   },
   "https://raw.githubusercontent.com/Alplox/json-teles/main/channels.m3u": {
     "fails": 0,
-    "last_hits": 3
+    "last_hits": 5
   },
   "https://raw.githubusercontent.com/fahadskt/IPTV-Playlists/main/CricHD_VLC.m3u": {
     "fails": 2,
@@ -48218,7 +48218,7 @@
   },
   "https://raw.githubusercontent.com/ahan443/FAST-IPTV/main/08-10-26_Link-2%20%281%29.m3u": {
     "fails": 0,
-    "last_hits": 2
+    "last_hits": 14
   },
   "https://live2.domaincdn.cc/livecdn/channel-8.flv": {
     "fails": 2,
@@ -48330,7 +48330,7 @@
   },
   "https://raw.githubusercontent.com/dmelendez11/lista-canales-m3u/main/lista_tv_organizada.m3u": {
     "fails": 0,
-    "last_hits": 14
+    "last_hits": 11
   },
   "https://us.stream.cloudam.cc/stream/1/1/825041/38958/12426/212.103.48.84/1659438644/3087fde59a3f8b53040ccb6140d1294ca83c1d5d93/series/g/Game_Of_Thrones/Game_Of_Thrones_S02E08/360p/Game_Of_Thrones_S02E08_360p.m3u8": {
     "fails": 2,
@@ -50101,8 +50101,8 @@
     "last_hits": 0
   },
   "https://onureroz.com/indirmeler/turk/index.m3u": {
-    "fails": 0,
-    "last_hits": 3
+    "fails": 1,
+    "last_hits": 0
   },
   "https://s3.aynaott.com/storage/ac3beb78bee8efd10121580ddf56fd79": {
     "fails": 2,
@@ -50598,7 +50598,7 @@
   },
   "https://raw.githubusercontent.com/ahan443/FreeHunter/main/0611261.m3u": {
     "fails": 0,
-    "last_hits": 5
+    "last_hits": 6
   },
   "https://us.stream.cloudam.cc/stream/1/1/825041/38958/12426/212.103.48.84/1659438644/3087fde59a3f8b53040ccb6140d1294ca83c1d5d93/series/g/Game_Of_Thrones/Game_Of_Thrones_S02E08/1080p/Game_Of_Thrones_S02E08_1080p.m3u8": {
     "fails": 2,
@@ -52494,7 +52494,7 @@
   },
   "https://raw.githubusercontent.com/freedish2024/personal-project.sr/main/Ab%20bangla.m3u": {
     "fails": 0,
-    "last_hits": 3
+    "last_hits": 2
   },
   "https://jmp2.uk/plu-5dcde437229eff00091b6c30.m3u8": {
     "fails": 2,
@@ -53678,7 +53678,7 @@
   },
   "https://raw.githubusercontent.com/arquerido/mych/main/Flussonic.m3u8": {
     "fails": 0,
-    "last_hits": 5
+    "last_hits": 8
   },
   "http://iptv.huuc.edu.cn/hls/cctv11hd.m3u8": {
     "fails": 2,
@@ -54670,7 +54670,7 @@
   },
   "https://raw.githubusercontent.com/Phoenix89S/IpTV_playlist_2026Ru/main/8.m3u": {
     "fails": 0,
-    "last_hits": 3
+    "last_hits": 4
   },
   "https://hls.lauthaitv.cc/live/ahli-qadsiah-afcc1/index.m3u8": {
     "fails": 2,
@@ -55781,8 +55781,8 @@
     "last_hits": 0
   },
   "https://raw.githubusercontent.com/brandenp198483-collab/branden-tv/main/docs/BrandenTV-All-Streams-Audit.m3u": {
-    "fails": 0,
-    "last_hits": 1
+    "fails": 1,
+    "last_hits": 0
   },
   "https://jiotvmblive.cdn.jio.com/bpk-tv/Sky_India_Tv_MOB/WDVLive/index.mpd": {
     "fails": 2,
@@ -57526,7 +57526,7 @@
   },
   "https://raw.githubusercontent.com/arkina1234-undenified/IPTV/main/backup/geonsey/Free2ViewTV-2021-Master.m3u": {
     "fails": 0,
-    "last_hits": 21
+    "last_hits": 27
   },
   "https://cdn.pishow.tv/ott/live/1211/master.m3u8": {
     "fails": 2,
@@ -58930,7 +58930,7 @@
   },
   "https://raw.githubusercontent.com/Sunstar16/FULL-IPTV-CHANNEL-PLAYLIST/main/Main%20Necessary%20Channels.m3u": {
     "fails": 0,
-    "last_hits": 3
+    "last_hits": 4
   },
   "https://limited43.todostreaming.es/live/simbana-livestream.m3u8": {
     "fails": 2,
@@ -59153,8 +59153,8 @@
     "last_hits": 0
   },
   "https://raw.githubusercontent.com/juliebgh/playlist-fr/main/playlist-reliable.m3u": {
-    "fails": 1,
-    "last_hits": 0
+    "fails": 0,
+    "last_hits": 2
   },
   "https://ztnr.rtve.es/ztnr/6712456.m3u8": {
     "fails": 2,
@@ -62462,7 +62462,7 @@
   },
   "https://raw.githubusercontent.com/freedish2024/personal-project.sr/main/%23%40%23%40%23%40%23%40%23%40%23%40%23%40%23%40%23%40%23%40%23%40%23%40%23%40%23%40%23%40%23%40%23%40%23%40%23%40%23%40%23%40%23%40%23%40%23%40%23%40%23%40%23%40%23%40%23EXTM3U.m3u": {
     "fails": 0,
-    "last_hits": 21
+    "last_hits": 20
   },
   "https://jmp2.uk/plu-5f171d3442a0500007362f22.m3u8": {
     "fails": 2,
@@ -62989,8 +62989,8 @@
     "last_hits": 0
   },
   "https://raw.githubusercontent.com/juliebgh/playlist-fr/main/playlist.m3u": {
-    "fails": 0,
-    "last_hits": 4
+    "fails": 1,
+    "last_hits": 0
   },
   "https://ncdn.telewebion.ir/tv3/live/playlist.m3u8": {
     "fails": 2,
@@ -63958,7 +63958,7 @@
   },
   "https://raw.githubusercontent.com/freedish2024/personal-project.sr/main/Aaa%20kids.m3u": {
     "fails": 0,
-    "last_hits": 4
+    "last_hits": 3
   },
   "https://v23.m3u8crop.workers.dev/playlist/Nrsc6N64ogCZFJOMzJp2SACMClVxlqTXNY6-a8njgtmHmb7XdT_UNFvYm3r6N3rY1f7JSBRNwd7ZboKp4XkBwQ_iRBV4QblMtp4T4v37VcXjokMLHor4cCCUxne4kMpzOxeUnwNV7gNkS0ncxaCUyLzKmvO9vaQr_IWXbhhXAZIbuIp6DOgU2B-HkIDM_VA8nr8Z38m-OSe9-bGtcuhVOe9fSbE": {
     "fails": 2,
@@ -66178,7 +66178,7 @@
   },
   "https://raw.githubusercontent.com/brandenp198483-collab/branden-tv/main/BrandenTV-PREFERRED.m3u": {
     "fails": 0,
-    "last_hits": 5
+    "last_hits": 9
   },
   "https://us.stream.cloudam.cc/stream/1/1/825041/38974/12426/212.103.48.84/1659438644/30d7fce2704030b7435708925f426c5d7792c24673/series/g/Game_Of_Thrones/Game_Of_Thrones_S04E04/360p/Game_Of_Thrones_S04E04_360p.m3u8": {
     "fails": 2,
@@ -66998,7 +66998,7 @@
   },
   "https://raw.githubusercontent.com/arkina1234-undenified/IPTV/main/backup/DeltaSr95/combined.m3u": {
     "fails": 0,
-    "last_hits": 22
+    "last_hits": 18
   },
   "https://jiotvmblive.cdn.jio.com/bpk-tv/News_State_UK_UP_MOB/WDVLive/index.mpd": {
     "fails": 2,
@@ -68185,8 +68185,8 @@
     "last_hits": 0
   },
   "https://raw.githubusercontent.com/dmelendez11/lista-canales-m3u/main/canales.m3u": {
-    "fails": 0,
-    "last_hits": 1
+    "fails": 1,
+    "last_hits": 0
   },
   "https://live.artidijitalmedya.com/artidijital_olayturk/olayturk/playlist.m3u8": {
     "fails": 2,
@@ -69306,7 +69306,7 @@
   },
   "https://raw.githubusercontent.com/brandenp198483-collab/branden-tv/main/BrandenTV-other.m3u": {
     "fails": 0,
-    "last_hits": 18
+    "last_hits": 31
   },
   "http://otttv.bj.chinamobile.com/TVOD/88888888/224/3221226304/1.m3u8": {
     "fails": 2,
@@ -69482,7 +69482,7 @@
   },
   "https://raw.githubusercontent.com/arquerido/mych/main/LiveTV.m3u": {
     "fails": 0,
-    "last_hits": 34
+    "last_hits": 29
   },
   "https://tv.zubo.cc.cd/live/rx2/2728/0f177c09ae2291f7f2fd7226d9d63600/index.m3u8": {
     "fails": 2,
@@ -71942,7 +71942,7 @@
   },
   "https://raw.githubusercontent.com/YosemiteSam6/turkiye-iptv-m3u-m3u8/main/kanallar.m3u": {
     "fails": 0,
-    "last_hits": 2
+    "last_hits": 4
   },
   "http://192.151.150.154/live/tjwshd.m3u8": {
     "fails": 2,
@@ -75182,7 +75182,7 @@
   },
   "https://raw.githubusercontent.com/arkina1234-undenified/IPTV/main/backup/Sphinxroot/Free2ViewTV-2021-Master.m3u": {
     "fails": 0,
-    "last_hits": 13
+    "last_hits": 17
   },
   "https://jmp2.uk/sam-USBA300024TN.m3u8": {
     "fails": 2,
@@ -75929,8 +75929,8 @@
     "last_hits": 0
   },
   "https://raw.githubusercontent.com/Rafail1082GitHUB/rafail1982.ru/main/1180.m3u8": {
-    "fails": 0,
-    "last_hits": 1
+    "fails": 1,
+    "last_hits": 0
   },
   "https://cdn10.163189.xyz/stream/163189/viu6/stream_0.php": {
     "fails": 2,
@@ -76618,7 +76618,7 @@
   },
   "https://raw.githubusercontent.com/ahan443/FreeHunter/main/1011261.m3u": {
     "fails": 0,
-    "last_hits": 4
+    "last_hits": 23
   },
   "https://gcalic.v.myalicdn.com/gc/hlzycc_1/index.m3u8": {
     "fails": 2,
@@ -77290,7 +77290,7 @@
   },
   "https://raw.githubusercontent.com/ahan443/FreeHunter/main/3010261.m3u": {
     "fails": 0,
-    "last_hits": 15
+    "last_hits": 36
   },
   "https://zuidazy.co/api.php/provide/vod/at/xml/": {
     "fails": 2,
@@ -77446,7 +77446,7 @@
   },
   "https://raw.githubusercontent.com/brandenp198483-collab/branden-tv/main/BrandenTV-USA.m3u": {
     "fails": 0,
-    "last_hits": 30
+    "last_hits": 17
   },
   "https://jiotvmblive.cdn.jio.com/bpk-tv/Speed_News_MOB/WDVLive/index.mpd": {
     "fails": 2,
@@ -77721,8 +77721,8 @@
     "last_hits": 0
   },
   "https://web.aynaott.com/api/v5/pages/live-tvs/blocks": {
-    "fails": 0,
-    "last_hits": 2
+    "fails": 1,
+    "last_hits": 0
   },
   "https://hstream.moe": {
     "fails": 2,
@@ -79290,7 +79290,7 @@
   },
   "https://raw.githubusercontent.com/ahan443/FreeHunter/main/2910261.m3u": {
     "fails": 0,
-    "last_hits": 24
+    "last_hits": 26
   },
   "https://cdnlivevlc.codev8.net/canaltorremolinoslive/smil:channel1.smil/playlist.m3u8": {
     "fails": 2,
@@ -80510,7 +80510,7 @@
   },
   "https://raw.githubusercontent.com/Bokhtier1/Panther/main/Main.m3u": {
     "fails": 0,
-    "last_hits": 6
+    "last_hits": 8
   },
   "https://gcalic.v.myalicdn.com/gc/zjjjjdl_1/index.m3u8": {
     "fails": 2,
@@ -83058,7 +83058,7 @@
   },
   "https://raw.githubusercontent.com/ahan443/FreeHunter/main/12112026.m3u": {
     "fails": 0,
-    "last_hits": 52
+    "last_hits": 27
   },
   "https://247preview.foxnews.com/hls/live/2020027/fncv3preview/primary.m3u8": {
     "fails": 2,
@@ -84190,7 +84190,7 @@
   },
   "https://raw.githubusercontent.com/ahan443/FreeHunter/main/2310262.m3u": {
     "fails": 0,
-    "last_hits": 9
+    "last_hits": 11
   },
   "http://hdtv.lzu6.edu.cn/hls/jlu_cctv2hd.m3u8": {
     "fails": 2,
@@ -85326,7 +85326,7 @@
   },
   "https://www.tdtchannels.com/lists/tv.m3u8": {
     "fails": 0,
-    "last_hits": 22
+    "last_hits": 17
   },
   "https://awtv.nuvemplay.live/hls/stream.m3u8": {
     "fails": 2,
@@ -89214,7 +89214,7 @@
   },
   "https://raw.githubusercontent.com/brandenp198483-collab/branden-tv/main/BrandenTV-sports.m3u": {
     "fails": 0,
-    "last_hits": 1
+    "last_hits": 2
   },
   "https://jmp2.uk/plu-6086d3f420fc8500075f8dbf.m3u8": {
     "fails": 2,
@@ -89998,7 +89998,7 @@
   },
   "https://raw.githubusercontent.com/altn2025/iptv/main/iptv.m3u": {
     "fails": 0,
-    "last_hits": 7
+    "last_hits": 6
   },
   "https://tvsen6.aynaott.com/golfchannel/index.m3u8": {
     "fails": 2,
@@ -91390,7 +91390,7 @@
   },
   "https://raw.githubusercontent.com/hujingguang/ChinaIPTV/main/USA.m3u8": {
     "fails": 0,
-    "last_hits": 21
+    "last_hits": 24
   },
   "https://jiotvmblive.cdn.jio.com/bpk-tv/Zee_Telugu_News_MOB/WDVLive/index.mpd": {
     "fails": 2,
@@ -91402,7 +91402,7 @@
   },
   "https://raw.githubusercontent.com/Rafail1082GitHUB/rafail1982.ru/main/AGREGATOR.m3u8": {
     "fails": 0,
-    "last_hits": 3
+    "last_hits": 4
   },
   "https://cdn.yzzy31-play.com/20260109/10909_5455b984/2100k/hls/mixed.m3u8": {
     "fails": 2,
@@ -93398,7 +93398,7 @@
   },
   "https://raw.githubusercontent.com/Rafail1082GitHUB/rafail1982.ru/main/3683.m3u8": {
     "fails": 0,
-    "last_hits": 3
+    "last_hits": 4
   },
   "http://redlabmcdn.s.llnwi.net/nv02/bs02hd/index.m3u8": {
     "fails": 2,
@@ -93665,7 +93665,7 @@
     "last_hits": 0
   },
   "https://raw.githubusercontent.com/arquerido/mych/main/ALLUSA.m3u": {
-    "fails": 1,
+    "fails": 2,
     "last_hits": 0
   },
   "https://tvlive.sbs.co.kr/sbspluspc/sbsplus1.stream/playlist.m3u8": {
@@ -95210,7 +95210,7 @@
   },
   "https://raw.githubusercontent.com/Sunstar16/FULL-IPTV-CHANNEL-PLAYLIST/main/Channels/index.m3u8": {
     "fails": 0,
-    "last_hits": 20
+    "last_hits": 16
   },
   "https://fta.ektv.in/live/592/master.m3u8": {
     "fails": 2,
@@ -95594,7 +95594,7 @@
   },
   "https://raw.githubusercontent.com/jonasskynet-eng/cine-pro-tv-2026/main/ECOSSISTEMA_STREAMING_IPTV/saida/lista_brasil_turbo.m3u": {
     "fails": 0,
-    "last_hits": 21
+    "last_hits": 22
   },
   "https://gitlab.com/NishantDas07Nexus/Weekend-Vibe-Picker/-/raw/main/tv.m3u": {
     "fails": 2,
@@ -96309,8 +96309,8 @@
     "last_hits": 0
   },
   "https://aeoncorex-lab.github.io/streamx-iptv-data/api/v1/categories/australia.json": {
-    "fails": 0,
-    "last_hits": 7
+    "fails": 1,
+    "last_hits": 0
   },
   "https://pzhgifbkllliv.vcdn.cloud/1795370151_hd/1795370151_hd@720p.m3u8": {
     "fails": 2,
@@ -96718,7 +96718,7 @@
   },
   "https://raw.githubusercontent.com/AeonCoreX-Lab/streamx-iptv-data/main/playlists/canada.m3u": {
     "fails": 0,
-    "last_hits": 28
+    "last_hits": 59
   },
   "http://210.210.155.69/s/s63/S4/mnf.m3u8": {
     "fails": 2,
@@ -97253,8 +97253,8 @@
     "last_hits": 0
   },
   "https://raw.githubusercontent.com/bruno084i-cyber/Brunocanais/main/BRUNOIPTV_PREMIUM2.M3U": {
-    "fails": 0,
-    "last_hits": 1
+    "fails": 1,
+    "last_hits": 0
   },
   "http://zdf-hls-15.akamaized.net/hls/live/2016498/de/veryhigh/master.m3u8": {
     "fails": 2,
@@ -97378,7 +97378,7 @@
   },
   "https://raw.githubusercontent.com/AeonCoreX-Lab/streamx-iptv-data/main/playlists/business.m3u": {
     "fails": 0,
-    "last_hits": 4
+    "last_hits": 7
   },
   "https://orf1.mdn.ors.at/out/u/orf1/q8c/manifest.m3u8": {
     "fails": 2,
@@ -97482,7 +97482,7 @@
   },
   "https://raw.githubusercontent.com/dmandache/my-iptv-playlist/master/tv.m3u": {
     "fails": 0,
-    "last_hits": 5
+    "last_hits": 4
   },
   "https://iqiyizyapi.com/api.php/provide/vod": {
     "fails": 2,
@@ -97658,7 +97658,7 @@
   },
   "https://aeoncorex-lab.github.io/streamx-iptv-data/api/v1/categories/kids.json": {
     "fails": 0,
-    "last_hits": 10
+    "last_hits": 7
   },
   "https://cdn4.skygo.mn/live/disk1/Cartoon_Network/HLSv3-FTA/Cartoon_Network.m3u8": {
     "fails": 2,
@@ -97934,7 +97934,7 @@
   },
   "https://raw.githubusercontent.com/Enigma402/Iptv/main/1.m3u": {
     "fails": 0,
-    "last_hits": 21
+    "last_hits": 24
   },
   "https://proxystream.iteltv.com.ar/output/iteltv/playlist.m3u8": {
     "fails": 2,
@@ -98041,8 +98041,8 @@
     "last_hits": 0
   },
   "https://aeoncorex-lab.github.io/streamx-iptv-data/api/v1/categories/turkey.json": {
-    "fails": 1,
-    "last_hits": 0
+    "fails": 0,
+    "last_hits": 1
   },
   "http://shangyan-livod-cdn.cmsrict.com/gitv_live/G_CCTV-5PLUS/G_CCTV-5PLUS.m3u8": {
     "fails": 2,
@@ -98222,7 +98222,7 @@
   },
   "https://aeoncorex-lab.github.io/streamx-iptv-data/api/v1/categories/china.json": {
     "fails": 0,
-    "last_hits": 8
+    "last_hits": 2
   },
   "https://www.philo.com/player/channel/Q2hhbm5lbDo2MDg1NDg4OTk2NDg0Mzk4OTQ": {
     "fails": 2,
@@ -98414,7 +98414,7 @@
   },
   "https://raw.githubusercontent.com/Cnmajun/IptvSync/main/src/mavinlive.m3u": {
     "fails": 0,
-    "last_hits": 4
+    "last_hits": 6
   },
   "https://iptv-org.github.io/epg/guides.xml": {
     "fails": 2,
@@ -98730,7 +98730,7 @@
   },
   "https://raw.githubusercontent.com/AeonCoreX-Lab/streamx-iptv-data/main/playlists/china.m3u": {
     "fails": 0,
-    "last_hits": 2
+    "last_hits": 5
   },
   "http://198.244.188.94/panorama/livestream/playlist.m3u8": {
     "fails": 2,
@@ -98894,7 +98894,7 @@
   },
   "https://aeoncorex-lab.github.io/streamx-iptv-data/api/v1/categories/religious.json": {
     "fails": 0,
-    "last_hits": 3
+    "last_hits": 2
   },
   "https://ert-live.siliconweb.com/bpk-tv/ERT1/default/index.mpd": {
     "fails": 2,
@@ -99065,8 +99065,8 @@
     "last_hits": 0
   },
   "https://aeoncorex-lab.github.io/streamx-iptv-data/api/v1/categories/south_korea.json": {
-    "fails": 0,
-    "last_hits": 2
+    "fails": 1,
+    "last_hits": 0
   },
   "http://ott-cdn.ucom.am/s88/index.m3u8": {
     "fails": 2,
@@ -99258,7 +99258,7 @@
   },
   "https://raw.githubusercontent.com/cuentapersonal-yandex/iptv/main/iptv.m3u": {
     "fails": 0,
-    "last_hits": 16
+    "last_hits": 15
   },
   "https://edge8.pink.rs/redtv/index.m3u8": {
     "fails": 2,
@@ -99402,7 +99402,7 @@
   },
   "https://aeoncorex-lab.github.io/streamx-iptv-data/api/v1/categories/music.json": {
     "fails": 0,
-    "last_hits": 1
+    "last_hits": 9
   },
   "https://raw.githubusercontent.com/bruno084i-cyber/Brunocanais/main/THE_CHOSEN_TEMPORADA_5.M3U": {
     "fails": 2,
@@ -99702,7 +99702,7 @@
   },
   "https://aeoncorex-lab.github.io/streamx-iptv-data/api/v1/categories/canada.json": {
     "fails": 0,
-    "last_hits": 8
+    "last_hits": 1
   },
   "https://www.philo.com/player/channel/Q2hhbm5lbDo2MDg1NDg4OTk2NDg0Mzk5NTA": {
     "fails": 2,
@@ -99854,7 +99854,7 @@
   },
   "https://aeoncorex-lab.github.io/streamx-iptv-data/api/v1/categories/france.json": {
     "fails": 0,
-    "last_hits": 12
+    "last_hits": 9
   },
   "https://www.philo.com/player/channel/Q2hhbm5lbDo2MDg1NDg4OTk2NDg0Mzk3NzE": {
     "fails": 2,
@@ -99958,7 +99958,7 @@
   },
   "https://raw.githubusercontent.com/iprtl/m3u/live/Pluto.m3u": {
     "fails": 0,
-    "last_hits": 41
+    "last_hits": 45
   },
   "https://edg01-prd-se-dcs.solidtango.com/edge/lo9yf4l5/playlist.m3u8": {
     "fails": 2,
@@ -100165,8 +100165,8 @@
     "last_hits": 0
   },
   "https://raw.githubusercontent.com/Cnmajun/IptvSync/main/Judy/xumo_playlist.m3u": {
-    "fails": 0,
-    "last_hits": 123
+    "fails": 1,
+    "last_hits": 0
   },
   "https://bozztv.com/rongo/rongo-MohonaTV/index.m3u8": {
     "fails": 2,
@@ -100466,7 +100466,7 @@
   },
   "https://aeoncorex-lab.github.io/streamx-iptv-data/api/v1/categories/uae.json": {
     "fails": 0,
-    "last_hits": 4
+    "last_hits": 5
   },
   "https://vs-hls-pushb-uk-live.akamaized.net/x=4/i=urn:bbc:pips:service:bbc_one_yorks/iptv_hd_abr_v1.m3u8": {
     "fails": 2,
@@ -100546,7 +100546,7 @@
   },
   "https://raw.githubusercontent.com/Diljan707/new/main/output_with_cookie.m3u": {
     "fails": 0,
-    "last_hits": 11
+    "last_hits": 19
   },
   "https://kinopoiskapiunofficial.tech/api/v2.1/films/search-by-keyword": {
     "fails": 2,
@@ -100718,7 +100718,7 @@
   },
   "https://raw.githubusercontent.com/JulioCesarXY/EPG-TCL-Channel/main/tcl.m3u8": {
     "fails": 0,
-    "last_hits": 103
+    "last_hits": 104
   },
   "https://c402-node61-cdn.connectmedia.hu/150104/aaef1a354b4ad88351bbc3f3b781c3c0/6a8153af/index.m3u8": {
     "fails": 2,
@@ -100745,8 +100745,8 @@
     "last_hits": 0
   },
   "https://aeoncorex-lab.github.io/streamx-iptv-data/api/v1/categories/pakistan.json": {
-    "fails": 0,
-    "last_hits": 2
+    "fails": 1,
+    "last_hits": 0
   },
   "https://livehlsdai-i.akamaihd.net/hls/live/571640/telecinco/bitrate_1.m3u8": {
     "fails": 2,
@@ -100806,7 +100806,7 @@
   },
   "https://raw.githubusercontent.com/Diljan707/new/main/playlist.m3u": {
     "fails": 0,
-    "last_hits": 53
+    "last_hits": 48
   },
   "https://cdn.jmvstream.com/w/LVW-9716/LVW9716_HbtQtezcaw/playlist.m3u8": {
     "fails": 2,
@@ -100946,7 +100946,7 @@
   },
   "https://raw.githubusercontent.com/iprtl/m3u/live/Streams/NXPLAY.m3u": {
     "fails": 0,
-    "last_hits": 7
+    "last_hits": 9
   },
   "http://shangyan-livod-cdn.cmsrict.com/gitv_live/G_JIANGXI-HQ/G_JIANGXI-HQ.m3u8": {
     "fails": 2,
@@ -100954,7 +100954,7 @@
   },
   "https://aeoncorex-lab.github.io/streamx-iptv-data/api/v1/categories/usa.json": {
     "fails": 0,
-    "last_hits": 16
+    "last_hits": 20
   },
   "https://canal11saltatv.unpocodeawita.workers.dev": {
     "fails": 2,
@@ -101034,7 +101034,7 @@
   },
   "https://aeoncorex-lab.github.io/streamx-iptv-data/api/v1/categories/portugal.json": {
     "fails": 0,
-    "last_hits": 1
+    "last_hits": 2
   },
   "https://aeoncorex-lab.github.io/streamx-iptv-data/api/v1/categories/ethiopia.json": {
     "fails": 2,
@@ -101322,7 +101322,7 @@
   },
   "https://aeoncorex-lab.github.io/streamx-iptv-data/api/v1/categories/business.json": {
     "fails": 0,
-    "last_hits": 3
+    "last_hits": 2
   },
   "https://www.philo.com/player/channel/Q2hhbm5lbDo2MDg1NDg4OTk2NDg0Mzk3ODU": {
     "fails": 2,
@@ -101381,8 +101381,8 @@
     "last_hits": 0
   },
   "https://fastly.jsdelivr.net/gh/iptv-org/iptv@master/streams/cn.m3u": {
-    "fails": 0,
-    "last_hits": 1
+    "fails": 1,
+    "last_hits": 0
   },
   "https://manifest.googlevideo.com/api/manifest/hls_playlist/expire/1795429722/ei/-sADa7XdCOLP1AGDl9eZBg/ip/2a09:bac5:bb05:1c64::2d4:75/id/g_N5zqvmADA.1/itag/95/source/yt_live_broadcast/requiressl/yes/ratebypass/yes/live/1/sgoap/gir": {
     "fails": 2,
@@ -101510,7 +101510,7 @@
   },
   "https://aeoncorex-lab.github.io/streamx-iptv-data/api/v1/categories/informative.json": {
     "fails": 0,
-    "last_hits": 4
+    "last_hits": 3
   },
   "http://cdn.mediavisionuae.com": {
     "fails": 2,
@@ -101606,7 +101606,7 @@
   },
   "https://aeoncorex-lab.github.io/streamx-iptv-data/api/v1/categories/bangladesh.json": {
     "fails": 0,
-    "last_hits": 5
+    "last_hits": 4
   },
   "https://storage.googleapis.com/shaka-demo-assets/angel-one-hls/playlist_a-eng-0128k-aac-2c.mp4.m3u8": {
     "fails": 2,
@@ -101798,7 +101798,7 @@
   },
   "https://aeoncorex-lab.github.io/streamx-iptv-data/api/v1/categories/news.json": {
     "fails": 0,
-    "last_hits": 5
+    "last_hits": 16
   },
   "http://shangyan-livod-cdn.cmsrict.com/gitv_live/G_CCTV-12-HQ/G_CCTV-12-HQ.m3u8": {
     "fails": 2,
@@ -101822,7 +101822,7 @@
   },
   "https://aeoncorex-lab.github.io/streamx-iptv-data/api/v1/categories/sports.json": {
     "fails": 0,
-    "last_hits": 9
+    "last_hits": 12
   },
   "https://lilive1.eu.cc/live/d2810594e9163dc1158bb4b8458c3391/playlist.m3u8": {
     "fails": 2,
@@ -101966,7 +101966,7 @@
   },
   "https://raw.githubusercontent.com/AeonCoreX-Lab/streamx-iptv-data/main/playlists/entertainment.m3u": {
     "fails": 0,
-    "last_hits": 16
+    "last_hits": 13
   },
   "http://95.67.106.242/mobile-app/main/freedom/master.m3u8": {
     "fails": 2,
@@ -102474,7 +102474,7 @@
   },
   "https://raw.githubusercontent.com/AeonCoreX-Lab/streamx-iptv-data/main/playlists/bangladesh.m3u": {
     "fails": 0,
-    "last_hits": 1
+    "last_hits": 6
   },
   "https://zdf-hls-16.akamaized.net/hls/live/2016499/de/veryhigh/master.m3u8": {
     "fails": 2,
@@ -102722,7 +102722,7 @@
   },
   "https://raw.githubusercontent.com/YueChan/Live/refs/heads/main/GNTV.m3u": {
     "fails": 0,
-    "last_hits": 14
+    "last_hits": 20
   },
   "https://liveout.xntv.tv/a65jur/96iln2.m3u8$": {
     "fails": 2,
@@ -102934,7 +102934,7 @@
   },
   "https://aeoncorex-lab.github.io/streamx-iptv-data/api/v1/categories/entertainment.json": {
     "fails": 0,
-    "last_hits": 13
+    "last_hits": 3
   },
   "https://wncdnhls-global.losartang.org/live/vsc-channel-20.m3u8": {
     "fails": 2,
@@ -103065,8 +103065,8 @@
     "last_hits": 0
   },
   "https://aeoncorex-lab.github.io/streamx-iptv-data/api/v1/categories/mexico.json": {
-    "fails": 0,
-    "last_hits": 1
+    "fails": 1,
+    "last_hits": 0
   },
   "https://stream9.xdevel.com/video0s976441-1226/stream/playlist.m3u8": {
     "fails": 2,
@@ -103161,8 +103161,8 @@
     "last_hits": 0
   },
   "https://aeoncorex-lab.github.io/streamx-iptv-data/api/v1/categories/argentina.json": {
-    "fails": 1,
-    "last_hits": 0
+    "fails": 0,
+    "last_hits": 1
   },
   "https://ncdn-live-bfm.pfd.sfr.net/shls/LIVE$BFM_BUSINESS/index.m3u8": {
     "fails": 2,
@@ -103250,7 +103250,7 @@
   },
   "https://raw.githubusercontent.com/judy-gotv/iptv/refs/heads/main/LGTV-Schedule.m3u": {
     "fails": 0,
-    "last_hits": 51
+    "last_hits": 53
   },
   "https://node1.olelive.com": {
     "fails": 2,
@@ -103593,7 +103593,7 @@
     "last_hits": 0
   },
   "https://kiraiptv.vercel.app": {
-    "fails": 1,
+    "fails": 2,
     "last_hits": 0
   },
   "https://raw.githubusercontent.com/judy-gotv/iptv/main/MytvSuper.m3u": {
