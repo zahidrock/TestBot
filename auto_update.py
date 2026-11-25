@@ -1,9 +1,10 @@
 """
-All-in-One Direct (No-Proxy) Global Live TV IPTV Updater
+All-in-One Direct (No-Proxy) Global Live TV IPTV Updater (No-Logo High-Speed Edition)
 Features:
+- Logo-free lightweight M3U output for faster parsing and cleaner player UI
 - Unlimited high-speed backup links per channel (MAX_LINKS_PER_CHANNEL = None), sorted fastest-first
 - Strict Speed & Throughput Gate: drops slow/buffering streams (manifest latency > 2.2s or chunk throughput < 25 KB/s)
-- Official Channel Name & Logo Enrichment from 'iptv-org/api/channels.json' + AynaOTT Catalog
+- Official Channel Name Enrichment from 'iptv-org/api/channels.json' + AynaOTT Catalog
 - Dedicated 'Kids & Animation' & 'Informative' groups alongside BD, Bangla/Hindi India, English & Sports
 - Fast multi-threaded HLS verification + Dead-host fast skip cache
 - Active Pool vs. Sleeping Pool sync ('source_health.json' & 'sleeping_sources.json')
@@ -236,31 +237,23 @@ def http_get(url, headers=None, timeout=6, max_bytes=1_500_000):
         return r.read(max_bytes).decode("utf-8", errors="ignore")
 
 
-# ------------------------------------------------------------------ Official Channel Metadata Fetcher
-def fetch_official_channel_metadata():
-    id_to_meta = {}
-    logo_by_key = {}
+# ------------------------------------------------------------------ Official Channel Name Fetcher
+def fetch_official_channel_names():
+    id_to_name = {}
     try:
         raw = http_get("https://iptv-org.github.io/api/channels.json", timeout=15, max_bytes=15_000_000)
         channels = json.loads(raw)
         for ch in channels:
             cid = (ch.get("id") or "").strip()
             cname = (ch.get("name") or "").strip()
-            clogo = (ch.get("logo") or "").strip()
-            country = (ch.get("country") or "").upper()
             if not cid or not cname:
                 continue
-            meta = {"name": cname, "logo": clogo}
-            id_to_meta[cid.lower()] = meta
-            id_to_meta[cid.split("@")[0].lower()] = meta
-            if country in ("BD", "IN", "US", "GB", "CA", "AU", "NZ", "SG") and clogo:
-                ckey = norm(cname)
-                if ckey and ckey not in logo_by_key:
-                    logo_by_key[ckey] = clogo
-        log(f"[OfficialDB] iptv-org channels.json theke {len(id_to_meta)} ti official channel metadata load hoyeche.")
+            id_to_name[cid.lower()] = cname
+            id_to_name[cid.split("@")[0].lower()] = cname
+        log(f"[OfficialDB] iptv-org channels.json theke {len(id_to_name)} ti official channel name load hoyeche.")
     except Exception as e:
         log(f"[OfficialDB] channels.json fetch info: {e}")
-    return id_to_meta, logo_by_key
+    return id_to_name
 
 
 def looks_like_random_id(token_str):
@@ -376,7 +369,6 @@ def parse_m3u(text, source):
             meta = {
                 "name": name,
                 "tvg_id": clean_tvg_id(attr("tvg-id")),
-                "logo": attr("tvg-logo"),
                 "group": attr("group-title") or "Others",
                 "lang": normalize_lang_code(raw_lang),
                 "source": source,
@@ -445,10 +437,6 @@ def scrape_aynaott():
 
     def one(item):
         slug, title = item.get("slug", ""), item.get("title", "")
-        img = item.get("images", {})
-        logo = img.get("thumbnail_url", "") if isinstance(img, dict) else ""
-        if logo and not logo.startswith("http"):
-            logo = base + logo
         try:
             d = json.loads(http_get(f"{base}/api/v5/browse/live-tvs/{slug}", headers=h, timeout=6))
             rec = d.get("record", d)
@@ -459,7 +447,6 @@ def scrape_aynaott():
                 return {
                     "name": title,
                     "url": clean_stream_url(url),
-                    "logo": logo,
                     "tvg_id": f"aynaott-{slug}",
                     "group": "Others",
                     "lang": "",
@@ -514,7 +501,6 @@ def scrape_jagobd():
             if url in seen or any(x in url.lower() for x in skip):
                 continue
             seen.add(url)
-            img = re.search(r'<img\s+[^>]*src=[\'"]([^\'"]+)[\'"]', content, re.I)
             alt = re.search(r'alt=[\'"]([^\'"]+)[\'"]', content, re.I)
             ttl = re.search(r'title=[\'"]([^\'"]+)[\'"]', content, re.I)
             slug = url.split("/")[-1]
@@ -527,7 +513,6 @@ def scrape_jagobd():
                 "slug": slug,
                 "url": url,
                 "name": nm or slug.replace("-", " ").title(),
-                "logo": img.group(1) if img else ""
             })
     except Exception as e:
         log(f"[JagoBD] homepage error: {e}")
@@ -562,7 +547,6 @@ def scrape_jagobd():
                 return {
                     "name": c["name"],
                     "url": format_jagobd_url(stream),
-                    "logo": c["logo"],
                     "tvg_id": f"jagobd-{c['slug']}",
                     "group": "Others",
                     "lang": "",
@@ -660,7 +644,6 @@ def scrape_discovered_and_global_feeds(checked_feed_urls):
                     out.append({
                         "name": ch_name,
                         "url": clean_stream_url(lk),
-                        "logo": "",
                         "tvg_id": "",
                         "group": "Others",
                         "lang": "",
@@ -717,7 +700,6 @@ def scrape_adaptive_repos():
                     res.append({
                         "name": ch_name,
                         "url": raw_url,
-                        "logo": "",
                         "tvg_id": f"{repo}-{fname.lower()}",
                         "group": "Others",
                         "lang": "",
@@ -773,7 +755,6 @@ def scrape_iptv_org_base():
                 res.append({
                     "name": ch_id.split(".")[0],
                     "url": clean_stream_url(st_url),
-                    "logo": "",
                     "tvg_id": clean_tvg_id(ch_id),
                     "group": "Bangladesh" if ch_id.lower().endswith(".bd") else ("India" if ch_id.lower().endswith(".in") else "English Entertainment"),
                     "lang": "ben" if ch_id.lower().endswith(".bd") else ("eng" if not ch_id.lower().endswith(".in") else ""),
@@ -1516,7 +1497,7 @@ def update_source_health(checked_feed_urls, all_candidate_items):
     log(f"[SourceHealth] {working_count} working feeds active | {newly_sleeping} moved to Sleeping Pool (Total sleeping: {len(sleeping_set)}).")
 
 
-# ------------------------------------------------------------------ output
+# ------------------------------------------------------------------ output (logo-free)
 def write_playlist(channels, target_path=OUTPUT):
     def q(s):
         return str(s).replace('"', "'").replace("\n", " ")
@@ -1547,7 +1528,7 @@ def write_playlist(channels, target_path=OUTPUT):
         tvg_id = clean_tvg_id(c.get("tvg_id", ""))
         lang_attr = f' tvg-language="{q(c.get("stream_lang") or c.get("lang") or "")}"' if (c.get("stream_lang") or c.get("lang")) else ""
         lines.append(f'#EXTINF:-1 tvg-id="{q(tvg_id)}" tvg-name="{q(c["name"])}" '
-                     f'tvg-logo="{q(c.get("logo", ""))}"{lang_attr} group-title="{q(c["group"])}",{c["name"]}')
+                     f'tvg-logo=""{lang_attr} group-title="{q(c["group"])}",{c["name"]}')
         if ua:
             lines.append(f"#EXTVLCOPT:http-user-agent={ua}")
         if ref:
@@ -1599,7 +1580,7 @@ def main():
     start_time = time.time()
     pool = []
     checked_feed_urls = []
-    id_to_meta, logo_by_key = fetch_official_channel_metadata()
+    id_to_name = fetch_official_channel_names()
 
     scrapers = (
         ("AynaOTT", scrape_aynaott),
@@ -1653,33 +1634,16 @@ def main():
         log(f"[SAFETY] Alive ({len(alive)}) ager playlist ({prev}) er theke onek kom. Overwrite kora holo na.")
         return 1
 
-    best_logo_map = dict(logo_by_key)
-    for c in sorted(alive, key=lambda x: SOURCE_RANK.get(x["source"], 9)):
-        ckey = norm(c["name"])
-        logo = c.get("logo", "").strip()
-        if ckey and logo and logo.startswith("http") and "default-logo" not in logo and "noimage" not in logo:
-            if ckey not in best_logo_map:
-                best_logo_map[ckey] = logo
-
     for c in alive:
-        ckey = norm(c["name"])
         tid = clean_tvg_id(c.get("tvg_id", "")).lower()
         tid_base = tid.split("@")[0]
 
-        if tid in id_to_meta:
-            c["name"] = id_to_meta[tid]["name"]
-        elif tid_base in id_to_meta:
-            c["name"] = id_to_meta[tid_base]["name"]
+        if tid in id_to_name:
+            c["name"] = id_to_name[tid]
+        elif tid_base in id_to_name:
+            c["name"] = id_to_name[tid_base]
         else:
             c["name"] = clean_display_name(c["name"])
-
-        if not c.get("logo") or not c["logo"].startswith("http"):
-            if tid in id_to_meta and id_to_meta[tid].get("logo"):
-                c["logo"] = id_to_meta[tid]["logo"]
-            elif tid_base in id_to_meta and id_to_meta[tid_base].get("logo"):
-                c["logo"] = id_to_meta[tid_base]["logo"]
-            elif ckey in best_logo_map:
-                c["logo"] = best_logo_map[ckey]
 
     alive = [c for c in alive if not is_garbage_channel_name(c["name"])]
 
@@ -1709,8 +1673,6 @@ def main():
             prev_score = (0 if prev_c["url"].startswith("https://") else 1, round(prev_c.get("latency", 99), 2), -prev_c.get("kbps", 0))
             curr_score = (0 if c["url"].startswith("https://") else 1, round(c.get("latency", 99), 2), -c.get("kbps", 0))
             if curr_score < prev_score:
-                if not c.get("logo") and prev_c.get("logo"):
-                    c["logo"] = prev_c["logo"]
                 best_by_channel[ckey] = c
 
     clean_alive = sorted(
