@@ -1,9 +1,9 @@
 """
 Global Multi-Platform Live TV & IPTV Source Discovery Engine (BD, Indian, English, Informative, Kids & Animation, Sports)
 Features:
-- Harvests upstream sources, portals, endpoints & feeds from BD priority repos and discovered bots/scripts
-- Broadens code/script/config URL extraction to capture live streaming APIs, portals & M3U8/M3U endpoints
-- Searches GitHub (Repos + Topics + Code Signatures), GitLab (Projects), Codeberg (Instant Fail-Fast),
+- Deep repository & script harvesting from BD priority repos and discovered bots/scripts
+- Captures live streaming APIs, portals, endpoints & M3U8/M3U feeds from code/configs
+- Searches GitHub (Repos + Topics + Code Signatures), GitLab (Projects), Codeberg,
   GitHub Gists, DuckDuckGo Lite (Pastebin, Rentry, Telegraph, Bitbucket, HuggingFace, dpaste),
   and Built-in Official FAST TV & Open Directory Feeds
 - Active Pool vs. Sleeping Pool architecture with Repo Update Event Revival & Daily Canary Probe
@@ -19,7 +19,7 @@ OUT_REPORT = Path("bot_report.txt")
 HEALTH_JSON = Path("source_health.json")
 SLEEPING_JSON = Path("sleeping_sources.json")
 
-CANARY_BATCH_SIZE = 600
+CANARY_BATCH_SIZE = 750
 
 BD_PRIORITY_REPOS = [
     "saeidrahmanbd/BDIX-IPTV",
@@ -29,6 +29,7 @@ BD_PRIORITY_REPOS = [
     "Zaman-Topu/Ip-tv-Collection",
     "Shadmanislam/bdiptv",
     "sm-monirulislam/SM-IPTV",
+    "bugsfreeweb/LiveTVCollector",
 ]
 
 SSL_CTX = ssl.create_default_context()
@@ -40,7 +41,6 @@ GH_HEADERS = {"User-Agent": UA, "Accept": "application/vnd.github+json"}
 if GITHUB_TOKEN:
     GH_HEADERS["Authorization"] = f"Bearer {GITHUB_TOKEN.strip()}"
 
-# 1. GitHub Repository & Topic Queries
 BOT_SEARCH_QUERIES = [
     "iptv pushed:>2026-06-01",
     "m3u8 playlist pushed:>2026-06-01",
@@ -68,7 +68,6 @@ BOT_SEARCH_QUERIES = [
     "topic:anime",
 ]
 
-# 2. Content & Code Signatures (Captures scripts/APIs harvesting live streams)
 CODE_SIGNATURE_QUERIES = [
     '"cron:" "m3u" path:.github/workflows',
     '"cron:" "m3u8" path:.github/workflows',
@@ -98,14 +97,12 @@ CODE_SIGNATURE_QUERIES = [
     '"apsattv.com" extension:m3u',
 ]
 
-# 3. GitLab & Codeberg Search Keywords
 ALT_GIT_KEYWORDS = [
     "iptv", "m3u8", "m3u", "bdix", "bangla-tv", "live-tv",
     "star-jalsha", "somoy-tv", "indian-tv", "hindi-tv", "sports-tv", "fast-tv",
     "cartoon", "kids-tv", "anime"
 ]
 
-# 4. Global Web Paste, Datasets & Open Index Dorks
 WEB_DORK_QUERIES = [
     'site:pastebin.com "#EXTINF" "Somoy"',
     'site:pastebin.com "#EXTINF" "Star Jalsha"',
@@ -128,7 +125,6 @@ WEB_DORK_QUERIES = [
     'intitle:"index of" "tv.m3u8"',
 ]
 
-# 5. Built-in Official FAST TV & Global Open Directory Feeds (Always Active)
 BUILTIN_DIRECT_FEEDS = [
     "https://i.mjh.nz/SamsungTVPlus/all.m3u8",
     "https://i.mjh.nz/PlutoTV/all.m3u8",
@@ -289,7 +285,6 @@ def load_existing_data():
     return old_bots, old_upstream, old_playlists
 
 
-# ------------------------------------------------------------------ Engine 1: GitHub + BD Priority Repos
 def fetch_bd_priority_repos():
     found = {}
     for fn in BD_PRIORITY_REPOS:
@@ -309,7 +304,7 @@ def fetch_bd_priority_repos():
         except Exception:
             pass
         time.sleep(1)
-    log(f"[BD-PriorityRepos] {len(found)} ti BD IPTV repo directly loaded.")
+    log(f"[BD-PriorityRepos] {len(found)} ti priority IPTV repo directly loaded.")
     return found
 
 
@@ -361,7 +356,6 @@ def search_github():
     return found
 
 
-# ------------------------------------------------------------------ Engine 2: GitLab & Codeberg
 def search_gitlab_and_codeberg():
     extra_playlists = set()
     extra_repos = {}
@@ -425,7 +419,6 @@ def search_gitlab_and_codeberg():
     return extra_repos, extra_playlists
 
 
-# ------------------------------------------------------------------ Engine 3: Public Gists, Pastes, Datasets & Open Web
 def normalize_web_discovered_url(decoded):
     decoded = decoded.strip().rstrip(".,;'\")}]")
     if not decoded.startswith("http"):
@@ -458,7 +451,7 @@ def normalize_web_discovered_url(decoded):
 def search_web_pastes_and_gists():
     discovered_urls = set()
 
-    for page in (1, 2):
+    for page in (1, 2, 3):
         try:
             gists = fetch_json(f"https://api.github.com/gists/public?per_page=100&page={page}", GH_HEADERS, retries=0)
             if isinstance(gists, list):
@@ -467,7 +460,7 @@ def search_web_pastes_and_gists():
                     files = g.get("files") or {}
                     for fname, fmeta in files.items():
                         low_f = fname.lower()
-                        if low_f.endswith((".m3u", ".m3u8")) or any(k in f"{desc} {low_f}" for k in ("iptv", "m3u", "bangla", "hindi", "bdix", "live tv", "cartoon", "kids")):
+                        if low_f.endswith((".m3u", ".m3u8")) or any(k in f"{desc} {low_f}" for k in ("iptv", "m3u", "bangla", "hindi", "bdix", "live tv", "cartoon", "kids", "sports")):
                             raw_u = fmeta.get("raw_url")
                             if raw_u:
                                 discovered_urls.add(raw_u)
@@ -489,7 +482,7 @@ def search_web_pastes_and_gists():
                     discovered_urls.add(norm_u)
         except Exception as e:
             log(f"[Web Dork Info] {dq}: {e}")
-        time.sleep(4)
+        time.sleep(3.5)
 
     log(f"[Web Pastes, Datasets & Gists] {len(discovered_urls)} ti global URL paoa gese.")
     return discovered_urls
@@ -528,12 +521,12 @@ def discover():
     merged_upstream.update(web_paste_urls)
     merged_bots.update(alt_repos)
 
-    log(f"GitHub er {len(gh_found)} ti repo analyze kora hocche...")
+    log(f"GitHub er {len(gh_found)} ti repo deeply analyze kora hocche...")
 
     def analyze_github_repo(repo_info):
         repo = repo_info["repo"]
         branch = repo_info["branch"]
-        is_bd_repo = repo.lower() in {r.lower() for r in BD_PRIORITY_REPOS}
+        is_priority = repo.lower() in {r.lower() for r in BD_PRIORITY_REPOS}
         try:
             tree_url = f"https://api.github.com/repos/{repo}/git/trees/{branch}?recursive=1"
             tree = fetch_json(tree_url, GH_HEADERS).get("tree", [])
@@ -541,8 +534,8 @@ def discover():
             return repo_info
 
         script_paths = []
-        max_pl = 30 if is_bd_repo else 12
-        max_scripts = 30 if is_bd_repo else 14
+        max_pl = 40 if is_priority else 18
+        max_scripts = 40 if is_priority else 18
 
         for f in tree:
             if f.get("type") != "blob":
@@ -575,7 +568,7 @@ def discover():
         repo_info["upstream_sources"] = sorted(upstream)
         return repo_info
 
-    with ThreadPoolExecutor(max_workers=5) as ex:
+    with ThreadPoolExecutor(max_workers=6) as ex:
         for f in as_completed([ex.submit(analyze_github_repo, info) for info in gh_found.values()]):
             b = f.result()
             repo_key = b["repo"]
