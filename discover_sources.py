@@ -1,11 +1,10 @@
 """
-Global Multi-Platform Live TV & IPTV Source Discovery Engine (BD, Indian, English, Informative, Kids & Animation, Sports)
+Deep Multi-Platform Live TV & IPTV Source Discovery Engine
 Features:
-- Deep repository & script harvesting from BD priority repos and discovered bots/scripts
-- Captures live streaming APIs, portals, endpoints & M3U8/M3U feeds from code/configs
-- Searches GitHub (Repos + Topics + Code Signatures), GitLab (Projects), Codeberg,
-  GitHub Gists, DuckDuckGo Lite (Pastebin, Rentry, Telegraph, Bitbucket, HuggingFace, dpaste),
-  and Built-in Official FAST TV & Open Directory Feeds
+- Deep GitHub Pagination (per_page=100, pages 1-2) with multi-sort (updated + stars)
+- Crawls Forks & Owner Repositories of priority/high-value BD & Indian IPTV repos
+- Extracts live streaming APIs, portals, Cloudflare Workers/Pages & M3U8/M3U endpoints from code/configs
+- Deep GitLab (per_page=100), Codeberg, GitHub Gists (pages 1-5), and DuckDuckGo Web Dorks
 - Active Pool vs. Sleeping Pool architecture with Repo Update Event Revival & Daily Canary Probe
 """
 import json, os, random, re, ssl, time
@@ -19,7 +18,7 @@ OUT_REPORT = Path("bot_report.txt")
 HEALTH_JSON = Path("source_health.json")
 SLEEPING_JSON = Path("sleeping_sources.json")
 
-CANARY_BATCH_SIZE = 750
+CANARY_BATCH_SIZE = 1000
 
 BD_PRIORITY_REPOS = [
     "saeidrahmanbd/BDIX-IPTV",
@@ -30,6 +29,9 @@ BD_PRIORITY_REPOS = [
     "Shadmanislam/bdiptv",
     "sm-monirulislam/SM-IPTV",
     "bugsfreeweb/LiveTVCollector",
+    "iptv-org/iptv",
+    "Free-TV/IPTV",
+    "amazeyourself/adaptive-streams",
 ]
 
 SSL_CTX = ssl.create_default_context()
@@ -41,12 +43,17 @@ GH_HEADERS = {"User-Agent": UA, "Accept": "application/vnd.github+json"}
 if GITHUB_TOKEN:
     GH_HEADERS["Authorization"] = f"Bearer {GITHUB_TOKEN.strip()}"
 
+# 1. Deep GitHub Repository & Topic Queries
 BOT_SEARCH_QUERIES = [
-    "iptv pushed:>2026-06-01",
-    "m3u8 playlist pushed:>2026-06-01",
+    "iptv pushed:>2026-01-01",
+    "m3u8 playlist pushed:>2026-01-01",
+    "m3u playlist pushed:>2026-01-01",
     "bdix tv",
+    "bdix iptv",
     "bangla tv m3u8",
+    "bangla iptv",
     "bangladesh iptv",
+    "bangladesh tv m3u",
     "indian tv m3u8",
     "hindi tv m3u8",
     "kolkata tv m3u8",
@@ -54,6 +61,7 @@ BOT_SEARCH_QUERIES = [
     "usa uk tv m3u8",
     "fancode m3u8",
     "sports iptv m3u8",
+    "cricket live m3u8",
     "cartoon m3u8",
     "kids tv m3u8",
     "anime m3u8",
@@ -62,18 +70,22 @@ BOT_SEARCH_QUERIES = [
     "topic:iptv",
     "topic:m3u8",
     "topic:m3u",
+    "topic:live-tv",
     "topic:bangla-tv",
     "topic:indian-tv",
     "topic:cartoon",
     "topic:anime",
 ]
 
+# 2. Deep Code & CDN/API Signatures
 CODE_SIGNATURE_QUERIES = [
     '"cron:" "m3u" path:.github/workflows',
     '"cron:" "m3u8" path:.github/workflows',
     '"#EXTINF" "Somoy" extension:m3u',
     '"#EXTINF" "Jamuna" extension:m3u8',
     '"#EXTINF" "Ekattor" extension:m3u',
+    '"#EXTINF" "Maasranga" extension:m3u',
+    '"#EXTINF" "Deepto" extension:m3u8',
     '"#EXTINF" "Star Jalsha" extension:m3u',
     '"#EXTINF" "Zee Bangla" extension:m3u8',
     '"#EXTINF" "Aaj Tak" extension:m3u',
@@ -83,28 +95,37 @@ CODE_SIGNATURE_QUERIES = [
     '"#EXTINF" "Nickelodeon" extension:m3u8',
     '"#EXTINF" "Sony Yay" extension:m3u',
     '"#EXTINF" "Disney Channel" extension:m3u',
-    '"#EXTINF" "aynaott" extension:py',
-    '"#EXTINF" "jagobd" extension:py',
-    '"#EXTINF" "m3u8" extension:py',
-    '"#EXTINF" "m3u8" extension:js',
+    '"#EXTINF" "Discovery" extension:m3u',
+    '"aynaott" extension:py',
+    '"jagobd" extension:py',
+    '"m3u8" extension:py',
+    '"m3u8" extension:js',
     '"gpcdn.net" extension:m3u',
     '"gpcdn.net" extension:m3u8',
     '"app24.jagobd.com.bd" extension:m3u',
     '"ncare.live" extension:m3u',
     '"tangotv.in" extension:m3u',
+    '"ottlive.co.in" extension:m3u',
+    '"livebox.co.in" extension:m3u',
+    '"sonarbanglatv.com" extension:m3u',
+    '"workers.dev" "m3u8" extension:m3u',
+    '"pages.dev" "m3u8" extension:m3u',
     '"amagi.tv" extension:m3u',
     '"mjh.nz" extension:m3u',
     '"apsattv.com" extension:m3u',
 ]
 
+# 3. GitLab & Codeberg Search Keywords
 ALT_GIT_KEYWORDS = [
-    "iptv", "m3u8", "m3u", "bdix", "bangla-tv", "live-tv",
+    "iptv", "m3u8", "m3u", "bdix", "bangla-tv", "bangladesh-tv", "live-tv",
     "star-jalsha", "somoy-tv", "indian-tv", "hindi-tv", "sports-tv", "fast-tv",
-    "cartoon", "kids-tv", "anime"
+    "cartoon", "kids-tv", "anime", "documentary"
 ]
 
+# 4. Global Web Paste, Datasets & Open Index Dorks
 WEB_DORK_QUERIES = [
     'site:pastebin.com "#EXTINF" "Somoy"',
+    'site:pastebin.com "#EXTINF" "Jamuna"',
     'site:pastebin.com "#EXTINF" "Star Jalsha"',
     'site:pastebin.com "#EXTINF" "Hindi"',
     'site:pastebin.com "#EXTINF" "Cartoon Network"',
@@ -121,10 +142,12 @@ WEB_DORK_QUERIES = [
     'site:gist.github.com "#EXTINF" "m3u8"',
     '"#EXTINF:-1" "gpcdn.net"',
     '"#EXTINF:-1" "app24.jagobd.com.bd"',
+    '"#EXTINF:-1" "workers.dev" "m3u8"',
     'intitle:"index of" "playlist.m3u"',
     'intitle:"index of" "tv.m3u8"',
 ]
 
+# 5. Built-in Official FAST TV & Global Open Directory Feeds (Always Active)
 BUILTIN_DIRECT_FEEDS = [
     "https://i.mjh.nz/SamsungTVPlus/all.m3u8",
     "https://i.mjh.nz/PlutoTV/all.m3u8",
@@ -176,8 +199,9 @@ CAPTURE_URL_HINTS = (
     "mjh.nz", "apsattv.com", "gist.githubusercontent", "pastebin.com/raw",
     "rentry.co", "telegra.ph", "dpaste.org", "paste.ee", "huggingface.co",
     "bitbucket.org", "bdix", "bangla", "jagobd", "aynaott", "workers.dev",
-    "pages.dev", "gpcdn.net", "ncare.live", "tangotv.in", "amagi.tv", "akamaized.net",
-    "cloudfront.net", "wurl.com", "pluto.tv", "samsungtv.plus"
+    "pages.dev", "onrender.com", "vercel.app", "gpcdn.net", "ncare.live",
+    "tangotv.in", "ottlive.co.in", "livebox.co.in", "sonarbanglatv.com",
+    "amagi.tv", "akamaized.net", "cloudfront.net", "wurl.com", "pluto.tv", "samsungtv.plus"
 )
 
 
@@ -285,74 +309,111 @@ def load_existing_data():
     return old_bots, old_upstream, old_playlists
 
 
-def fetch_bd_priority_repos():
+def add_repo_item(found, item, is_auto_bot=False):
+    fn = item.get("full_name")
+    if not fn or fn in found:
+        return
+    found[fn] = {
+        "repo": fn,
+        "platform": "github",
+        "branch": item.get("default_branch", "main"),
+        "updated": (item.get("pushed_at") or "")[:10],
+        "stars": item.get("stargazers_count", 0),
+        "is_auto_bot": is_auto_bot,
+        "playlists": [],
+        "upstream_sources": [],
+    }
+
+
+def fetch_bd_priority_and_network():
+    """Directly loads priority repos, their active forks, and other repos owned by those maintainers."""
     found = {}
+    owners_seen = set()
+
     for fn in BD_PRIORITY_REPOS:
         try:
             item = fetch_json(f"https://api.github.com/repos/{fn}", GH_HEADERS, retries=1)
             if item.get("full_name"):
-                found[item["full_name"]] = {
-                    "repo": item["full_name"],
-                    "platform": "github",
-                    "branch": item.get("default_branch", "main"),
-                    "updated": (item.get("pushed_at") or "")[:10],
-                    "stars": item.get("stargazers_count", 0),
-                    "is_auto_bot": True,
-                    "playlists": [],
-                    "upstream_sources": [],
-                }
+                add_repo_item(found, item, is_auto_bot=True)
+                owner = fn.split("/")[0]
+                owners_seen.add(owner)
+
+                # Crawl recently pushed forks of priority BD repos (excluding massive global repos)
+                if fn not in ("iptv-org/iptv", "Free-TV/IPTV"):
+                    forks = fetch_json(f"https://api.github.com/repos/{fn}/forks?sort=newest&per_page=30", GH_HEADERS, retries=0)
+                    if isinstance(forks, list):
+                        for fk in forks:
+                            if (fk.get("pushed_at") or "") >= "2026-01-01":
+                                add_repo_item(found, fk, is_auto_bot=True)
         except Exception:
             pass
-        time.sleep(1)
-    log(f"[BD-PriorityRepos] {len(found)} ti priority IPTV repo directly loaded.")
+        time.sleep(0.8)
+
+    # Crawl sibling repos of BD IPTV maintainers
+    for owner in owners_seen:
+        if owner.lower() in ("iptv-org", "free-tv"):
+            continue
+        try:
+            urepos = fetch_json(f"https://api.github.com/users/{owner}/repos?sort=pushed&per_page=30", GH_HEADERS, retries=0)
+            if isinstance(urepos, list):
+                for r in urepos:
+                    r_text = f"{r.get('name', '')} {r.get('description', '')}".lower()
+                    if any(k in r_text for k in ("iptv", "m3u", "tv", "bdix", "live", "stream", "playlist")):
+                        add_repo_item(found, r, is_auto_bot=True)
+        except Exception:
+            pass
+        time.sleep(0.8)
+
+    log(f"[Deep-Network] Priority repos + Forks + Maintainer repos milie {len(found)} ti repo load holo.")
     return found
 
 
 def search_github():
-    found = fetch_bd_priority_repos()
+    found = fetch_bd_priority_and_network()
+
+    # Deep pagination (page 1 & 2, per_page=100) + multi-sort (updated & stars)
     for q in BOT_SEARCH_QUERIES:
-        try:
-            url = f"https://api.github.com/search/repositories?q={urllib.parse.quote(q)}&sort=updated&per_page=30"
-            data = fetch_json(url, GH_HEADERS)
-            for item in data.get("items", []):
-                fn = item["full_name"]
-                if fn not in found:
-                    found[fn] = {
-                        "repo": fn,
-                        "platform": "github",
-                        "branch": item.get("default_branch", "main"),
-                        "updated": item.get("pushed_at", "")[:10],
-                        "stars": item.get("stargazers_count", 0),
-                        "is_auto_bot": False,
-                        "playlists": [],
-                        "upstream_sources": [],
-                    }
-        except Exception as e:
-            log(f"[GitHub Repo Error] {q}: {e}")
-        time.sleep(3)
+        for sort_mode in ("updated", "stars"):
+            pages = (1, 2) if sort_mode == "updated" else (1,)
+            for page in pages:
+                try:
+                    url = f"https://api.github.com/search/repositories?q={urllib.parse.quote(q)}&sort={sort_mode}&per_page=100&page={page}"
+                    data = fetch_json(url, GH_HEADERS)
+                    items = data.get("items", [])
+                    for item in items:
+                        add_repo_item(found, item, is_auto_bot=False)
+                    if len(items) < 100:
+                        break
+                except Exception as e:
+                    log(f"[GitHub Repo Error] {q} ({sort_mode} p{page}): {e}")
+                time.sleep(2.5)
 
     if GITHUB_TOKEN:
         for cq in CODE_SIGNATURE_QUERIES:
-            try:
-                c_url = f"https://api.github.com/search/code?q={urllib.parse.quote(cq)}&per_page=30"
-                c_data = fetch_json(c_url, GH_HEADERS)
-                for item in c_data.get("items", []):
-                    repo_obj = item.get("repository", {})
-                    fn = repo_obj.get("full_name")
-                    if fn and fn not in found:
-                        found[fn] = {
-                            "repo": fn,
-                            "platform": "github",
-                            "branch": repo_obj.get("default_branch", "main"),
-                            "updated": time.strftime("%Y-%m-%d"),
-                            "stars": 0,
-                            "is_auto_bot": True,
-                            "playlists": [],
-                            "upstream_sources": [],
-                        }
-            except Exception as e:
-                log(f"[GitHub Code Error] {cq}: {e}")
-            time.sleep(6)
+            for page in (1, 2):
+                try:
+                    c_url = f"https://api.github.com/search/code?q={urllib.parse.quote(cq)}&per_page=100&page={page}"
+                    c_data = fetch_json(c_url, GH_HEADERS)
+                    items = c_data.get("items", [])
+                    for item in items:
+                        repo_obj = item.get("repository", {})
+                        fn = repo_obj.get("full_name")
+                        if fn and fn not in found:
+                            found[fn] = {
+                                "repo": fn,
+                                "platform": "github",
+                                "branch": repo_obj.get("default_branch", "main"),
+                                "updated": time.strftime("%Y-%m-%d"),
+                                "stars": 0,
+                                "is_auto_bot": True,
+                                "playlists": [],
+                                "upstream_sources": [],
+                            }
+                    if len(items) < 100:
+                        break
+                except Exception as e:
+                    log(f"[GitHub Code Error] {cq} (p{page}): {e}")
+                time.sleep(6)
     return found
 
 
@@ -361,38 +422,41 @@ def search_gitlab_and_codeberg():
     extra_repos = {}
 
     for kw in ALT_GIT_KEYWORDS:
-        try:
-            gl_url = f"https://gitlab.com/api/v4/projects?search={urllib.parse.quote(kw)}&order_by=last_activity_at&per_page=30"
-            projects = fetch_json(gl_url, retries=1)
-            if isinstance(projects, list):
-                for p in projects:
-                    path_ns = p.get("path_with_namespace")
-                    branch = p.get("default_branch") or "main"
-                    if path_ns:
-                        repo_key = f"gitlab:{path_ns}"
-                        extra_repos[repo_key] = {
-                            "repo": repo_key,
-                            "platform": "gitlab",
-                            "branch": branch,
-                            "updated": (p.get("last_activity_at") or "")[:10],
-                            "stars": p.get("star_count", 0),
-                            "is_auto_bot": True,
-                            "playlists": [],
-                            "upstream_sources": [],
-                        }
-                        for fname in ("playlist.m3u", "playlist.m3u8", "index.m3u", "index.m3u8", "iptv.m3u", "tv.m3u", "bangla.m3u", "india.m3u", "live.m3u", "kids.m3u", "cartoon.m3u"):
-                            extra_playlists.add(f"https://gitlab.com/{path_ns}/-/raw/{branch}/{fname}")
-        except Exception as e:
-            log(f"[GitLab Search Error] {kw}: {e}")
-        time.sleep(2)
+        for page in (1, 2):
+            try:
+                gl_url = f"https://gitlab.com/api/v4/projects?search={urllib.parse.quote(kw)}&order_by=last_activity_at&per_page=100&page={page}"
+                projects = fetch_json(gl_url, retries=1)
+                if isinstance(projects, list):
+                    for p in projects:
+                        path_ns = p.get("path_with_namespace")
+                        branch = p.get("default_branch") or "main"
+                        if path_ns:
+                            repo_key = f"gitlab:{path_ns}"
+                            extra_repos[repo_key] = {
+                                "repo": repo_key,
+                                "platform": "gitlab",
+                                "branch": branch,
+                                "updated": (p.get("last_activity_at") or "")[:10],
+                                "stars": p.get("star_count", 0),
+                                "is_auto_bot": True,
+                                "playlists": [],
+                                "upstream_sources": [],
+                            }
+                            for fname in ("playlist.m3u", "playlist.m3u8", "index.m3u", "index.m3u8", "iptv.m3u", "tv.m3u", "bangla.m3u", "india.m3u", "live.m3u", "kids.m3u", "cartoon.m3u", "all.m3u"):
+                                extra_playlists.add(f"https://gitlab.com/{path_ns}/-/raw/{branch}/{fname}")
+                    if len(projects) < 100:
+                        break
+            except Exception as e:
+                log(f"[GitLab Search Error] {kw}: {e}")
+            time.sleep(1.5)
 
     cb_headers = {
         "User-Agent": "IPTV-Playlist-Aggregator/1.0 (+https://github.com)",
         "Accept": "application/json"
     }
-    for kw in ALT_GIT_KEYWORDS[:3]:
+    for kw in ALT_GIT_KEYWORDS[:5]:
         time.sleep(3)
-        cb_url = f"https://codeberg.org/api/v1/repos/search?q={urllib.parse.quote(kw)}&sort=updated&limit=25"
+        cb_url = f"https://codeberg.org/api/v1/repos/search?q={urllib.parse.quote(kw)}&sort=updated&limit=50"
         try:
             res = fetch_json(cb_url, headers=cb_headers, retries=0)
             for item in res.get("data", []):
@@ -451,7 +515,7 @@ def normalize_web_discovered_url(decoded):
 def search_web_pastes_and_gists():
     discovered_urls = set()
 
-    for page in (1, 2, 3):
+    for page in range(1, 6):
         try:
             gists = fetch_json(f"https://api.github.com/gists/public?per_page=100&page={page}", GH_HEADERS, retries=0)
             if isinstance(gists, list):
@@ -534,8 +598,8 @@ def discover():
             return repo_info
 
         script_paths = []
-        max_pl = 40 if is_priority else 18
-        max_scripts = 40 if is_priority else 18
+        max_pl = 60 if is_priority else 25
+        max_scripts = 50 if is_priority else 22
 
         for f in tree:
             if f.get("type") != "blob":
@@ -544,13 +608,13 @@ def discover():
             lpath = path.lower()
             if ".github/workflows/" in lpath:
                 repo_info["is_auto_bot"] = True
-                if f.get("size", 0) < 120000:
+                if f.get("size", 0) < 150000:
                     script_paths.append(path)
             elif lpath.endswith((".m3u", ".m3u8")) and f.get("size", 0) > 200:
                 if len(repo_info["playlists"]) < max_pl:
                     raw_pl = f"https://raw.githubusercontent.com/{repo}/{branch}/{urllib.parse.quote(path)}"
                     repo_info["playlists"].append(raw_pl)
-            elif lpath.endswith((".py", ".js", ".ts", ".sh", ".json", ".txt", ".yml", ".yaml")) and f.get("size", 0) < 400000:
+            elif lpath.endswith((".py", ".js", ".ts", ".sh", ".json", ".txt", ".yml", ".yaml", ".php")) and f.get("size", 0) < 450000:
                 script_paths.append(path)
 
         upstream = set()
@@ -629,7 +693,7 @@ def discover():
     OUT_JSON.write_text(json.dumps(result_data, indent=2), encoding="utf-8")
 
     report_lines = [
-        f"=== Global Multi-Source IPTV Discovery Report ({result_data['generated_at']}) ===",
+        f"=== Deep Multi-Source IPTV Discovery Report ({result_data['generated_at']}) ===",
         f"Total Repositories Tracked (GitHub + GitLab + Codeberg): {len(all_bots_list)}",
         f"Active Upstream Scraping Sources & Pastes: {len(all_upstream_urls)}",
         f"Active Direct M3U Feeds: {len(all_bot_playlists)}",
