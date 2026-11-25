@@ -1,8 +1,9 @@
 """
 All-in-One Direct (No-Proxy) Global Live TV IPTV Updater
 Features:
+- Unlimited high-speed backup links per channel (MAX_LINKS_PER_CHANNEL = None), sorted fastest-first
+- Strict Speed & Throughput Gate: drops slow/buffering streams (manifest latency > 2.2s or chunk throughput < 25 KB/s)
 - Official Channel Name & Logo Enrichment from 'iptv-org/api/channels.json' + AynaOTT Catalog
-- Balanced filtering so valid channels are not over-dropped while blocking garbage/foreign homonyms
 - Dedicated 'Kids & Animation' & 'Informative' groups alongside BD, Bangla/Hindi India, English & Sports
 - Fast multi-threaded HLS verification + Dead-host fast skip cache
 - Active Pool vs. Sleeping Pool sync ('source_health.json' & 'sleeping_sources.json')
@@ -13,7 +14,7 @@ import urllib.error, urllib.parse, urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
-socket.setdefaulttimeout(6)
+socket.setdefaulttimeout(5)
 
 # ------------------------------------------------------------------ settings
 OUTPUT = Path("playlist.m3u")
@@ -22,8 +23,11 @@ SOURCE_REPORT = Path("source_report.txt")
 DISCOVERED_FILE = Path("discovered_sources.json")
 HEALTH_FILE = Path("source_health.json")
 SLEEPING_FILE = Path("sleeping_sources.json")
+
 WORKERS = 220
-CHECK_TIMEOUT = 4
+CHECK_TIMEOUT = 3.0
+MAX_MANIFEST_LATENCY = 2.2
+MIN_CHUNK_KBPS = 25.0
 MAX_LINKS_PER_CHANNEL = None
 MIN_KEEP_RATIO = 0.1
 
@@ -260,7 +264,6 @@ def fetch_official_channel_metadata():
 
 
 def looks_like_random_id(token_str):
-    """Detects clearly random hash/token stream slugs like '1d3uG9VCgrR9DRtWZM57' or '39ee93nUbCCmm5LsyD4t'."""
     s = re.sub(r"\s+", "", token_str or "")
     if len(s) < 9:
         return False
@@ -783,7 +786,7 @@ def scrape_iptv_org_base():
     return res
 
 
-# ------------------------------------------------------------------ stream check & M3U8 audio lang detection
+# ------------------------------------------------------------------ stream check & speed/throughput verification
 def detect_m3u8_audio_lang(m3u8_text):
     langs = M3U8_AUDIO_LANG_RE.findall(m3u8_text)
     if not langs:
@@ -795,7 +798,7 @@ def detect_m3u8_audio_lang(m3u8_text):
     return normed[0] if normed else ""
 
 
-def check_hls_key(m3u8_text, base_url, headers, timeout=3):
+def check_hls_key(m3u8_text, base_url, headers, timeout=2.5):
     low = m3u8_text.lower()
     if "#ext-x-key" not in low or "method=none" in low:
         return True
@@ -811,53 +814,61 @@ def check_hls_key(m3u8_text, base_url, headers, timeout=3):
         return False
 
 
-def verify_deep_hls(m3u8_text, base_url, headers, timeout=3.5):
-    if not check_hls_key(m3u8_text, base_url, headers, timeout=2.5):
-        return False
+def verify_deep_hls_and_speed(m3u8_text, base_url, headers, timeout=3.0):
+    if not check_hls_key(m3u8_text, base_url, headers, timeout=2.0):
+        return False, 0.0
 
     lines = [ln.strip() for ln in m3u8_text.splitlines() if ln.strip() and not ln.strip().startswith("#")]
     if not lines:
-        return False
+        return False, 0.0
 
     for candidate in lines[:2]:
         target_url = urllib.parse.urljoin(base_url, candidate)
         if VOD_EXT_RE.search(target_url):
             continue
         try:
+            t_seg = time.time()
             req = urllib.request.Request(target_url, headers=headers)
             with urllib.request.urlopen(req, timeout=timeout, context=SSL_CTX) as r:
                 if r.status not in (200, 206):
                     continue
-                chunk = r.read(8192)
+                chunk = r.read(16384)
+                dt = max(time.time() - t_seg, 0.01)
                 low = chunk.decode("utf-8", errors="ignore").lower()
                 if "#ext-x-endlist" in low:
-                    return False
+                    return False, 0.0
                 if any(drm in low for drm in ("sample-aes", "widevine", "playready", "skd://")):
                     continue
                 if "#extm3u" in low:
                     sub_text = chunk.decode("utf-8", errors="ignore")
-                    if not check_hls_key(sub_text, target_url, headers, timeout=2.5):
+                    if not check_hls_key(sub_text, target_url, headers, timeout=2.0):
                         continue
                     sub_lines = [ln.strip() for ln in sub_text.splitlines()
                                  if ln.strip() and not ln.strip().startswith("#")]
                     if not sub_lines:
                         continue
                     seg_url = urllib.parse.urljoin(target_url, sub_lines[0])
+                    t_seg2 = time.time()
                     req2 = urllib.request.Request(seg_url, headers=headers)
                     with urllib.request.urlopen(req2, timeout=timeout, context=SSL_CTX) as r2:
-                        seg_data = r2.read(16384)
-                        if r2.status in (200, 206) and len(seg_data) >= 5000 and not seg_data[:20].lstrip().startswith(b"<"):
-                            return True
-                elif len(chunk) >= 5000 and not chunk[:20].lstrip().startswith(b"<"):
-                    return True
+                        seg_data = r2.read(32768)
+                        dt2 = max(time.time() - t_seg2, 0.01)
+                        kbps = (len(seg_data) / 1024.0) / dt2
+                        if r2.status in (200, 206) and len(seg_data) >= 6000 and not seg_data[:20].lstrip().startswith(b"<"):
+                            if kbps >= MIN_CHUNK_KBPS:
+                                return True, kbps
+                elif len(chunk) >= 6000 and not chunk[:20].lstrip().startswith(b"<"):
+                    kbps = (len(chunk) / 1024.0) / dt
+                    if kbps >= MIN_CHUNK_KBPS:
+                        return True, kbps
         except Exception:
             continue
-    return False
+    return False, 0.0
 
 
 def check_stream(raw_url, timeout=CHECK_TIMEOUT):
     if not raw_url:
-        return False, 0, "empty url", UA, ""
+        return False, 0, "empty url", UA, "", 0.0
     base, url, custom_ua = dict(HEADERS), raw_url, False
     if "|" in raw_url:
         url, extra = raw_url.split("|", 1)
@@ -873,16 +884,16 @@ def check_stream(raw_url, timeout=CHECK_TIMEOUT):
 
     host = urllib.parse.urlparse(url).netloc.lower()
     if host in DEAD_HOSTS:
-        return False, 0, "dead host (cached)", UA, ""
+        return False, 0, "dead host (cached)", UA, "", 0.0
 
     exp_m = re.search(r"(?:exp|expires)=(\d{10})", url, re.I)
     if exp_m and int(exp_m.group(1)) < int(time.time()) + 7200:
-        return False, 0, "token expired or expiring soon", UA, ""
+        return False, 0, "token expired or expiring soon", UA, "", 0.0
 
     if AUDIO_EXT_RE.search(url):
-        return False, 0, "radio/audio file", UA, ""
+        return False, 0, "radio/audio file", UA, "", 0.0
     if VOD_EXT_RE.search(url) or VOD_PATH_RE.search(url):
-        return False, 0, "VOD/movie file", UA, ""
+        return False, 0, "VOD/movie file", UA, "", 0.0
 
     if "jagobd.com" in url and "Referer" not in base:
         base["Referer"] = "https://www.jagobd.com/"
@@ -900,19 +911,22 @@ def check_stream(raw_url, timeout=CHECK_TIMEOUT):
             with urllib.request.urlopen(req, timeout=timeout, context=SSL_CTX) as r:
                 final_url = r.geturl() or url
                 if VOD_EXT_RE.search(final_url):
-                    return False, 0, "VOD redirect", ua, ""
+                    return False, 0, "VOD redirect", ua, "", 0.0
 
                 ctype = r.headers.get("Content-Type", "").lower()
                 icy_name = r.headers.get("icy-name") or r.headers.get("icy-genre")
                 if icy_name or ctype.startswith("audio/"):
-                    return False, 0, "radio/audio stream", ua, ""
+                    return False, 0, "radio/audio stream", ua, "", 0.0
                 if any(v in ctype for v in ("video/mp4", "video/x-matroska", "video/avi", "video/webm")):
-                    return False, 0, "direct movie file", ua, ""
+                    return False, 0, "direct movie file", ua, "", 0.0
 
                 raw = r.read(6144)
                 text_body = raw.decode("utf-8", errors="ignore")
                 low = text_body.strip().lower()
                 lat = time.time() - t0
+
+                if lat > MAX_MANIFEST_LATENCY:
+                    return False, lat, "slow manifest (>2.2s)", ua, "", 0.0
 
                 if r.status not in (200, 206):
                     reason = f"HTTP {r.status}"
@@ -922,33 +936,34 @@ def check_stream(raw_url, timeout=CHECK_TIMEOUT):
                     continue
 
                 if "#ext-x-endlist" in low:
-                    return False, 0, "VOD m3u8 (ENDLIST)", ua, ""
+                    return False, 0, "VOD m3u8 (ENDLIST)", ua, "", 0.0
 
                 if any(drm in low for drm in ("sample-aes", "widevine", "playready", "skd://",
                                               "edef8ba9-79d6-4ace-a3c8-27dcd51d21ed")):
-                    return False, 0, "DRM encrypted", ua, ""
+                    return False, 0, "DRM encrypted", ua, "", 0.0
 
                 if "#extm3u" in low and AUDIO_EXT_RE.search(low) and ".ts" not in low and "#ext-x-stream-inf" not in low:
-                    return False, 0, "audio-only m3u8", ua, ""
+                    return False, 0, "audio-only m3u8", ua, "", 0.0
 
                 if "#extm3u" in low:
                     if any(tag in low for tag in ("#ext-x-stream-inf", "#extinf", "#ext-x-targetduration")):
-                        if verify_deep_hls(text_body, final_url, headers, timeout=3.5):
+                        ok_seg, kbps = verify_deep_hls_and_speed(text_body, final_url, headers, timeout=3.0)
+                        if ok_seg:
                             stream_lang = detect_m3u8_audio_lang(text_body)
-                            return True, lat, "ok", ua, stream_lang
-                        return False, 0, "dead/corrupt HLS segment", ua, ""
+                            return True, lat, "ok", ua, stream_lang, kbps
+                        return False, 0, "slow/dead HLS segment", ua, "", 0.0
                     reason = "empty/invalid m3u8"
                     continue
 
                 if raw and raw[0] == 0x47:
-                    return False, 0, "raw ts stream (not m3u8)", ua, ""
+                    return False, 0, "raw ts stream (not m3u8)", ua, "", 0.0
                 if ".ts" in final_url.lower():
-                    return False, 0, "raw ts stream (not m3u8)", ua, ""
+                    return False, 0, "raw ts stream (not m3u8)", ua, "", 0.0
                 reason = "not an m3u8 live stream"
         except urllib.error.HTTPError as e:
             reason = f"HTTP {e.code}"
             if e.code in (404, 410, 451):
-                return False, 0, reason, ua, ""
+                return False, 0, reason, ua, "", 0.0
         except urllib.error.URLError as e:
             msg = str(e.reason)
             reason = "timeout" if "timed out" in msg.lower() else f"connect: {msg[:35]}"
@@ -957,7 +972,7 @@ def check_stream(raw_url, timeout=CHECK_TIMEOUT):
                     HOST_FAIL_COUNTS[host] += 1
                     if HOST_FAIL_COUNTS[host] >= 2:
                         DEAD_HOSTS.add(host)
-                return False, 0, reason, ua, ""
+                return False, 0, reason, ua, "", 0.0
             if idx == 0 and reason != "timeout":
                 break
         except TimeoutError:
@@ -965,7 +980,7 @@ def check_stream(raw_url, timeout=CHECK_TIMEOUT):
         except Exception as e:
             reason = f"error: {type(e).__name__}"
             break
-    return False, 0, reason, UA, ""
+    return False, 0, reason, UA, "", 0.0
 
 
 def check_all(channels):
@@ -975,18 +990,18 @@ def check_all(channels):
         for f in as_completed(fut):
             c = fut[f]
             try:
-                ok, lat, reason, matched_ua, stream_lang = f.result()
+                ok, lat, reason, matched_ua, stream_lang, kbps = f.result()
             except Exception as e:
-                ok, lat, reason, matched_ua, stream_lang = False, 0, f"error: {type(e).__name__}", UA, ""
-            c["alive"], c["latency"], c["reason"], c["matched_ua"] = ok, lat, reason, matched_ua
+                ok, lat, reason, matched_ua, stream_lang, kbps = False, 0, f"error: {type(e).__name__}", UA, "", 0.0
+            c["alive"], c["latency"], c["reason"], c["matched_ua"], c["kbps"] = ok, lat, reason, matched_ua, kbps
             if stream_lang:
                 c["stream_lang"] = stream_lang
             done += 1
             if done % 1000 == 0 or done == total:
-                log(f"checked {done}/{total} | alive {sum(1 for x in channels if x.get('alive'))}")
+                log(f"checked {done}/{total} | high-speed alive {sum(1 for x in channels if x.get('alive'))}")
 
     dead = Counter(c["reason"] for c in channels if not c.get("alive") and c.get("reason"))
-    log("Dead/Invalid er karon: " + ", ".join(f"{k}: {v}" for k, v in dead.most_common(8)))
+    log("Slow/Dead/Invalid er karon: " + ", ".join(f"{k}: {v}" for k, v in dead.most_common(8)))
 
 
 # ------------------------------------------------------------------ canonical name normalization & deduplication
@@ -1442,7 +1457,9 @@ def dedupe_by_name(chs, limit):
     def rank(c):
         g = c["group"]
         return (0 if g in specific else 1 if g in GROUP_ORDER else 2,
-                SOURCE_RANK.get(c["source"], 9), c.get("latency", 99))
+                round(c.get("latency", 99), 2),
+                -c.get("kbps", 0),
+                SOURCE_RANK.get(c["source"], 9))
 
     kept, count = set(), {}
     for c in sorted(chs, key=rank):
@@ -1547,13 +1564,13 @@ def write_source_report(alive, clean_alive):
         src = c.get("source", "Unknown")
         clean_u = c["url"].split("|")[0].strip()
         dom = urllib.parse.urlparse(clean_u).netloc.lower() or "unknown"
-        entry = f"{c['name']} [{c['group']}] ({int(c.get('latency', 0) * 1000)}ms)"
+        entry = f"{c['name']} [{c['group']}] ({int(c.get('latency', 0) * 1000)}ms | {int(c.get('kbps', 0))}KB/s)"
         by_source[src].append(entry)
         by_domain[dom].append(entry)
 
     rep = [
         f"=== Global IPTV Source & Channel Breakdown Report ({time.strftime('%Y-%m-%d %H:%M:%S UTC', time.gmtime())}) ===",
-        f"Total Alive Streams: {len(alive)} | Clean Unique Channels: {len(clean_alive)}\n",
+        f"Total High-Speed Alive Streams: {len(alive)} | Clean Unique Channels: {len(clean_alive)}\n",
         "--- 1. SUMMARY BY SOURCE PLATFORM / ENGINE ---"
     ]
     for src, ch_list in sorted(by_source.items(), key=lambda x: -len(x[1])):
@@ -1629,7 +1646,7 @@ def main():
 
     update_source_health(checked_feed_urls, alive)
 
-    log(f"Alive (Filtered Groups only): {len(alive)} / {len(items)}")
+    log(f"High-Speed Alive (Filtered Groups only): {len(alive)} / {len(items)}")
 
     prev = OUTPUT.read_text(encoding="utf-8", errors="ignore").count("#EXTINF") if OUTPUT.exists() else 0
     if prev >= 20 and len(alive) < prev * MIN_KEEP_RATIO:
@@ -1673,16 +1690,15 @@ def main():
 
     alive.sort(key=lambda c: (GROUP_ORDER.index(c["group"]) if c["group"] in GROUP_ORDER else 99,
                               c["name"].lower(),
-                              SOURCE_RANK.get(c["source"], 9),
-                              c.get("latency", 99)))
+                              round(c.get("latency", 99), 2),
+                              -c.get("kbps", 0),
+                              SOURCE_RANK.get(c["source"], 9)))
 
     cnt = Counter(c["group"] for c in alive)
-    log("Language & Category wise channel: " + ", ".join(f"{g}: {n}" for g, n in cnt.most_common()))
+    log("Language & Category wise high-speed channel: " + ", ".join(f"{g}: {n}" for g, n in cnt.most_common()))
 
-    # 1. Save full playlist (with backup links)
     write_playlist(alive, OUTPUT)
 
-    # 2. Save truly duplicate-free & lowest ping (fastest) playlist
     best_by_channel = {}
     for c in alive:
         ckey = (c["group"], norm(c["name"]) or c["name"].lower())
@@ -1690,8 +1706,8 @@ def main():
             best_by_channel[ckey] = c
         else:
             prev_c = best_by_channel[ckey]
-            prev_score = (0 if prev_c["url"].startswith("https://") else 1, prev_c.get("latency", 99))
-            curr_score = (0 if c["url"].startswith("https://") else 1, c.get("latency", 99))
+            prev_score = (0 if prev_c["url"].startswith("https://") else 1, round(prev_c.get("latency", 99), 2), -prev_c.get("kbps", 0))
+            curr_score = (0 if c["url"].startswith("https://") else 1, round(c.get("latency", 99), 2), -c.get("kbps", 0))
             if curr_score < prev_score:
                 if not c.get("logo") and prev_c.get("logo"):
                     c["logo"] = prev_c["logo"]
@@ -1703,12 +1719,10 @@ def main():
                        c["name"].lower())
     )
     write_playlist(clean_alive, CLEAN_OUTPUT)
-
-    # 3. Save detailed Source & Domain breakdown report
     write_source_report(alive, clean_alive)
 
     elapsed = int(time.time() - start_time)
-    log(f"{OUTPUT} e {len(alive)} ta channel, {CLEAN_OUTPUT} e {len(clean_alive)} ta clean channel ebong {SOURCE_REPORT} save hoise (Total time: {elapsed // 60}m {elapsed % 60}s)")
+    log(f"{OUTPUT} e {len(alive)} ta high-speed channel, {CLEAN_OUTPUT} e {len(clean_alive)} ta clean channel ebong {SOURCE_REPORT} save hoise (Total time: {elapsed // 60}m {elapsed % 60}s)")
     return 0
 
 
