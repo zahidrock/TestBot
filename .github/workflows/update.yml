@@ -1,68 +1,61 @@
-name: Update IPTV Playlist
+name: Auto Update IPTV Playlist
 
 on:
   schedule:
-    - cron: '0 */6 * * *'   # Proti 6 ghonta porpor cholbe
-  workflow_dispatch:        # Manual run korar option
+    # Protidin 6 ghonta por por cholbe
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  update:
+  update-playlist:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    # GitHub Actions er time limit 3 ghonta (180 minutes) kora holo jeno cancel na hoy
+    timeout-minutes: 180
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: '3.11'
 
-      - name: Check 24h Search Timer
-        id: timer
+      - name: Run Deep Source Discovery (ETag & Rate-Limit Safe)
+        env:
+          GITHUB_TOKEN: ${{ secrets.MY_GH_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
-          NOW=$(date +%s)
-          LAST=0
-          if [ -f "last_search.txt" ]; then
-            LAST=$(cat last_search.txt | tr -d '[:space:]')
-          fi
-          DIFF=$((NOW - LAST))
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "$DIFF" -ge 82800 ]; then
-            echo "run_search=true" >> $GITHUB_OUTPUT
+          # Jodi checkpoint baki thake tahole notun discovery skip kore age baki check sesh korbe
+          if [ ! -f "check_checkpoint.json" ]; then
+            python discover_sources.py
           else
-            echo "run_search=false" >> $GITHUB_OUTPUT
+            echo "Checkpoint paoa gese! Age baki channel check resume kora hocche..."
           fi
 
-      - name: Discover GitHub Bots & Upstream Sources
-        if: steps.timer.outputs.run_search == 'true'
-        continue-on-error: true
+      - name: Run High-Speed IPTV Updater (With Auto-Pause & Resume)
         env:
-          GITHUB_TOKEN: ${{ secrets.MY_GH_TOKEN }}
-        run: python discover_sources.py
-
-      - name: Run updater
-        env:
-          GITHUB_TOKEN: ${{ secrets.MY_GH_TOKEN }}
-          RUN_GH_SEARCH: ${{ steps.timer.outputs.run_search }}
+          GITHUB_TOKEN: ${{ secrets.MY_GH_TOKEN || secrets.GITHUB_TOKEN }}
+          # 140 minutes (8400s) por nijer theke cleanly pause niye checkpoint save korbe
+          MAX_RUNTIME_SECONDS: "8400"
         run: |
           python auto_update.py
-          if [ "${{ steps.timer.outputs.run_search }}" = "true" ]; then
-            date +%s > last_search.txt
-          fi
 
-      - name: Commit playlist & reports
+      - name: Commit and Push Updated Playlist & Checkpoints
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          for f in playlist.m3u playlist_clean.m3u discovered_sources.json bot_report.txt source_report.txt source_health.json sleeping_sources.json last_search.txt; do
-            [ -f "$f" ] && git add "$f"
-          done
-          if ! git diff --staged --quiet; then
-            git commit -m "Auto update playlists & sources: $(date +'%Y-%m-%d %H:%M')"
-            git pull --rebase --autostash origin main
-            git push origin main
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add -A
+          if git diff --staged --quiet; then
+            echo "Kono notun change nai."
+          else
+            if [ -f "check_checkpoint.json" ]; then
+              git commit -m "chore: save IPTV check progress checkpoint (auto-paused)"
+            else
+              git commit -m "chore: update high-speed logo-free IPTV playlists"
+            fi
+            git pull --rebase origin main || true
+            git push
           fi
