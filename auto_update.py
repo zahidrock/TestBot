@@ -1,12 +1,14 @@
 """
-All-in-One Direct (No-Proxy) Global Live TV IPTV Updater (No-Logo High-Speed Edition)
+All-in-One Direct (No-Proxy) Global Live TV IPTV Updater (Logo-Free + Pause & Resume Edition)
 Features:
+- Checkpoint / Auto-Pause & Resume: saves progress every 2,500 checks to 'check_checkpoint.json'
+  and cleanly pauses before workflow timeout, resuming from the exact remaining channels on next run
+- Recursive sub-playlist discovery for deeper active channel harvesting
 - Logo-free lightweight M3U output for faster parsing and cleaner player UI
 - Unlimited high-speed backup links per channel (MAX_LINKS_PER_CHANNEL = None), sorted fastest-first
 - Strict Speed & Throughput Gate: drops slow/buffering streams (manifest latency > 2.2s or chunk throughput < 25 KB/s)
 - Official Channel Name Enrichment from 'iptv-org/api/channels.json' + AynaOTT Catalog
 - Dedicated 'Kids & Animation' & 'Informative' groups alongside BD, Bangla/Hindi India, English & Sports
-- Fast multi-threaded HLS verification + Dead-host fast skip cache
 - Active Pool vs. Sleeping Pool sync ('source_health.json' & 'sleeping_sources.json')
 """
 import json, os, re, socket, ssl, sys, threading, time
@@ -24,6 +26,7 @@ SOURCE_REPORT = Path("source_report.txt")
 DISCOVERED_FILE = Path("discovered_sources.json")
 HEALTH_FILE = Path("source_health.json")
 SLEEPING_FILE = Path("sleeping_sources.json")
+CHECKPOINT_FILE = Path("check_checkpoint.json")
 
 WORKERS = 220
 CHECK_TIMEOUT = 3.0
@@ -32,7 +35,11 @@ MIN_CHUNK_KBPS = 25.0
 MAX_LINKS_PER_CHANNEL = None
 MIN_KEEP_RATIO = 0.1
 
-GITHUB_TOKEN = "" or os.getenv("GITHUB_TOKEN")
+# Auto-pause cleanly before GitHub Actions workflow timeout (default 140 mins = 8400s)
+MAX_RUNTIME_SECONDS = int(os.getenv("MAX_RUNTIME_SECONDS", "8400"))
+CHECKPOINT_MAX_AGE_SECONDS = 86400  # 24 hours
+
+GITHUB_TOKEN = os.getenv("GITHUB_TOKEN", "").strip()
 IPTV_BASE = "https://iptv-org.github.io/iptv"
 
 COUNTRY_SOURCES = [
@@ -622,7 +629,7 @@ def scrape_discovered_and_global_feeds(checked_feed_urls):
             pass
         return None
 
-    def fetch_any_feed(u):
+    def fetch_any_feed(u, depth=0):
         out = []
         src_label = detect_source_label(u)
         host = urllib.parse.urlparse(u).netloc.lower()
@@ -637,13 +644,19 @@ def scrape_discovered_and_global_feeds(checked_feed_urls):
                         ch["feed_url"] = u
                     return chs
                 return []
-            links = re.findall(r'[\'"](https?://[^\'"]+?\.m3u8[^\'"]*)[\'"]', txt)
-            for lk in dict.fromkeys(links):
-                ch_name = extract_name_from_url(lk)
+            links = re.findall(r'(https?://[^\s\'"<>]+?\.m3u8?(?:\?[^\s\'"<>]*)?)', txt, re.I)
+            for lk in list(dict.fromkeys(links))[:40]:
+                clean_lk = clean_stream_url(lk)
+                if depth == 0 and (clean_lk.lower().endswith(".m3u") or "/raw/" in clean_lk.lower()):
+                    sub_chs = fetch_any_feed(clean_lk, depth=1)
+                    if sub_chs:
+                        out.extend(sub_chs)
+                        continue
+                ch_name = extract_name_from_url(clean_lk)
                 if ch_name:
                     out.append({
                         "name": ch_name,
-                        "url": clean_stream_url(lk),
+                        "url": clean_lk,
                         "tvg_id": "",
                         "group": "Others",
                         "lang": "",
@@ -670,7 +683,7 @@ def scrape_discovered_and_global_feeds(checked_feed_urls):
         for f in as_completed(futs):
             res.extend(f.result())
             done_sources += 1
-            if done_sources % 500 == 0 or done_sources == total_sources:
+            if done_sources % 1000 == 0 or done_sources == total_sources:
                 log(f"[InternetSources] progress: {done_sources}/{total_sources} source checked | {len(res)} channel paoa gese")
 
     log(f"[InternetSources] mot {len(res)} ti candidate channel paoa gese")
@@ -684,7 +697,7 @@ def scrape_adaptive_repos():
     ]
     h = {"User-Agent": UA, "Accept": "application/vnd.github+json"}
     if GITHUB_TOKEN:
-        h["Authorization"] = f"Bearer {GITHUB_TOKEN.strip()}"
+        h["Authorization"] = f"Bearer {GITHUB_TOKEN}"
 
     for owner, repo, branch in adaptive_repos:
         try:
@@ -964,25 +977,82 @@ def check_stream(raw_url, timeout=CHECK_TIMEOUT):
     return False, 0, reason, UA, "", 0.0
 
 
-def check_all(channels):
-    total, done = len(channels), 0
-    with ThreadPoolExecutor(max_workers=WORKERS) as ex:
-        fut = {ex.submit(check_stream, c["url"]): c for c in channels}
-        for f in as_completed(fut):
-            c = fut[f]
-            try:
-                ok, lat, reason, matched_ua, stream_lang, kbps = f.result()
-            except Exception as e:
-                ok, lat, reason, matched_ua, stream_lang, kbps = False, 0, f"error: {type(e).__name__}", UA, "", 0.0
-            c["alive"], c["latency"], c["reason"], c["matched_ua"], c["kbps"] = ok, lat, reason, matched_ua, kbps
-            if stream_lang:
-                c["stream_lang"] = stream_lang
-            done += 1
-            if done % 1000 == 0 or done == total:
-                log(f"checked {done}/{total} | high-speed alive {sum(1 for x in channels if x.get('alive'))}")
+def save_checkpoint(channels, checked_feed_urls, started_at):
+    payload = {
+        "created_at": started_at,
+        "updated_at": time.time(),
+        "checked_feed_urls": checked_feed_urls,
+        "channels": channels,
+    }
+    tmp_path = CHECKPOINT_FILE.with_suffix(".tmp")
+    tmp_path.write_text(json.dumps(payload), encoding="utf-8")
+    tmp_path.replace(CHECKPOINT_FILE)
 
-    dead = Counter(c["reason"] for c in channels if not c.get("alive") and c.get("reason"))
+
+def load_checkpoint():
+    if not CHECKPOINT_FILE.exists():
+        return None
+    try:
+        data = json.loads(CHECKPOINT_FILE.read_text(encoding="utf-8"))
+        age = time.time() - float(data.get("updated_at", 0))
+        if age > CHECKPOINT_MAX_AGE_SECONDS:
+            log(f"[Checkpoint] Purono checkpoint ({int(age // 3600)}h age) expire hoyeche, notun kore shuru hocche.")
+            CHECKPOINT_FILE.unlink(missing_ok=True)
+            return None
+        chs = data.get("channels", [])
+        if not chs:
+            return None
+        return data
+    except Exception as e:
+        log(f"[Checkpoint] Read error: {e}")
+        return None
+
+
+def check_all_with_resume(channels, checked_feed_urls, run_start_time, original_created_at):
+    """Checks remaining unchecked channels in chunks, saves checkpoints, and cleanly pauses before timeout."""
+    total = len(channels)
+    already_done = sum(1 for c in channels if c.get("checked"))
+    remaining = [c for c in channels if not c.get("checked")]
+
+    if already_done > 0:
+        alive_so_far = sum(1 for c in channels if c.get("alive"))
+        log(f"[Resume] Checkpoint theke resume hocche: {already_done}/{total} agei checked ({alive_so_far} alive), baki {len(remaining)} ti check hobe...")
+
+    BATCH_SIZE = 2500
+    done = already_done
+    paused = False
+
+    for start_idx in range(0, len(remaining), BATCH_SIZE):
+        if time.time() - run_start_time >= MAX_RUNTIME_SECONDS:
+            paused = True
+            break
+
+        batch = remaining[start_idx:start_idx + BATCH_SIZE]
+        with ThreadPoolExecutor(max_workers=WORKERS) as ex:
+            fut = {ex.submit(check_stream, c["url"]): c for c in batch}
+            for f in as_completed(fut):
+                c = fut[f]
+                try:
+                    ok, lat, reason, matched_ua, stream_lang, kbps = f.result()
+                except Exception as e:
+                    ok, lat, reason, matched_ua, stream_lang, kbps = False, 0, f"error: {type(e).__name__}", UA, "", 0.0
+                c["checked"] = True
+                c["alive"], c["latency"], c["reason"], c["matched_ua"], c["kbps"] = ok, lat, reason, matched_ua, kbps
+                if stream_lang:
+                    c["stream_lang"] = stream_lang
+                done += 1
+
+        alive_now = sum(1 for x in channels if x.get("alive"))
+        log(f"checked {done}/{total} | high-speed alive {alive_now}")
+        save_checkpoint(channels, checked_feed_urls, original_created_at)
+
+        if done < total and (time.time() - run_start_time >= MAX_RUNTIME_SECONDS):
+            paused = True
+            break
+
+    dead = Counter(c["reason"] for c in channels if c.get("checked") and not c.get("alive") and c.get("reason"))
     log("Slow/Dead/Invalid er karon: " + ", ".join(f"{k}: {v}" for k, v in dead.most_common(8)))
+    return paused
 
 
 # ------------------------------------------------------------------ canonical name normalization & deduplication
@@ -1578,40 +1648,57 @@ def write_source_report(alive, clean_alive):
 
 def main():
     start_time = time.time()
-    pool = []
-    checked_feed_urls = []
     id_to_name = fetch_official_channel_names()
 
-    scrapers = (
-        ("AynaOTT", scrape_aynaott),
-        ("JagoBD", scrape_jagobd),
-        ("InternetSources", lambda: scrape_discovered_and_global_feeds(checked_feed_urls)),
-        ("AdaptiveRepos", scrape_adaptive_repos),
-        ("IPTV-org", scrape_iptv_org_base),
-    )
-    for name, fn in scrapers:
-        try:
-            pool.extend(fn())
-        except Exception as e:
-            log(f"[{name}] error: {e}")
+    ckpt = load_checkpoint()
+    if ckpt:
+        items = ckpt.get("channels", [])
+        checked_feed_urls = ckpt.get("checked_feed_urls", [])
+        original_created_at = ckpt.get("created_at", start_time)
+    else:
+        pool = []
+        checked_feed_urls = []
+        original_created_at = start_time
 
-    seen, items = set(), []
-    for c in pool:
-        raw = clean_stream_url(c["url"].split("|")[0].strip())
-        if not raw or raw in seen or is_blocked_or_non_tv(c):
-            continue
-        if any(b in c["url"] for b in BLOCK_URLS):
-            continue
+        scrapers = (
+            ("AynaOTT", scrape_aynaott),
+            ("JagoBD", scrape_jagobd),
+            ("InternetSources", lambda: scrape_discovered_and_global_feeds(checked_feed_urls)),
+            ("AdaptiveRepos", scrape_adaptive_repos),
+            ("IPTV-org", scrape_iptv_org_base),
+        )
+        for name, fn in scrapers:
+            try:
+                pool.extend(fn())
+            except Exception as e:
+                log(f"[{name}] error: {e}")
 
-        pre_grp = classify_by_language_and_name(c)
-        if pre_grp == "DROP":
-            continue
+        seen, items = set(), []
+        for c in pool:
+            raw = clean_stream_url(c["url"].split("|")[0].strip())
+            if not raw or raw in seen or is_blocked_or_non_tv(c):
+                continue
+            if any(b in c["url"] for b in BLOCK_URLS):
+                continue
 
-        seen.add(raw)
-        items.append(c)
-    log(f"Total unique BD/Bangla-Hindi/English/Informative/Kids candidate: {len(items)}")
+            pre_grp = classify_by_language_and_name(c)
+            if pre_grp == "DROP":
+                continue
 
-    check_all(items)
+            seen.add(raw)
+            c["checked"] = False
+            items.append(c)
+
+        log(f"Total unique BD/Bangla-Hindi/English/Informative/Kids candidate: {len(items)}")
+        save_checkpoint(items, checked_feed_urls, original_created_at)
+
+    paused = check_all_with_resume(items, checked_feed_urls, start_time, original_created_at)
+    if paused:
+        done_cnt = sum(1 for c in items if c.get("checked"))
+        alive_cnt = sum(1 for c in items if c.get("alive"))
+        log(f"[PAUSED] Time limit ({MAX_RUNTIME_SECONDS}s) reached! Progress saved: {done_cnt}/{len(items)} checked ({alive_cnt} alive). Poroborti run e ekhan thekei resume hobe.")
+        return 0
+
     alive_raw = [c for c in items if c.get("alive")]
 
     alive = []
@@ -1632,6 +1719,7 @@ def main():
     prev = OUTPUT.read_text(encoding="utf-8", errors="ignore").count("#EXTINF") if OUTPUT.exists() else 0
     if prev >= 20 and len(alive) < prev * MIN_KEEP_RATIO:
         log(f"[SAFETY] Alive ({len(alive)}) ager playlist ({prev}) er theke onek kom. Overwrite kora holo na.")
+        CHECKPOINT_FILE.unlink(missing_ok=True)
         return 1
 
     for c in alive:
@@ -1682,6 +1770,8 @@ def main():
     )
     write_playlist(clean_alive, CLEAN_OUTPUT)
     write_source_report(alive, clean_alive)
+
+    CHECKPOINT_FILE.unlink(missing_ok=True)
 
     elapsed = int(time.time() - start_time)
     log(f"{OUTPUT} e {len(alive)} ta high-speed channel, {CLEAN_OUTPUT} e {len(clean_alive)} ta clean channel ebong {SOURCE_REPORT} save hoise (Total time: {elapsed // 60}m {elapsed % 60}s)")
