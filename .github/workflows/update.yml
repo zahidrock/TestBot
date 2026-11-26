@@ -2,7 +2,6 @@ name: Auto Update IPTV Playlist
 
 on:
   schedule:
-    # Protidin 6 ghonta por por cholbe
     - cron: '0 */6 * * *'
   workflow_dispatch:
 
@@ -12,7 +11,6 @@ permissions:
 jobs:
   update-playlist:
     runs-on: ubuntu-latest
-    # GitHub Actions er time limit 3 ghonta (180 minutes) kora holo jeno cancel na hoy
     timeout-minutes: 180
 
     steps:
@@ -28,7 +26,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.MY_GH_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
-          # Jodi checkpoint baki thake tahole notun discovery skip kore age baki check sesh korbe
           if [ ! -f "check_checkpoint.json" ]; then
             python discover_sources.py
           else
@@ -38,7 +35,6 @@ jobs:
       - name: Run High-Speed IPTV Updater (With Auto-Pause & Resume)
         env:
           GITHUB_TOKEN: ${{ secrets.MY_GH_TOKEN || secrets.GITHUB_TOKEN }}
-          # 140 minutes (8400s) por nijer theke cleanly pause niye checkpoint save korbe
           MAX_RUNTIME_SECONDS: "8400"
         run: |
           python auto_update.py
