@@ -2,8 +2,7 @@
 Zero-Rate-Limit Deep Multi-Platform IPTV Source Discovery Engine
 Features:
 - PAT Authentication + ETag / If-None-Match Conditional Caching (stores lightweight ETag strings only)
-- Header-Aware Sequential Request Queue (reads x-ratelimit-remaining, x-ratelimit-reset & retry-after)
-- Exponential Backoff on 403/429 without stalling
+- Header-Aware Sequential Request Queue with Secondary Rate-Limit Cool-Down on 403/429
 - Deep Tree & Raw File Harvesting (zero rate limit on raw.githubusercontent.com)
 - Crawls Priority Repos, Forks, Maintainer Sibling Repos, GitLab, Codeberg, Gists & Web Dorks
 """
@@ -210,7 +209,7 @@ def is_syntactically_valid_url(url, self_repo_prefix=""):
 
 
 class GitHubAPIClient:
-    """Sequential, ETag-cached, header-aware GitHub API client with exponential backoff."""
+    """Sequential, ETag-cached, header-aware GitHub API client with secondary-limit protection."""
 
     def __init__(self, headers, etag_path):
         self.headers = dict(headers)
@@ -225,6 +224,8 @@ class GitHubAPIClient:
                     self.cache[k] = v["etag"]
         self.search_paused_until = 0.0
         self.code_search_paused_until = 0.0
+        self.core_paused_until = 0.0
+        self.consecutive_core_403 = 0
         self.stats = {"304_hits": 0, "200_hits": 0, "rate_waits": 0}
 
     def save_cache(self):
@@ -235,12 +236,14 @@ class GitHubAPIClient:
         tmp_path.write_text(json.dumps(self.cache, separators=(",", ":")), encoding="utf-8")
         tmp_path.replace(self.etag_path)
 
-    def get(self, url, min_delay=0.8, retries=3, category="core"):
+    def get(self, url, min_delay=0.8, retries=2, category="core"):
         now = time.time()
         if category == "search" and now < self.search_paused_until:
             time.sleep(self.search_paused_until - now)
         elif category == "code_search" and now < self.code_search_paused_until:
             time.sleep(self.code_search_paused_until - now)
+        elif category == "core" and now < self.core_paused_until:
+            time.sleep(min(self.core_paused_until - now, 30))
 
         req_headers = dict(self.headers)
         cached_etag = self.cache.get(url)
@@ -253,6 +256,8 @@ class GitHubAPIClient:
                 req = urllib.request.Request(url, headers=req_headers)
                 with urllib.request.urlopen(req, timeout=20, context=SSL_CTX) as r:
                     self._respect_rate_headers(r.headers, category)
+                    if category == "core":
+                        self.consecutive_core_403 = 0
                     etag = r.headers.get("ETag")
                     data = json.loads(r.read().decode("utf-8", errors="ignore"))
                     if etag:
@@ -262,19 +267,29 @@ class GitHubAPIClient:
             except urllib.error.HTTPError as e:
                 if e.code == 304:
                     self._respect_rate_headers(e.headers, category)
+                    if category == "core":
+                        self.consecutive_core_403 = 0
                     self.stats["304_hits"] += 1
                     return {}
                 if e.code in (403, 429):
                     self.stats["rate_waits"] += 1
+                    if category == "core":
+                        self.consecutive_core_403 += 1
+                        if self.consecutive_core_403 >= 4:
+                            self.core_paused_until = time.time() + 75
+                            self.consecutive_core_403 = 0
+                            log("[Queue Backoff 403] core secondary limit -> 75s cool-down...")
+                            time.sleep(75)
+                            return {}
                     ra = int(e.headers.get("Retry-After", 0) or 0)
                     rem = e.headers.get("X-RateLimit-Remaining")
                     rst = int(e.headers.get("X-RateLimit-Reset", 0) or 0)
                     if rem == "0" and rst > time.time():
-                        wait_sec = min(int(rst - time.time()) + 3, 180)
+                        wait_sec = min(int(rst - time.time()) + 3, 90)
                     elif ra > 0:
-                        wait_sec = min(ra + 2, 180)
+                        wait_sec = min(ra + 2, 90)
                     else:
-                        wait_sec = min(20 * (2 ** attempt) + random.uniform(1, 5), 180)
+                        wait_sec = min(18 * (2 ** attempt) + random.uniform(1, 4), 60)
                     if attempt < retries:
                         log(f"[Queue Backoff {e.code}] {category} limit -> {int(wait_sec)}s wait...")
                         time.sleep(wait_sec)
@@ -293,11 +308,13 @@ class GitHubAPIClient:
             rem = int(hdrs.get("X-RateLimit-Remaining", 999))
             rst = int(hdrs.get("X-RateLimit-Reset", 0))
             if rem <= 2 and rst > time.time():
-                pause = min(rst - time.time() + 2, 120)
+                pause = min(rst - time.time() + 2, 90)
                 if category == "search":
                     self.search_paused_until = time.time() + pause
                 elif category == "code_search":
                     self.code_search_paused_until = time.time() + pause
+                elif category == "core":
+                    self.core_paused_until = time.time() + pause
         except Exception:
             pass
 
@@ -400,7 +417,7 @@ def crawl_forks_and_owners(gh, found, seed_repos):
             continue
         owner = fn.split("/")[0]
         owners_seen.add(owner)
-        forks = gh.get(f"https://api.github.com/repos/{fn}/forks?sort=newest&per_page=100", min_delay=0.6, retries=1, category="core")
+        forks = gh.get(f"https://api.github.com/repos/{fn}/forks?sort=newest&per_page=100", min_delay=0.7, retries=1, category="core")
         if isinstance(forks, list):
             for fk in forks:
                 if (fk.get("pushed_at") or "") >= "2025-06-01":
@@ -410,7 +427,7 @@ def crawl_forks_and_owners(gh, found, seed_repos):
     for owner in list(owners_seen)[:80]:
         if owner.lower() in ("iptv-org", "free-tv"):
             continue
-        urepos = gh.get(f"https://api.github.com/users/{owner}/repos?sort=pushed&per_page=100", min_delay=0.6, retries=1, category="core")
+        urepos = gh.get(f"https://api.github.com/users/{owner}/repos?sort=pushed&per_page=100", min_delay=0.7, retries=1, category="core")
         if isinstance(urepos, list):
             for r in urepos:
                 r_text = f"{r.get('name', '')} {r.get('description', '')}".lower()
@@ -421,7 +438,7 @@ def crawl_forks_and_owners(gh, found, seed_repos):
 def fetch_bd_priority_and_network(gh):
     found = {}
     for fn in BD_PRIORITY_REPOS:
-        item = gh.get(f"https://api.github.com/repos/{fn}", min_delay=0.5, retries=1, category="core")
+        item = gh.get(f"https://api.github.com/repos/{fn}", min_delay=0.6, retries=1, category="core")
         if isinstance(item, dict) and item.get("full_name"):
             add_repo_item(found, item, is_auto_bot=True)
 
@@ -628,6 +645,7 @@ def discover():
     log(f"GitHub er {len(gh_found)} ti repo sequential ETag queue te deeply analyze kora hocche...")
 
     repo_trees = {}
+    scanned_trees = 0
     for repo_info in gh_found.values():
         repo = repo_info["repo"]
         branch = repo_info["branch"]
@@ -638,9 +656,12 @@ def discover():
             repo_info["is_auto_bot"] = old_b.get("is_auto_bot", repo_info["is_auto_bot"])
             continue
         tree_url = f"https://api.github.com/repos/{repo}/git/trees/{branch}?recursive=1"
-        tree_data = gh.get(tree_url, min_delay=0.45, retries=1, category="core")
+        tree_data = gh.get(tree_url, min_delay=0.75, retries=0, category="core")
         if isinstance(tree_data, dict) and tree_data.get("tree"):
             repo_trees[repo] = tree_data["tree"]
+        scanned_trees += 1
+        if scanned_trees % 150 == 0:
+            log(f"[TreeScan] {scanned_trees} ti repo tree checked...")
 
     def harvest_raw_files(repo_info):
         repo = repo_info["repo"]
