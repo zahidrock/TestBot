@@ -2,7 +2,8 @@ name: Auto Update IPTV Playlist
 
 on:
   schedule:
-    - cron: '0 */6 * * *'
+    # Protidin 12 ghonta por por cholbe
+    - cron: '0 */12 * * *'
   workflow_dispatch:
 
 permissions:
@@ -26,6 +27,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.MY_GH_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
+          if [ -f "etag_cache.json" ]; then
+            size_bytes=$(wc -c < "etag_cache.json" || echo 0)
+            if [ "$size_bytes" -gt 5242880 ]; then
+              echo "Oversized etag_cache.json detected (${size_bytes} bytes), resetting..."
+              rm -f etag_cache.json
+            fi
+          fi
           if [ ! -f "check_checkpoint.json" ]; then
             python discover_sources.py
           else
@@ -43,6 +51,7 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
+          find . -maxdepth 3 -type f -size +50M -not -path './.git/*' -delete || true
           git add -A
           if git diff --staged --quiet; then
             echo "Kono notun change nai."
