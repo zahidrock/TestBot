@@ -1,23 +1,25 @@
 """
-Deep Error-Resilient Multi-Platform Live TV & IPTV Source Discovery Engine
+Zero-Rate-Limit Deep Multi-Platform IPTV Source Discovery Engine
 Features:
-- Deep harvesting from priority repos, active forks, sibling maintainer repos, GitLab, Codeberg, Gists & Web Dorks
-- Extracts live streaming APIs, portals, Cloudflare Workers/Pages & M3U8/M3U feeds from code/configs
-- Non-blocking GitHub Search rate-limit handling so runs never stall or fail with errors
-- Active Pool vs. Sleeping Pool architecture with Repo Update Event Revival & Daily Canary Probe
+- PAT Authentication + ETag / If-None-Match Conditional Caching (304 Not Modified saves rate limits)
+- Header-Aware Sequential Request Queue (reads x-ratelimit-remaining, x-ratelimit-reset & retry-after)
+- Exponential Backoff on 403/429 without stalling
+- Deep Tree & Raw File Harvesting (zero rate limit on raw.githubusercontent.com)
+- Crawls Priority Repos, Forks, Maintainer Sibling Repos, GitLab, Codeberg, Gists & Web Dorks
 """
 import json, os, random, re, ssl, time
 import urllib.error, urllib.parse, urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
-GITHUB_TOKEN = "" or os.getenv("GITHUB_TOKEN")
+GITHUB_TOKEN = os.getenv("GITHUB_TOKEN", "").strip()
 OUT_JSON = Path("discovered_sources.json")
 OUT_REPORT = Path("bot_report.txt")
 HEALTH_JSON = Path("source_health.json")
 SLEEPING_JSON = Path("sleeping_sources.json")
+ETAG_CACHE_JSON = Path("etag_cache.json")
 
-CANARY_BATCH_SIZE = 1000
+CANARY_BATCH_SIZE = 1200
 
 BD_PRIORITY_REPOS = [
     "saeidrahmanbd/BDIX-IPTV",
@@ -38,11 +40,14 @@ SSL_CTX.check_hostname = False
 SSL_CTX.verify_mode = ssl.CERT_NONE
 
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
-GH_HEADERS = {"User-Agent": UA, "Accept": "application/vnd.github+json"}
+GH_HEADERS = {
+    "User-Agent": UA,
+    "Accept": "application/vnd.github+json",
+    "X-GitHub-Api-Version": "2026-03-10",
+}
 if GITHUB_TOKEN:
-    GH_HEADERS["Authorization"] = f"Bearer {GITHUB_TOKEN.strip()}"
+    GH_HEADERS["Authorization"] = f"Bearer {GITHUB_TOKEN}"
 
-# Focused, high-yield repository & topic queries (single page per query to avoid 403 bursts)
 BOT_SEARCH_QUERIES = [
     "iptv pushed:>2026-01-01",
     "m3u8 playlist pushed:>2026-01-01",
@@ -70,17 +75,14 @@ BOT_SEARCH_QUERIES = [
     "topic:anime",
 ]
 
-# High-value code & upstream stream signatures
 CODE_SIGNATURE_QUERIES = [
     '"cron:" "m3u" path:.github/workflows',
-    '"cron:" "m3u8" path:.github/workflows',
     '"#EXTINF" "Somoy" extension:m3u',
     '"#EXTINF" "Jamuna" extension:m3u8',
     '"#EXTINF" "Star Jalsha" extension:m3u',
     '"#EXTINF" "Zee Bangla" extension:m3u8',
     '"#EXTINF" "Aaj Tak" extension:m3u',
     '"#EXTINF" "Cartoon Network" extension:m3u',
-    '"#EXTINF" "Sony Yay" extension:m3u',
     '"#EXTINF" "Discovery" extension:m3u',
     '"aynaott" extension:py',
     '"jagobd" extension:py',
@@ -88,9 +90,6 @@ CODE_SIGNATURE_QUERIES = [
     '"app24.jagobd.com.bd" extension:m3u',
     '"ncare.live" extension:m3u',
     '"tangotv.in" extension:m3u',
-    '"ottlive.co.in" extension:m3u',
-    '"livebox.co.in" extension:m3u',
-    '"sonarbanglatv.com" extension:m3u',
 ]
 
 ALT_GIT_KEYWORDS = [
@@ -181,8 +180,6 @@ CAPTURE_URL_HINTS = (
     "amagi.tv", "akamaized.net", "cloudfront.net", "wurl.com", "pluto.tv", "samsungtv.plus"
 )
 
-GH_SEARCH_BLOCKED = False
-
 
 def log(msg):
     print(msg, flush=True)
@@ -212,31 +209,100 @@ def is_syntactically_valid_url(url, self_repo_prefix=""):
     return False
 
 
-def fetch_json(url, headers=None, retries=1, is_search=False):
-    global GH_SEARCH_BLOCKED
-    if is_search and GH_SEARCH_BLOCKED:
+class GitHubAPIClient:
+    """Sequential, ETag-cached, header-aware GitHub API client with exponential backoff."""
+
+    def __init__(self, headers, etag_path):
+        self.headers = dict(headers)
+        self.etag_path = etag_path
+        self.cache = load_json_safe(etag_path, {})
+        self.search_paused_until = 0.0
+        self.code_search_paused_until = 0.0
+        self.stats = {"304_hits": 0, "200_hits": 0, "rate_waits": 0}
+
+    def save_cache(self):
+        if len(self.cache) > 4000:
+            keys = list(self.cache.keys())[-4000:]
+            self.cache = {k: self.cache[k] for k in keys}
+        self.etag_path.write_text(json.dumps(self.cache), encoding="utf-8")
+
+    def get(self, url, min_delay=0.8, retries=3, category="core"):
+        now = time.time()
+        if category == "search" and now < self.search_paused_until:
+            time.sleep(self.search_paused_until - now)
+        elif category == "code_search" and now < self.code_search_paused_until:
+            time.sleep(self.code_search_paused_until - now)
+
+        req_headers = dict(self.headers)
+        cached_entry = self.cache.get(url)
+        if cached_entry and cached_entry.get("etag"):
+            req_headers["If-None-Match"] = cached_entry["etag"]
+
+        for attempt in range(retries + 1):
+            time.sleep(min_delay)
+            try:
+                req = urllib.request.Request(url, headers=req_headers)
+                with urllib.request.urlopen(req, timeout=20, context=SSL_CTX) as r:
+                    self._respect_rate_headers(r.headers, category)
+                    etag = r.headers.get("ETag")
+                    data = json.loads(r.read().decode("utf-8", errors="ignore"))
+                    if etag:
+                        self.cache[url] = {"etag": etag, "data": data}
+                    self.stats["200_hits"] += 1
+                    return data
+            except urllib.error.HTTPError as e:
+                if e.code == 304 and cached_entry:
+                    self._respect_rate_headers(e.headers, category)
+                    self.stats["304_hits"] += 1
+                    return cached_entry.get("data", {})
+                if e.code in (403, 429):
+                    self.stats["rate_waits"] += 1
+                    ra = int(e.headers.get("Retry-After", 0) or 0)
+                    rem = e.headers.get("X-RateLimit-Remaining")
+                    rst = int(e.headers.get("X-RateLimit-Reset", 0) or 0)
+                    if rem == "0" and rst > time.time():
+                        wait_sec = min(int(rst - time.time()) + 3, 180)
+                    elif ra > 0:
+                        wait_sec = min(ra + 2, 180)
+                    else:
+                        wait_sec = min(20 * (2 ** attempt) + random.uniform(1, 5), 180)
+                    if attempt < retries:
+                        log(f"[Queue Backoff {e.code}] {category} limit -> {int(wait_sec)}s wait...")
+                        time.sleep(wait_sec)
+                        continue
+                    return cached_entry.get("data", {}) if cached_entry else {}
+                return cached_entry.get("data", {}) if cached_entry else {}
+            except Exception:
+                if attempt < retries:
+                    time.sleep(2 * (attempt + 1))
+                    continue
+                return cached_entry.get("data", {}) if cached_entry else {}
         return {}
+
+    def _respect_rate_headers(self, hdrs, category):
+        try:
+            rem = int(hdrs.get("X-RateLimit-Remaining", 999))
+            rst = int(hdrs.get("X-RateLimit-Reset", 0))
+            if rem <= 2 and rst > time.time():
+                pause = min(rst - time.time() + 2, 120)
+                if category == "search":
+                    self.search_paused_until = time.time() + pause
+                elif category == "code_search":
+                    self.code_search_paused_until = time.time() + pause
+        except Exception:
+            pass
+
+
+def fetch_json_external(url, headers=None, retries=1):
     hdrs = headers or {"User-Agent": UA, "Accept": "application/json"}
     for attempt in range(retries + 1):
         try:
             req = urllib.request.Request(url, headers=hdrs)
             with urllib.request.urlopen(req, timeout=18, context=SSL_CTX) as r:
                 return json.loads(r.read().decode("utf-8", errors="ignore"))
-        except urllib.error.HTTPError as e:
-            if e.code in (429, 403):
-                if attempt < retries:
-                    wait_sec = 25
-                    log(f"[Rate Limit {e.code}] {wait_sec}s wait korchi...")
-                    time.sleep(wait_sec)
-                else:
-                    if is_search:
-                        GH_SEARCH_BLOCKED = True
-                        log("[Info] GitHub Search rate-limited; baki deep repo/GitLab/Gist/Web engines cholbe.")
-                    return {}
-            else:
-                return {}
         except Exception:
-            return {}
+            if attempt < retries:
+                time.sleep(2)
     return {}
 
 
@@ -318,64 +384,56 @@ def add_repo_item(found, item, is_auto_bot=False):
     }
 
 
-def crawl_forks_and_owners(found, seed_repos):
+def crawl_forks_and_owners(gh, found, seed_repos):
     owners_seen = set()
     for fn in seed_repos:
         if fn.lower() in ("iptv-org/iptv", "free-tv/iptv"):
             continue
         owner = fn.split("/")[0]
         owners_seen.add(owner)
-        forks = fetch_json(f"https://api.github.com/repos/{fn}/forks?sort=newest&per_page=50", GH_HEADERS, retries=0)
+        forks = gh.get(f"https://api.github.com/repos/{fn}/forks?sort=newest&per_page=100", min_delay=0.6, retries=1, category="core")
         if isinstance(forks, list):
             for fk in forks:
                 if (fk.get("pushed_at") or "") >= "2025-06-01":
                     add_repo_item(found, fk, is_auto_bot=True)
                     owners_seen.add(fk["full_name"].split("/")[0])
-        time.sleep(0.5)
 
-    for owner in list(owners_seen)[:50]:
+    for owner in list(owners_seen)[:80]:
         if owner.lower() in ("iptv-org", "free-tv"):
             continue
-        urepos = fetch_json(f"https://api.github.com/users/{owner}/repos?sort=pushed&per_page=50", GH_HEADERS, retries=0)
+        urepos = gh.get(f"https://api.github.com/users/{owner}/repos?sort=pushed&per_page=100", min_delay=0.6, retries=1, category="core")
         if isinstance(urepos, list):
             for r in urepos:
                 r_text = f"{r.get('name', '')} {r.get('description', '')}".lower()
                 if any(k in r_text for k in ("iptv", "m3u", "tv", "bdix", "live", "stream", "playlist")):
                     add_repo_item(found, r, is_auto_bot=True)
-        time.sleep(0.5)
 
 
-def fetch_bd_priority_and_network():
+def fetch_bd_priority_and_network(gh):
     found = {}
     for fn in BD_PRIORITY_REPOS:
-        item = fetch_json(f"https://api.github.com/repos/{fn}", GH_HEADERS, retries=0)
-        if item.get("full_name"):
+        item = gh.get(f"https://api.github.com/repos/{fn}", min_delay=0.5, retries=1, category="core")
+        if isinstance(item, dict) and item.get("full_name"):
             add_repo_item(found, item, is_auto_bot=True)
-        time.sleep(0.5)
 
-    crawl_forks_and_owners(found, list(found.keys()))
+    crawl_forks_and_owners(gh, found, list(found.keys()))
     log(f"[Deep-Network] Priority repos + Forks + Maintainer repos milie {len(found)} ti repo load holo.")
     return found
 
 
-def search_github():
-    found = fetch_bd_priority_and_network()
+def search_github(gh):
+    found = fetch_bd_priority_and_network(gh)
 
     for q in BOT_SEARCH_QUERIES:
-        if GH_SEARCH_BLOCKED:
-            break
         url = f"https://api.github.com/search/repositories?q={urllib.parse.quote(q)}&sort=updated&per_page=100&page=1"
-        data = fetch_json(url, GH_HEADERS, retries=1, is_search=True)
+        data = gh.get(url, min_delay=2.8, retries=2, category="search")
         for item in data.get("items", []):
             add_repo_item(found, item, is_auto_bot=False)
-        time.sleep(2.5)
 
-    if GITHUB_TOKEN and not GH_SEARCH_BLOCKED:
+    if GITHUB_TOKEN:
         for cq in CODE_SIGNATURE_QUERIES:
-            if GH_SEARCH_BLOCKED:
-                break
             c_url = f"https://api.github.com/search/code?q={urllib.parse.quote(cq)}&per_page=100&page=1"
-            c_data = fetch_json(c_url, GH_HEADERS, retries=1, is_search=True)
+            c_data = gh.get(c_url, min_delay=6.8, retries=2, category="code_search")
             for item in c_data.get("items", []):
                 repo_obj = item.get("repository", {})
                 fn = repo_obj.get("full_name")
@@ -390,8 +448,12 @@ def search_github():
                         "playlists": [],
                         "upstream_sources": [],
                     }
-            time.sleep(5)
 
+    bd_in_seeds = [
+        fn for fn in found
+        if any(k in fn.lower() for k in ("bd", "bangla", "bdix", "india", "hindi", "kolkata"))
+    ][:35]
+    crawl_forks_and_owners(gh, found, bd_in_seeds)
     return found
 
 
@@ -402,7 +464,7 @@ def search_gitlab_and_codeberg():
     for kw in ALT_GIT_KEYWORDS:
         for page in (1, 2, 3):
             gl_url = f"https://gitlab.com/api/v4/projects?search={urllib.parse.quote(kw)}&order_by=last_activity_at&per_page=100&page={page}"
-            projects = fetch_json(gl_url, retries=0)
+            projects = fetch_json_external(gl_url, retries=0)
             if isinstance(projects, list) and projects:
                 for p in projects:
                     path_ns = p.get("path_with_namespace")
@@ -434,7 +496,7 @@ def search_gitlab_and_codeberg():
     for kw in ALT_GIT_KEYWORDS[:6]:
         time.sleep(2.5)
         cb_url = f"https://codeberg.org/api/v1/repos/search?q={urllib.parse.quote(kw)}&sort=updated&limit=50"
-        res = fetch_json(cb_url, headers=cb_headers, retries=0)
+        res = fetch_json_external(cb_url, headers=cb_headers, retries=0)
         for item in res.get("data", []):
             fn = item.get("full_name")
             branch = item.get("default_branch") or "main"
@@ -486,11 +548,11 @@ def normalize_web_discovered_url(decoded):
     return None
 
 
-def search_web_pastes_and_gists():
+def search_web_pastes_and_gists(gh):
     discovered_urls = set()
 
     for page in range(1, 8):
-        gists = fetch_json(f"https://api.github.com/gists/public?per_page=100&page={page}", GH_HEADERS, retries=0)
+        gists = gh.get(f"https://api.github.com/gists/public?per_page=100&page={page}", min_delay=0.8, retries=1, category="core")
         if isinstance(gists, list) and gists:
             for g in gists:
                 desc = (g.get("description") or "").lower()
@@ -501,7 +563,6 @@ def search_web_pastes_and_gists():
                         raw_u = fmeta.get("raw_url")
                         if raw_u:
                             discovered_urls.add(raw_u)
-        time.sleep(0.8)
 
     for dq in WEB_DORK_QUERIES:
         post_bytes = urllib.parse.urlencode({"q": dq}).encode("utf-8")
@@ -525,15 +586,16 @@ def discover():
     if not GITHUB_TOKEN:
         log("[Warning] GITHUB_TOKEN set kora nai! Rate limit hote pare.")
 
+    gh = GitHubAPIClient(GH_HEADERS, ETAG_CACHE_JSON)
     health_data = load_json_safe(HEALTH_JSON, {})
     sleeping_data = load_json_safe(SLEEPING_JSON, {})
     sleeping_set = set(sleeping_data.get("sleeping_urls", []))
 
     merged_bots, merged_upstream, merged_playlists = load_existing_data()
 
-    gh_found = search_github()
+    gh_found = search_github(gh)
     alt_repos, alt_playlists = search_gitlab_and_codeberg()
-    web_paste_urls = search_web_pastes_and_gists()
+    web_paste_urls = search_web_pastes_and_gists(gh)
 
     repo_updated_revivals = 0
     for repo_key, new_info in {**gh_found, **alt_repos}.items():
@@ -554,20 +616,34 @@ def discover():
     merged_upstream.update(web_paste_urls)
     merged_bots.update(alt_repos)
 
-    log(f"GitHub er {len(gh_found)} ti repo deeply analyze kora hocche...")
+    log(f"GitHub er {len(gh_found)} ti repo sequential ETag queue te deeply analyze kora hocche...")
 
-    def analyze_github_repo(repo_info):
+    repo_trees = {}
+    for repo_info in gh_found.values():
         repo = repo_info["repo"]
         branch = repo_info["branch"]
-        is_priority = repo.lower() in {r.lower() for r in BD_PRIORITY_REPOS}
+        old_b = merged_bots.get(repo, {})
+        if old_b.get("updated") and repo_info.get("updated") == old_b.get("updated") and (old_b.get("playlists") or old_b.get("upstream_sources")):
+            repo_info["playlists"] = old_b.get("playlists", [])
+            repo_info["upstream_sources"] = old_b.get("upstream_sources", [])
+            repo_info["is_auto_bot"] = old_b.get("is_auto_bot", repo_info["is_auto_bot"])
+            continue
         tree_url = f"https://api.github.com/repos/{repo}/git/trees/{branch}?recursive=1"
-        tree = fetch_json(tree_url, GH_HEADERS, retries=0).get("tree", [])
+        tree_data = gh.get(tree_url, min_delay=0.45, retries=1, category="core")
+        if isinstance(tree_data, dict) and tree_data.get("tree"):
+            repo_trees[repo] = tree_data["tree"]
+
+    def harvest_raw_files(repo_info):
+        repo = repo_info["repo"]
+        branch = repo_info["branch"]
+        tree = repo_trees.get(repo)
         if not tree:
             return repo_info
 
+        is_priority = repo.lower() in {r.lower() for r in BD_PRIORITY_REPOS}
         script_paths = []
-        max_pl = 120 if is_priority else 45
-        max_scripts = 60 if is_priority else 30
+        max_pl = 150 if is_priority else 50
+        max_scripts = 80 if is_priority else 35
 
         for f in tree:
             if f.get("type") != "blob":
@@ -598,8 +674,8 @@ def discover():
         repo_info["upstream_sources"] = sorted(upstream)
         return repo_info
 
-    with ThreadPoolExecutor(max_workers=6) as ex:
-        for f in as_completed([ex.submit(analyze_github_repo, info) for info in gh_found.values()]):
+    with ThreadPoolExecutor(max_workers=20) as ex:
+        for f in as_completed([ex.submit(harvest_raw_files, info) for info in gh_found.values()]):
             b = f.result()
             repo_key = b["repo"]
             if repo_key in merged_bots:
@@ -608,6 +684,9 @@ def discover():
                 b["playlists"] = sorted(set(old_b.get("playlists", [])) | set(b["playlists"]))
                 b["upstream_sources"] = sorted(set(old_b.get("upstream_sources", [])) | set(b["upstream_sources"]))
             merged_bots[repo_key] = b
+
+    gh.save_cache()
+    log(f"[API Stats] 304 Cache Hits: {gh.stats['304_hits']} | 200 Fresh: {gh.stats['200_hits']} | Rate Waits: {gh.stats['rate_waits']}")
 
     all_bots_list = list(merged_bots.values())
     all_bots_list.sort(key=lambda x: (not x.get("is_auto_bot", False), x.get("updated", "")), reverse=False)
@@ -659,7 +738,7 @@ def discover():
     OUT_JSON.write_text(json.dumps(result_data, indent=2), encoding="utf-8")
 
     report_lines = [
-        f"=== Deep Error-Resilient IPTV Discovery Report ({result_data['generated_at']}) ===",
+        f"=== Zero-Rate-Limit Deep IPTV Discovery Report ({result_data['generated_at']}) ===",
         f"Total Repositories Tracked (GitHub + GitLab + Codeberg): {len(all_bots_list)}",
         f"Active Upstream Scraping Sources & Pastes: {len(all_upstream_urls)}",
         f"Active Direct M3U Feeds: {len(all_bot_playlists)}",
