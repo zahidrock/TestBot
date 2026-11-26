@@ -1,7 +1,7 @@
 """
 Zero-Rate-Limit Deep Multi-Platform IPTV Source Discovery Engine
 Features:
-- PAT Authentication + ETag / If-None-Match Conditional Caching (304 Not Modified saves rate limits)
+- PAT Authentication + ETag / If-None-Match Conditional Caching (stores lightweight ETag strings only)
 - Header-Aware Sequential Request Queue (reads x-ratelimit-remaining, x-ratelimit-reset & retry-after)
 - Exponential Backoff on 403/429 without stalling
 - Deep Tree & Raw File Harvesting (zero rate limit on raw.githubusercontent.com)
@@ -215,16 +215,25 @@ class GitHubAPIClient:
     def __init__(self, headers, etag_path):
         self.headers = dict(headers)
         self.etag_path = etag_path
-        self.cache = load_json_safe(etag_path, {})
+        raw_cache = load_json_safe(etag_path, {})
+        self.cache = {}
+        if isinstance(raw_cache, dict):
+            for k, v in raw_cache.items():
+                if isinstance(v, str):
+                    self.cache[k] = v
+                elif isinstance(v, dict) and v.get("etag"):
+                    self.cache[k] = v["etag"]
         self.search_paused_until = 0.0
         self.code_search_paused_until = 0.0
         self.stats = {"304_hits": 0, "200_hits": 0, "rate_waits": 0}
 
     def save_cache(self):
-        if len(self.cache) > 4000:
-            keys = list(self.cache.keys())[-4000:]
+        if len(self.cache) > 5000:
+            keys = list(self.cache.keys())[-5000:]
             self.cache = {k: self.cache[k] for k in keys}
-        self.etag_path.write_text(json.dumps(self.cache), encoding="utf-8")
+        tmp_path = self.etag_path.with_suffix(".tmp")
+        tmp_path.write_text(json.dumps(self.cache, separators=(",", ":")), encoding="utf-8")
+        tmp_path.replace(self.etag_path)
 
     def get(self, url, min_delay=0.8, retries=3, category="core"):
         now = time.time()
@@ -234,9 +243,9 @@ class GitHubAPIClient:
             time.sleep(self.code_search_paused_until - now)
 
         req_headers = dict(self.headers)
-        cached_entry = self.cache.get(url)
-        if cached_entry and cached_entry.get("etag"):
-            req_headers["If-None-Match"] = cached_entry["etag"]
+        cached_etag = self.cache.get(url)
+        if cached_etag:
+            req_headers["If-None-Match"] = cached_etag
 
         for attempt in range(retries + 1):
             time.sleep(min_delay)
@@ -247,14 +256,14 @@ class GitHubAPIClient:
                     etag = r.headers.get("ETag")
                     data = json.loads(r.read().decode("utf-8", errors="ignore"))
                     if etag:
-                        self.cache[url] = {"etag": etag, "data": data}
+                        self.cache[url] = etag
                     self.stats["200_hits"] += 1
                     return data
             except urllib.error.HTTPError as e:
-                if e.code == 304 and cached_entry:
+                if e.code == 304:
                     self._respect_rate_headers(e.headers, category)
                     self.stats["304_hits"] += 1
-                    return cached_entry.get("data", {})
+                    return {}
                 if e.code in (403, 429):
                     self.stats["rate_waits"] += 1
                     ra = int(e.headers.get("Retry-After", 0) or 0)
@@ -270,13 +279,13 @@ class GitHubAPIClient:
                         log(f"[Queue Backoff {e.code}] {category} limit -> {int(wait_sec)}s wait...")
                         time.sleep(wait_sec)
                         continue
-                    return cached_entry.get("data", {}) if cached_entry else {}
-                return cached_entry.get("data", {}) if cached_entry else {}
+                    return {}
+                return {}
             except Exception:
                 if attempt < retries:
                     time.sleep(2 * (attempt + 1))
                     continue
-                return cached_entry.get("data", {}) if cached_entry else {}
+                return {}
         return {}
 
     def _respect_rate_headers(self, hdrs, category):
