@@ -47,6 +47,14 @@ jobs:
         run: |
           python auto_update.py
 
+      - name: Sync & Verify Custom Playlist After Full Scan
+        run: |
+          if [ ! -f "check_checkpoint.json" ]; then
+            python prune_playlist.py
+          else
+            echo "Full scan ekhono checkpoint-e paused ache; full scan sesh hole custom playlist sync hobe."
+          fi
+
       - name: Commit and Push Updated Playlist & Checkpoints
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
