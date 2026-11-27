@@ -1,0 +1,41 @@
+name: Fast Prune Dead IPTV Links
+
+on:
+  schedule:
+    # Protidin 4 ghonta por por shudhu dead link remove korbe (chaile '0 */3 * * *' ba '0 */6 * * *' korte paren)
+    - cron: '0 */4 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  prune-dead-links:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Check & Remove Dead Streams from Existing Playlists
+        run: |
+          python prune_playlist.py
+
+      - name: Commit and Push Cleaned Playlists
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add playlist.m3u playlist_clean.m3u
+          if git diff --staged --quiet; then
+            echo "Sob link active ache, kono dead link paoa jayni."
+          else
+            git commit -m "chore: prune dead/slow streams from IPTV playlists"
+            git pull --rebase origin main || true
+            git push
+          fi
