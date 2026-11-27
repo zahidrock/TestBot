@@ -562,7 +562,7 @@ def scrape_aynaott():
 def format_jagobd_url(raw):
     if not raw:
         return ""
-    raw = raw.split("#")[0].strip()
+    raw = raw.replace("\\/", "/").split("#")[0].strip().strip("\'"`")
     if raw.startswith("//"):
         raw = "https:" + raw
     try:
@@ -581,81 +581,166 @@ def format_jagobd_url(raw):
     return clean
 
 
+def extract_jagobd_streams_from_text(text_blob):
+    found = []
+    if not text_blob:
+        return found
+
+    unescaped = (
+        text_blob.replace("\\/", "/")
+        .replace("\\u0026", "&")
+        .replace("&amp;", "&")
+    )
+
+    # 1. JS array join patterns (single/double/backtick quotes, optional whitespace)
+    for _fn, arr in re.findall(
+            r'function\s+\w+\s*\([^)]*\)\s*\{[^\}]*?return\s*\(?\s*\[([^\]]+)\]\s*\.join\(\s*['"`][^['"`]*['"`]\s*\)\s*\)?',
+            unescaped, re.S | re.I):
+        val = "".join(x.strip().strip("'\"`") for x in arr.split(",")).strip()
+        if ".m3u8" in val or ".stream" in val:
+            found.append(val)
+
+    # 2. Direct stream URLs (.m3u8 / .stream) inside quotes, attributes, or JSON
+    for m_url in re.findall(
+            r'(?:https?:)?//[^\s\'"<>`\\)]+?\.(?:m3u8|stream)(?:\?[^\s\'"<>`\\)]*)?',
+            unescaped, re.I):
+        found.append(m_url.strip())
+
+    # 3. Base64-encoded stream strings if any
+    for b64 in re.findall(r'[A-Za-z0-9+/=]{24,}', unescaped):
+        try:
+            import base64
+            dec = base64.b64decode(b64 + "===", validate=False).decode("utf-8", errors="ignore")
+            for sub_u in re.findall(r'(?:https?:)?//[^\s\'"<>`\\)]+?\.(?:m3u8|stream)(?:\?[^\s\'"<>`\\)]*)?', dec, re.I):
+                found.append(sub_u.strip())
+        except Exception:
+            pass
+
+    return list(dict.fromkeys(found))
+
+
 def scrape_jagobd():
     cands = []
+    home_headers = {
+        "User-Agent": UA,
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.9,bn;q=0.8",
+    }
     try:
-        html = http_get("https://www.jagobd.com/", timeout=10)
-        skip = ['/category', '/tag', '/contact', '/about', '/privacy', '/page', '/wp-', '/feed',
-                '/disclaimer', 'dmca', 'terms', 'advertise', 'copyright']
+        html = http_get("https://www.jagobd.com/", headers=home_headers, timeout=12, max_bytes=3_000_000)
+        skip = [
+            "/category", "/tag", "/contact", "/about", "/privacy", "/page", "/wp-", "/feed",
+            "/disclaimer", "dmca", "terms", "advertise", "copyright", "author", "search"
+        ]
         seen = set()
         for url, content in re.findall(
-                r'<a\s+[^>]*href=[\'"](https://www\.jagobd\.com/[^\' "#?]+)[\'"][^>]*>(.*?)</a>', html, re.S):
+                r'<a\s+[^>]*href=['"](https?://(?:www\.)?jagobd\.com/[^\'"#?]+)['"][^>]*>(.*?)</a>',
+                html, re.S | re.I):
             url = url.rstrip("/")
-            if url in seen or any(x in url.lower() for x in skip):
+            low_u = url.lower()
+            if url in seen or any(x in low_u for x in skip):
+                continue
+            path_parts = [p for p in urllib.parse.urlparse(url).path.strip("/").split("/") if p]
+            if not path_parts:
                 continue
             seen.add(url)
-            alt = re.search(r'alt=[\'"]([^\'"]+)[\'"]', content, re.I)
-            ttl = re.search(r'title=[\'"]([^\'"]+)[\'"]', content, re.I)
-            slug = url.split("/")[-1]
-            raw = (alt.group(1) if alt and alt.group(1).strip() else
-                   ttl.group(1) if ttl and ttl.group(1).strip() else slug).strip()
-            nm = re.sub(r'\s*(?:Live|Online|TV Live|Bangla TV|Live TV|Channel)\s*$', '', raw, flags=re.I).strip()
-            nm = re.sub(r'[-_]+', ' ', nm).strip().title()
-            nm = re.sub(r'\bTv\b', 'TV', nm)
+            alt = re.search(r'alt=['"]([^'"]+)['"]', content, re.I)
+            ttl = re.search(r'title=['"]([^'"]+)['"]', content, re.I)
+            txt_only = re.sub(r'<[^>]+>', " ", content)
+            txt_only = re.sub(r'\s+', " ", txt_only).strip()
+            slug = path_parts[-1]
+            raw = (
+                (alt.group(1).strip() if alt and alt.group(1).strip() else "")
+                or (ttl.group(1).strip() if ttl and ttl.group(1).strip() else "")
+                or (txt_only if 2 <= len(txt_only) <= 45 else "")
+                or slug
+            ).strip()
+            nm = re.sub(r'\s*(?:Live|Online|TV Live|Bangla TV|Live TV|Channel)\s*$', "", raw, flags=re.I).strip()
+            nm = re.sub(r'[-_]+', " ", nm).strip().title()
+            nm = re.sub(r'\bTv\b', "TV", nm)
             cands.append({
                 "slug": slug,
                 "url": url,
                 "name": nm or slug.replace("-", " ").title(),
             })
     except Exception as e:
-        log(f"[JagoBD] homepage error: {e}")
+        log(f"[JagoBD] homepage error: {type(e).__name__}: {e}")
     log(f"[JagoBD] channel link: {len(cands)}")
+    if not cands:
+        return []
+
+    sample_err = []
 
     def resolve(c):
         try:
-            page = http_get(c["url"], timeout=6)
-            embed = None
-            for ifr in re.findall(r'<iframe[^>]+src=[\'"]([^\'"]+)[\'"]', page, re.I):
-                if "embed.php" in ifr or "jagobd.com" in ifr:
-                    embed = ifr
-                    break
-            stream = None
-            if not embed:
-                m = re.findall(r'[\'"](https?://[^\'"]+?\.m3u8[^\'"]*)[\'"]', page)
-                stream = m[0] if m else None
-            else:
-                if embed.startswith("//"):
-                    embed = "https:" + embed
-                eh = http_get(embed, headers={"User-Agent": UA, "Referer": c["url"]}, timeout=6)
-                for _fn, arr in re.findall(
-                        r'function\s+(\w+)\(\)\s*\{\s*return\(\[([^\]]+)\]\.join\([\'"] [\'"]\)', eh):
-                    val = "".join(x.strip().strip("\'\"") for x in arr.split(",")).replace(r"\/", "/")
-                    if ".m3u8" in val:
-                        stream = val
-                        break
-                if not stream:
-                    d = re.findall(r'[\'"](https?://[^\'"]+?\.m3u8[^\'"]*)[\'"]', eh)
-                    stream = d[0] if d else None
-            if stream:
+            page = http_get(c["url"], headers=home_headers, timeout=8, max_bytes=2_000_000)
+            streams = extract_jagobd_streams_from_text(page)
+
+            if not streams:
+                iframes = re.findall(r'<iframe[^>]+src=['"]([^'"]+)['"]', page, re.I)
+                for ifr in iframes:
+                    ifr_clean = ifr.replace("&amp;", "&").strip()
+                    if ifr_clean.startswith("//"):
+                        ifr_clean = "https:" + ifr_clean
+                    elif ifr_clean.startswith("/"):
+                        ifr_clean = urllib.parse.urljoin(c["url"], ifr_clean)
+                    if not ifr_clean.startswith("http"):
+                        continue
+                    try:
+                        eh = http_get(
+                            ifr_clean,
+                            headers={
+                                "User-Agent": UA,
+                                "Referer": c["url"],
+                                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+                            },
+                            timeout=8,
+                            max_bytes=2_000_000,
+                        )
+                        streams.extend(extract_jagobd_streams_from_text(eh))
+                        # Check nested script sources inside embed if needed
+                        for scr in re.findall(r'<script[^>]+src=['"]([^'"]+)['"]', eh, re.I)[:4]:
+                            scr_u = scr.replace("&amp;", "&").strip()
+                            if scr_u.startswith("//"):
+                                scr_u = "https:" + scr_u
+                            elif scr_u.startswith("/"):
+                                scr_u = urllib.parse.urljoin(ifr_clean, scr_u)
+                            if scr_u.startswith("http") and ("jagobd" in scr_u.lower() or "player" in scr_u.lower() or "embed" in scr_u.lower()):
+                                try:
+                                    s_txt = http_get(scr_u, headers={"User-Agent": UA, "Referer": ifr_clean}, timeout=6, max_bytes=1_000_000)
+                                    streams.extend(extract_jagobd_streams_from_text(s_txt))
+                                except Exception:
+                                    pass
+                        if streams:
+                            break
+                    except Exception as e:
+                        if len(sample_err) < 4:
+                            sample_err.append(f"{c['slug']}(iframe): {type(e).__name__}: {e}")
+
+            streams = list(dict.fromkeys(streams))
+            if streams:
                 return {
                     "name": c["name"],
-                    "url": format_jagobd_url(stream),
+                    "url": format_jagobd_url(streams[0]),
                     "tvg_id": f"jagobd-{c['slug']}",
                     "group": "Others",
                     "lang": "",
                     "source": "JagoBD"
                 }
-        except Exception:
-            pass
+        except Exception as e:
+            if len(sample_err) < 4:
+                sample_err.append(f"{c['slug']}: {type(e).__name__}: {e}")
         return None
 
     res = []
-    with ThreadPoolExecutor(max_workers=20) as ex:
+    with ThreadPoolExecutor(max_workers=24) as ex:
         for f in as_completed([ex.submit(resolve, c) for c in cands]):
             r = f.result()
             if r:
                 res.append(r)
     log(f"[JagoBD] stream URL: {len(res)}")
+    if not res and sample_err:
+        log(f"[JagoBD] sample resolve info: {sample_err}")
     return res
 
 
