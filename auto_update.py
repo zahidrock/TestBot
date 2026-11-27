@@ -413,53 +413,137 @@ def parse_m3u(text, source):
 
 
 # ------------------------------------------------------------------ scrapers
+def extract_ayna_stream_url(payload):
+    if not isinstance(payload, dict):
+        return ""
+    rec = payload.get("record") if isinstance(payload.get("record"), dict) else payload
+    if not isinstance(rec, dict):
+        return ""
+    for k in ("stream_url", "hls", "m3u8", "url", "play_url", "playback_url"):
+        val = rec.get(k)
+        if isinstance(val, str) and val.startswith("http"):
+            return val
+    streams = rec.get("streams")
+    if isinstance(streams, list):
+        for st in streams:
+            if isinstance(st, dict):
+                for k in ("url", "stream_url", "hls", "m3u8"):
+                    val = st.get(k)
+                    if isinstance(val, str) and val.startswith("http"):
+                        return val
+            elif isinstance(st, str) and st.startswith("http"):
+                return st
+    so = rec.get("stream")
+    if isinstance(so, dict):
+        for k in ("url", "stream_url", "hls", "m3u8"):
+            val = so.get(k)
+            if isinstance(val, str) and val.startswith("http"):
+                return val
+    elif isinstance(so, str) and so.startswith("http"):
+        return so
+    return ""
+
+
 def scrape_aynaott():
     base = "https://web.aynaott.com"
-    h = {
-        "User-Agent": UA,
-        "Accept": "application/json, text/plain, */*",
-        "X-Tenant-Id": "019dd92f-107c-7056-9e79-e5233f6e51d9",
-        "Cache-Control": "no-cache"
-    }
+    header_variants = [
+        {
+            "User-Agent": UA,
+            "Accept": "application/json, text/plain, */*",
+            "Origin": base,
+            "Referer": f"{base}/",
+            "X-Tenant-Id": "019dd92f-107c-7056-9e79-e5233f6e51d9",
+            "Cache-Control": "no-cache",
+        },
+        {
+            "User-Agent": UA,
+            "Accept": "application/json, text/plain, */*",
+            "Origin": base,
+            "Referer": f"{base}/",
+            "Cache-Control": "no-cache",
+        },
+    ]
+
     catalog, seen = [], set()
-    for page in range(1, 20):
-        try:
-            data = json.loads(http_get(f"{base}/api/v5/catalog/contents?type=live-tvs&per_page=100&page={page}",
-                                       headers=h, timeout=10))
-        except Exception as e:
-            log(f"[AynaOTT] catalog page {page}: {e}")
+    active_h = header_variants[0]
+
+    for h in header_variants:
+        temp_cat, temp_seen = [], set()
+        ok_any = False
+        for page in range(1, 25):
+            try:
+                raw_txt = http_get(f"{base}/api/v5/catalog/contents?type=live-tvs&per_page=100&page={page}",
+                                   headers=h, timeout=10)
+                data = json.loads(raw_txt)
+            except Exception as e:
+                log(f"[AynaOTT] catalog page {page} error: {type(e).__name__}: {e}")
+                break
+            recs = (
+                data.get("records")
+                or data.get("data")
+                or data.get("items")
+                or (data.get("result", {}).get("records") if isinstance(data.get("result"), dict) else [])
+                or []
+            )
+            if not recs:
+                if page == 1:
+                    log(f"[AynaOTT] page 1 empty/unexpected keys: {list(data.keys()) if isinstance(data, dict) else type(data).__name__}")
+                break
+            ok_any = True
+            for r in recs:
+                if not isinstance(r, dict):
+                    continue
+                s = str(r.get("slug") or r.get("id") or r.get("content_id") or "").strip()
+                if s and s not in temp_seen:
+                    temp_seen.add(s)
+                    temp_cat.append(r)
+            if len(recs) < 100:
+                break
+        if temp_cat:
+            catalog = temp_cat
+            seen = temp_seen
+            active_h = h
             break
-        recs = data.get("records", [])
-        if not recs:
+        if ok_any:
             break
-        for r in recs:
-            s = str(r.get("slug", "")).strip()
-            if s and s not in seen:
-                seen.add(s)
-                catalog.append(r)
-        if len(recs) < 100:
-            break
+
     log(f"[AynaOTT] catalog: {len(catalog)}")
+    if not catalog:
+        return []
+
+    sample_err = []
 
     def one(item):
-        slug, title = item.get("slug", ""), item.get("title", "")
-        try:
-            d = json.loads(http_get(f"{base}/api/v5/browse/live-tvs/{slug}", headers=h, timeout=6))
-            rec = d.get("record", d)
-            so = rec.get("stream", {})
-            url = so.get("url", "") if isinstance(so, dict) else ""
-            url = url or rec.get("stream_url") or rec.get("hls") or ""
-            if url:
-                return {
-                    "name": title,
-                    "url": clean_stream_url(url),
-                    "tvg_id": f"aynaott-{slug}",
-                    "group": "Others",
-                    "lang": "",
-                    "source": "AynaOTT"
-                }
-        except Exception:
-            pass
+        slug = str(item.get("slug") or item.get("id") or item.get("content_id") or "").strip()
+        title = (item.get("title") or item.get("name") or slug).strip()
+        direct_url = extract_ayna_stream_url(item)
+        if direct_url:
+            return {
+                "name": title,
+                "url": clean_stream_url(direct_url),
+                "tvg_id": f"aynaott-{slug}",
+                "group": "Others",
+                "lang": "",
+                "source": "AynaOTT"
+            }
+        if not slug:
+            return None
+        for ep in (f"{base}/api/v5/browse/live-tvs/{slug}", f"{base}/api/v5/contents/{slug}"):
+            try:
+                d = json.loads(http_get(ep, headers=active_h, timeout=6))
+                url = extract_ayna_stream_url(d)
+                if url:
+                    return {
+                        "name": title,
+                        "url": clean_stream_url(url),
+                        "tvg_id": f"aynaott-{slug}",
+                        "group": "Others",
+                        "lang": "",
+                        "source": "AynaOTT"
+                    }
+            except Exception as e:
+                if len(sample_err) < 3:
+                    sample_err.append(f"{slug}: {type(e).__name__}: {e}")
         return None
 
     res = []
@@ -469,6 +553,8 @@ def scrape_aynaott():
             if r:
                 res.append(r)
     log(f"[AynaOTT] stream URL: {len(res)}")
+    if not res and sample_err:
+        log(f"[AynaOTT] sample browse errors: {sample_err}")
     return res
 
 
