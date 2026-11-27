@@ -562,7 +562,7 @@ def scrape_aynaott():
 def format_jagobd_url(raw):
     if not raw:
         return ""
-    raw = raw.replace("\\/", "/").split("#")[0].strip().strip("\'"`")
+    raw = raw.replace("\\/", "/").split("#")[0].strip().strip("\'\"`")
     if raw.startswith("//"):
         raw = "https:" + raw
     try:
@@ -594,24 +594,24 @@ def extract_jagobd_streams_from_text(text_blob):
 
     # 1. JS array join patterns (single/double/backtick quotes, optional whitespace)
     for _fn, arr in re.findall(
-            r'function\s+\w+\s*\([^)]*\)\s*\{[^\}]*?return\s*\(?\s*\[([^\]]+)\]\s*\.join\(\s*['"`][^['"`]*['"`]\s*\)\s*\)?',
+            r"function\s+\w+\s*\([^)]*\)\s*\{[^\}]*?return\s*\(?\s*\[([^\]]+)\]\s*\.join\(\s*[\x27\"\`][^\x27\"\`]*[\x27\"\`]\s*\)\s*\)?",
             unescaped, re.S | re.I):
-        val = "".join(x.strip().strip("'\"`") for x in arr.split(",")).strip()
+        val = "".join(x.strip().strip("\x27\"\`") for x in arr.split(",")).strip()
         if ".m3u8" in val or ".stream" in val:
             found.append(val)
 
     # 2. Direct stream URLs (.m3u8 / .stream) inside quotes, attributes, or JSON
     for m_url in re.findall(
-            r'(?:https?:)?//[^\s\'"<>`\\)]+?\.(?:m3u8|stream)(?:\?[^\s\'"<>`\\)]*)?',
+            r"(?:https?:)?//[^\s\x27\"<>\`\\)]+?\.(?:m3u8|stream)(?:\?[^\s\x27\"<>\`\\)]*)?",
             unescaped, re.I):
         found.append(m_url.strip())
 
     # 3. Base64-encoded stream strings if any
-    for b64 in re.findall(r'[A-Za-z0-9+/=]{24,}', unescaped):
+    for b64 in re.findall(r"[A-Za-z0-9+/=]{24,}", unescaped):
         try:
             import base64
             dec = base64.b64decode(b64 + "===", validate=False).decode("utf-8", errors="ignore")
-            for sub_u in re.findall(r'(?:https?:)?//[^\s\'"<>`\\)]+?\.(?:m3u8|stream)(?:\?[^\s\'"<>`\\)]*)?', dec, re.I):
+            for sub_u in re.findall(r"(?:https?:)?//[^\s\x27\"<>\`\\)]+?\.(?:m3u8|stream)(?:\?[^\s\x27\"<>\`\\)]*)?", dec, re.I):
                 found.append(sub_u.strip())
         except Exception:
             pass
@@ -634,8 +634,9 @@ def scrape_jagobd():
         ]
         seen = set()
         for url, content in re.findall(
-                r'<a\s+[^>]*href=['"](https?://(?:www\.)?jagobd\.com/[^\'"#?]+)['"][^>]*>(.*?)</a>',
+                r"<a\s+[^>]*href=[\x27\"](https?://(?:www\.)?jagobd\.com/[^\x27\"#?]+)[\x27\"]([^>]*)>(.*?)</a>",
                 html, re.S | re.I):
+            _attrs, content = content, content
             url = url.rstrip("/")
             low_u = url.lower()
             if url in seen or any(x in low_u for x in skip):
@@ -644,10 +645,10 @@ def scrape_jagobd():
             if not path_parts:
                 continue
             seen.add(url)
-            alt = re.search(r'alt=['"]([^'"]+)['"]', content, re.I)
-            ttl = re.search(r'title=['"]([^'"]+)['"]', content, re.I)
-            txt_only = re.sub(r'<[^>]+>', " ", content)
-            txt_only = re.sub(r'\s+', " ", txt_only).strip()
+            alt = re.search(r"alt=[\x27\"]([^\x27\"]+)[\x27\"]", content, re.I)
+            ttl = re.search(r"title=[\x27\"]([^\x27\"]+)[\x27\"]", content, re.I)
+            txt_only = re.sub(r"<[^>]+>", " ", content)
+            txt_only = re.sub(r"\s+", " ", txt_only).strip()
             slug = path_parts[-1]
             raw = (
                 (alt.group(1).strip() if alt and alt.group(1).strip() else "")
@@ -655,9 +656,9 @@ def scrape_jagobd():
                 or (txt_only if 2 <= len(txt_only) <= 45 else "")
                 or slug
             ).strip()
-            nm = re.sub(r'\s*(?:Live|Online|TV Live|Bangla TV|Live TV|Channel)\s*$', "", raw, flags=re.I).strip()
-            nm = re.sub(r'[-_]+', " ", nm).strip().title()
-            nm = re.sub(r'\bTv\b', "TV", nm)
+            nm = re.sub(r"\s*(?:Live|Online|TV Live|Bangla TV|Live TV|Channel)\s*$", "", raw, flags=re.I).strip()
+            nm = re.sub(r"[-_]+", " ", nm).strip().title()
+            nm = re.sub(r"\bTv\b", "TV", nm)
             cands.append({
                 "slug": slug,
                 "url": url,
@@ -677,7 +678,7 @@ def scrape_jagobd():
             streams = extract_jagobd_streams_from_text(page)
 
             if not streams:
-                iframes = re.findall(r'<iframe[^>]+src=['"]([^'"]+)['"]', page, re.I)
+                iframes = re.findall(r"<iframe[^>]+src=[\x27\"]([^\x27\"]+)[\x27\"]", page, re.I)
                 for ifr in iframes:
                     ifr_clean = ifr.replace("&amp;", "&").strip()
                     if ifr_clean.startswith("//"):
@@ -698,8 +699,7 @@ def scrape_jagobd():
                             max_bytes=2_000_000,
                         )
                         streams.extend(extract_jagobd_streams_from_text(eh))
-                        # Check nested script sources inside embed if needed
-                        for scr in re.findall(r'<script[^>]+src=['"]([^'"]+)['"]', eh, re.I)[:4]:
+                        for scr in re.findall(r"<script[^>]+src=[\x27\"]([^\x27\"]+)[\x27\"]", eh, re.I)[:4]:
                             scr_u = scr.replace("&amp;", "&").strip()
                             if scr_u.startswith("//"):
                                 scr_u = "https:" + scr_u
@@ -1619,6 +1619,7 @@ def classify_by_language_and_name(c):
         or "jagobd.com" in lurl
         or "aynaott.com" in lurl
         or "gpcdn.net" in lurl
+        or "gpcdn" in lurl
         or re.search(r"\bbangladesh\b", lgroup)
     )
     if is_trusted_bd_source and not HINDI_RE.search(clean_lname) and not HINDI_MOVIE_CH_RE.search(clean_lname) and not ENGLISH_MOVIE_CH_RE.search(clean_lname) and not ENGLISH_ENT_CH_RE.search(clean_lname):
