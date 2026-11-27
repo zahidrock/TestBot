@@ -14,7 +14,8 @@ from pathlib import Path
 socket.setdefaulttimeout(5)
 
 PLAYLIST_FILE = Path("playlist.m3u")
-CLEAN_PLAYLIST_FILE = Path("playlist_clean.m3u")
+CUSTOM_CHANNELS_FILE = Path("custom_channels.txt")
+CUSTOM_PLAYLIST_FILE = Path("playlist_custom.m3u")
 
 WORKERS = 180
 CHECK_TIMEOUT = 3.0
@@ -279,19 +280,26 @@ def main():
     alive_entries.sort(key=lambda e: (orig_index[id(e)]))
     write_entries(alive_entries, PLAYLIST_FILE)
 
-    # Rebuild playlist_clean.m3u with the fastest working link per (group, channel)
-    best_map = {}
-    for e in alive_entries:
-        key = (e["group"], norm_key(e["name"]))
-        score = (0 if e["url"].startswith("https://") else 1, round(e.get("latency", 99), 2), -e.get("kbps", 0))
-        if key not in best_map or score < best_map[key][0]:
-            best_map[key] = (score, e)
+    # Rebuild playlist_custom.m3u matching desired channel names from custom_channels.txt
+    wanted_keys = set()
+    if CUSTOM_CHANNELS_FILE.exists():
+        for raw_ln in CUSTOM_CHANNELS_FILE.read_text(encoding="utf-8", errors="ignore").splitlines():
+            ln = raw_ln.strip()
+            if ln and not ln.startswith("#"):
+                nk = norm_key(ln)
+                if nk:
+                    wanted_keys.add(nk)
 
-    clean_entries = [pair[1] for pair in sorted(best_map.values(), key=lambda p: orig_index[id(p[1])])]
-    write_entries(clean_entries, CLEAN_PLAYLIST_FILE)
+    custom_entries = [e for e in alive_entries if norm_key(e["name"]) in wanted_keys]
+    custom_entries.sort(key=lambda e: (
+        round(e.get("latency", 99), 2),
+        -e.get("kbps", 0),
+        orig_index[id(e)],
+    ))
+    write_entries(custom_entries, CUSTOM_PLAYLIST_FILE)
 
     elapsed = int(time.time() - t_start)
-    log(f"[Pruner] Done in {elapsed // 60}m {elapsed % 60}s! {PLAYLIST_FILE}: {len(alive_entries)} | {CLEAN_PLAYLIST_FILE}: {len(clean_entries)}")
+    log(f"[Pruner] Done in {elapsed // 60}m {elapsed % 60}s! {PLAYLIST_FILE}: {len(alive_entries)} | {CUSTOM_PLAYLIST_FILE}: {len(custom_entries)}")
     return 0
 
 
