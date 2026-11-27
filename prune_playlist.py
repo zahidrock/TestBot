@@ -1,11 +1,14 @@
 """
-Custom-First Fast IPTV Playlist Pruner & Auto-Replacer (Smart Skip Edition)
-- Reads 'custom_channels.txt' and checks existing custom playlist entries ('playlist_custom.m3u',
-  or matching entries from 'playlist.m3u') FIRST for liveness, latency (<= 2.2s), and speed (>= 25 KB/s)
-- If ALL custom links are alive and no channel from 'custom_channels.txt' is dead/missing,
-  saves 'playlist_custom.m3u' and SKIPS scanning the full 'playlist.m3u' to save time & resources
-- Whenever a custom channel link is dead/slow/missing, searches candidate/fallback links from
-  'playlist.m3u', verifies them live, replaces dead links, and prunes dead links from 'playlist.m3u'
+Custom-First Single-Link Priority IPTV Playlist Pruner & Auto-Replacer
+- Reads 'custom_channels.txt' and maintains a SINGLE best working link per channel in 'playlist_custom.m3u'
+- Priority order for selecting/replacing custom channel links:
+    1. AynaOTT
+    2. JagoBD
+    3. YuppTV / YuppCDN
+    4. Others
+- Checks existing custom links FIRST; if dead/slow/missing, checks candidates from 'playlist.m3u'
+  strictly in priority order (AynaOTT -> JagoBD -> Yupp -> Others) and picks the first working link
+- If ALL custom channels have a working link and none are missing/dead, SKIPS scanning the full 'playlist.m3u'
 """
 import re, socket, ssl, sys, threading, time
 from collections import Counter, defaultdict
@@ -33,8 +36,7 @@ UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like
       "Chrome/131.0.0.0 Safari/537.36")
 HEADERS = {"User-Agent": UA, "Accept": "*/*", "Accept-Language": "en-US,en;q=0.9"}
 
-KEY_URI_RE = re.compile(r'#EXT-X-KEY:[^
-]*URI="([^"]+)"', re.I)
+KEY_URI_RE = re.compile(r'#EXT-X-KEY:[^\n]*URI="([^"]+)"', re.I)
 VOD_EXT_RE = re.compile(r"\.(mp4|mkv|avi|mov|wmv|flv|webm|m4v|mpg|mpeg|3gp|vob)(\?|$)", re.I)
 AUDIO_EXT_RE = re.compile(r"\.(mp3|aac|ogg|oga|wav|flac|m4a|wma|opus|pls|asx)(\?|$)", re.I)
 
@@ -51,6 +53,22 @@ HOST_FAIL_COUNTS = Counter()
 
 def log(msg):
     print(msg, flush=True)
+
+
+def detect_entry_priority(entry):
+    extinf = (entry.get("extinf") or "").lower()
+    url = (entry.get("url") or "").lower()
+    src = ""
+    m = re.search(r'tvg-id="([^"]*)"', extinf, re.I)
+    if m:
+        src = m.group(1).lower()
+    if "aynaott" in src or "aynaott.com" in url:
+        return 0
+    if "jagobd" in src or "jagobd.com" in url:
+        return 1
+    if "yupp" in src or "yupp" in url:
+        return 2
+    return 3
 
 
 def parse_existing_m3u(path):
@@ -86,6 +104,7 @@ def parse_existing_m3u(path):
                 cur["ref"] = opt.split("=", 1)[1].strip()
         elif cur and not line.startswith("#"):
             cur["url"] = line
+            cur["priority"] = detect_entry_priority(cur)
             entries.append(cur)
             cur = None
     return entries
@@ -223,11 +242,11 @@ def verify_entry(entry):
 def norm_key(name):
     n = name.lower().strip()
     n = re.sub(r"[\(\[【].*?[\)\]】]", " ", n)
-    n = re.sub(r"\d{3,4}p", " ", n)
+    n = re.sub(r"\b\d{3,4}p\b", " ", n)
     n = n.replace("television", "tv")
-    n = re.sub(r"[^a-z0-9ঀ-৿]+", " ", n)
+    n = re.sub(r"[^a-z0-9\u0980-\u09ff]+", " ", n)
     tokens = [t for t in n.split() if t not in NOISE]
-    return "".join(tokens) or re.sub(r"[^a-z0-9ঀ-৿]+", "", name.lower())
+    return "".join(tokens) or re.sub(r"[^a-z0-9\u0980-\u09ff]+", "", name.lower())
 
 
 def clone_entry(e):
@@ -239,6 +258,7 @@ def clone_entry(e):
         "ua": e.get("ua", UA),
         "ref": e.get("ref", ""),
         "url": e["url"],
+        "priority": e.get("priority", detect_entry_priority(e)),
         "latency": e.get("latency", 99.0),
         "kbps": e.get("kbps", 0.0),
     }
@@ -251,9 +271,7 @@ def write_entries(entries, target_path):
         for opt in e["vlc_opts"]:
             lines.append(opt)
         lines.append(e["url"])
-    target_path.write_text("
-".join(lines) + "
-", encoding="utf-8")
+    target_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 def load_wanted_channels(path):
@@ -272,6 +290,17 @@ def load_wanted_channels(path):
     return wanted
 
 
+def pick_best_per_key(candidates):
+    if not candidates:
+        return None
+    candidates.sort(key=lambda x: (
+        x.get("priority", 3),
+        round(x.get("latency", 99), 2),
+        -x.get("kbps", 0),
+    ))
+    return candidates[0]
+
+
 def main():
     t_start = time.time()
     main_entries = parse_existing_m3u(PLAYLIST_FILE)
@@ -284,101 +313,108 @@ def main():
 
     existing_custom = parse_existing_m3u(CUSTOM_PLAYLIST_FILE)
     had_existing_custom = bool(existing_custom)
-    if not existing_custom and wanted_keys:
-        existing_custom = [clone_entry(e) for e in main_entries if norm_key(e["name"]) in wanted_keys]
 
-    # Step 1: Check custom channels FIRST
-    custom_to_check = [clone_entry(e) for e in existing_custom if not wanted_keys or norm_key(e["name"]) in wanted_keys]
-    alive_custom = []
-    dead_custom_keys = set()
-    dead_custom_urls = set()
-    used_custom_urls = set()
+    # Group existing custom entries by normalized key (keep highest priority first)
+    existing_by_key = defaultdict(list)
+    for e in existing_custom:
+        nk = norm_key(e["name"])
+        if not wanted_keys or nk in wanted_keys:
+            existing_by_key[nk].append(clone_entry(e))
+
+    # Step 1: Check existing custom links FIRST (one primary check per channel)
+    first_check_list = []
+    for nk, cand_list in existing_by_key.items():
+        cand_list.sort(key=lambda x: x.get("priority", 3))
+        first_check_list.append((nk, cand_list[0]))
+
+    alive_by_key = {}
+    dead_or_missing_keys = set()
+    dead_urls = set()
     had_dead_custom_link = False
 
-    if custom_to_check:
-        log(f"[Custom-First] {len(custom_to_check)} ti custom channel link age check hocche...")
-        with ThreadPoolExecutor(max_workers=min(WORKERS, len(custom_to_check))) as ex:
-            fut_map = {ex.submit(verify_entry, e): e for e in custom_to_check}
+    if first_check_list:
+        log(f"[Custom-First] {len(first_check_list)} ti custom channel link age check hocche...")
+        with ThreadPoolExecutor(max_workers=min(WORKERS, len(first_check_list))) as ex:
+            fut_map = {ex.submit(verify_entry, e): (nk, e) for nk, e in first_check_list}
             for f in as_completed(fut_map):
-                e = fut_map[f]
+                nk, e = fut_map[f]
                 ok, lat, kbps, reason = f.result()
-                nk = norm_key(e["name"])
                 if ok:
                     e["latency"] = lat
                     e["kbps"] = kbps
-                    alive_custom.append(e)
-                    used_custom_urls.add(e["url"])
+                    alive_by_key[nk] = e
                 else:
                     had_dead_custom_link = True
-                    dead_custom_urls.add(e["url"])
-                    log(f"[Custom-Dead] {e['name']} -> dead/slow ({reason}), final list theke replacement khoja hobe.")
-                    if nk:
-                        dead_custom_keys.add(nk)
+                    dead_urls.add(e["url"])
+                    dead_or_missing_keys.add(nk)
+                    log(f"[Custom-Dead] {e['name']} -> dead/slow ({reason}), priority order-e replacement khoja hobe.")
 
-    # Also check if any wanted channel from custom_channels.txt has no alive entry yet
-    present_alive_keys = {norm_key(e["name"]) for e in alive_custom}
-    missing_wanted_keys = {nk for nk, _raw_nm in wanted_channels if nk not in present_alive_keys}
-    dead_custom_keys.update(missing_wanted_keys)
+    # Any wanted channel from custom_channels.txt not yet alive -> needs lookup in priority order
+    for nk, _raw_nm in wanted_channels:
+        if nk not in alive_by_key:
+            dead_or_missing_keys.add(nk)
 
-    # Smart Skip: If existing custom playlist had entries, ALL links passed, and NO wanted channels are missing -> skip full scan!
-    if had_existing_custom and not had_dead_custom_link and not missing_wanted_keys:
+    # Smart Skip: If custom playlist already existed, ALL checked links were alive, and NO wanted channels are missing -> skip full scan!
+    if had_existing_custom and not had_dead_custom_link and not dead_or_missing_keys:
         order_map = {nk: idx for idx, (nk, _nm) in enumerate(wanted_channels)}
-        alive_custom.sort(key=lambda e: (
-            order_map.get(norm_key(e["name"]), 999999),
-            round(e.get("latency", 99), 2),
-            -e.get("kbps", 0),
-        ))
-        write_entries(alive_custom, CUSTOM_PLAYLIST_FILE)
+        single_custom = sorted(alive_by_key.values(), key=lambda e: order_map.get(norm_key(e["name"]), 999999))
+        write_entries(single_custom, CUSTOM_PLAYLIST_FILE)
         elapsed = int(time.time() - t_start)
-        log(f"[Skip-Full-Scan] Custom playlist-er sob {len(alive_custom)} ti link active ache! Full playlist.m3u check skip kora holo ({elapsed}s).")
+        log(f"[Skip-Full-Scan] Sob {len(single_custom)} ti custom channel active ache! Full playlist.m3u check skip kora holo ({elapsed}s).")
         return 0
 
-    # Step 2: Find and verify replacement links from the main/final playlist for dead/missing custom channels
-    replacement_candidates = []
-    if dead_custom_keys:
+    # Step 2: Priority tier lookup (0=AynaOTT -> 1=JagoBD -> 2=Yupp -> 3=Others)
+    # Stop checking lower tiers for a channel once a working link is found in a higher priority tier
+    if dead_or_missing_keys:
         pool_by_key = defaultdict(list)
         for e in main_entries:
             nk = norm_key(e["name"])
-            if nk in dead_custom_keys and e["url"] not in used_custom_urls and e["url"] not in dead_custom_urls:
+            if nk in dead_or_missing_keys and e["url"] not in dead_urls:
                 pool_by_key[nk].append(clone_entry(e))
 
-        for nk, cand_list in pool_by_key.items():
-            for cand in cand_list[:5]:
-                replacement_candidates.append((nk, cand))
+        unresolved_keys = set(dead_or_missing_keys)
+        tier_names = {0: "AynaOTT", 1: "JagoBD", 2: "Yupp", 3: "Others"}
 
-    replaced_count = 0
-    if replacement_candidates:
-        log(f"[Replace] {len(dead_custom_keys)} ti dead/missing custom channel-er jonno final list theke {len(replacement_candidates)} ti candidate check hocche...")
-        verified_by_key = defaultdict(list)
-        with ThreadPoolExecutor(max_workers=min(WORKERS, len(replacement_candidates))) as ex:
-            fut_map = {ex.submit(verify_entry, cand): (nk, cand) for nk, cand in replacement_candidates}
-            for f in as_completed(fut_map):
-                nk, cand = fut_map[f]
-                ok, lat, kbps, _reason = f.result()
-                if ok:
-                    cand["latency"] = lat
-                    cand["kbps"] = kbps
-                    verified_by_key[nk].append(cand)
+        for tier in (0, 1, 2, 3):
+            if not unresolved_keys:
+                break
+            tier_candidates = []
+            for nk in list(unresolved_keys):
+                tier_list = [c for c in pool_by_key.get(nk, []) if c.get("priority", 3) == tier]
+                for cand in tier_list[:3]:
+                    tier_candidates.append((nk, cand))
 
-        for nk, matches in verified_by_key.items():
-            matches.sort(key=lambda x: (round(x.get("latency", 99), 2), -x.get("kbps", 0)))
-            best = matches[0]
-            if best["url"] not in used_custom_urls:
-                alive_custom.append(best)
-                used_custom_urls.add(best["url"])
-                replaced_count += 1
-                log(f"[Replaced] {best['name']} -> notun working link bosano hoyeche ({int(best['latency']*1000)}ms | {int(best['kbps'])}KB/s)")
+            if not tier_candidates:
+                continue
+
+            log(f"[Priority-{tier_names[tier]}] {len(unresolved_keys)} ti channel-er jonno {len(tier_candidates)} ti {tier_names[tier]} link check hocche...")
+            found_in_tier = defaultdict(list)
+            with ThreadPoolExecutor(max_workers=min(WORKERS, len(tier_candidates))) as ex:
+                fut_map = {ex.submit(verify_entry, cand): (nk, cand) for nk, cand in tier_candidates}
+                for f in as_completed(fut_map):
+                    nk, cand = fut_map[f]
+                    ok, lat, kbps, _reason = f.result()
+                    if ok:
+                        cand["latency"] = lat
+                        cand["kbps"] = kbps
+                        found_in_tier[nk].append(cand)
+
+            for nk, matches in found_in_tier.items():
+                best = pick_best_per_key(matches)
+                if best and nk not in alive_by_key:
+                    alive_by_key[nk] = best
+                    unresolved_keys.discard(nk)
+                    log(f"[Replaced-{tier_names[tier]}] {best['name']} -> working link paoa geche ({int(best['latency']*1000)}ms | {int(best['kbps'])}KB/s)")
 
     order_map = {nk: idx for idx, (nk, _nm) in enumerate(wanted_channels)}
-    alive_custom.sort(key=lambda e: (
-        order_map.get(norm_key(e["name"]), 999999),
-        round(e.get("latency", 99), 2),
-        -e.get("kbps", 0),
-    ))
-    write_entries(alive_custom, CUSTOM_PLAYLIST_FILE)
-    log(f"[Custom-Done] {CUSTOM_PLAYLIST_FILE} e {len(alive_custom)} ti active link save hoyeche ({replaced_count} ti dead link replace hoyeche).")
+    single_custom = sorted(
+        alive_by_key.values(),
+        key=lambda e: order_map.get(norm_key(e["name"]), 999999)
+    )
+    write_entries(single_custom, CUSTOM_PLAYLIST_FILE)
+    log(f"[Custom-Done] {CUSTOM_PLAYLIST_FILE} e {len(single_custom)} ti single-link channel save hoyeche.")
 
-    # Step 3: Since custom links had dead/missing entries, also prune dead/slow links from main playlist.m3u
+    # Step 3: Prune dead/slow links from main playlist.m3u
     total = len(main_entries)
     log(f"[Pruner] {PLAYLIST_FILE} theke {total} ti link health-check shuru hocche...")
 
@@ -415,7 +451,7 @@ def main():
     write_entries(alive_entries, PLAYLIST_FILE)
 
     elapsed = int(time.time() - t_start)
-    log(f"[Pruner] Done in {elapsed // 60}m {elapsed % 60}s! {PLAYLIST_FILE}: {len(alive_entries)} | {CUSTOM_PLAYLIST_FILE}: {len(alive_custom)}")
+    log(f"[Pruner] Done in {elapsed // 60}m {elapsed % 60}s! {PLAYLIST_FILE}: {len(alive_entries)} | {CUSTOM_PLAYLIST_FILE}: {len(single_custom)}")
     return 0
 
 
