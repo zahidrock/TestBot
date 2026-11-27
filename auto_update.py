@@ -1622,20 +1622,43 @@ def load_custom_channel_keys(path=CUSTOM_CHANNELS_FILE):
     return keys
 
 
+def custom_source_priority(channel):
+    src = (channel.get("source") or "").lower()
+    url = (channel.get("url") or "").lower()
+    if "aynaott" in src or "aynaott.com" in url:
+        return 0
+    if "jagobd" in src or "jagobd.com" in url:
+        return 1
+    if "yupp" in src or "yupp" in url:
+        return 2
+    return 3
+
+
 def build_custom_playlist(alive_channels, target_path=CUSTOM_OUTPUT):
     wanted_keys = load_custom_channel_keys()
     if not wanted_keys:
         return 0
     matched = [c for c in alive_channels if norm(c["name"]) in wanted_keys]
     matched.sort(key=lambda c: (
-        GROUP_ORDER.index(c["group"]) if c["group"] in GROUP_ORDER else 99,
-        c["name"].lower(),
+        custom_source_priority(c),
         round(c.get("latency", 99), 2),
         -c.get("kbps", 0),
         SOURCE_RANK.get(c["source"], 9),
     ))
-    write_playlist(matched, target_path)
-    return len(matched)
+    best_single = {}
+    for c in matched:
+        ck = norm(c["name"])
+        if ck and ck not in best_single:
+            best_single[ck] = c
+    ordered_single = sorted(
+        best_single.values(),
+        key=lambda c: (
+            GROUP_ORDER.index(c["group"]) if c["group"] in GROUP_ORDER else 99,
+            c["name"].lower(),
+        )
+    )
+    write_playlist(ordered_single, target_path)
+    return len(ordered_single)
 
 
 def write_source_report(alive, custom_count):
