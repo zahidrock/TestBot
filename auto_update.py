@@ -1611,6 +1611,19 @@ def classify_by_language_and_name(c):
             or (detected_lang == "ben" and re.search(r"\b(india|indian|west bengal|kolkata)\b", lgroup))):
         return "Bangla Music" if music else "Bangla (India)"
 
+    # Trusted BD sources (AynaOTT, JagoBD, .bd, gpcdn.net) take priority for BD channels
+    # before generic English/India keyword checks (e.g., prevents BD "News 24" from being misclassified as India "News24")
+    is_trusted_bd_source = (
+        c.get("source") in ("AynaOTT", "JagoBD")
+        or ".bd" in ltvg
+        or "jagobd.com" in lurl
+        or "aynaott.com" in lurl
+        or "gpcdn.net" in lurl
+        or re.search(r"\bbangladesh\b", lgroup)
+    )
+    if is_trusted_bd_source and not HINDI_RE.search(clean_lname) and not HINDI_MOVIE_CH_RE.search(clean_lname) and not ENGLISH_MOVIE_CH_RE.search(clean_lname) and not ENGLISH_ENT_CH_RE.search(clean_lname):
+        return "Bangla Music" if music else "Bangladesh"
+
     if HINDI_MOVIE_CH_RE.search(clean_lname):
         return "Hindi Movies"
     if (detected_lang == "hin" or HINDI_RE.search(clean_lname)) and music:
