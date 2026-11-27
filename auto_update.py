@@ -26,6 +26,7 @@ DISCOVERED_FILE = Path("discovered_sources.json")
 HEALTH_FILE = Path("source_health.json")
 SLEEPING_FILE = Path("sleeping_sources.json")
 CHECKPOINT_FILE = Path("check_checkpoint.json")
+MISSING_CUSTOM_FILE = Path("missing_custom.txt")
 
 WORKERS = 220
 CHECK_TIMEOUT = 3.0
@@ -1731,6 +1732,28 @@ def write_source_report(alive):
     SOURCE_REPORT.write_text("\n".join(rep) + "\n", encoding="utf-8")
 
 
+def load_missing_priority_keys():
+    if not MISSING_CUSTOM_FILE.exists():
+        return set()
+    keys = set()
+    for raw_ln in MISSING_CUSTOM_FILE.read_text(encoding="utf-8", errors="ignore").splitlines():
+        ln = raw_ln.strip()
+        if not ln or ln.startswith("#"):
+            continue
+        k = norm(ln)
+        if k:
+            keys.add(k)
+    return keys
+
+
+def is_priority_missing_channel(ch):
+    m_keys = load_missing_priority_keys()
+    if not m_keys:
+        return False
+    nk = norm(ch.get("name", ""))
+    return bool(nk and nk in m_keys)
+
+
 def main():
     start_time = time.time()
     id_to_name = fetch_official_channel_names()
@@ -1758,21 +1781,31 @@ def main():
             except Exception as e:
                 log(f"[{name}] error: {e}")
 
+        priority_keys = load_missing_priority_keys()
+        if priority_keys:
+            log(f"[Priority-Missing] missing_custom.txt theke {len(priority_keys)} ti missing channel high priority te khoja hocche.")
+
         seen, items = set(), []
         for c in pool:
             raw = clean_stream_url(c["url"].split("|")[0].strip())
-            if not raw or raw in seen or is_blocked_or_non_tv(c):
+            is_prio = bool(priority_keys and norm(c.get("name", "")) in priority_keys)
+            if not raw or raw in seen:
+                continue
+            if not is_prio and is_blocked_or_non_tv(c):
                 continue
             if any(b in c["url"] for b in BLOCK_URLS):
                 continue
 
             pre_grp = classify_by_language_and_name(c)
-            if pre_grp == "DROP":
+            if not is_prio and pre_grp == "DROP":
                 continue
 
             seen.add(raw)
             c["checked"] = False
+            c["priority_missing"] = is_prio
             items.append(c)
+
+        items.sort(key=lambda x: (not x.get("priority_missing", False)))
 
         log(f"Total unique BD/Bangla-Hindi/English/Informative/Kids candidate: {len(items)}")
         save_checkpoint(items, checked_feed_urls, original_created_at)
@@ -1786,12 +1819,18 @@ def main():
 
     alive_raw = [c for c in items if c.get("alive")]
 
+    priority_keys = load_missing_priority_keys()
     alive = []
     for c in alive_raw:
+        is_prio = bool(c.get("priority_missing") or (priority_keys and norm(c.get("name", "")) in priority_keys))
         grp = classify_by_language_and_name(c)
         if grp not in ALLOWED_GROUPS:
-            continue
-        if (c["source"] not in ("AynaOTT", "JagoBD") and grp in ("Bangladesh", "Kolkata Movies", "Bangla Music")
+            if is_prio:
+                grp = "Bangladesh"
+            else:
+                continue
+        if (not is_prio and c["source"] not in ("AynaOTT", "JagoBD")
+                and grp in ("Bangladesh", "Kolkata Movies", "Bangla Music")
                 and any(h in c["url"].lower() for h in NOT_BANGLA_HOSTS)):
             continue
         c["group"] = grp
