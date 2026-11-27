@@ -6,6 +6,10 @@ on:
     - cron: '0 */4 * * *'
   workflow_dispatch:
 
+concurrency:
+  group: iptv-playlist-pipeline
+  cancel-in-progress: false
+
 permissions:
   contents: write
 
@@ -32,6 +36,9 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add playlist.m3u playlist_custom.m3u
+          if [ -f "missing_custom.txt" ] || git ls-files --error-unmatch missing_custom.txt >/dev/null 2>&1; then
+            git add -A missing_custom.txt || true
+          fi
           if git diff --staged --quiet; then
             echo "Sob link active ache, kono dead link paoa jayni."
           else
