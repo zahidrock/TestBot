@@ -21,7 +21,8 @@ socket.setdefaulttimeout(5)
 
 # ------------------------------------------------------------------ settings
 OUTPUT = Path("playlist.m3u")
-CLEAN_OUTPUT = Path("playlist_clean.m3u")
+CUSTOM_CHANNELS_FILE = Path("custom_channels.txt")
+CUSTOM_OUTPUT = Path("playlist_custom.m3u")
 SOURCE_REPORT = Path("source_report.txt")
 DISCOVERED_FILE = Path("discovered_sources.json")
 HEALTH_FILE = Path("source_health.json")
@@ -503,7 +504,7 @@ def scrape_jagobd():
                 '/disclaimer', 'dmca', 'terms', 'advertise', 'copyright']
         seen = set()
         for url, content in re.findall(
-                r'<a\s+[^>]*href=[\'"](https://www\.jagobd\.com/[^\'"#?]+)[\'"][^>]*>(.*?)</a>', html, re.S):
+                r'<a\s+[^>]*href=[\'"](https://www\.jagobd\.com/[^\' "#?]+)[\'"][^>]*>(.*?)</a>', html, re.S):
             url = url.rstrip("/")
             if url in seen or any(x in url.lower() for x in skip):
                 continue
@@ -542,8 +543,8 @@ def scrape_jagobd():
                     embed = "https:" + embed
                 eh = http_get(embed, headers={"User-Agent": UA, "Referer": c["url"]}, timeout=6)
                 for _fn, arr in re.findall(
-                        r'function\s+(\w+)\(\)\s*\{\s*return\(\[([^\]]+)\]\.join\([\'"][\'"]\)', eh):
-                    val = "".join(x.strip().strip("'\"") for x in arr.split(",")).replace(r"\/", "/")
+                        r'function\s+(\w+)\(\)\s*\{\s*return\(\[([^\]]+)\]\.join\([\'"] [\'"]\)', eh):
+                    val = "".join(x.strip().strip("\'\"") for x in arr.split(",")).replace(r"\/", "/")
                     if ".m3u8" in val:
                         stream = val
                         break
@@ -644,7 +645,7 @@ def scrape_discovered_and_global_feeds(checked_feed_urls):
                         ch["feed_url"] = u
                     return chs
                 return []
-            links = re.findall(r'(https?://[^\s\'"<>]+?\.m3u8?(?:\?[^\s\'"<>]*)?)', txt, re.I)
+            links = re.findall(r'(https?://[^\s\' "<>]+?\.m3u8?(?:\?[^\s\' "<>]*)?)', txt, re.I)
             for lk in list(dict.fromkeys(links))[:40]:
                 clean_lk = clean_stream_url(lk)
                 if depth == 0 and (clean_lk.lower().endswith(".m3u") or "/raw/" in clean_lk.lower()):
@@ -1607,7 +1608,37 @@ def write_playlist(channels, target_path=OUTPUT):
     target_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
-def write_source_report(alive, clean_alive):
+def load_custom_channel_keys(path=CUSTOM_CHANNELS_FILE):
+    if not path.exists():
+        return set()
+    keys = set()
+    for raw_line in path.read_text(encoding="utf-8", errors="ignore").splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#"):
+            continue
+        k = norm(line)
+        if k:
+            keys.add(k)
+    return keys
+
+
+def build_custom_playlist(alive_channels, target_path=CUSTOM_OUTPUT):
+    wanted_keys = load_custom_channel_keys()
+    if not wanted_keys:
+        return 0
+    matched = [c for c in alive_channels if norm(c["name"]) in wanted_keys]
+    matched.sort(key=lambda c: (
+        GROUP_ORDER.index(c["group"]) if c["group"] in GROUP_ORDER else 99,
+        c["name"].lower(),
+        round(c.get("latency", 99), 2),
+        -c.get("kbps", 0),
+        SOURCE_RANK.get(c["source"], 9),
+    ))
+    write_playlist(matched, target_path)
+    return len(matched)
+
+
+def write_source_report(alive, custom_count):
     by_source = defaultdict(list)
     by_domain = defaultdict(list)
 
@@ -1621,7 +1652,7 @@ def write_source_report(alive, clean_alive):
 
     rep = [
         f"=== Global IPTV Source & Channel Breakdown Report ({time.strftime('%Y-%m-%d %H:%M:%S UTC', time.gmtime())}) ===",
-        f"Total High-Speed Alive Streams: {len(alive)} | Clean Unique Channels: {len(clean_alive)}\n",
+        f"Total High-Speed Alive Streams: {len(alive)} | Custom Matched Streams: {custom_count}\n",
         "--- 1. SUMMARY BY SOURCE PLATFORM / ENGINE ---"
     ]
     for src, ch_list in sorted(by_source.items(), key=lambda x: -len(x[1])):
@@ -1751,30 +1782,13 @@ def main():
 
     write_playlist(alive, OUTPUT)
 
-    best_by_channel = {}
-    for c in alive:
-        ckey = (c["group"], norm(c["name"]) or c["name"].lower())
-        if ckey not in best_by_channel:
-            best_by_channel[ckey] = c
-        else:
-            prev_c = best_by_channel[ckey]
-            prev_score = (0 if prev_c["url"].startswith("https://") else 1, round(prev_c.get("latency", 99), 2), -prev_c.get("kbps", 0))
-            curr_score = (0 if c["url"].startswith("https://") else 1, round(c.get("latency", 99), 2), -c.get("kbps", 0))
-            if curr_score < prev_score:
-                best_by_channel[ckey] = c
-
-    clean_alive = sorted(
-        best_by_channel.values(),
-        key=lambda c: (GROUP_ORDER.index(c["group"]) if c["group"] in GROUP_ORDER else 99,
-                       c["name"].lower())
-    )
-    write_playlist(clean_alive, CLEAN_OUTPUT)
-    write_source_report(alive, clean_alive)
+    custom_count = build_custom_playlist(alive, CUSTOM_OUTPUT)
+    write_source_report(alive, custom_count)
 
     CHECKPOINT_FILE.unlink(missing_ok=True)
 
     elapsed = int(time.time() - start_time)
-    log(f"{OUTPUT} e {len(alive)} ta high-speed channel, {CLEAN_OUTPUT} e {len(clean_alive)} ta clean channel ebong {SOURCE_REPORT} save hoise (Total time: {elapsed // 60}m {elapsed % 60}s)")
+    log(f"{OUTPUT} e {len(alive)} ta high-speed channel, {CUSTOM_OUTPUT} e {custom_count} ta custom channel link ebong {SOURCE_REPORT} save hoise (Total time: {elapsed // 60}m {elapsed % 60}s)")
     return 0
 
 
