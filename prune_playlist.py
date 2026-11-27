@@ -1,10 +1,11 @@
 """
-Custom-First Fast IPTV Playlist Pruner & Auto-Replacer
+Custom-First Fast IPTV Playlist Pruner & Auto-Replacer (Smart Skip Edition)
 - Reads 'custom_channels.txt' and checks existing custom playlist entries ('playlist_custom.m3u',
   or matching entries from 'playlist.m3u') FIRST for liveness, latency (<= 2.2s), and speed (>= 25 KB/s)
-- Whenever a custom channel link is dead/slow/missing, searches candidate/fallback links from the
-  main/final list ('playlist.m3u'), verifies them live, and replaces dead links with working ones
-- Also prunes dead links from 'playlist.m3u' cleanly with safety ratio protection
+- If ALL custom links are alive and no channel from 'custom_channels.txt' is dead/missing,
+  saves 'playlist_custom.m3u' and SKIPS scanning the full 'playlist.m3u' to save time & resources
+- Whenever a custom channel link is dead/slow/missing, searches candidate/fallback links from
+  'playlist.m3u', verifies them live, replaces dead links, and prunes dead links from 'playlist.m3u'
 """
 import re, socket, ssl, sys, threading, time
 from collections import Counter, defaultdict
@@ -32,7 +33,8 @@ UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like
       "Chrome/131.0.0.0 Safari/537.36")
 HEADERS = {"User-Agent": UA, "Accept": "*/*", "Accept-Language": "en-US,en;q=0.9"}
 
-KEY_URI_RE = re.compile(r'#EXT-X-KEY:[^\n]*URI="([^"]+)"', re.I)
+KEY_URI_RE = re.compile(r'#EXT-X-KEY:[^
+]*URI="([^"]+)"', re.I)
 VOD_EXT_RE = re.compile(r"\.(mp4|mkv|avi|mov|wmv|flv|webm|m4v|mpg|mpeg|3gp|vob)(\?|$)", re.I)
 AUDIO_EXT_RE = re.compile(r"\.(mp3|aac|ogg|oga|wav|flac|m4a|wma|opus|pls|asx)(\?|$)", re.I)
 
@@ -221,11 +223,11 @@ def verify_entry(entry):
 def norm_key(name):
     n = name.lower().strip()
     n = re.sub(r"[\(\[【].*?[\)\]】]", " ", n)
-    n = re.sub(r"\b\d{3,4}p\b", " ", n)
+    n = re.sub(r"\d{3,4}p", " ", n)
     n = n.replace("television", "tv")
-    n = re.sub(r"[^a-z0-9\u0980-\u09ff]+", " ", n)
+    n = re.sub(r"[^a-z0-9ঀ-৿]+", " ", n)
     tokens = [t for t in n.split() if t not in NOISE]
-    return "".join(tokens) or re.sub(r"[^a-z0-9\u0980-\u09ff]+", "", name.lower())
+    return "".join(tokens) or re.sub(r"[^a-z0-9ঀ-৿]+", "", name.lower())
 
 
 def clone_entry(e):
@@ -249,7 +251,9 @@ def write_entries(entries, target_path):
         for opt in e["vlc_opts"]:
             lines.append(opt)
         lines.append(e["url"])
-    target_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    target_path.write_text("
+".join(lines) + "
+", encoding="utf-8")
 
 
 def load_wanted_channels(path):
@@ -279,6 +283,7 @@ def main():
     wanted_keys = {k for k, _ in wanted_channels}
 
     existing_custom = parse_existing_m3u(CUSTOM_PLAYLIST_FILE)
+    had_existing_custom = bool(existing_custom)
     if not existing_custom and wanted_keys:
         existing_custom = [clone_entry(e) for e in main_entries if norm_key(e["name"]) in wanted_keys]
 
@@ -286,7 +291,9 @@ def main():
     custom_to_check = [clone_entry(e) for e in existing_custom if not wanted_keys or norm_key(e["name"]) in wanted_keys]
     alive_custom = []
     dead_custom_keys = set()
+    dead_custom_urls = set()
     used_custom_urls = set()
+    had_dead_custom_link = False
 
     if custom_to_check:
         log(f"[Custom-First] {len(custom_to_check)} ti custom channel link age check hocche...")
@@ -302,15 +309,29 @@ def main():
                     alive_custom.append(e)
                     used_custom_urls.add(e["url"])
                 else:
-                    log(f"[Custom-Dead] {e['name']} -> dead/slow ({reason}), final list theke replacement khujo hobe.")
+                    had_dead_custom_link = True
+                    dead_custom_urls.add(e["url"])
+                    log(f"[Custom-Dead] {e['name']} -> dead/slow ({reason}), final list theke replacement khoja hobe.")
                     if nk:
                         dead_custom_keys.add(nk)
 
-    # Also mark any wanted channel from custom_channels.txt that has no alive entry yet
+    # Also check if any wanted channel from custom_channels.txt has no alive entry yet
     present_alive_keys = {norm_key(e["name"]) for e in alive_custom}
-    for nk, _raw_nm in wanted_channels:
-        if nk not in present_alive_keys:
-            dead_custom_keys.add(nk)
+    missing_wanted_keys = {nk for nk, _raw_nm in wanted_channels if nk not in present_alive_keys}
+    dead_custom_keys.update(missing_wanted_keys)
+
+    # Smart Skip: If existing custom playlist had entries, ALL links passed, and NO wanted channels are missing -> skip full scan!
+    if had_existing_custom and not had_dead_custom_link and not missing_wanted_keys:
+        order_map = {nk: idx for idx, (nk, _nm) in enumerate(wanted_channels)}
+        alive_custom.sort(key=lambda e: (
+            order_map.get(norm_key(e["name"]), 999999),
+            round(e.get("latency", 99), 2),
+            -e.get("kbps", 0),
+        ))
+        write_entries(alive_custom, CUSTOM_PLAYLIST_FILE)
+        elapsed = int(time.time() - t_start)
+        log(f"[Skip-Full-Scan] Custom playlist-er sob {len(alive_custom)} ti link active ache! Full playlist.m3u check skip kora holo ({elapsed}s).")
+        return 0
 
     # Step 2: Find and verify replacement links from the main/final playlist for dead/missing custom channels
     replacement_candidates = []
@@ -318,11 +339,10 @@ def main():
         pool_by_key = defaultdict(list)
         for e in main_entries:
             nk = norm_key(e["name"])
-            if nk in dead_custom_keys and e["url"] not in used_custom_urls:
+            if nk in dead_custom_keys and e["url"] not in used_custom_urls and e["url"] not in dead_custom_urls:
                 pool_by_key[nk].append(clone_entry(e))
 
         for nk, cand_list in pool_by_key.items():
-            # Test up to 5 fallback candidates per dead custom channel
             for cand in cand_list[:5]:
                 replacement_candidates.append((nk, cand))
 
@@ -349,7 +369,6 @@ def main():
                 replaced_count += 1
                 log(f"[Replaced] {best['name']} -> notun working link bosano hoyeche ({int(best['latency']*1000)}ms | {int(best['kbps'])}KB/s)")
 
-    # Preserve custom_channels.txt order if present, then sort fastest first per channel
     order_map = {nk: idx for idx, (nk, _nm) in enumerate(wanted_channels)}
     alive_custom.sort(key=lambda e: (
         order_map.get(norm_key(e["name"]), 999999),
@@ -359,7 +378,7 @@ def main():
     write_entries(alive_custom, CUSTOM_PLAYLIST_FILE)
     log(f"[Custom-Done] {CUSTOM_PLAYLIST_FILE} e {len(alive_custom)} ti active link save hoyeche ({replaced_count} ti dead link replace hoyeche).")
 
-    # Step 3: Prune dead/slow links from main playlist.m3u
+    # Step 3: Since custom links had dead/missing entries, also prune dead/slow links from main playlist.m3u
     total = len(main_entries)
     log(f"[Pruner] {PLAYLIST_FILE} theke {total} ti link health-check shuru hocche...")
 
