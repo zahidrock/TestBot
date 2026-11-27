@@ -359,6 +359,8 @@ def main():
         order_map = {nk: idx for idx, (nk, _nm) in enumerate(wanted_channels)}
         single_custom = sorted(alive_by_key.values(), key=lambda e: order_map.get(norm_key(e["name"]), 999999))
         write_entries(single_custom, CUSTOM_PLAYLIST_FILE)
+        Path("missing_custom.flag").unlink(missing_ok=True)
+        Path("missing_custom.txt").unlink(missing_ok=True)
         elapsed = int(time.time() - t_start)
         log(f"[Skip-Full-Scan] Sob {len(single_custom)} ti custom channel active ache! Full playlist.m3u check skip kora holo ({elapsed}s).")
         return 0
@@ -412,6 +414,16 @@ def main():
         key=lambda e: order_map.get(norm_key(e["name"]), 999999)
     )
     write_entries(single_custom, CUSTOM_PLAYLIST_FILE)
+    found_keys = {norm_key(e["name"]) for e in single_custom}
+    still_missing = [raw_nm for nk, raw_nm in wanted_channels if nk not in found_keys]
+    missing_list_file = Path("missing_custom.txt")
+    Path("missing_custom.flag").unlink(missing_ok=True)
+        Path("missing_custom.txt").unlink(missing_ok=True)
+    if still_missing:
+        missing_list_file.write_text("\n".join(still_missing) + "\n", encoding="utf-8")
+        log(f"[Custom-Missing] {len(still_missing)} ti channel missing_custom.txt e save kora holo: {still_missing}")
+    else:
+        missing_list_file.unlink(missing_ok=True)
     log(f"[Custom-Done] {CUSTOM_PLAYLIST_FILE} e {len(single_custom)} ti single-link channel save hoyeche.")
 
     # Step 3: Prune dead/slow links from main playlist.m3u
