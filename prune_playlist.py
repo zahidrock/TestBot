@@ -290,11 +290,17 @@ def load_wanted_channels(path):
     return wanted
 
 
+def is_hd_entry(entry):
+    txt = f"{entry.get('name', '')} {entry.get('extinf', '')} {entry.get('url', '')}".lower()
+    return bool(re.search(r"(\b(?:hd|fhd|uhd|4k|1080p|720p)\b|_hd\b|-hd\b)", txt))
+
+
 def pick_best_per_key(candidates):
     if not candidates:
         return None
     candidates.sort(key=lambda x: (
         x.get("priority", 3),
+        0 if is_hd_entry(x) else 1,
         round(x.get("latency", 99), 2),
         -x.get("kbps", 0),
     ))
@@ -357,7 +363,7 @@ def main():
     # Smart Skip: If custom playlist already existed, ALL checked links were alive, and NO wanted channels are missing -> do not touch custom playlist or scan full playlist!
     if had_existing_custom and not had_dead_custom_link and not dead_or_missing_keys:
         Path("missing_custom.flag").unlink(missing_ok=True)
-        Path("missing_custom.txt").unlink(missing_ok=True)
+    Path("missing_custom.txt").unlink(missing_ok=True)
         elapsed = int(time.time() - t_start)
         log(f"[Skip-Full-Scan] Sob {len(alive_by_key)} ti custom channel active ache! playlist_custom.m3u untouched rakha holo o full playlist.m3u check skip kora holo ({elapsed}s).")
         return 0
@@ -380,7 +386,8 @@ def main():
             tier_candidates = []
             for nk in list(unresolved_keys):
                 tier_list = [c for c in pool_by_key.get(nk, []) if c.get("priority", 3) == tier]
-                for cand in tier_list[:3]:
+                tier_list.sort(key=lambda x: (0 if is_hd_entry(x) else 1, round(x.get("latency", 99), 2), -x.get("kbps", 0)))
+                for cand in tier_list[:4]:
                     tier_candidates.append((nk, cand))
 
             if not tier_candidates:
@@ -415,7 +422,7 @@ def main():
     still_missing = [raw_nm for nk, raw_nm in wanted_channels if nk not in found_keys]
     missing_list_file = Path("missing_custom.txt")
     Path("missing_custom.flag").unlink(missing_ok=True)
-        Path("missing_custom.txt").unlink(missing_ok=True)
+    Path("missing_custom.txt").unlink(missing_ok=True)
     if still_missing:
         missing_list_file.write_text("\n".join(still_missing) + "\n", encoding="utf-8")
         log(f"[Custom-Missing] {len(still_missing)} ti channel missing_custom.txt e save kora holo: {still_missing}")
