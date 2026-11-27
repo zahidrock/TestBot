@@ -354,15 +354,12 @@ def main():
         if nk not in alive_by_key:
             dead_or_missing_keys.add(nk)
 
-    # Smart Skip: If custom playlist already existed, ALL checked links were alive, and NO wanted channels are missing -> skip full scan!
+    # Smart Skip: If custom playlist already existed, ALL checked links were alive, and NO wanted channels are missing -> do not touch custom playlist or scan full playlist!
     if had_existing_custom and not had_dead_custom_link and not dead_or_missing_keys:
-        order_map = {nk: idx for idx, (nk, _nm) in enumerate(wanted_channels)}
-        single_custom = sorted(alive_by_key.values(), key=lambda e: order_map.get(norm_key(e["name"]), 999999))
-        write_entries(single_custom, CUSTOM_PLAYLIST_FILE)
         Path("missing_custom.flag").unlink(missing_ok=True)
         Path("missing_custom.txt").unlink(missing_ok=True)
         elapsed = int(time.time() - t_start)
-        log(f"[Skip-Full-Scan] Sob {len(single_custom)} ti custom channel active ache! Full playlist.m3u check skip kora holo ({elapsed}s).")
+        log(f"[Skip-Full-Scan] Sob {len(alive_by_key)} ti custom channel active ache! playlist_custom.m3u untouched rakha holo o full playlist.m3u check skip kora holo ({elapsed}s).")
         return 0
 
     # Step 2: Priority tier lookup (0=AynaOTT -> 1=JagoBD -> 2=Yupp -> 3=Others)
