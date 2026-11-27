@@ -546,7 +546,7 @@ def search_gitlab_and_codeberg():
 
 
 def normalize_web_discovered_url(decoded):
-    decoded = decoded.strip().rstrip(".,;'\")}]")
+    decoded = decoded.strip().rstrip(".,;\'\")}]")
     if not decoded.startswith("http"):
         return None
     if "pastebin.com/" in decoded and "/raw/" not in decoded:
@@ -698,7 +698,7 @@ def discover():
             code_txt = fetch_text(raw_code_url, timeout=8)
             if code_txt:
                 for found_url in URL_RE.findall(code_txt):
-                    clean_u = found_url.rstrip(".,;'\")}]").split("?")[0]
+                    clean_u = found_url.rstrip(".,;\'\")}]").split("?")[0]
                     if is_syntactically_valid_url(clean_u, self_repo_prefix):
                         upstream.add(clean_u)
         repo_info["upstream_sources"] = sorted(upstream)
