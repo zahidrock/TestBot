@@ -43,9 +43,6 @@ https://app24.jagobd.com.bd/c3VydmVyX8RpbEU9Mi8xNy8yMFDEEHGcfRgzQ6NTAgdEoaeFzbF9
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 #EXTVLCOPT:http-referrer=https://web.aynaott.com/
 https://tvsen6.aynaott.com/pF66Tkz0qFwP2aMMqHyt/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Independent TV" tvg-logo="" group-title="Bangladesh",Independent TV
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-https://drk6xq0vhn.gpcdn.net/hls/independent_tv.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Maasranga TV" tvg-logo="" group-title="Bangladesh",Maasranga TV
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://103.118.76.228/MAASRANGA-TVtest/index.m3u8
@@ -60,17 +57,13 @@ https://tvsen5.aynaott.com/tgUzpPc9r6xw/index.m3u8
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 #EXTVLCOPT:http-referrer=https://web.aynaott.com/
 https://tvsen5.aynaott.com/xV4jEKf3D9zc/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Channel I" tvg-logo="" group-title="Bangladesh",Channel I
+#EXTINF:-1 tvg-id="ChannelI.bd" tvg-name="Channel I" tvg-logo="" group-title="Bangladesh",Channel I
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-https://playztv-apps.pages.dev/channel-i/index.m3u8
+https://iptv-proxy.ahmed-bd-org.workers.dev/channel-i/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Desh TV" tvg-logo="" group-title="Bangladesh",Desh TV
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0 (Linux; Android 11) ExoPlayerLib/2.18.7
 #EXTVLCOPT:http-referrer=https://www.jagobd.com/
 http://app24.jagobd.com.bd/c3VydmVyX8RpbEU9Mi8xNy8yMFDEEHGcfRgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcEdsEfeDeKiNkVN3PTOmdFseWRtaW51aiPhnPTI2/deshtv.stream/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Ekhon Tv" tvg-logo="" group-title="Bangladesh",Ekhon Tv
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-#EXTVLCOPT:http-referrer=https://www.jagobd.com/
-https://app24.jagobd.com.bd/c3VydmVyX8RpbEU9Mi8xNy8yMFDEEHGcfRgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcEdsEfeDeKiNkVN3PTOmdFseWRtaW51aiPhnPTI2/globaltv.stream/playlist.m3u8
 #EXTINF:-1 tvg-id="aynaott-sa-tv" tvg-name="Sa TV" tvg-logo="" group-title="Bangladesh",Sa TV
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 #EXTVLCOPT:http-referrer=https://web.aynaott.com/
@@ -105,16 +98,15 @@ https://tvsen6.aynaott.com/1d3uG9VCgrR9DRtWZM57/index.m3u8
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 #EXTVLCOPT:http-referrer=https://www.jagobd.com/
 https://app24.jagobd.com.bd/c3VydmVyX8RpbEU9Mi8xNy8yMFDEEHGcfRgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcEdsEfeDeKiNkVN3PTOmdFseWRtaW51aiPhnPTI2/ekusheytv-8-org.stream/playlist.m3u8
-#EXTINF:-1 tvg-id="NewsLiveBangla.in" tvg-name="News Live Bangla" tvg-logo="" tvg-language="eng" group-title="Bangla (India)",News Live Bangla
+#EXTINF:-1 tvg-id="" tvg-name="Bangla TV" tvg-logo="" group-title="Bangladesh",Bangla TV
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-https://cdn.pishow.tv/ott/live/10003/master.m3u8
+https://cdn.ghuddi.live/Bangla_TV/Bangla_TV_BD/playlist.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Bijoy TV" tvg-logo="" group-title="Bangladesh",Bijoy TV
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://playztv-apps.pages.dev/bijoy-tv/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Sananda" tvg-logo="" group-title="Bangla (India)",Sananda
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-#EXTVLCOPT:http-referrer=https://www.jagobd.com/
-http://app24.jagobd.com.bd/c3VydmVyX8RpbEU9Mi8xNy8yMFDEEHGcfRgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcEdsEfeDeKiNkVN3PTOmdFseWRtaW51aiPhnPTI2/sanandatv.stream/tracks-v1a1/mono.m3u8
+http://27.124.71.27/Sun_Bangla/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Rajdhani TV" tvg-logo="" group-title="Bangladesh",Rajdhani TV
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-BD/rajdhani_tv_b121cdd9.m3u8
@@ -154,9 +146,9 @@ http://cdn.pishow.tv/live/350/master.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Zee Action" tvg-logo="" group-title="Hindi Movies",Zee Action
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36
 http://103.175.73.12:8080/live/270/master.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="HBO" tvg-logo="" group-title="English Movies",HBO
+#EXTINF:-1 tvg-id="" tvg-name="HBO HD" tvg-logo="" group-title="English Movies",HBO HD
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://38.65.175.25:8000/play/a0c5/index.m3u8
+http://190.108.83.69:8000/play/a035/index.m3u8
 #EXTINF:-1 tvg-id="SONY.MOVIES.HD..uy" tvg-name="Sony Movies" tvg-logo="" group-title="English Movies",Sony Movies
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://45.5.118.152:8000/play/a02m/index.m3u8
