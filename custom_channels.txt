@@ -9,12 +9,12 @@ Doyel TV
 Prime TV
 Gazi TV HD
 Nagorik HD
-Jumuna TV
+Jamuna TV
 Somoy TV
 Channel 24
-Ekattor 71 HD
+Ekattor HD
 ATN News
-News24
+News 24
 DBC News
 Independent TV
 Deepto TV
@@ -35,12 +35,11 @@ RTV
 Channel 1
 Boishakhi TV
 Duronto TV
-Ekushey TV
 Bangla TV
 Bijoy TV
 Sananda TV
 RAJDHANI TV HD
-News21
+News 21
 Deshi TV
 Channel 52
 Channel 9
