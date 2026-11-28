@@ -76,6 +76,9 @@ BOT_SEARCH_QUERIES = [
 
 CODE_SIGNATURE_QUERIES = [
     '"cron:" "m3u" path:.github/workflows',
+    '"schedule:" "m3u8" path:.github/workflows',
+    '"EXTM3U" "requests" extension:py',
+    '"EXTM3U" "urllib" extension:py',
     '"#EXTINF" "Somoy" extension:m3u',
     '"#EXTINF" "Jamuna" extension:m3u8',
     '"#EXTINF" "Star Jalsha" extension:m3u',
@@ -94,7 +97,7 @@ CODE_SIGNATURE_QUERIES = [
 ALT_GIT_KEYWORDS = [
     "iptv", "m3u8", "m3u", "bdix", "bangla-tv", "bangladesh-tv", "live-tv",
     "star-jalsha", "somoy-tv", "indian-tv", "hindi-tv", "sports-tv", "fast-tv",
-    "cartoon", "kids-tv", "anime", "documentary", "playlist"
+    "cartoon", "kids-tv", "anime", "documentary", "playlist", "bdix-m3u", "bdix-iptv"
 ]
 
 WEB_DORK_QUERIES = [
@@ -147,6 +150,10 @@ BUILTIN_DIRECT_FEEDS = [
     "https://iptv-org.github.io/iptv/categories/kids.m3u",
     "https://iptv-org.github.io/iptv/categories/animation.m3u",
     "https://raw.githubusercontent.com/Free-TV/IPTV/master/playlist.m3u8",
+    "https://raw.githubusercontent.com/saeidrahmanbd/BDIX-IPTV/main/IPTV-Playlist.m3u",
+    "https://raw.githubusercontent.com/saeidrahmanbd/BDIX-IPTV/main/International-Playlist.m3u",
+    "https://raw.githubusercontent.com/abusaeeidx/Mrgify-BDIX-IPTV/main/playlist.m3u",
+    "https://raw.githubusercontent.com/time2shine/Rokon-IPTV/main/playlist.m3u",
 ]
 
 URL_RE = re.compile(r'https?://[a-zA-Z0-9.-]+(?:/[a-zA-Z0-9._~:/?#\[\]@!$&\'()*+,;=-]*)?')
@@ -194,6 +201,8 @@ def load_json_safe(path, default):
 
 
 def is_syntactically_valid_url(url, self_repo_prefix=""):
+    if "@" in url.split("//", 1)[-1].split("/", 1)[0]:
+        return False
     low_u = url.lower().split("?")[0].split("#")[0]
     if low_u.endswith(IGNORE_EXTENSIONS):
         return False
@@ -754,8 +763,16 @@ def discover():
         "sleeping_urls": sorted(sleeping_set)
     }, indent=2), encoding="utf-8")
 
+    bot_only_playlists = set()
+    for b in all_bots_list:
+        if b.get("is_auto_bot"):
+            bot_only_playlists.update(b.get("playlists", []))
+
     all_upstream_urls = sorted(active_upstream)
-    all_bot_playlists = sorted(active_playlists)
+    all_bot_playlists = sorted(
+        active_playlists,
+        key=lambda u: (0 if u in bot_only_playlists else 1, u)
+    )
 
     result_data = {
         "generated_at": time.strftime("%Y-%m-%d %H:%M:%S UTC", time.gmtime()),
