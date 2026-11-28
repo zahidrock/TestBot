@@ -67,6 +67,10 @@ DIRECT_GLOBAL_FEEDS = [
     ("FAST-TV", "https://www.apsattv.com/tubi.m3u"),
     ("FAST-TV", "https://www.apsattv.com/redbox.m3u"),
     ("OpenDir", "https://raw.githubusercontent.com/Free-TV/IPTV/master/playlist.m3u8"),
+    ("BDIX-IPTV", "https://raw.githubusercontent.com/saeidrahmanbd/BDIX-IPTV/main/IPTV-Playlist.m3u"),
+    ("BDIX-IPTV", "https://raw.githubusercontent.com/saeidrahmanbd/BDIX-IPTV/main/International-Playlist.m3u"),
+    ("GitHub", "https://raw.githubusercontent.com/abusaeeidx/Mrgify-BDIX-IPTV/main/playlist.m3u"),
+    ("GitHub", "https://raw.githubusercontent.com/time2shine/Rokon-IPTV/main/playlist.m3u"),
 ]
 
 COMBOS = [
