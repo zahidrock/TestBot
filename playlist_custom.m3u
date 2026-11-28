@@ -8,10 +8,9 @@ https://raw.githubusercontent.com/amazeyourself/adaptive-streams/refs/heads/main
 #EXTINF:-1 tvg-id="COLORS.BANGLA.in" tvg-name="Colors Bangla" tvg-logo="" tvg-language="ben" group-title="Bangla (India)",Colors Bangla
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0 (Linux; U; Android 10; SM-G975F Build/QP1A.190711.020)
 http://cdn.pishow.tv/live/367/master.m3u8
-#EXTINF:-1 tvg-id="jagobd-bprimebangla" tvg-name="Bprimebangla" tvg-logo="" group-title="Bangladesh",Bprimebangla
+#EXTINF:-1 tvg-id="" tvg-name="Jalsha Movies HD" tvg-logo="" group-title="Kolkata Movies",Jalsha Movies HD
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-#EXTVLCOPT:http-referrer=https://www.jagobd.com/
-https://app24.jagobd.com.bd/c3VydmVyX8RpbEU9Mi8xNy8yMFDEEHGcfRgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcEdsEfeDeKiNkVN3PTOmdFseWRtaW51aiPhnPTI2/Bprimebangla.stream/playlist.m3u8
+http://103.114.11.37:8081/Jalsha-Movies/index.m3u8?token=scn
 #EXTINF:-1 tvg-id="" tvg-name="Jalsha Bangla BD" tvg-logo="" group-title="Bangla (India)",Jalsha Bangla BD
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-BD/jalsha_bangla_bd_cecc8a1b.m3u8
@@ -51,6 +50,9 @@ https://app24.jagobd.com.bd/c3VydmVyX8RpbEU9Mi8xNy8yMFDEEHGcfRgzQ6NTAgdEoaeFzbF9
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 #EXTVLCOPT:http-referrer=https://web.aynaott.com/
 https://tvsen6.aynaott.com/pF66Tkz0qFwP2aMMqHyt/index.m3u8
+#EXTINF:-1 tvg-id="deepto-tv" tvg-name="Deepto TV" tvg-logo="" group-title="Bangladesh",Deepto TV
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
+https://iptv-proxy.ahmed-bd-org.workers.dev/deepto-tv/index.m3u8
 #EXTINF:-1 tvg-id="aynaott-maasranga-tv" tvg-name="Maasranga TV" tvg-logo="" group-title="Bangladesh",Maasranga TV
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 #EXTVLCOPT:http-referrer=https://web.aynaott.com/
@@ -73,6 +75,10 @@ https://iptv-proxy.ahmed-bd-org.workers.dev/channel-i/index.m3u8
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0 (Linux; Android 11) ExoPlayerLib/2.18.7
 #EXTVLCOPT:http-referrer=https://www.jagobd.com/
 http://app24.jagobd.com.bd/c3VydmVyX8RpbEU9Mi8xNy8yMFDEEHGcfRgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcEdsEfeDeKiNkVN3PTOmdFseWRtaW51aiPhnPTI2/deshtv.stream/index.m3u8
+#EXTINF:-1 tvg-id="" tvg-name="Ekhon TV" tvg-logo="" group-title="Bangladesh",Ekhon TV
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
+#EXTVLCOPT:http-referrer=https://www.jagobd.com/
+https://static.jagobd.com.bd/c3VydmVyX8RpbEU9Mi8xNy8yMFDEEHGcfRgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcEdsEfeDeKiNkVN3PTOmdFseWRtaW51aiPhnPTI2/globaltv.stream/tracks-v1a1/mono.m3u8
 #EXTINF:-1 tvg-id="aynaott-sa-tv" tvg-name="Sa TV" tvg-logo="" group-title="Bangladesh",Sa TV
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 #EXTVLCOPT:http-referrer=https://web.aynaott.com/
@@ -92,16 +98,19 @@ https://tvsen6.aynaott.com/AkyX5dunzju4cpo26dr7/index.m3u8
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 #EXTVLCOPT:http-referrer=https://www.jagobd.com/
 http://app24.jagobd.com.bd/c3VydmVyX8RpbEU9Mi8xNy8yMFDEEHGcfRgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcEdsEfeDeKiNkVN3PTOmdFseWRtaW51aiPhnPTI2/asian-test-sample-ok-d.stream/tracks-v1a1/mono.m3u8
-#EXTINF:-1 tvg-id="aynaott-nexus-tv" tvg-name="Nexus TV" tvg-logo="" group-title="Bangladesh",Nexus TV
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-#EXTVLCOPT:http-referrer=https://web.aynaott.com/
-https://tvsen6.aynaott.com/Epm7WrFa/index.m3u8
 #EXTINF:-1 tvg-id="rtv.bd" tvg-name="RTV" tvg-logo="" group-title="Bangladesh",RTV
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://gto2000-sportoutdoortv-1-it.samsung.wurl.tv/playlist.m3u8
+#EXTINF:-1 tvg-id="" tvg-name="М1 HD" tvg-logo="" group-title="Bangladesh",М1 HD
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
+https://hls1.sweet.tv/stream/3b38895ywzbrit4t6bpqp2zfqq4pzvtsmkcnwid6xjyt94u4ga6eswnfetyt9egvhcs58qy76xh88faq82dtc8hkp5xt6amxkabmygtk33w5je9e5rqs====.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Boishakhi TV" tvg-logo="" group-title="Bangladesh",Boishakhi TV
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://playztv-apps.pages.dev/boishakhi-tv/index.m3u8
+#EXTINF:-1 tvg-id="DurontoTV.bd" tvg-name="Duronto TV" tvg-logo="" tvg-language="ben" group-title="Bangladesh",Duronto TV
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
+#EXTVLCOPT:http-referrer=https://web.aynaott.com/
+https://tvsen5.aynaott.com/6xyZ3N4oHv2KBJdB6W4p/index.fmp4.m3u8
 #EXTINF:-1 tvg-id="jagobd-ekushey-tv" tvg-name="Ekushey TV" tvg-logo="" group-title="Bangladesh",Ekushey TV
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 #EXTVLCOPT:http-referrer=https://www.jagobd.com/
@@ -148,6 +157,9 @@ http://cdn.pishow.tv/live/1169/master.m3u8
 #EXTINF:-1 tvg-id="and.pictures.hd" tvg-name="&Pictures HD" tvg-logo="" tvg-language="eng" group-title="English Entertainment",&Pictures HD
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0 (Linux; U; Android 10; SM-G975F Build/QP1A.190711.020)
 http://cdn.pishow.tv/live/1578/master.m3u8
+#EXTINF:-1 tvg-id="AllTimeMovies.in@SD" tvg-name="All Time Movies" tvg-logo="" tvg-language="hin" group-title="Hindi Movies",All Time Movies
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
+https://samitaorigin.tangotv.in/ALLTIMEMOVIES/SAMITAORIGIN/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="B4U Kadak" tvg-logo="" group-title="Hindi Movies",B4U Kadak
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://jmp2.uk/stvp-IN39000187Z
@@ -163,3 +175,6 @@ http://190.108.83.69:8000/play/a035/index.m3u8
 #EXTINF:-1 tvg-id="SONY.MOVIES.HD..uy" tvg-name="Sony Movies" tvg-logo="" group-title="English Movies",Sony Movies
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://45.5.118.152:8000/play/a02m/index.m3u8
+#EXTINF:-1 tvg-id="Action24.gr@SD" tvg-name="Action 24" tvg-logo="" tvg-language="ell" group-title="Bangladesh",Action 24
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
+http://actionlive.siliconweb.com/actionabr/actiontv/playlist.m3u8
