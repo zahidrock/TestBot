@@ -26,10 +26,6 @@ https://app.ncare.live/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxI
 #EXTINF:-1 tvg-id="" tvg-name="Ananda TV" tvg-logo="" group-title="Bangladesh",Ananda TV
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 #EXTVLCOPT:http-referrer=https://www.jagobd.com/
-http://app24.jagobd.com.bd/c3VydmVyX8RpbEU9Mi8xNy8yMFDEEHGcfRgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcEdsEfeDeKiNkVN3PTOmdFseWRtaW51aiPhnPTI2/anandatv.stream/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Ananda TV" tvg-logo="" group-title="Bangladesh",Ananda TV
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-#EXTVLCOPT:http-referrer=https://www.jagobd.com/
 http://app24.jagobd.com.bd/c3VydmVyX8RpbEU9Mi8xNy8yMFDEEHGcfRgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcEdsEfeDeKiNkVN3PTOmdFseWRtaW51aiPhnPTI2/anandatv.stream/tracks-v1a1/mono.m3u8
 #EXTINF:-1 tvg-id="zns9eha2" tvg-name="Ananda TV" tvg-logo="" group-title="Bangladesh",Ananda TV
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
@@ -146,9 +142,6 @@ https://live.mediatech.vn/live/285f5f227e988ab4445a2138091d3d62e8d/playlist.m3u8
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 #EXTVLCOPT:http-referrer=https://web.aynaott.com/
 https://tvsen6.aynaott.com/TjGR1GcxKetHNVcMVxbq/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="C y G TV | CL" tvg-logo="" group-title="Bangladesh",C y G TV | CL
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-https://stream.cygtv.cl/live/cygtv/playlist.m3u8?PlaylistM3UCL
 #EXTINF:-1 tvg-id="" tvg-name="Channel I" tvg-logo="" group-title="Bangladesh",Channel I
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://playztv-apps.pages.dev/channel-i/index.m3u8
@@ -180,10 +173,6 @@ https://app.ncare.live/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxI
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 #EXTVLCOPT:http-referrer=https://www.jagobd.com/
 https://cdn.jagobd.com.bd/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcGVMZEJCTEFWeVN3PTOmdFsaWRtaW51aiPhnPTI2/channels.stream/playlist.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Channel S" tvg-logo="" group-title="Bangladesh",Channel S
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-#EXTVLCOPT:http-referrer=https://www.jagobd.com/
-http://app24.jagobd.com.bd/c3VydmVyX8RpbEU9Mi8xNy8yMFDEEHGcfRgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcEdsEfeDeKiNkVN3PTOmdFseWRtaW51aiPhnPTI2/channels.stream/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Channel S" tvg-logo="" group-title="Bangladesh",Channel S
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 #EXTVLCOPT:http-referrer=https://www.jagobd.com/
@@ -232,12 +221,6 @@ https://tvsen6.aynaott.com/pF66Tkz0qFwP2aMMqHyt/index.m3u8
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 #EXTVLCOPT:http-referrer=https://www.jagobd.com/
 https://app24.jagobd.com.bd/c3VydmVyX8RpbEU9Mi8xNy8yMFDEEHGcfRgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcEdsEfeDeKiNkVN3PTOmdFseWRtaW51aiPhnPTI2/deshbanglatv.stream/playlist.m3u8
-#EXTINF:-1 tvg-id="desh-tv" tvg-name="Desh TV" tvg-logo="" group-title="Bangladesh",Desh TV
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-https://iptv-proxy.ahmed-bd-org.workers.dev/desh-tv/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Desh TV" tvg-logo="" group-title="Bangladesh",Desh TV
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-https://playztv-apps.pages.dev/desh-tv/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Desh TV" tvg-logo="" group-title="Bangladesh",Desh TV
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 #EXTVLCOPT:http-referrer=https://www.jagobd.com/
@@ -313,18 +296,9 @@ https://master-proxy.wispy-boat-fc77.workers.dev/?url=https://ekusheyserver.com/
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 #EXTVLCOPT:http-referrer=https://www.jagobd.com/
 http://app24.jagobd.com.bd/c3VydmVyX8RpbEU9Mi8xNy8yMFDEEHGcfRgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcEdsEfeDeKiNkVN3PTOmdFseWRtaW51aiPhnPTI2/ekusheytv-8-org.stream/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Ekushey TV" tvg-logo="" group-title="Bangladesh",Ekushey TV
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-https://ekusheyserver.com/hls-live/livepkgr/_definst_/liveevent/livestream3.m3u8?@ShamimHossainOfficial
 #EXTINF:-1 tvg-id="" tvg-name="Enter TV" tvg-logo="" group-title="Bangladesh",Enter TV
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-BD/enter_tv_3b53a9bb.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Enter TV" tvg-logo="" group-title="Bangladesh",Enter TV
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-https://live1.entertv.com.bd/entertv/index.fmp4.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Enter TV" tvg-logo="" group-title="Bangladesh",Enter TV
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-https://live1.entertv.com.bd/entertv/index.m3u8
 #EXTINF:-1 tvg-id="aynaott-etv" tvg-name="ETV" tvg-logo="" group-title="Bangladesh",ETV
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 #EXTVLCOPT:http-referrer=https://web.aynaott.com/
@@ -452,10 +426,6 @@ https://streaming.madanichannel.tv/static/streaming-playlists/hls/d3e49b76-ac06-
 #EXTINF:-1 tvg-id="MadaniChannelBangla.bd" tvg-name="Madani Channel Bangla" tvg-logo="" tvg-language="ben" group-title="Bangladesh",Madani Channel Bangla
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://streaming.madanichannel.tv/static/streaming-playlists/hls/d3e49b76-ac06-4689-a641-9200445b647f/master.m3u8
-#EXTINF:-1 tvg-id="aynaott-madani-tv" tvg-name="Madani TV" tvg-logo="" group-title="Bangladesh",Madani TV
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-#EXTVLCOPT:http-referrer=https://web.aynaott.com/
-https://tvsen3.aynaott.com/z24qLsqV/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Matribhumi" tvg-logo="" group-title="Bangladesh",Matribhumi
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://live.playmax.live/matribhumi/index.m3u8
@@ -505,10 +475,6 @@ https://app24.jagobd.com.bd/c3VydmVyX8RpbEU9Mi8xNy8yMFDEEHGcfRgzQ6NTAgdEoaeFzbF9
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 #EXTVLCOPT:http-referrer=https://www.jagobd.com/
 https://app24.jagobd.com.bd/c3VydmVyX8RpbEU9Mi8xNy8yMFDEEHGcfRgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcEdsEfeDeKiNkVN3PTOmdFseWRtaW51aiPhnPTI2/mytv-up-off.stream/index.m3u8
-#EXTINF:-1 tvg-id="aynaott-my-tv" tvg-name="My TV" tvg-logo="" group-title="Bangladesh",My TV
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-#EXTVLCOPT:http-referrer=https://web.aynaott.com/
-https://tvsen6.aynaott.com/XMpHaEf0ANBhv8w6NWR7/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="My TV HD" tvg-logo="" group-title="Bangladesh",My TV HD
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 #EXTVLCOPT:http-referrer=https://www.jagobd.com/
@@ -683,13 +649,6 @@ https://app24.jagobd.com.bd/c3VydmVyX8RpbEU9Mi8xNy8yMFDEEHGcfRgzQ6NTAgdEoaeFzbF9
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 #EXTVLCOPT:http-referrer=https://www.jagobd.com/
 https://app24.jagobd.com.bd/c3VydmVyX8RpbEU9Mi8xNy8yMFDEEHGcfRgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcEdsEfeDeKiNkVN3PTOmdFseWRtaW51aiPhnPTI2/satvoff5666.stream/playlist.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Somoy TV" tvg-logo="" group-title="Bangladesh",Somoy TV
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-#EXTVLCOPT:http-referrer=https://web.aynaott.com/
-https://tvsen6.aynaott.com/4XcqdovJzbbC9WdJA9gk/index.m3u8
-#EXTINF:-1 tvg-id="somoy-tv" tvg-name="Somoy TV" tvg-logo="" group-title="Bangladesh",Somoy TV
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-https://iptv-proxy.ahmed-bd-org.workers.dev/somoy-tv/index.m3u8
 #EXTINF:-1 tvg-id="SRK.bd" tvg-name="SRK" tvg-logo="" tvg-language="ben" group-title="Bangladesh",SRK
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://srktv.net/srktvhls/cdnlive_srktv.m3u8
@@ -744,9 +703,6 @@ https://amg01412-xiaomiasia-abpananda-xiaomi-lzyzw.amagi.tv/playlist/amg01412-xi
 #EXTINF:-1 tvg-id="" tvg-name="ABP Ananda" tvg-logo="" group-title="Bangla (India)",ABP Ananda
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://jmp2.uk/stvp-IN4000006CF
-#EXTINF:-1 tvg-id="" tvg-name="ABP ANANDA ᴿᴬᵂ" tvg-logo="" group-title="Bangla (India)",ABP ANANDA ᴿᴬᵂ
-#EXTVLCOPT:http-user-agent=Dalvik/2.1.0 (Linux; Android 11) ExoPlayerLib/2.18.7
-https://exolynx-images.shop/1st.php?id=2117221
 #EXTINF:-1 tvg-id="AKDCalcuttaNews.in" tvg-name="AKD Calcutta News" tvg-logo="" tvg-language="eng" group-title="Bangla (India)",AKD Calcutta News
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://cdn.pishow.tv/ott/live/237/master.m3u8
@@ -861,10 +817,6 @@ https://d1msejlow1t3l4.cloudfront.net/fta/Kolkatatv/playlist.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Kolkata TV" tvg-logo="" group-title="Bangla (India)",Kolkata TV
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://cdn.ottlive.co.in/kolkatatv/index.m3u8
-#EXTINF:-1 tvg-id="aynaott-kolkata-tv" tvg-name="kolkata TV" tvg-logo="" group-title="Bangla (India)",kolkata TV
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-#EXTVLCOPT:http-referrer=https://web.aynaott.com/
-https://tvsen6.aynaott.com/kolkatatv/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Kolkata TV" tvg-logo="" group-title="Bangla (India)",Kolkata TV
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://cdn.ottlive.co.in/kolkatatv/tracks-v3a1/mono.m3u8
@@ -952,9 +904,6 @@ http://103.175.73.12:8080/live/664/master.m3u8
 #EXTINF:-1 tvg-id="SalamBangla.in" tvg-name="Salam Bangla" tvg-logo="" group-title="Bangla (India)",Salam Bangla
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://115.187.41.216:8080/hls/salambangla/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Sananda" tvg-logo="" group-title="Bangla (India)",Sananda
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://27.124.71.27/Sun_Bangla/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Sananda Bangladesh" tvg-logo="" group-title="Bangla (India)",Sananda Bangladesh
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://115.187.41.216:8080/hls/sanandatv/index.m3u8
@@ -1985,12 +1934,6 @@ https://cdn.live247stream.com/hyder/tv/playlist.m3u8
 #EXTINF:-1 tvg-id="IBC24.in" tvg-name="IBC 24" tvg-logo="" tvg-language="hin" group-title="India",IBC 24
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://d3qs3d2rkhfqrt.cloudfront.net/out/v1/0bfbd0b9de7f4407949202296560c0fe/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="In-News| Apn News" tvg-logo="" group-title="India",In-News| Apn News
-#EXTVLCOPT:http-user-agent=Dalvik/2.1.0 (Linux; Android 11) ExoPlayerLib/2.18.7
-https://exolynx-images.shop/1st.php?id=156144
-#EXTINF:-1 tvg-id="" tvg-name="In-News| ZEE Hindustan" tvg-logo="" group-title="India",In-News| ZEE Hindustan
-#EXTVLCOPT:http-user-agent=Dalvik/2.1.0 (Linux; Android 11) ExoPlayerLib/2.18.7
-https://exolynx-images.shop/1st.php?id=156137
 #EXTINF:-1 tvg-id="" tvg-name="IN: Zee News â±½á´µá´¾" tvg-logo="" group-title="India",IN: Zee News â±½á´µá´¾
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://bostv.one:8080/6426606/7375565/62158.m3u8
@@ -2099,9 +2042,6 @@ https://jmp2.uk/stvp-INBA4900004W9
 #EXTINF:-1 tvg-id="INH24x7.in" tvg-name="INH 24x7" tvg-logo="" tvg-language="hin" group-title="India",INH 24x7
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://d1msejlow1t3l4.cloudfront.net/fta/inh24x7/playlist.m3u8
-#EXTINF:-1 tvg-id="INH24x7.in" tvg-name="INH 24x7" tvg-logo="" tvg-language="hin" group-title="India",INH 24x7
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-https://7epd6o8edk9b-hls-live.wmncdn.net/inh24/live.stream/playlist.m3u8
 #EXTINF:-1 tvg-id="IN22000039Q" tvg-name="Inside Outside" tvg-logo="" group-title="India",Inside Outside
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://jmp2.uk/stvp-IN22000039Q
@@ -2135,12 +2075,6 @@ https://live.kanshitv.co.uk/mobile/kanshitvkey.m3u8
 #EXTINF:-1 tvg-id="KashishNews.in" tvg-name="Kashish News" tvg-logo="" tvg-language="hin" group-title="India",Kashish News
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://d1msejlow1t3l4.cloudfront.net/fta/kashishnews/playlist.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Kashish News" tvg-logo="" group-title="India",Kashish News
-#EXTVLCOPT:http-user-agent=com.freetvinmob.app/1.7.0 (Linux;Android 13) AndroidXMedia3/1.4.1
-https://server.thelegitpro.in/kashishnews/kashishnews/index.fmp4.m3u8
-#EXTINF:-1 tvg-id="KashishNews.in@SD" tvg-name="Kashish News" tvg-logo="" tvg-language="hin" group-title="India",Kashish News
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-https://server.thelegitpro.in/kashishnews/kashishnews/index.m3u8
 #EXTINF:-1 tvg-id="KCNKasargod.in" tvg-name="KCN Kasargod" tvg-logo="" group-title="India",KCN Kasargod
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://live.skystream.in/live/kcnksrgod/index.m3u8
@@ -2408,9 +2342,6 @@ https://jmp2.uk/stvp-INBA4900001DL
 #EXTINF:-1 tvg-id="RaftaarMedia.in" tvg-name="Raftaar Media" tvg-logo="" tvg-language="hin" group-title="India",Raftaar Media
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36
 https://fta.ektv.in/live/306/master.m3u8
-#EXTINF:-1 tvg-id="RaftaarMedia.in" tvg-name="Raftaar Media" tvg-logo="" tvg-language="hin" group-title="India",Raftaar Media
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-https://6n3yorwpy9ok-hls-live.5centscdn.com/raftaarmedia/243bd1ce0387f18005abfc43b001646a.sdp/playlist.m3u8
 #EXTINF:-1 tvg-id="IN4600016DM" tvg-name="Rangmanch" tvg-logo="" group-title="India",Rangmanch
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://jmp2.uk/stvp-IN4600016DM
@@ -2423,9 +2354,6 @@ http://m3u-iptv.github.io/iptv/streams/RepublicBharat.m3u8
 #EXTINF:-1 tvg-id="RepublicBharat.in" tvg-name="Republic Bharat" tvg-logo="" tvg-language="hin" group-title="India",Republic Bharat
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://d2lk5u59tns74c.cloudfront.net/out/v1/7e8b490d6b9c4013a3e3e874aa352212/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Republic Bharat" tvg-logo="" group-title="India",Republic Bharat
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36
-http://103.175.73.12:8080/live/296/master.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Republic Bharat" tvg-logo="" group-title="India",Republic Bharat
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://jmp2.uk/stvp-INBA490002119
@@ -2557,9 +2485,6 @@ https://jmp2.uk/plex-643054b1fc3be59477853717-62d1a58e520656fda09e609d.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Shemaroo Josh" tvg-logo="" group-title="India",Shemaroo Josh
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://airtelapp.shemaroo.com/shemarooChumbakTV/smil:shemarooChumbakTVadp.smil/playlist.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Shemaroo Umang" tvg-logo="" group-title="India",Shemaroo Umang
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36
-http://103.175.73.12:8080/live/258/master.m3u8
 #EXTINF:-1 tvg-id="ShemarooUmang.in" tvg-name="Shemaroo Umang" tvg-logo="" tvg-language="hin" group-title="India",Shemaroo Umang
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://airtelapp.shemaroo.com/shemarooumang/smil:shemarooumangadp.smil/playlist.m3u8
@@ -2714,9 +2639,6 @@ https://vg-timesgroup.akamaized.net/v1/master/611d79b11b77e2f571934fd80ca1413453
 #EXTINF:-1 tvg-id="adaptive-streams-timesnownavbharat" tvg-name="Times Now Navbharat" tvg-logo="" group-title="India",Times Now Navbharat
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://raw.githubusercontent.com/amazeyourself/adaptive-streams/main/streams/in/YuppTV/TimesNowNavbharat.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Times Now Navbharat" tvg-logo="" group-title="India",Times Now Navbharat
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36
-http://103.175.73.12:8080/live/295/master.m3u8
 #EXTINF:-1 tvg-id="IN400059ZR" tvg-name="Times Now Navbharat" tvg-logo="" group-title="India",Times Now Navbharat
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://jmp2.uk/stvp-IN400059ZR
@@ -2750,9 +2672,6 @@ https://dyjmyiv3bp2ez.cloudfront.net/pub-iotv9hinjzgtpe/liveabr/playlist.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Utv HD Ro" tvg-logo="" group-title="India",Utv HD Ro
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://sewv654wfcsdwfi87fwvgbngh.siauliairsavlt.pw/iptv/R3A7B6MZZFDCUL/7036/index.m3u8
-#EXTINF:-1 tvg-id="UTVMayuram" tvg-name="UTV Mayuram" tvg-logo="" group-title="India",UTV Mayuram
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-https://notvstream.in/utv/utv/index.m3u8?origin=github.com/amazeyourself
 #EXTINF:-1 tvg-id="" tvg-name="Utv Ro" tvg-logo="" group-title="India",Utv Ro
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://sewv654wfcsdwfi87fwvgbngh.siauliairsavlt.pw/iptv/R3A7B6MZZFDCUL/7017/index.m3u8
@@ -2786,9 +2705,6 @@ http://a-edge.bliscdn.com/Visionbeats/tracks-v1a1/mono.m3u8
 #EXTINF:-1 tvg-id="VisionBeats.in" tvg-name="Vision Beats" tvg-logo="" tvg-language="hin" group-title="India",Vision Beats
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://a-edge.bliscdn.com/Visionbeats/index.m3u8
-#EXTINF:-1 tvg-id="WayanadVision.in" tvg-name="Wayanad Vision" tvg-logo="" group-title="India",Wayanad Vision
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-https://online.wayanadvision.in/hls/wayanadvision.m3u8
 #EXTINF:-1 tvg-id="WeatherSpy.in" tvg-name="WeatherSpy" tvg-logo="" tvg-language="hin" group-title="India",WeatherSpy
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://jukin-weatherspy-2-in.samsung.wurl.tv/playlist.m3u8
@@ -3019,9 +2935,6 @@ http://23.237.104.106:8080/USA_ANIMAL_PLANET/index.m3u8
 http://181.78.49.113:9999/play/a055/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Animal Planet" tvg-logo="" group-title="Informative",Animal Planet
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://181.78.106.127:5000/play/a0qc/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Animal Planet" tvg-logo="" group-title="Informative",Animal Planet
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://38.134.250.110:8000/play/a00j/index.m3u8
 #EXTINF:-1 tvg-id="AnimalPlanet.us@SD" tvg-name="Animal Planet" tvg-logo="" group-title="Informative",Animal Planet
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
@@ -3054,17 +2967,8 @@ https://exolynx-images.shop/1st.php?id=280746
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://yv6ghakp.lunexas.top/iptv/NEKDSS7S3VY6D2/31284/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Animal Planet HD" tvg-logo="" group-title="Informative",Animal Planet HD
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://181.78.49.113:9999/play/a02z/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Animal Planet HD" tvg-logo="" group-title="Informative",Animal Planet HD
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36
 http://m3u.tvcluboficial.com/free/ReachBot/Kip/41.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Animal Planet HD" tvg-logo="" group-title="Informative",Animal Planet HD
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://181.119.215.61:8000/play/a0gq/index.m3u8?hls
-#EXTINF:-1 tvg-id="" tvg-name="Animal Planet HD" tvg-logo="" group-title="Informative",Animal Planet HD
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://181.78.106.127:5000/play/ca056/index.m3u8
 #EXTINF:-1 tvg-id="AnimalPlanet.la" tvg-name="Animal Planet HD" tvg-logo="" group-title="Informative",Animal Planet HD
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://181.78.197.59:8000/play/a06u/index.m3u8
@@ -3095,9 +2999,6 @@ http://dp2lucrl.rostelekom.xyz/iptv/LL3FDFFCM2P2BM/218/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Animal Planet HD" tvg-logo="" group-title="Informative",Animal Planet HD
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://sewv654wfcsdwfi87fwvgbngh.siauliairsavlt.pw/iptv/R3A7B6MZZFDCUL/218/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Animal Planet HD AMAZONAS" tvg-logo="" group-title="Informative",Animal Planet HD AMAZONAS
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://181.78.8.199:8000/play/a06w/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Animal Planet HD DE" tvg-logo="" group-title="Informative",Animal Planet HD DE
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://yv6ghakp.lunexas.top/iptv/NEKDSS7S3VY6D2/7257/index.m3u8
@@ -3478,9 +3379,6 @@ https://app24.jagobd.com.bd/c3VydmVyX8RpbEU9Mi8xNy8yMFDEEHGcfRgzQ6NTAgdEoaeFzbF9
 #EXTINF:-1 tvg-id="CGTNDocumentary.cn" tvg-name="CGTN Documentary" tvg-logo="" tvg-language="eng" group-title="Informative",CGTN Documentary
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://hlspackager.akamaized.net/live/DB/CGTN_DOCUMENTARY/HLS/CGTN_DOCUMENTARY.m3u8
-#EXTINF:-1 tvg-id="CGTN Documentary" tvg-name="CGTN Documentary" tvg-logo="" group-title="Informative",CGTN Documentary
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://mtayeh.ottb.xyz/live/774710333494/659822672281/44693.m3u8
 #EXTINF:-1 tvg-id="CGTNDocumentary.cn" tvg-name="CGTN Documentary" tvg-logo="" group-title="Informative",CGTN Documentary
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://english-livetx.cgtn.com/hls/yypdjlctzb_hd.m3u8
@@ -3865,9 +3763,6 @@ http://181.78.106.127:5000/play/a0qb/index.m3u8
 http://179.1.199.50:9000/play/a05k/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Discovery Channel" tvg-logo="" group-title="Informative",Discovery Channel
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://38.134.250.110:8000/play/a00k/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Discovery Channel" tvg-logo="" group-title="Informative",Discovery Channel
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://38.224.231.176:8000/play/a06w/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Discovery Channel" tvg-logo="" group-title="Informative",Discovery Channel
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
@@ -4004,9 +3899,6 @@ https://cdn-5.nxplay.com.br/DISCOVERY_HH/playlist.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Discovery HD" tvg-logo="" group-title="Informative",Discovery HD
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://45.171.64.30:6060/play/a032/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Discovery HD" tvg-logo="" group-title="Informative",Discovery HD
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://190.60.32.186:1010/play/a00l/index.m3u8
 #EXTINF:-1 tvg-id="DISCOVERY.HD.WORLD.in" tvg-name="Discovery HD" tvg-logo="" tvg-language="hin" group-title="Informative",Discovery HD
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0 (Linux; U; Android 10; SM-G975F Build/QP1A.190711.020)
 http://cdn.pishow.tv/live/1319/master.m3u8
@@ -4209,9 +4101,6 @@ http://181.78.49.113:9999/play/a078/index.m3u8
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://181.78.106.127:5000/play/a0rs/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Discovery World HD" tvg-logo="" group-title="Informative",Discovery World HD
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://181.119.215.61:8000/play/a0kp/index.m3u8?hls
-#EXTINF:-1 tvg-id="" tvg-name="Discovery World HD" tvg-logo="" group-title="Informative",Discovery World HD
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36
 http://m3u.tvcluboficial.com/free/ReachBot/Kip/276.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Discovery World HD" tvg-logo="" group-title="Informative",Discovery World HD
@@ -4298,12 +4187,6 @@ http://190.61.43.124:45000/play/a07h/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="DISCOVERY.HD.THEATER..uy" tvg-logo="" group-title="Informative",DISCOVERY.HD.THEATER..uy
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://190.61.43.126:45000/play/a07h/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="DISCOVERY.HD.THEATER..uy" tvg-logo="" group-title="Informative",DISCOVERY.HD.THEATER..uy
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://190.61.43.117:45000/play/a0bk/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="DISCOVERY.HD.THEATER..uy" tvg-logo="" group-title="Informative",DISCOVERY.HD.THEATER..uy
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://45.186.254.75:8000/play/a0fp/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Discovery.HD.World.in" tvg-logo="" group-title="Informative",Discovery.HD.World.in
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://38.224.22.255:8000/play/a08g/index.m3u8
@@ -4316,9 +4199,6 @@ http://181.78.73.153:8000/play/a0ej/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Discovery.HD.World.in" tvg-logo="" group-title="Informative",Discovery.HD.World.in
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://181.79.91.233:45000/play/a07q/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Discovery.HD.World.in" tvg-logo="" group-title="Informative",Discovery.HD.World.in
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://181.78.82.130:8000/play/a0s5/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Discovery.HD.World.in" tvg-logo="" group-title="Informative",Discovery.HD.World.in
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://190.60.52.28:45000/play/a0ik/index.m3u8
@@ -4400,9 +4280,6 @@ http://181.78.82.130:8000/play/a0oj/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Discovery.Turbo.co" tvg-logo="" group-title="Informative",Discovery.Turbo.co
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://45.5.118.152:8000/play/a05j/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Discovery.Turbo.co" tvg-logo="" group-title="Informative",Discovery.Turbo.co
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://190.60.32.186:1010/play/a00o/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="DISCOVERY.TURBO.HD.uy" tvg-logo="" group-title="Informative",DISCOVERY.TURBO.HD.uy
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://190.60.40.165:1010/play/acuk/index.m3u8
@@ -5605,9 +5482,6 @@ http://92.114.85.87:8006/play/a00a/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="National Geographic" tvg-logo="" group-title="Informative",National Geographic
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://yv6ghakp.lunexas.top/iptv/NEKDSS7S3VY6D2/14000/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="National Geographic" tvg-logo="" group-title="Informative",National Geographic
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://201.207.54.159:8000/play/a0dy/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="National Geographic" tvg-logo="" group-title="Informative",National Geographic
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://21e90456.ucomist.net/iptv/3FTNSL8YDGR472/14000/index.m3u8
@@ -7286,9 +7160,6 @@ https://stitcher.pluto.tv/stitch/hls/channel/611e73687fcd580007d1f052/master.m3u
 #EXTINF:-1 tvg-id="" tvg-name="Angry Birds" tvg-logo="" group-title="Kids & Animation",Angry Birds
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://stream-us-east-1.getpublica.com/playlist.m3u8?network_id=547
-#EXTINF:-1 tvg-id="" tvg-name="Animash" tvg-logo="" group-title="Kids & Animation",Animash
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://181.78.121.15:8000/play/a00h/index.m3u8
 #EXTINF:-1 tvg-id="AnimationPlus.us" tvg-name="Animation+" tvg-logo="" group-title="Kids & Animation",Animation+
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://linear-918.frequency.stream/dist/animationplus/918/hls/master/playlist.m3u8
@@ -7994,9 +7865,6 @@ http://181.78.49.113:9999/play/a023/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Cartoon Network" tvg-logo="" group-title="Kids & Animation",Cartoon Network
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://181.78.106.127:5000/play/a0ow/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Cartoon Network" tvg-logo="" group-title="Kids & Animation",Cartoon Network
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://179.1.87.75:8098/play/a0dv/index.m3u8
 #EXTINF:-1 tvg-id="CARTOON.NETWORK.in" tvg-name="Cartoon Network" tvg-logo="" group-title="Kids & Animation",Cartoon Network
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://iptvcable.netlify.app/Altogether-007/Cartoon/CartoonNetworkhin.m3u8
@@ -8354,9 +8222,6 @@ http://190.61.43.117:45000/play/a0ac/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="DISCOVERY.KIDS.HD.uy" tvg-logo="" group-title="Kids & Animation",DISCOVERY.KIDS.HD.uy
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://190.61.43.121:45000/play/a0ac/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="DISCOVERY.KIDS.HD.uy" tvg-logo="" group-title="Kids & Animation",DISCOVERY.KIDS.HD.uy
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://45.186.254.75:8000/play/a0ci/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="DISCOVERY.KIDS.in" tvg-logo="" group-title="Kids & Animation",DISCOVERY.KIDS.in
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://38.224.22.255:8000/play/a02a/index.m3u8
@@ -8366,9 +8231,6 @@ http://181.78.73.153:8000/play/a03b/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="DISCOVERY.KIDS.in" tvg-logo="" group-title="Kids & Animation",DISCOVERY.KIDS.in
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://190.60.52.28:45000/play/a0bw/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="DISCOVERY.KIDS.in" tvg-logo="" group-title="Kids & Animation",DISCOVERY.KIDS.in
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://190.60.52.28:45000/play/a0ez/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="DISCOVERY.KIDS.in" tvg-logo="" group-title="Kids & Animation",DISCOVERY.KIDS.in
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://181.78.8.199:8000/play/a0c3/index.m3u8
@@ -8423,9 +8285,6 @@ https://s6.hopslan.com/disneyX/tracks-v1a1/mono.m3u8
 #EXTINF:-1 tvg-id="DisneyChannel.il@SD" tvg-name="Disney Channel" tvg-logo="" group-title="Kids & Animation",Disney Channel
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://f9ohqcqv.megogo.xyz/iptv/WKH4UCY7ZDL84NDB8RLC3ZXS/2382/index.m3u
-#EXTINF:-1 tvg-id="" tvg-name="Disney Channel East" tvg-logo="" group-title="Kids & Animation",Disney Channel East
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://45.228.234.30:16000/play/a01u/index.m3u8
 #EXTINF:-1 tvg-id="DISNEY.CHANNEL.in" tvg-name="Disney Channel HD" tvg-logo="" tvg-language="hin" group-title="Kids & Animation",Disney Channel HD
 #EXTVLCOPT:http-user-agent=Dalvik/2.1.0 (Linux; U; Android 10; SM-G975F Build/QP1A.190711.020)
 http://cdn.pishow.tv/live/1622/master.m3u8
@@ -8669,9 +8528,6 @@ https://dbrb49pjoymg4.cloudfront.net/10001/99951440/hls/8-9-6769.m3u8?ads.xumo_c
 #EXTINF:-1 tvg-id="" tvg-name="Ebs Kids" tvg-logo="" group-title="Kids & Animation",Ebs Kids
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://ebsonair.ebs.co.kr/ebsufamilypc/familypc1m/playlist.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="EBS kids" tvg-logo="" group-title="Kids & Animation",EBS kids
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://ebsonairios.ebs.co.kr/ebsutablet500k/_definst_/tablet500k/chunklist_w1965791004.m3u8?zshijd
 #EXTINF:-1 tvg-id="" tvg-name="EBS Kids (Corea Del Sur)" tvg-logo="" group-title="Kids & Animation",EBS Kids (Corea Del Sur)
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://ebsonair.ebs.co.kr/ebsufamilypc/familypc1m/.m3u8
@@ -8774,12 +8630,6 @@ https://jmp2.uk/stvp-CH1300001XI
 #EXTINF:-1 tvg-id="DE1300002E8" tvg-name="Fix&Foxi und Freunde" tvg-logo="" group-title="Kids & Animation",Fix&Foxi und Freunde
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://jmp2.uk/stvp-DE1300002E8
-#EXTINF:-1 tvg-id="" tvg-name="Fmh Kids" tvg-logo="" group-title="Kids & Animation",Fmh Kids
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://38.210.3.64:8090/play/a0gk/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="FMH Kids" tvg-logo="" group-title="Kids & Animation",FMH Kids
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://38.3.176.165:15002/play/a03b/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Forever Kids" tvg-logo="" group-title="Kids & Animation",Forever Kids
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://stitcher-ipv4.pluto.tv/v1/stitch/embed/hls/channel/56171fafada51f8004c4b40f/master.m3u8?terminate=false&deviceType=web&deviceMake=web&deviceModel=web&sid=848&deviceId=5c3f8f12a93c2d61b9990a4e&deviceVersion=DNT&appVersion=DNT&deviceDNT=0&userId=&advertisingId=&deviceLat=&deviceLon=&app_name=&appName=web&buildVersion=&appStoreUrl=&architecture=&includeExtendedEvents=false&marketingRegion=US&serverSideAds=false
@@ -9677,9 +9527,6 @@ http://181.78.49.113:9999/play/a024/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Nick Jr" tvg-logo="" group-title="Kids & Animation",Nick Jr
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://38.134.250.110:8000/play/a01v/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Nick Jr" tvg-logo="" group-title="Kids & Animation",Nick Jr
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://179.1.87.75:8098/play/a0hk/index.m3u8
 #EXTINF:-1 tvg-id="Nick.Jr.co" tvg-name="Nick Jr" tvg-logo="" group-title="Kids & Animation",Nick Jr
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://190.61.57.2:1010/play/a0g1/index.m3u8
@@ -10514,9 +10361,6 @@ https://fta.ektv.in/live/202/master.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Roya Kids" tvg-logo="" group-title="Kids & Animation",Roya Kids
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://fast.kwikmotion.com/roya/kids/playlist.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Roya Kids Songs" tvg-logo="" group-title="Kids & Animation",Roya Kids Songs
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-https://fast.kwikmotion.com/roya/kids-songs/playlist.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Roya Kids Stories" tvg-logo="" group-title="Kids & Animation",Roya Kids Stories
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://fast.kwikmotion.com/roya/kids-stories/playlist.m3u8
@@ -10736,9 +10580,6 @@ https://stream-us-east-1.getpublica.com/playlist.m3u8?network_id=2260
 #EXTINF:-1 tvg-id="608049aefa2b8ae93c2c3a63-62ba4aaff663580a7238f327" tvg-name="Sonic TV" tvg-logo="" tvg-language="eng" group-title="Kids & Animation",Sonic TV
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://jmp2.uk/plex-608049aefa2b8ae93c2c3a63-62ba4aaff663580a7238f327.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Sony Yay" tvg-logo="" group-title="Kids & Animation",Sony Yay
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-BD/sony_yay_a2818d22.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Sony YAY" tvg-logo="" group-title="Kids & Animation",Sony YAY
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://d6lk10bkdgfae.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-n0stmvwxmsf5c/playlist.m3u8
@@ -11900,12 +11741,6 @@ http://190.60.40.165:1010/play/a0mn/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Amc HD" tvg-logo="" group-title="English Movies",Amc HD
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://190.108.83.69:8000/play/a033/index.m3u8
-#EXTINF:-1 tvg-id="AMC.la" tvg-name="Amc HD" tvg-logo="" group-title="English Movies",Amc HD
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://181.78.197.59:8000/play/a06w/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Amc HD" tvg-logo="" group-title="English Movies",Amc HD
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://201.207.54.159:8000/play/a072/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Amc HD" tvg-logo="" group-title="English Movies",Amc HD
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://177.53.152.117:8000/play/a04d/index.m3u8
@@ -12128,9 +11963,6 @@ http://181.143.237.211:85/tsfile/live/1026_1.m3u8?key=txiptv
 http://181.78.73.153:8000/play/a02t/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="AXN" tvg-logo="" group-title="English Movies",AXN
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://179.1.87.75:8098/play/a0ha/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="AXN" tvg-logo="" group-title="English Movies",AXN
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://190.60.32.186:1010/play/a02i/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="AXN" tvg-logo="" group-title="English Movies",AXN
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
@@ -12156,18 +11988,12 @@ http://201.207.54.159:8000/play/a0e3/index.m3u8
 #EXTINF:-1 tvg-id="AXN" tvg-name="AXN" tvg-logo="" group-title="English Movies",AXN
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://170.83.16.50/AXN/index.m3u8
-#EXTINF:-1 tvg-id="AXN" tvg-name="AXN" tvg-logo="" group-title="English Movies",AXN
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://181.78.8.199:8000/play/a0cu/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="AXN" tvg-logo="" group-title="English Movies",AXN
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://181.78.8.199:8000/play/a0am/index.m3u8
 #EXTINF:-1 tvg-id="AXN" tvg-name="AXN" tvg-logo="" group-title="English Movies",AXN
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://45.184.109.10/live/69393EAE6ADBC65A68F942022362A202/10.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="AXN (Principal)" tvg-logo="" group-title="English Movies",AXN (Principal)
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://181.78.8.199:8000/play/a0k1/index.m3u8
 #EXTINF:-1 tvg-id="AXNAdria.us@SD" tvg-name="AXN Adria" tvg-logo="" group-title="English Movies",AXN Adria
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.3
 http://5.57.74.130:8000/play/a0at/index.m3u8
@@ -12364,9 +12190,6 @@ http://38.224.22.255:8000/play/a0dh/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Cinemax.co" tvg-logo="" group-title="English Movies",Cinemax.co
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://181.78.73.153:8000/play/a0bh/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Cinemax.co" tvg-logo="" group-title="English Movies",Cinemax.co
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://181.78.73.153:8000/play/a02r/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Cinemax.co" tvg-logo="" group-title="English Movies",Cinemax.co
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://181.78.82.130:8000/play/a0ng/index.m3u8
@@ -12996,9 +12819,6 @@ https://live.lixe.net/hls/g3/HBO%20PLUS%20UHD%20TV/index.m3u8
 http://38.224.231.176:8000/play/a07g/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="HBO Plus" tvg-logo="" group-title="English Movies",HBO Plus
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://186.148.196.250:81/play/a0nk/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="HBO Plus" tvg-logo="" group-title="English Movies",HBO Plus
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://186.148.196.250:81/play/a0mh/index.m3u8
 #EXTINF:-1 tvg-id="HBOPlus.la" tvg-name="HBO Plus HD" tvg-logo="" group-title="English Movies",HBO Plus HD
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
@@ -13213,9 +13033,6 @@ http://190.61.43.121:45000/play/a086/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="HBO.XTREME.HD..uy" tvg-logo="" group-title="English Movies",HBO.XTREME.HD..uy
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://190.61.43.126:45000/play/a05u/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="HBO.XTREME.HD..uy" tvg-logo="" group-title="English Movies",HBO.XTREME.HD..uy
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://45.186.254.75:8000/play/a05d/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="HDNet Movies US" tvg-logo="" group-title="English Movies",HDNet Movies US
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://21e90456.ucomist.net/iptv/3FTNSL8YDGR472/30102/index.m3u8
@@ -13990,28 +13807,16 @@ https://a-cdn.klowdtv.com/live1/smc_720p/playlist.m3u8
 http://190.60.40.165:1010/play/a0da/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Sony Movies" tvg-logo="" group-title="English Movies",Sony Movies
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://190.108.83.69:8000/play/a08j/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Sony Movies" tvg-logo="" group-title="English Movies",Sony Movies
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://181.78.8.199:8000/play/a0ap/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Sony Movies" tvg-logo="" group-title="English Movies",Sony Movies
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://181.78.8.199:8000/play/a0e7/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Sony Movies" tvg-logo="" group-title="English Movies",Sony Movies
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://181.78.8.199:8000/play/a0af/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Sony Movies" tvg-logo="" group-title="English Movies",Sony Movies
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://177.53.152.117:8000/play/a038/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Sony Movies HD" tvg-logo="" group-title="English Movies",Sony Movies HD
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://181.78.49.113:9999/play/a037/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Sony Movies HD" tvg-logo="" group-title="English Movies",Sony Movies HD
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://181.119.215.61:8000/play/a03s/index.m3u8?hls
-#EXTINF:-1 tvg-id="" tvg-name="Sony Movies HD" tvg-logo="" group-title="English Movies",Sony Movies HD
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://181.78.106.127:5000/play/a0po/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Sony Movies HD" tvg-logo="" group-title="English Movies",Sony Movies HD
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://190.60.40.165:1010/play/i5d4/index.m3u8
@@ -15156,9 +14961,6 @@ https://mediaserver.abnvideos.com/streams/abnafghanistan.m3u8
 #EXTINF:-1 tvg-id="ABNAfrica.us" tvg-name="ABN Africa" tvg-logo="" tvg-language="eng" group-title="English Entertainment",ABN Africa
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://mediaserver.abnvideos.com/streams/abnafrica.m3u8
-#EXTINF:-1 tvg-id="ABNChina.us" tvg-name="ABN China" tvg-logo="" tvg-language="eng" group-title="English Entertainment",ABN China
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-https://mediaserver.abnvideos.com/streams/abnchina.m3u8
 #EXTINF:-1 tvg-id="ABPGanga.in" tvg-name="ABP Ganga" tvg-logo="" tvg-language="eng" group-title="English Entertainment",ABP Ganga
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36
 https://fta.ektv.in/live/594/master.m3u8
@@ -19674,9 +19476,6 @@ https://amg00788-cbc-amg00788c4-xumo-us-3045.playouts.now.amagi.tv/master.m3u8
 #EXTINF:-1 tvg-id="CBCNewsNetwork.ca" tvg-name="CBC News Network" tvg-logo="" tvg-language="eng" group-title="English Entertainment",CBC News Network
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://d2ny9lo79ujali.cloudfront.net/CBC_News_International.m3u8
-#EXTINF:-1 tvg-id="CBCNewsNetwork.ca" tvg-name="CBC News Network" tvg-logo="" tvg-language="eng" group-title="English Entertainment",CBC News Network
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-https://aka-live1050.delivery.roku.com/0c24a9ef-e9c3-485c-bf68-3f1ae5ef3e85/t2-origin/out/v1/live.m3u8
 #EXTINF:-1 tvg-id="CBCTV8.bb" tvg-name="CBC TV8" tvg-logo="" tvg-language="eng" group-title="English Entertainment",CBC TV8
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://1740288887.rsc.cdn77.org/1740288887/index.m3u8
@@ -20797,9 +20596,6 @@ https://tinyurl.com/4t2unszs?.m3u8
 #EXTINF:-1 tvg-id="CNBCAwaaz.in" tvg-name="CNBC Awaaz" tvg-logo="" tvg-language="hin" group-title="English Entertainment",CNBC Awaaz
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://n18syndication.akamaized.net/bpk-tv/CNBC_Awaaz_NW18_MOB/output01/master.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="CNBC Bajar" tvg-logo="" group-title="English Entertainment",CNBC Bajar
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-https://n18syndication.akamaized.net/bpk-tv/CNBC_Bazaar_NW18_MOB/output01/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Cnbc E" tvg-logo="" group-title="English Entertainment",Cnbc E
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://hnpsechtsc.turknet.ercdn.net/xpnvudnlsv/cnbc-e/cnbc-e.m3u8
@@ -20840,9 +20636,6 @@ https://amg01079-nbcuuk-amg01079c2-lg-gb-2030.playouts.now.amagi.tv/playlist.m3u
 #EXTINF:-1 tvg-id="" tvg-name="Cnbc-Awaaz" tvg-logo="" group-title="English Entertainment",Cnbc-Awaaz
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-MXD/cnbcawaaz_086e385e.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Cnbc-Bajar" tvg-logo="" group-title="English Entertainment",Cnbc-Bajar
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/cnbcbajar_7f18b8cc.m3u8
 #EXTINF:-1 tvg-id="cnbc.com" tvg-name="CNBC-e Türkiye" tvg-logo="" group-title="English Entertainment",CNBC-e Türkiye
 #EXTVLCOPT:http-user-agent=ExoPlayerDemo/2.15.1 (Linux; Android 13) ExoPlayerLib/2.15.1
 https://hnpsechtsc.turknet.ercdn.net/xpnvudnlsv/cnbc-e/cnbc-e.m3u8?tv=1
@@ -20937,9 +20730,6 @@ http://186.148.196.250:81/play/a099/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="CNN Espaæol" tvg-logo="" group-title="English Entertainment",CNN Espaæol
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://190.61.57.2:1010/play/a0h1/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="CNN Espaæol" tvg-logo="" group-title="English Entertainment",CNN Espaæol
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://177.53.152.117:8000/play/a036/index.m3u8
 #EXTINF:-1 tvg-id="66c45ba803e3b20008d8c294" tvg-name="CNN Fast" tvg-logo="" group-title="English Entertainment",CNN Fast
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://service-stitcher.clusters.pluto.tv/v1/stitch/embed/hls/channel/66c45ba803e3b20008d8c294/master.m3u8?deviceId=channel&deviceModel=web&deviceVersion=1.0&appVersion=1.0&deviceType=rokuChannel&deviceMake=rokuChannel&deviceDNT=1&advertisingId=channel&embedPartner=rokuChannel&appName=rokuchannel&is_lat=1&bmodel=bm1&content=channel&platform=web&tags=ROKU_CONTENT_TAGS&coppa=false&content_type=livefeed&rdid=channel&genre=ROKU_ADS_CONTENT_GENRE&content_rating=ROKU_ADS_CONTENT_RATING&studio_id=viacom&channel_id=channel
@@ -21209,9 +20999,6 @@ http://38.224.22.255:8000/play/a0dg/index.m3u8
 http://38.224.22.255:8000/play/a0by/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="CNN.EspaÃ±ol.co" tvg-logo="" group-title="English Entertainment",CNN.EspaÃ±ol.co
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://190.60.52.28:45000/play/a0bx/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="CNN.EspaÃ±ol.co" tvg-logo="" group-title="English Entertainment",CNN.EspaÃ±ol.co
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://190.60.40.165:1010/play/a0kz/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="CNN.International.hk" tvg-logo="" group-title="English Entertainment",CNN.International.hk
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
@@ -21406,9 +21193,6 @@ http://yv6ghakp.lunexas.top/iptv/NEKDSS7S3VY6D2/31302/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Comedy Central HD ES" tvg-logo="" group-title="English Entertainment",Comedy Central HD ES
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://yv6ghakp.lunexas.top/iptv/NEKDSS7S3VY6D2/31843/index.m3u8
-#EXTINF:-1 tvg-id="ComedyCentralLatinAmerica.us" tvg-name="Comedy Central Latin America" tvg-logo="" tvg-language="eng" group-title="English Entertainment",Comedy Central Latin America
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://190.93.224.42/COMEDY-CENTRAL/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Comedy Central Latino" tvg-logo="" group-title="English Entertainment",Comedy Central Latino
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://service-stitcher.clusters.pluto.tv/v1/stitch/embed/hls/channel/5cf96dad1652631e36d43320/master.m3u8?deviceId=channel&deviceModel=web&deviceVersion=1.0&appVersion=1.0&deviceType=rokuChannel&deviceMake=rokuChannel&deviceDNT=1&advertisingId=channel&embedPartner=rokuChannel&appName=rokuchannel&is_lat=1&bmodel=bm1&content=channel&platform=web&tags=ROKU_CONTENT_TAGS&coppa=false&content_type=livefeed&rdid=channel&genre=ROKU_ADS_CONTENT_GENRE&content_rating=ROKU_ADS_CONTENT_RATING&studio_id=viacom&channel_id=channel
@@ -22137,9 +21921,6 @@ https://fta.ektv.in/live/576/master.m3u8
 #EXTINF:-1 tvg-id="DDYadagiri.in" tvg-name="DD Yadagiri" tvg-logo="" tvg-language="eng" group-title="English Entertainment",DD Yadagiri
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://cdn.pishow.tv/ott/live/21/master.m3u8
-#EXTINF:-1 tvg-id="DePeliculaUS.us@SD" tvg-name="De Pelicula US" tvg-logo="" group-title="English Entertainment",De Pelicula US
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://138.121.15.230:9002/DEPELICULA/index.m3u8
 #EXTINF:-1 tvg-id="GB3900004ZS" tvg-name="Deadliest Roads" tvg-logo="" group-title="English Entertainment",Deadliest Roads
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://jmp2.uk/stvp-GB3900004ZS
@@ -22729,9 +22510,6 @@ http://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/stream03/stream
 #EXTINF:-1 tvg-id="deutsche-welle-eng" tvg-name="DW" tvg-logo="" group-title="English Entertainment",DW
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://aenetworks-worldwartv-rakuten.amagi.tv/hls/amagi_hls_data_rakutenAA-aenetworks-worldwartv-rakuten/CDN/master.m3u8?ads_amagi_channel_id=863&ads_amznbrmid&ads_amznregion&ads_amznslots&ads_app_bundle=&ads_app_store_url=rakuten.tv&ads_app_version&ads_brand_name&ads_content_categories=IAB1&ads_content_genre=war%2Chistory&ads_content_livestream=0&ads_device_lmt=1&ads_device_make&ads_device_model&ads_device_type=web&ads_device_year&ads_env=prod&ads_extra_eids&ads_gam_correlator&ads_gdpr_consent&ads_google_ad_manager_nonce&ads_ifa_type&ads_inv_partner_domain=rakuten.tv&ads_ip=51.89.194.151&ads_market=uk&ads_network_name=RakutenTV&ads_os_language&ads_placement=1&ads_player_height&ads_player_width&ads_pod_type=playerpage_midroll&ads_ppid&ads_prodq=1&ads_rating=12&ads_rtv_channel_name=world-war-tv_uk&ads_rtv_content_id=5223&ads_rtv_content_language=en&ads_rtvid=271858&ads_streaming_id=ae29210c-cce2-4b7d-8954-f8847fe48727&ads_tivo_devcountry&ads_tivo_devmakedate&ads_tivo_mvpd&ads_tivo_platform&ads_tivo_usid&ads_tivo_uxloc&ads_user_type=visitor
-#EXTINF:-1 tvg-id="" tvg-name="DW" tvg-logo="" group-title="English Entertainment",DW
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://www.radiosargentina.com.ar/php/tvm3u.php?id=DIAR0015
 #EXTINF:-1 tvg-id="DW.TV" tvg-name="DW Alemania" tvg-logo="" group-title="English Entertainment",DW Alemania
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://dwamdstream104.akamaized.net/hls/live/2015530/dwstream104/index.m3u8
@@ -22756,9 +22534,6 @@ https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/index.m3u8?Pla
 #EXTINF:-1 tvg-id="" tvg-name="DW Espa" tvg-logo="" group-title="English Entertainment",DW Espa
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://181.78.82.130:8000/play/a0o8/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="DW Espaol" tvg-logo="" group-title="English Entertainment",DW Espaol
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://186.148.196.250:81/play/a0ch/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="DW Espaæol" tvg-logo="" group-title="English Entertainment",DW Espaæol
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://190.60.40.165:1010/play/a0kg/index.m3u8
@@ -22777,14 +22552,6 @@ https://app.ncare.live/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxI
 #EXTINF:-1 tvg-id="" tvg-name="DW News" tvg-logo="" group-title="English Entertainment",DW News
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/stream03/streamPlaylist.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="DW News" tvg-logo="" group-title="English Entertainment",DW News
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-#EXTVLCOPT:http-referrer=https://www.jagobd.com/
-https://cdn.jagobd.com.bd/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcGVMZEJCTEFWeVN3PTOmdFsaWRtaW51aiPhnPTI2/dwnews.stream/playlist.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="DW News" tvg-logo="" group-title="English Entertainment",DW News
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-#EXTVLCOPT:http-referrer=https://www.jagobd.com/
-https://app.jagobd.com.bd/live-orgin/dwnews.stream/playlist.m3u8
 #EXTINF:-1 tvg-id="aynaott-dw-news" tvg-name="DW News" tvg-logo="" group-title="English Entertainment",DW News
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 #EXTVLCOPT:http-referrer=https://web.aynaott.com/
@@ -22924,9 +22691,6 @@ http://yv6ghakp.lunexas.top/iptv/NEKDSS7S3VY6D2/9299/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="English TV (USA / Internacional)" tvg-logo="" group-title="English Entertainment",English TV (USA / Internacional)
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://streams2.sofast.tv/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/a5e9aebd-1df4-4e56-be4f-33a891756f9b/manifest.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="English| Times Now" tvg-logo="" group-title="English Entertainment",English| Times Now
-#EXTVLCOPT:http-user-agent=Dalvik/2.1.0 (Linux; Android 11) ExoPlayerLib/2.18.7
-https://exolynx-images.shop/1st.php?id=282643
 #EXTINF:-1 tvg-id="ENTChannel.uk" tvg-name="ENT Channel" tvg-logo="" tvg-language="eng" group-title="English Entertainment",ENT Channel
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://cdn.global.elektamedia.com/live/c7eds/ENT_Channel/SA_LIVE_hls_enc/master.m3u8
@@ -24103,9 +23867,6 @@ https://247preview.foxbusiness.com/hls/live/2020026/fbnv3preview/primary.m3u8
 http://181.78.106.127:5000/play/a009/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Fox Cr" tvg-logo="" group-title="English Entertainment",Fox Cr
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://168.228.44.241:9997/play/a052/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Fox Cr" tvg-logo="" group-title="English Entertainment",Fox Cr
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://181.119.215.61:8000/play/a088/index.m3u8?hls
 #EXTINF:-1 tvg-id="" tvg-name="Fox Deportes" tvg-logo="" group-title="English Entertainment",Fox Deportes
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
@@ -25102,9 +24863,6 @@ https://dbrb49pjoymg4.cloudfront.net/10001/99991694/hls/playlist.m3u8?ads.xumo_c
 #EXTINF:-1 tvg-id="" tvg-name="Fox Weather" tvg-logo="" group-title="English Entertainment",Fox Weather
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://dbrb49pjoymg4.cloudfront.net/10001/99991694/hls/playlist.m3u8?ads.xumo_channelId=99991694&ads._fw_ifa_type=&ads._fw_did=195fa3dc-4e94-4c30-bb07-2f8e65ebf78d&ads.amznappId=&ads.lat=&ads.lon=&ads.os=&ads.osv=&ads.asnw=516429&ads.afid=436342382&ads.caid=FoxWeather&ads.csid=xumo_web_FoxWeather_ssai&ads._fw_is_lat=0&ads._fw_us_privacy=&ads._fw_coppa=0&ads.genre=&ads._fw_content_category=&ads._fw_content_language=en&ads._fw_content_genre=&ads._fw_content_rating=&ads.xumo_contentId=3440&ads.xumo_contentName=FoxWeather&ads.xumo_providerId=3440&ads.xumo_providerName=FoxWeather&ads._fw_deviceMake=GitHubAction&ads._fw_device_model=PythonScript&ads.channelId=99991694&ads.xumo_platform=web&ads.site_id=&ads.appName=xumo&ads.appVersion=1.0.0&ads._fw_app_bundle=web.xumo.com&ads._fw_app_store_url=
-#EXTINF:-1 tvg-id="FoxWeather.us" tvg-name="Fox Weather" tvg-logo="" tvg-language="eng" group-title="English Entertainment",Fox Weather
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-https://amg00488-foxdigital-fox2sanfranciscoktvu-vizious-cshim.amagi.tv/playlist/amg00488-foxdigital-fox2sanfranciscoktvu-vizious/playlist.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Fox Weather" tvg-logo="" group-title="English Entertainment",Fox Weather
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://dbrb49pjoymg4.cloudfront.net/10001/99991694/hls/playlist.m3u8?ads.xumo_channelId=99991694&ads._fw_ifa_type=&ads._fw_did=5a8b7f77-69a9-45a5-a21d-e4a088c5b09c&ads.amznappId=&ads.lat=&ads.lon=&ads.os=&ads.osv=&ads.asnw=516429&ads.afid=436342382&ads.caid=FoxWeather&ads.csid=xumo_web_FoxWeather_ssai&ads._fw_is_lat=0&ads._fw_us_privacy=&ads._fw_coppa=0&ads.genre=News,N,DN,Weather,Local,LocalNews,News-Local&ads._fw_content_category=&ads._fw_content_language=en&ads._fw_content_genre=News,N,DN,Weather,Local,LocalNews,News-Local&ads._fw_content_rating=&ads.xumo_contentId=3440&ads.xumo_contentName=FoxWeather&ads.xumo_providerId=3440&ads.xumo_providerName=FoxWeather&ads._fw_deviceMake=GitHubAction&ads._fw_device_model=PythonScript&ads.channelId=99991694&ads.xumo_platform=web&ads.site_id=&ads.appName=xumo&ads.appVersion=1.0.0&ads._fw_app_bundle=web.xumo.com&ads._fw_app_store_url=
@@ -25233,9 +24991,6 @@ https://epg.provider.plex.tv/library/parts/647f8d22a2fc3fadb4721685-678fe7959407
 https://a-cdn.klowdtv.com/live2/france24_720p/playlist.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="France 24" tvg-logo="" group-title="English Entertainment",France 24
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://190.60.32.178:8178/play/a0mk/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="France 24" tvg-logo="" group-title="English Entertainment",France 24
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://190.60.40.165:1010/play/a0ml/index.m3u8
 #EXTINF:-1 tvg-id="643054b1fc3be59477853717-678fe7959407a53556d3e8eb" tvg-name="France 24" tvg-logo="" group-title="English Entertainment",France 24
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
@@ -25245,16 +25000,10 @@ https://epg.provider.plex.tv/library/parts/643054b1fc3be59477853717-678fe7959407
 https://epg.provider.plex.tv/library/parts/608049aefa2b8ae93c2c3a63-678fe7959407a53556d3e8eb/?X-Plex-Token=_ffGSWCSYMYMizEdPjXT
 #EXTINF:-1 tvg-id="" tvg-name="France 24" tvg-logo="" group-title="English Entertainment",France 24
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://190.108.83.69:8000/play/a01j/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="France 24" tvg-logo="" group-title="English Entertainment",France 24
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://live.france24.com/hls/live/2037222-b/F24_AR_HI_HLS/master_5000.m3u8
 #EXTINF:-1 tvg-id="5e20b730f2f8d5003d739db7-678fe7959407a53556d3e8eb" tvg-name="France 24" tvg-logo="" group-title="English Entertainment",France 24
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://epg.provider.plex.tv/library/parts/5e20b730f2f8d5003d739db7-678fe7959407a53556d3e8eb/?X-Plex-Token=3kV3MksuuAkJSYUcVWw9
-#EXTINF:-1 tvg-id="" tvg-name="France 24" tvg-logo="" group-title="English Entertainment",France 24
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://186.148.196.250:81/play/a0ce/index.m3u8
 #EXTINF:-1 tvg-id="608049aefa2b8ae93c2c3a63-678fe7959407a53556d3e8eb" tvg-name="France 24" tvg-logo="" group-title="English Entertainment",France 24
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://epg.provider.plex.tv/library/parts/608049aefa2b8ae93c2c3a63-678fe7959407a53556d3e8eb/?X-Plex-Token=7sgeYmNi6kiPyvL9j97P
@@ -25466,9 +25215,6 @@ http://190.60.52.28:45000/play/a0at/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Fx HD" tvg-logo="" group-title="English Entertainment",Fx HD
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://190.60.40.165:1010/play/a0i4/index.m3u8
-#EXTINF:-1 tvg-id="FX.la" tvg-name="Fx HD" tvg-logo="" group-title="English Entertainment",Fx HD
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://181.78.197.59:8000/play/a06y/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Fx HD" tvg-logo="" group-title="English Entertainment",Fx HD
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://190.60.40.165:1010/play/4bdw/index.m3u8
@@ -25484,9 +25230,6 @@ http://181.79.91.233:45000/play/a01k/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Fx HD" tvg-logo="" group-title="English Entertainment",Fx HD
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://186.148.196.250:81/play/a09i/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Fx HD" tvg-logo="" group-title="English Entertainment",Fx HD
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://201.207.54.159:8000/play/a074/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Fx HD" tvg-logo="" group-title="English Entertainment",Fx HD
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://dp2lucrl.rostelekom.xyz/iptv/LL3FDFFCM2P2BM/19216/index.m3u8
@@ -25508,9 +25251,6 @@ http://yv6ghakp.lunexas.top/iptv/NEKDSS7S3VY6D2/6108/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Fx HD Pl" tvg-logo="" group-title="English Entertainment",Fx HD Pl
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://dp2lucrl.rostelekom.xyz/iptv/LL3FDFFCM2P2BM/6108/index.m3u8
-#EXTINF:-1 tvg-id="FXLatinAmerica.us" tvg-name="FX Latin America" tvg-logo="" tvg-language="eng" group-title="English Entertainment",FX Latin America
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://168.196.127.137:6001/play/a05u/index.m3u8
 #EXTINF:-1 tvg-id="FXLatinAmerica.us" tvg-name="FX Latin America" tvg-logo="" tvg-language="eng" group-title="English Entertainment",FX Latin America
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://190.93.224.42/FX/index.m3u8
@@ -26039,9 +25779,6 @@ https://epg.provider.plex.tv/library/parts/64305451fc3be5947773c339-64704596e536
 #EXTINF:-1 tvg-id="great-british-menu" tvg-name="Great British Menu" tvg-logo="" group-title="English Entertainment",Great British Menu
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://1170baa82b1343c29dbf352e2d1a61e5.mediatailor.us-east-1.amazonaws.com/v1/master/0fb304b2320b25f067414d481a779b77db81760d/RakutenTV-gb_GreatBritishMenu/playlist.m3u8?ads.amznbrmid=&ads.amznregion=&ads.amznslots=&ads.app_bundle=com.rakutentv.web&ads.app_store_url=rakuten.tv&ads.app_version=&ads.brand_name=&ads.content_categories=IAB1&ads.content_genre=cooking&ads.content_livestream=0&ads.device_lmt=0&ads.device_make=chrome&ads.device_model=GENERIC&ads.device_type=web&ads.device_year=1970&ads.env=prod&ads.extra_eids=&ads.gam_correlator=283910008697892&ads.gdpr_consent=&ads.ifa_type=ppid&ads.inv_partner_domain=rakuten.tv&ads.ip=185.164.139.44&ads.market=uk&ads.network_name=RakutenTV&ads.nonce=&ads.os_language=&ads.placement=1&ads.player_height=1080&ads.player_width=1920&ads.pod_type=playerpage_midroll&ads.ppid=e3dd2658-e93a-4cee-9d4b-27200826a904&ads.prodq=1&ads.rating=7&ads.rtv_content_id=4431&ads.rtv_content_language=en&ads.rtvid=271858&ads.streaming_id=ef1e1fa6-d66c-4adb-9fd9-6e8c1747182b&ads.tivo_devcountry=&ads.tivo_devmakedate=&ads.tivo_mvpd=&ads.tivo_platform=&ads.tivo_usid=&ads.tivo_uxloc=&ads.user_type=visitor&ads.wurl_channel_id=1231
-#EXTINF:-1 tvg-id="5e20b730f2f8d5003d739db7-64704596e536e0faaf10be9b" tvg-name="Great British Menu" tvg-logo="" group-title="English Entertainment",Great British Menu
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-https://jmp2.uk/plex-5e20b730f2f8d5003d739db7-64704596e536e0faaf10be9b.m3u8
 #EXTINF:-1 tvg-id="697140a85d851f5e69414688-64704596e536e0faaf10be9b" tvg-name="Great British Menu" tvg-logo="" group-title="English Entertainment",Great British Menu
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://jmp2.uk/plex-697140a85d851f5e69414688-64704596e536e0faaf10be9b.m3u8
@@ -26139,9 +25876,6 @@ https://d3uyzhwvmemdyf.cloudfront.net/v1/master/9d062541f2ff39b5c0f48b743c6411d2
 #EXTINF:-1 tvg-id="5e20b730f2f8d5003d739db7-5fd115bdb7ef8d002dcf1820" tvg-name="Hard Knocks" tvg-logo="" group-title="English Entertainment",Hard Knocks
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://d3uyzhwvmemdyf.cloudfront.net/v1/master/9d062541f2ff39b5c0f48b743c6411d25f62fc25/HardKnocks-PLEX/121.m3u8?ads.plex_token=mHLguq7KAeUAboPmP8KS&ads.channel_id=5fd115bdb7ef8d002dcf1820&ads.device_id=62274240-07e7-5d94-8dc8-ef68cf19e175&ads.dnt=0
-#EXTINF:-1 tvg-id="5e20b730f2f8d5003d739db7-5fd115bdb7ef8d002dcf1820" tvg-name="Hard Knocks" tvg-logo="" group-title="English Entertainment",Hard Knocks
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-https://jmp2.uk/plex-5e20b730f2f8d5003d739db7-5fd115bdb7ef8d002dcf1820.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Hard Knocks (USA)" tvg-logo="" group-title="English Entertainment",Hard Knocks (USA)
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://d3uyzhwvmemdyf.cloudfront.net/scheduler/scheduleMaster/109.m3u8
@@ -26277,9 +26011,6 @@ http://190.60.52.28:45000/play/a0a8/index.m3u8
 http://190.60.40.165:1010/play/a0lc/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="HGTV" tvg-logo="" group-title="English Entertainment",HGTV
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://181.118.153.15:8000/play/cs59/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="HGTV" tvg-logo="" group-title="English Entertainment",HGTV
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://190.61.43.121:45000/play/a029/index.m3u8
 #EXTINF:-1 tvg-id="HGTV" tvg-name="HGTV" tvg-logo="" group-title="English Entertainment",HGTV
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
@@ -26329,9 +26060,6 @@ https://i.mjh.nz/.r/sky-hgtv.m3u8
 #EXTINF:-1 tvg-id="HGTV.nz" tvg-name="HGTV" tvg-logo="" group-title="English Entertainment",HGTV
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://mediapackage-sky-hgtv-source.fullscreen.nz/index.m3u8
-#EXTINF:-1 tvg-id="HGTV.hr" tvg-name="Hgtv HD" tvg-logo="" group-title="English Entertainment",Hgtv HD
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://5.57.74.130:8000/play/a0bp/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Hgtv HD" tvg-logo="" group-title="English Entertainment",Hgtv HD
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://dp2lucrl.rostelekom.xyz/iptv/LL3FDFFCM2P2BM/6391/index.m3u8
@@ -26470,9 +26198,6 @@ https://stream.ads.ottera.tv/playlist.m3u8?network_id=1388&livestream=1&live=1&a
 #EXTINF:-1 tvg-id="697140a85d851f5e69414688-61aaa014784a2161d3caf7fd" tvg-name="Hit List" tvg-logo="" group-title="English Entertainment",Hit List
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://jmp2.uk/plex-697140a85d851f5e69414688-61aaa014784a2161d3caf7fd.m3u8
-#EXTINF:-1 tvg-id="5e20b730f2f8d5003d739db7-61aaa014784a2161d3caf7fd" tvg-name="Hit List" tvg-logo="" group-title="English Entertainment",Hit List
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-https://jmp2.uk/plex-5e20b730f2f8d5003d739db7-61aaa014784a2161d3caf7fd.m3u8
 #EXTINF:-1 tvg-id="HLN.us" tvg-name="HLN" tvg-logo="" tvg-language="eng" group-title="English Entertainment",HLN
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://23.237.104.106:8080/USA_HLN/index.m3u8
@@ -26759,9 +26484,6 @@ https://qvc-amd-live.akamaized.net/hls/live/2034113/lshsn1uswest/master.m3u8
 #EXTINF:-1 tvg-id="HSN2.us" tvg-name="HSN2" tvg-logo="" tvg-language="eng" group-title="English Entertainment",HSN2
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://qvc-amd-live.akamaized.net/hls/live/2034113/lshsn2us/master.m3u8
-#EXTINF:-1 tvg-id="HTV.us@SD" tvg-name="HTV" tvg-logo="" tvg-language="und" group-title="English Entertainment",HTV
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://45.171.64.30:6060/play/a012/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Hum-Kisi-Se-Kam-Nahin" tvg-logo="" tvg-language="eng" group-title="English Entertainment",Hum-Kisi-Se-Kam-Nahin
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://d3sgzbosmwirao.cloudfront.net/video/79b9249b00bfb62134d636ee8e40b8b0d356a22c2e2608e338bdaac32e76f76e/2/hls/h264_high.m3u8
@@ -27278,9 +27000,6 @@ https://redirector.dps.live/hls/itv/playlist.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="ITV Patagonia (Punta Arenas - Magallanes)" tvg-logo="" group-title="English Entertainment",ITV Patagonia (Punta Arenas - Magallanes)
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://unlimited1-us.dps.live/itv/itv.smil/playlist.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="ITV Patagonia | CL" tvg-logo="" group-title="English Entertainment",ITV Patagonia | CL
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-https://unlimited1-cl-isp.dps.live/itv/itv.smil/playlist.m3u8?PlaylistM3UCL
 #EXTINF:-1 tvg-id="" tvg-name="ITV Un Village Français" tvg-logo="" group-title="English Entertainment",ITV Un Village Français
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://amg00654-itv-amg00654c32-rakuten-fr-6134.playouts.now.amagi.tv/playlist/amg00654-itvstudiosfast-unvillagesfrancais-rakutenfr/playlist.m3u8
@@ -27711,9 +27430,6 @@ http://dp2lucrl.rostelekom.xyz/iptv/LL3FDFFCM2P2BM/15108/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Liberty BBC FHDLiberty Авто Гир FHDUniver TV HD" tvg-logo="" group-title="English Entertainment",Liberty BBC FHDLiberty Авто Гир FHDUniver TV HD
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://cdn.universmotri.ru/live/univer.sdp_1080p/playlist.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Lifetime" tvg-logo="" group-title="English Entertainment",Lifetime
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://38.134.250.110:8000/play/a02p/index.m3u8
 #EXTINF:-1 tvg-id="Lifetime" tvg-name="Lifetime" tvg-logo="" group-title="English Entertainment",Lifetime
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://138.121.15.230:9002/LIFETIME/index.m3u8
@@ -27725,19 +27441,10 @@ https://live.lixe.net/hls/g1/LIFE%20TIME%20TV/index.m3u8
 http://190.60.40.165:1010/play/9vln/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Lifetime" tvg-logo="" group-title="English Entertainment",Lifetime
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://38.224.231.176:8000/play/a01z/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Lifetime" tvg-logo="" group-title="English Entertainment",Lifetime
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://177.53.152.117:8000/play/a00j/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Lifetime" tvg-logo="" group-title="English Entertainment",Lifetime
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://177.53.152.117:8000/play/a03m/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="lifetime" tvg-logo="" group-title="English Entertainment",lifetime
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://181.78.8.199:8000/play/a0cr/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Lifetime" tvg-logo="" group-title="English Entertainment",Lifetime
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://186.148.196.250:81/play/a09c/index.m3u8
 #EXTINF:-1 tvg-id="Lifetime" tvg-name="Lifetime" tvg-logo="" group-title="English Entertainment",Lifetime
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://170.83.16.50/LIFETIME/index.m3u8
@@ -29948,9 +29655,6 @@ https://g5nl6xx5lpq6-hls-live.5centscdn.com/live1234/2621b29e501b445fabf227b0861
 https://hls.keshishhamid.live/hls/stream.m3u8
 #EXTINF:-1 tvg-id="PayvandTV.us" tvg-name="Payvand TV" tvg-logo="" tvg-language="eng" group-title="English Entertainment",Payvand TV
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-https://bozztv.com/cus01/ucur1/Payvand/index.m3u8
-#EXTINF:-1 tvg-id="PayvandTV.us" tvg-name="Payvand TV" tvg-logo="" tvg-language="eng" group-title="English Entertainment",Payvand TV
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://tgn.bozztv.com/cus01/ucur1/Payvand/index.m3u8
 #EXTINF:-1 tvg-id="PBRRidePass.us" tvg-name="PBR RidePass" tvg-logo="" tvg-language="eng" group-title="English Entertainment",PBR RidePass
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
@@ -30905,9 +30609,6 @@ http://cdn.pishow.tv/live/282/master.m3u8
 #EXTINF:-1 tvg-id="SewingStreet.uk" tvg-name="Sewing Street" tvg-logo="" group-title="English Entertainment",Sewing Street
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://lo3.gemporia.com/abrsewingstreetukgfx/smil:livestream.smil/playlist.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="SFV de Catamarca - CA Catamarca" tvg-logo="" group-title="English Entertainment",SFV de Catamarca - CA Catamarca
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://www.radiosargentina.com.ar/php/tvm3u.php?id=DIAR0107
 #EXTINF:-1 tvg-id="SGTN49.us" tvg-name="SGTN-49" tvg-logo="" tvg-language="eng" group-title="English Entertainment",SGTN-49
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://rpn.bozztv.com/gusa/gusa-stgn/index.m3u8
@@ -31476,9 +31177,6 @@ https://jmp2.uk/stvp-US4700005EA
 #EXTINF:-1 tvg-id="StingrayCozyCafe.ca" tvg-name="Stingray Cozy Cafe" tvg-logo="" tvg-language="eng" group-title="English Entertainment",Stingray Cozy Cafe
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://aka-live1050.delivery.roku.com/372c813e-1fb9-41d4-a4d0-5fbd803659c5/t2-origin/out/v1/live.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Stingray Cozy Cafe" tvg-logo="" tvg-language="eng" group-title="English Entertainment",Stingray Cozy Cafe
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-https://lotus.stingray.com/ads/cozycafe-400ads_cafe001-tokyo/lgchannels/master.m3u8
 #EXTINF:-1 tvg-id="StingrayDJAZZ.ca" tvg-name="Stingray DJAZZ" tvg-logo="" tvg-language="eng" group-title="English Entertainment",Stingray DJAZZ
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://lotus.stingray.com/manifest/djazz-djaads-montreal/samsungtvplus/master.m3u8
@@ -31986,9 +31684,6 @@ https://raw.githubusercontent.com/BuddyChewChew/My-Streams/refs/heads/main/Singl
 #EXTINF:-1 tvg-id="" tvg-name="TBS East" tvg-logo="" group-title="English Entertainment",TBS East
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://raw.githubusercontent.com/InsolenceWillow/insolencetvgo/refs/heads/main/streams/tbseast.us.m3u8
-#EXTINF:-1 tvg-id="TBS NEWS" tvg-name="Tbs News" tvg-logo="" group-title="English Entertainment",Tbs News
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://cdns.jp-primehome.com:8000/zhongying/live/playlist.m3u8?cid=cs11&amp;17&amp;bind=0&amp;uin=201829&amp;playseek=0&amp;timestamp=1732570029&amp;sign=b547bbdb0f348dd2fc6e9360d48442d014cb2a2547e07d55a7f2c2699373a92b&amp;bind=0&amp;uin=201337&amp;playseek=0&amp;timestamp=1732076600&amp;sign=2f649499319e4e7790d66584229dc9aa9eabfbcb7abd7fa13c
 #EXTINF:-1 tvg-id="TBSPacific.us" tvg-name="TBS West" tvg-logo="" group-title="English Entertainment",TBS West
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://raw.githubusercontent.com/InsolenceWillow/insolencetvgo/main/streams/tbswest.us.m3u8
@@ -32046,9 +31741,6 @@ https://cdn01.setar.aw/Telearuba/telearuba/playlist.m3u8
 #EXTINF:-1 tvg-id="TeleHit.mx" tvg-name="TeleHit" tvg-logo="" tvg-language="eng" group-title="English Entertainment",TeleHit
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://200.115.120.1:8000/play/ca048/index.m3u8
-#EXTINF:-1 tvg-id="TeleMIX.us" tvg-name="TeleMIX" tvg-logo="" tvg-language="eng" group-title="English Entertainment",TeleMIX
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-https://haititivi.com/haiti/telemix1/index.m3u8
 #EXTINF:-1 tvg-id="Telemundo.us@EastHD" tvg-name="Telemundo" tvg-logo="" tvg-language="eng" group-title="English Entertainment",Telemundo
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://streamer1.nexgen.bz/TELEMUNDO/index.m3u8
@@ -32836,9 +32528,6 @@ https://live.lixe.net/hls/g3/TNT%20UHD%20TV/index.m3u8
 http://190.60.32.178:8178/play/a0ic/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="TNT" tvg-logo="" group-title="English Entertainment",TNT
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://45.186.254.75:8000/play/a0ba/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="TNT" tvg-logo="" group-title="English Entertainment",TNT
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://38.224.231.176:8000/play/a012/index.m3u8
 #EXTINF:-1 tvg-id="TNT.us" tvg-name="TNT" tvg-logo="" tvg-language="eng" group-title="English Entertainment",TNT
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
@@ -32906,9 +32595,6 @@ http://190.61.43.121:45000/play/a0b8/index.m3u8
 #EXTINF:-1 tvg-id="TNTLatinAmerica.us" tvg-name="TNT Latin America" tvg-logo="" tvg-language="eng" group-title="English Entertainment",TNT Latin America
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://15.204.246.24:8080/TNTHD/index.m3u8
-#EXTINF:-1 tvg-id="TNTLatinAmerica.us" tvg-name="TNT Latin America" tvg-logo="" tvg-language="eng" group-title="English Entertainment",TNT Latin America
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://45.171.64.30:6060/play/a03i/index.m3u8
 #EXTINF:-1 tvg-id="TNTLatinAmerica.us" tvg-name="TNT Latin America" tvg-logo="" tvg-language="eng" group-title="English Entertainment",TNT Latin America
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://181.78.211.244:8005/play/a09g/index.m3u8
@@ -32984,12 +32670,6 @@ http://190.108.83.69:8000/play/a034/index.m3u8
 #EXTINF:-1 tvg-id="TNTSeries.la" tvg-name="TNT Series HD" tvg-logo="" group-title="English Entertainment",TNT Series HD
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://181.78.197.59:8000/play/a085/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="TNT Series HD" tvg-logo="" group-title="English Entertainment",TNT Series HD
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://38.224.231.176:8000/play/a02f/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="TNT Series HD" tvg-logo="" group-title="English Entertainment",TNT Series HD
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://186.148.196.250:81/play/a0ij/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Tnt Series Srt En" tvg-logo="" group-title="English Entertainment",Tnt Series Srt En
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://181.78.8.199:8000/play/a098/index.m3u8
@@ -33077,27 +32757,6 @@ http://190.60.40.165:1010/play/a0ox/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="TNT.SERIES.HD..uy" tvg-logo="" group-title="English Entertainment",TNT.SERIES.HD..uy
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://181.79.91.233:45000/play/a0a9/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="TNT.SERIES.HD..uy" tvg-logo="" group-title="English Entertainment",TNT.SERIES.HD..uy
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://181.79.91.230:45000/play/a0a9/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="TNT.SERIES.HD..uy" tvg-logo="" group-title="English Entertainment",TNT.SERIES.HD..uy
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://190.61.43.126:45000/play/a0a9/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="TNT.SERIES.HD..uy" tvg-logo="" group-title="English Entertainment",TNT.SERIES.HD..uy
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://190.61.43.124:45000/play/a0a9/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="TNT.SERIES.HD..uy" tvg-logo="" group-title="English Entertainment",TNT.SERIES.HD..uy
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://190.61.43.117:45000/play/a0a9/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="TNT.SERIES.HD..uy" tvg-logo="" group-title="English Entertainment",TNT.SERIES.HD..uy
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://190.61.43.121:45000/play/a0a9/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="TNT.SERIES.HD..uy" tvg-logo="" group-title="English Entertainment",TNT.SERIES.HD..uy
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://190.60.52.28:45000/play/a0j5/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="TNT.SERIES.HD..uy" tvg-logo="" group-title="English Entertainment",TNT.SERIES.HD..uy
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://45.186.254.75:8000/play/a0ai/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="TODAY - iptvmate.net" tvg-logo="" group-title="English Entertainment",TODAY - iptvmate.net
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://service-stitcher.clusters.pluto.tv/v1/stitch/embed/hls/channel/5d695f7db53adf96b78e7ce3/master.m3u8?deviceId=channel&deviceModel=web&deviceVersion=1.0&appVersion=1.0&deviceType=rokuChannel&deviceMake=rokuChannel&deviceDNT=1&advertisingId=channel&embedPartner=rokuChannel&appName=rokuchannel&is_lat=1&bmodel=bm1&content=channel&platform=web&tags=ROKU_CONTENT_TAGS&coppa=false&content_type=livefeed&rdid=channel&genre=ROKU_ADS_CONTENT_GENRE&content_rating=ROKU_ADS_CONTENT_RATING&studio_id=viacom&channel_id=channel
@@ -33149,9 +32808,6 @@ https://service-stitcher.clusters.pluto.tv/v1/stitch/embed/hls/channel/5dae08472
 #EXTINF:-1 tvg-id="TotalTVHaryana.in" tvg-name="Total TV Haryana" tvg-logo="" tvg-language="eng" group-title="English Entertainment",Total TV Haryana
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://cdn.pishow.tv/ott/live/1522/master.m3u8
-#EXTINF:-1 tvg-id="TotalmusicConcerts.uk@HD" tvg-name="Totalmusic Concerts" tvg-logo="" group-title="English Entertainment",Totalmusic Concerts
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-https://cdn.global.elektamedia.com/live/c7eds/Totalmusic_Concerts/SA_LIVE_hls_enc/master.m3u8
 #EXTINF:-1 tvg-id="custom.totalmusicdance" tvg-name="Totalmusic Dance" tvg-logo="" tvg-language="eng" group-title="English Entertainment",Totalmusic Dance
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://cdn.40mediagroup.com/live/c7eds/Totalmusic_Dance/SA_LIVE_hls_enc/master.m3u8
@@ -33426,9 +33082,6 @@ https://jmp2.uk/stvp-US2900017P2
 #EXTINF:-1 tvg-id="CA2900012S9" tvg-name="UFC" tvg-logo="" group-title="English Entertainment",UFC
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://jmp2.uk/stvp-CA2900012S9
-#EXTINF:-1 tvg-id="" tvg-name="UK - Apperley Bridge" tvg-logo="" group-title="English Entertainment",UK - Apperley Bridge
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://maybach.railcam.co.uk/ApperleyBridge_20194/tracks-v1/mono.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="UK - Corfe Station" tvg-logo="" group-title="English Entertainment",UK - Corfe Station
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://maybach.railcam.co.uk:80/Corfe_14435/tracks-v1a1/mono.m3u8
@@ -34621,15 +34274,6 @@ http://179.1.87.75:8098/play/a0dq/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="MTV" tvg-logo="" group-title="English Music",MTV
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://38.134.250.110:8000/play/a00y/index.m3u8
-#EXTINF:-1 tvg-id="MTV" tvg-name="MTV" tvg-logo="" group-title="English Music",MTV
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://cdns.jp-primehome.com:8000/zhongying/live/playlist.m3u8?cid=cs18&amp;isp=10&amp;bind=0&amp;uin=201337&amp;playseek=0&amp;timestamp=1732077719&amp;sign=adfbc8fd793038d9853f0a9d8806e1a448b21777b57e161e1c958f90e27e4949
-#EXTINF:-1 tvg-id="MTV" tvg-name="MTV" tvg-logo="" group-title="English Music",MTV
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://cdns.jp-primehome.com:8000/zhongying/live/playlist.m3u8?cid=cs18&amp;isp=10&amp;bind=0&amp;uin=201337&amp;playseek=0&amp;timestamp=1732077714&amp;sign=99ee2edfbae22fdaadb6387a9497d88710680780d3d27569899b876862a58092
-#EXTINF:-1 tvg-id="MTV" tvg-name="MTV" tvg-logo="" group-title="English Music",MTV
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://cdns.jp-primehome.com:8000/zhongying/live/playlist.m3u8?cid=cs18&amp;17&amp;bind=0&amp;uin=201829&amp;playseek=0&amp;timestamp=1732570029&amp;sign=b547bbdb0f348dd2fc6e9360d48442d014cb2a2547e07d55a7f2c2699373a92b&amp;bind=0&amp;uin=201337&amp;playseek=0&amp;timestamp=1732076595&amp;sign=974a71c8bee14275fb819264148bf7d038c824d8455a2b162b
 #EXTINF:-1 tvg-id="" tvg-name="MTV" tvg-logo="" group-title="English Music",MTV
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://190.60.52.28:45000/play/a0bj/index.m3u8
@@ -35441,9 +35085,6 @@ https://service-stitcher.clusters.pluto.tv/stitch/hls/channel/5d14fc31252d35decb
 #EXTINF:-1 tvg-id="" tvg-name="0012 ESPN" tvg-logo="" group-title="Sports",0012 ESPN
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://190.60.32.186:1010/play/a00v/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="1Tv Ge" tvg-logo="" group-title="Sports",1Tv Ge
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-https://tv.cdn.xsg.ge/gpb-1tv/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="2TV Sport" tvg-logo="" group-title="Sports",2TV Sport
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://tv.cdn.xsg.ge/gpb-2tv/index.m3u8
@@ -36584,9 +36225,6 @@ http://yv6ghakp.lunexas.top/iptv/NEKDSS7S3VY6D2/32036/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="directv sport" tvg-logo="" group-title="Sports",directv sport
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://38.224.231.176:8000/play/a08d/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Diretv Sport" tvg-logo="" group-title="Sports",Diretv Sport
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://190.119.168.226:4000/play/a0a5/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Divi Sport" tvg-logo="" group-title="Sports",Divi Sport
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://vcdn.produck.company/out/ngrp:divisport_all/playlist.m3u8
@@ -36814,9 +36452,6 @@ http://m3u.tvcluboficial.com/free/oct/oct/375.m3u8
 http://m3u.tvcluboficial.com/free/ReachBot/Kip/375.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="ESPN 2 HD" tvg-logo="" group-title="Sports",ESPN 2 HD
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://181.78.49.113:9999/play/a07t/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="ESPN 2 HD" tvg-logo="" group-title="Sports",ESPN 2 HD
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://181.78.106.127:5000/play/ca034/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="ESPN 2 HD" tvg-logo="" group-title="Sports",ESPN 2 HD
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
@@ -36830,9 +36465,6 @@ http://200.59.191.177:8000/play/a0o1/index.m3u8
 #EXTINF:-1 tvg-id="ESPN.2.co" tvg-name="ESPN 2 HD" tvg-logo="" group-title="Sports",ESPN 2 HD
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://190.61.57.2:1010/play/a0c5/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="ESPN 2 HD" tvg-logo="" group-title="Sports",ESPN 2 HD
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://181.78.8.199:8000/play/a08z/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="ESPN 2 HD" tvg-logo="" group-title="Sports",ESPN 2 HD
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://201.207.54.159:8000/play/a092/index.m3u8
@@ -36881,9 +36513,6 @@ http://181.78.73.153:8000/play/a035/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="ESPN 3" tvg-logo="" group-title="Sports",ESPN 3
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://38.134.250.110:8000/play/a015/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="ESPN 3" tvg-logo="" group-title="Sports",ESPN 3
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://190.60.52.28:45000/play/a0cl/index.m3u8
 #EXTINF:-1 tvg-id="ESPN 3" tvg-name="ESPN 3" tvg-logo="" group-title="Sports",ESPN 3
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://live.lixe.net/hls/g7/VIVO%207%20TV/index.m3u8
@@ -36938,9 +36567,6 @@ http://181.78.8.199:8000/play/a07f/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="ESPN 3 HD" tvg-logo="" group-title="Sports",ESPN 3 HD
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://181.78.211.244:8005/play/a0c1/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="ESPN 3 HD" tvg-logo="" tvg-language="eng" group-title="Sports",ESPN 3 HD
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-https://cdnbarinas.tvzamora.com/espn3/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="ESPN 4" tvg-logo="" group-title="Sports",ESPN 4
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://181.78.49.113:9999/play/a07r/index.m3u8
@@ -37240,13 +36866,7 @@ http://190.61.43.121:45000/play/a079/index.m3u8
 http://190.108.83.69:8000/play/a02w/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="ESPN 6Hd" tvg-logo="" group-title="Sports",ESPN 6Hd
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://190.61.43.117:45000/play/a079/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="ESPN 6Hd" tvg-logo="" group-title="Sports",ESPN 6Hd
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://190.61.43.124:45000/play/a079/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="ESPN 6Hd" tvg-logo="" group-title="Sports",ESPN 6Hd
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://181.78.8.199:8000/play/a07g/index.m3u8
 #EXTINF:-1 tvg-id="ESPN.7.HD.co" tvg-name="ESPN 7" tvg-logo="" group-title="Sports",ESPN 7
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://190.61.57.2:1010/play/a0f7/index.m3u8
@@ -37379,9 +36999,6 @@ http://sewv654wfcsdwfi87fwvgbngh.siauliairsavlt.pw/iptv/R3A7B6MZZFDCUL/30063/ind
 #EXTINF:-1 tvg-id="" tvg-name="ESPN Extra" tvg-logo="" group-title="Sports",ESPN Extra
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://38.134.250.110:8000/play/a01a/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="ESPN Extra" tvg-logo="" group-title="Sports",ESPN Extra
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://181.78.8.199:8000/play/a0do/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="ESPN Extra HD" tvg-logo="" group-title="Sports",ESPN Extra HD
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://181.79.91.230:45000/play/a01v/index.m3u8
@@ -37499,24 +37116,6 @@ http://dp2lucrl.rostelekom.xyz/iptv/LL3FDFFCM2P2BM/19156/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="ESPN.co" tvg-logo="" group-title="Sports",ESPN.co
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://181.78.73.153:8000/play/a02i/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="ESPN.co" tvg-logo="" group-title="Sports",ESPN.co
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://181.79.91.230:45000/play/a072/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="ESPN.co" tvg-logo="" group-title="Sports",ESPN.co
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://181.79.91.233:45000/play/a072/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="ESPN.co" tvg-logo="" group-title="Sports",ESPN.co
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://190.61.43.124:45000/play/a072/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="ESPN.co" tvg-logo="" group-title="Sports",ESPN.co
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://190.61.43.117:45000/play/a072/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="ESPN.co" tvg-logo="" group-title="Sports",ESPN.co
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://190.61.43.126:45000/play/a072/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="ESPN.co" tvg-logo="" group-title="Sports",ESPN.co
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://190.61.43.121:45000/play/a072/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="ESPN.HD.za" tvg-logo="" group-title="Sports",ESPN.HD.za
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://38.224.22.255:8000/play/a0b4/index.m3u8
@@ -38217,12 +37816,6 @@ https://amg00436-amg00436c7-freelivesports-emea-8457.playouts.now.amagi.tv/playl
 #EXTINF:-1 tvg-id="" tvg-name="Game & Fish TV" tvg-logo="" group-title="Sports",Game & Fish TV
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://amg00436-amg00436c7-freelivesports-emea-8457.playouts.now.amagi.tv/playlist/amg00436-ksemotvholdingsfast-gameandfishtv-freelivesportsemea/playlist.m3u8?channel_name=Game%20Fish%20TV&content_genre=Fishing,Hunting,Sport&ic=IAB17,IAB17-13,IAB17-18,IAB17-32&rating=PG&language=US&coppa=0&content_livestream=1&us_privacy=1NYN&gdpr=0&gdpr_consent=0&cb=1791219665872298&ua=Mozilla%2F5.0%20(Windows%20NT%2010.0%3B%20Win64%3B%20x64)%20AppleWebKit%2F537.36%20(KHTML%2C%20like%20Gecko)%20Chrome%2F152.0.0.0%20Safari%2F537.36&ip=103.150.218.78&dnt=1&app_name=Free%20Live%20Sports&app_bundle=freelivesports.tv&app_store_url=&ifa_type=dpid&did=5d01d64ac5b0026957052f0330129fc6&lmt=1
-#EXTINF:-1 tvg-id="GAORA Sports" tvg-name="GAORA Sports" tvg-logo="" group-title="Sports",GAORA Sports
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://cdns.jp-primehome.com:8000/zhongying/live/playlist.m3u8?cid=cs17&amp;isp=7&amp;bind=0&amp;uin=201829&amp;playseek=0&amp;timestamp=1732940823&amp;sign=d2f9433997adfee20567f0054e468cc18fb916ef4355e63fd145478c1c56e9bb
-#EXTINF:-1 tvg-id="GAORA Sports" tvg-name="GAORA Sports" tvg-logo="" group-title="Sports",GAORA Sports
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://cdns.jp-primehome.com:8000/zhongying/live/playlist.m3u8?cid=cs17&amp;isp=7&amp;bind=0&amp;uin=201829&amp;playseek=0&amp;timestamp=1732800436&amp;sign=6929c8efb3d687434f88e4513ee7fd6fe6ea9e840da828c792f174a5447a611c
 #EXTINF:-1 tvg-id="" tvg-name="Geo Super" tvg-logo="" group-title="Sports",Geo Super
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://exolynx-images.shop/1st.php?id=1106886
@@ -38469,24 +38062,12 @@ https://jmp2.uk/stvp-INBA49000067X
 #EXTINF:-1 tvg-id="" tvg-name="ion" tvg-logo="" group-title="Sports",ion
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://79b5a397.wurl.com/master/319dc4325e352117ff2ba16d22f2fb8968990c39/U3BvcnRzVHJpYmFsX0lPTl9ITFM/playlist.m3u8?ads.wurl_channel=1176&ads.wurl_name=ION&ads.channel_name=ION&ads.content_genre=Sport,Entertainment&ads.ic=IAB17,IAB1-7&ads.rating=PG&ads.language=US&ads.coppa=0&ads.content_livestream=1&ads.us_privacy=1NYN&ads.gdpr=0&ads.consent=0&ads.app_name=Free%20Live%20Sports&ads.app_bundle=freelivesports.tv&ads.app_store_url=&ads.ifa_type=dpid&ads.device_id=5d01d64ac5b0026957052f0330129fc6&ads.dnt=1
-#EXTINF:-1 tvg-id="J Sports 2" tvg-name="J Sports 2" tvg-logo="" group-title="Sports",J Sports 2
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://cdns.jp-primehome.com:8000/zhongying/live/playlist.m3u8?cid=bs19&amp;isp=7&amp;bind=0&amp;uin=201829&amp;playseek=0&amp;timestamp=1732800425&amp;sign=6559f2412e2301b577da91428eb9bd01a139608aaa6f81136b20ddb69c028f0d
-#EXTINF:-1 tvg-id="J Sports 3" tvg-name="J Sports 3" tvg-logo="" group-title="Sports",J Sports 3
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://cdns.jp-primehome.com:8000/zhongying/live/playlist.m3u8?cid=bs21&amp;isp=7&amp;bind=0&amp;uin=201829&amp;playseek=0&amp;timestamp=1732800428&amp;sign=608174b9f820ce21236167e18efb1b93b2847c011249fa16bed5c06a539e89b4
-#EXTINF:-1 tvg-id="J Sports 4" tvg-name="J Sports 4" tvg-logo="" group-title="Sports",J Sports 4
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://cdns.jp-primehome.com:8000/zhongying/live/playlist.m3u8?cid=bs22&amp;isp=7&amp;bind=0&amp;uin=201829&amp;playseek=0&amp;timestamp=1732800432&amp;sign=597f64188100d58b2f845baa0ffa16b2a8e2378804c1ffceaf8c4dccd5b87916
 #EXTINF:-1 tvg-id="" tvg-name="Joel Osteen Network" tvg-logo="" group-title="Sports",Joel Osteen Network
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://linear-860.frequency.stream/dist/freelivesports/860/hls/master/playlist.m3u8?ads.channel_name=Joel%20Osteen%20Network&ads.content_genre=Entertainment,Religion&ads.iab_category=IAB20,IAB1,IAB1-7&ads.content_rating=PG&ads.language=US&ads.coppa=0&ads.content_livestream=1&ads.us_privacy=1NYN&ads.gdpr=0&ads.gdpr_consent=0&ads.app_name=Free%20Live%20Sports&ads.app_bundle=freelivesports.tv&ads.app_store_url=&ads.ifa_type=dpid&ads.device_id=5d01d64ac5b0026957052f0330129fc6&ads.lmt=1
 #EXTINF:-1 tvg-id="FR2000005YM" tvg-name="Journal du Golf TV" tvg-logo="" group-title="Sports",Journal du Golf TV
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://jmp2.uk/stvp-FR2000005YM
-#EXTINF:-1 tvg-id="" tvg-name="Kan 11" tvg-logo="" group-title="Sports",Kan 11
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-https://kancdn.medonecdn.net/livehls/oil/kancdn-live/live/kan11/live.livx/playlist.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Kozoom" tvg-logo="" group-title="Sports",Kozoom
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://amg01743-sportstribal-kozoom-sportstribal-ad-ug.amagi.tv/playlist/amg01743-sportstribal-kozoom-sportstribal/playlist.m3u8?channel_name=Kozoom&content_genre=Billiard%2CPool%2CSnooker%2CSport&ic=IAB17&rating=PG&language=US&coppa=0&content_livestream=1&us_privacy=1NYN&gdpr=0&gdpr_consent=0&cb=1791219666736448&ua=Mozilla%2F5.0%20(Windows%20NT%2010.0%3B%20Win64%3B%20x64)%20AppleWebKit%2F537.36%20(KHTML%2C%20like%20Gecko)%20Chrome%2F152.0.0.0%20Safari%2F537.36&ip=103.150.218.78&dnt=1&app_name=Free%20Live%20Sports&app_bundle=freelivesports.tv&app_store_url=&ifa_type=dpid&did=5d01d64ac5b0026957052f0330129fc6&lmt=1&ads.channel_name=Kozoom&ads.content_genre=Billiard%2CPool%2CSnooker%2CSport&ads.rating=PG&ads.coppa=0&ads.gdpr=0&ads.gdpr_consent=0&ads.app_name=Free%20Live%20Sports&ads.app_bundle=freelivesports.tv&ads.app_store_url=&ads.did=5d01d64ac5b0026957052f0330129fc6
@@ -40077,9 +39658,6 @@ https://antik.zappr.stream/test_sport1_25p/playlist.m3u8
 https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-BD/sport_1_hd_737e509d.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Sport 1 HD" tvg-logo="" group-title="Sports",Sport 1 HD
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://141.94.193.53:80/Sport_1_HD/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Sport 1 HD" tvg-logo="" group-title="Sports",Sport 1 HD
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://myott.top/stream/DT6QU63K5VX/393.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Sport 1 HD" tvg-logo="" group-title="Sports",Sport 1 HD
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
@@ -40195,9 +39773,6 @@ https://origin-001.streamup.eu/sportitalia/sihd_abr2/playlist.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Sport Italia Calcio" tvg-logo="" group-title="Sports",Sport Italia Calcio
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://origin-001.streamup.eu/sportitalia/sisolocalcio_abr/playlist.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Sport Italia Solo Calcio" tvg-logo="" group-title="Sports",Sport Italia Solo Calcio
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-https://distribution.sportitalialive.it/sportitalia/sisolocalcio_abr/playlist.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Sport Klub Fight HD HR" tvg-logo="" group-title="Sports",Sport Klub Fight HD HR
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://sewv654wfcsdwfi87fwvgbngh.siauliairsavlt.pw/iptv/R3A7B6MZZFDCUL/7278/index.m3u8
@@ -40824,9 +40399,6 @@ http://m3u.tvcluboficial.com/free/ReachBot/Kip/934.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="TNT Sports (Argentina)" tvg-logo="" group-title="Sports",TNT Sports (Argentina)
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://45.184.109.10/live/69393EAE6ADBC65A68F942022362A202/86.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Tnt Sports HD" tvg-logo="" group-title="Sports",Tnt Sports HD
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://190.60.32.186:1010/play/a01s/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="TnT Sports Premium" tvg-logo="" group-title="Sports",TnT Sports Premium
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://179.1.87.75:8098/play/a0ti/index.m3u8
@@ -40842,21 +40414,12 @@ http://cdn-zapster-ros.trapemn.tv:1935/CD-latam2135/TNT_SPORTS_HD/playlist.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="TNT Sports Premium SD" tvg-logo="" group-title="Sports",TNT Sports Premium SD
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://38.224.22.255:8000/play/a0b8/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="TNT Sports Premium SD" tvg-logo="" group-title="Sports",TNT Sports Premium SD
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://186.148.196.250:81/play/a0ck/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="TNT Sports Premiun HD" tvg-logo="" group-title="Sports",TNT Sports Premiun HD
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://38.224.22.255:8000/play/a0bf/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="TNT Sports Premiun HD" tvg-logo="" group-title="Sports",TNT Sports Premiun HD
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://190.108.83.69:8000/play/a03i/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="TNT Sports Premiun HD" tvg-logo="" group-title="Sports",TNT Sports Premiun HD
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://38.224.231.176:8000/play/a02u/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="TNT Sports Premiun HD" tvg-logo="" group-title="Sports",TNT Sports Premiun HD
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://186.148.196.250:81/play/a0cq/index.m3u8
 #EXTINF:-1 tvg-id="b015fcbafb496320954672321e746f8a" tvg-name="Todo Cine" tvg-logo="" group-title="Sports",Todo Cine
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://jmp2.uk/rok-b015fcbafb496320954672321e746f8a.m3u8
@@ -41033,9 +40596,6 @@ http://sewv654wfcsdwfi87fwvgbngh.siauliairsavlt.pw/iptv/R3A7B6MZZFDCUL/6517/inde
 #EXTINF:-1 tvg-id="" tvg-name="Tu TV" tvg-logo="" group-title="Sports",Tu TV
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://astl-mainstr.qvixsolutions.com/asltvtu_ext/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="TUDN" tvg-logo="" group-title="Sports",TUDN
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://45.171.64.30:2000/play/a08j/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Turkmenistan Sport" tvg-logo="" group-title="Sports",Turkmenistan Sport
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-BD/turkmenistan_sport_b1d1f7e5.m3u8
@@ -41099,9 +40659,6 @@ http://rpn.bozztv.com/gusa/gusa-tvswsn/index.m3u8
 #EXTINF:-1 tvg-id="TVSWomenSports.us" tvg-name="TVS Women Sports" tvg-logo="" tvg-language="eng" group-title="Sports",TVS Women Sports
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://rpn.bozztv.com/gusa/gusa-tvswsn/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="TYC" tvg-logo="" group-title="Sports",TYC
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://190.60.37.154:45000/play/a05a/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Tyc Sport" tvg-logo="" group-title="Sports",Tyc Sport
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://s2.bufaloweb.com/bufalo13/index.m3u8
@@ -41357,9 +40914,6 @@ http://sewv654wfcsdwfi87fwvgbngh.siauliairsavlt.pw/iptv/R3A7B6MZZFDCUL/11111/ind
 #EXTINF:-1 tvg-id="" tvg-name="V Sport Vinter SE" tvg-logo="" group-title="Sports",V Sport Vinter SE
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://yv6ghakp.lunexas.top/iptv/NEKDSS7S3VY6D2/11111/index.m3u8
-#EXTINF:-1 tvg-id="" tvg-name="Via X Sport" tvg-logo="" group-title="Sports",Via X Sport
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://38.226.49.253:8000/play/a042/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="ViaPlay Football SE" tvg-logo="" group-title="Sports",ViaPlay Football SE
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://sewv654wfcsdwfi87fwvgbngh.siauliairsavlt.pw/iptv/3DQSZ4MNE3D4K9/5078/index.m3u8
@@ -41613,9 +41167,6 @@ https://amg01269-amg01269c1-sportstribal-emea-5204.playouts.now.amagi.tv/playlis
 #EXTINF:-1 tvg-id="US20000131M" tvg-name="Willow Sports" tvg-logo="" group-title="Sports",Willow Sports
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 https://jmp2.uk/stvp-US20000131M
-#EXTINF:-1 tvg-id="" tvg-name="Win Sport + HD" tvg-logo="" group-title="Sports",Win Sport + HD
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-http://190.60.52.28:45000/play/a0fu/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Win Sports" tvg-logo="" group-title="Sports",Win Sports
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
 http://m3u.tvcluboficial.com/free/oct/oct/1039.m3u8
