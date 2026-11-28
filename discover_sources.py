@@ -72,6 +72,12 @@ BOT_SEARCH_QUERIES = [
     "topic:indian-tv",
     "topic:cartoon",
     "topic:anime",
+    "star jalsha m3u8",
+    "zee bangla m3u8",
+    "colors bangla m3u8",
+    "sony aath m3u8",
+    "bdix playlist m3u",
+    "bangladesh live tv m3u8",
 ]
 
 CODE_SIGNATURE_QUERIES = [
@@ -124,6 +130,10 @@ WEB_DORK_QUERIES = [
     '"#EXTINF:-1" "workers.dev" "m3u8"',
     'intitle:"index of" "playlist.m3u"',
     'intitle:"index of" "tv.m3u8"',
+    'site:pastebin.com "#EXTINF" "Jalsha"',
+    'site:pastebin.com "#EXTINF" "BDIX"',
+    'site:rentry.co "#EXTINF" "Bangla"',
+    'site:gist.github.com "#EXTINF" "Jalsha"',
 ]
 
 BUILTIN_DIRECT_FEEDS = [
@@ -433,7 +443,7 @@ def crawl_forks_and_owners(gh, found, seed_repos):
                     add_repo_item(found, fk, is_auto_bot=True)
                     owners_seen.add(fk["full_name"].split("/")[0])
 
-    for owner in list(owners_seen)[:80]:
+    for owner in list(owners_seen)[:140]:
         if owner.lower() in ("iptv-org", "free-tv"):
             continue
         urepos = gh.get(f"https://api.github.com/users/{owner}/repos?sort=pushed&per_page=100", min_delay=0.7, retries=1, category="core")
@@ -460,16 +470,22 @@ def search_github(gh):
     found = fetch_bd_priority_and_network(gh)
 
     for q in BOT_SEARCH_QUERIES:
-        url = f"https://api.github.com/search/repositories?q={urllib.parse.quote(q)}&sort=updated&per_page=100&page=1"
-        data = gh.get(url, min_delay=2.8, retries=2, category="search")
-        for item in data.get("items", []):
-            add_repo_item(found, item, is_auto_bot=False)
+        for page in (1, 2):
+            url = f"https://api.github.com/search/repositories?q={urllib.parse.quote(q)}&sort=updated&per_page=100&page={page}"
+            data = gh.get(url, min_delay=3.2, retries=2, category="search")
+            items = data.get("items", []) if isinstance(data, dict) else []
+            if not items:
+                break
+            for item in items:
+                add_repo_item(found, item, is_auto_bot=False)
+            if len(items) < 100:
+                break
 
     if GITHUB_TOKEN:
         for cq in CODE_SIGNATURE_QUERIES:
             c_url = f"https://api.github.com/search/code?q={urllib.parse.quote(cq)}&per_page=100&page=1"
-            c_data = gh.get(c_url, min_delay=6.8, retries=2, category="code_search")
-            for item in c_data.get("items", []):
+            c_data = gh.get(c_url, min_delay=7.2, retries=2, category="code_search")
+            for item in (c_data.get("items", []) if isinstance(c_data, dict) else []):
                 repo_obj = item.get("repository", {})
                 fn = repo_obj.get("full_name")
                 if fn and fn not in found:
@@ -486,8 +502,8 @@ def search_github(gh):
 
     bd_in_seeds = [
         fn for fn in found
-        if any(k in fn.lower() for k in ("bd", "bangla", "bdix", "india", "hindi", "kolkata"))
-    ][:35]
+        if any(k in fn.lower() for k in ("bd", "bangla", "bdix", "india", "hindi", "kolkata", "jalsha", "zee", "sports"))
+    ][:60]
     crawl_forks_and_owners(gh, found, bd_in_seeds)
     return found
 
@@ -681,8 +697,8 @@ def discover():
 
         is_priority = repo.lower() in {r.lower() for r in BD_PRIORITY_REPOS}
         script_paths = []
-        max_pl = 150 if is_priority else 50
-        max_scripts = 80 if is_priority else 35
+        max_pl = 250 if is_priority else 90
+        max_scripts = 120 if is_priority else 55
 
         for f in tree:
             if f.get("type") != "blob":
