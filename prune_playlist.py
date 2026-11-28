@@ -66,9 +66,11 @@ def detect_entry_priority(entry):
         return 0
     if "jagobd" in src or "jagobd.com" in url:
         return 1
-    if "yupp" in src or "yupp" in url:
+    if "gpcdn.net" in url or "gpcdn" in url or "gpcdn" in src:
         return 2
-    return 3
+    if "yupp" in src or "yupp" in url:
+        return 3
+    return 4
 
 
 def parse_existing_m3u(path):
@@ -299,7 +301,7 @@ def pick_best_per_key(candidates):
     if not candidates:
         return None
     candidates.sort(key=lambda x: (
-        x.get("priority", 3),
+        x.get("priority", 4),
         0 if is_hd_entry(x) else 1,
         round(x.get("latency", 99), 2),
         -x.get("kbps", 0),
@@ -330,7 +332,7 @@ def main():
     # Step 1: Check existing custom links FIRST (one primary check per channel)
     first_check_list = []
     for nk, cand_list in existing_by_key.items():
-        cand_list.sort(key=lambda x: x.get("priority", 3))
+        cand_list.sort(key=lambda x: x.get("priority", 4))
         first_check_list.append((nk, cand_list[0]))
 
     alive_by_key = {}
@@ -363,7 +365,7 @@ def main():
     # Smart Skip: If custom playlist already existed, ALL checked links were alive, and NO wanted channels are missing -> do not touch custom playlist or scan full playlist!
     if had_existing_custom and not had_dead_custom_link and not dead_or_missing_keys:
         Path("missing_custom.flag").unlink(missing_ok=True)
-    Path("missing_custom.txt").unlink(missing_ok=True)
+        Path("missing_custom.txt").unlink(missing_ok=True)
         elapsed = int(time.time() - t_start)
         log(f"[Skip-Full-Scan] Sob {len(alive_by_key)} ti custom channel active ache! playlist_custom.m3u untouched rakha holo o full playlist.m3u check skip kora holo ({elapsed}s).")
         return 0
@@ -378,14 +380,14 @@ def main():
                 pool_by_key[nk].append(clone_entry(e))
 
         unresolved_keys = set(dead_or_missing_keys)
-        tier_names = {0: "AynaOTT", 1: "JagoBD", 2: "Yupp", 3: "Others"}
+        tier_names = {0: "AynaOTT", 1: "JagoBD", 2: "GPCDN", 3: "Yupp", 4: "Others"}
 
-        for tier in (0, 1, 2, 3):
+        for tier in (0, 1, 2, 3, 4):
             if not unresolved_keys:
                 break
             tier_candidates = []
             for nk in list(unresolved_keys):
-                tier_list = [c for c in pool_by_key.get(nk, []) if c.get("priority", 3) == tier]
+                tier_list = [c for c in pool_by_key.get(nk, []) if c.get("priority", 4) == tier]
                 tier_list.sort(key=lambda x: (0 if is_hd_entry(x) else 1, round(x.get("latency", 99), 2), -x.get("kbps", 0)))
                 for cand in tier_list[:4]:
                     tier_candidates.append((nk, cand))
