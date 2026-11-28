@@ -24,8 +24,8 @@ CUSTOM_PLAYLIST_FILE = Path("playlist_custom.m3u")
 
 WORKERS = 180
 CHECK_TIMEOUT = 3.0
-MAX_MANIFEST_LATENCY = 2.2
-MIN_CHUNK_KBPS = 25.0
+MAX_MANIFEST_LATENCY = 3.5
+MIN_CHUNK_KBPS = 15.0
 MIN_KEEP_RATIO = 0.20
 
 SSL_CTX = ssl.create_default_context()
@@ -241,6 +241,35 @@ def verify_entry(entry):
         return False, 99.0, 0.0, type(e).__name__
 
 
+CUSTOM_ALIASES = {
+    "jumuna": "jamuna",
+    "jumunatv": "jamuna",
+    "jamunatv": "jamuna",
+    "ekushy": "ekushey",
+    "ekushe": "ekushey",
+    "ekusheytv": "ekushey",
+    "ekusheetv": "ekushey",
+    "ekusheyetv": "ekushey",
+    "ekattor71": "ekattor",
+    "ekattortv": "ekattor",
+    "ekhon": "ekhontv",
+    "ekhontv": "ekhontv",
+    "nagorik": "nagoriktv",
+    "nagoriktv": "nagoriktv",
+    "deepto": "deeptotv",
+    "deeptotv": "deeptotv",
+    "duronto": "durontotv",
+    "durontotv": "durontotv",
+    "jalshamovies": "starjalshamovies",
+    "starjalshamovies": "starjalshamovies",
+    "stargold2": "stargold2",
+    "b4umovies": "b4umovies",
+    "b4umovie": "b4umovies",
+    "andpictures": "andpictures",
+    "pictures": "andpictures",
+}
+
+
 def norm_key(name):
     n = name.lower().strip()
     n = re.sub(r"[\(\[【].*?[\)\]】]", " ", n)
@@ -248,7 +277,8 @@ def norm_key(name):
     n = n.replace("television", "tv")
     n = re.sub(r"[^a-z0-9\u0980-\u09ff]+", " ", n)
     tokens = [t for t in n.split() if t not in NOISE]
-    return "".join(tokens) or re.sub(r"[^a-z0-9\u0980-\u09ff]+", "", name.lower())
+    raw_k = "".join(tokens) or re.sub(r"[^a-z0-9\u0980-\u09ff]+", "", name.lower())
+    return CUSTOM_ALIASES.get(raw_k, raw_k)
 
 
 def clone_entry(e):
@@ -389,7 +419,7 @@ def main():
             for nk in list(unresolved_keys):
                 tier_list = [c for c in pool_by_key.get(nk, []) if c.get("priority", 4) == tier]
                 tier_list.sort(key=lambda x: (0 if is_hd_entry(x) else 1, round(x.get("latency", 99), 2), -x.get("kbps", 0)))
-                for cand in tier_list[:4]:
+                for cand in tier_list[:8]:
                     tier_candidates.append((nk, cand))
 
             if not tier_candidates:
